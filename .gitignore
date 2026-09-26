@@ -4,4 +4,4 @@ node_modules/
 /examples/tauri-host/gen/
 /dist/
 __pycache__/
-acx/
+acx//acx
