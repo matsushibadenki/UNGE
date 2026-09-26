@@ -148,9 +148,22 @@ fn tampered_digest_input_and_unrelated_authorization_are_rejected() {
 #[test]
 fn duplicate_commit_is_rejected() {
     let mut h = Harness::new();
-    let (pf, auth, _) = h.plan();
-    assert_eq!(h.provider.dispatch("commit",json!({"preflightId":pf["preflightId"],"preflightDigest":pf["preflightDigest"],"authorization":auth["authorization"],"input":pf["input"]})).unwrap_err().code,"already_committed");
+    let (pf, auth, commit) = h.plan();
+    let args = json!({"preflightId":pf["preflightId"],"preflightDigest":pf["preflightDigest"],"authorization":auth["authorization"],"input":pf["input"]});
+    assert_eq!(
+        h.provider
+            .dispatch("commit", args.clone())
+            .unwrap_err()
+            .code,
+        "already_committed"
+    );
+    h.execute(&commit);
+    assert_eq!(
+        h.provider.dispatch("commit", args).unwrap_err().code,
+        "already_committed"
+    );
 }
+
 #[test]
 fn expiry_boundary_and_successful_retry_after_expiry() {
     let mut h = Harness::new();

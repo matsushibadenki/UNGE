@@ -489,13 +489,13 @@ impl Provider {
                 "input changed after preflight",
             ));
         }
-        self.fresh(session)?;
         if session.commit.is_some() {
             return Err(AcxError::new(
                 "already_committed",
                 "preflight was already committed",
             ));
         }
+        self.fresh(session)?;
         let id = Id::new_v4().to_string();
         self.sessions.get_mut(&args.preflight_id).unwrap().commit = Some(id.clone());
         Ok(json!({"commitId":id,"preflightId":args.preflight_id}))
