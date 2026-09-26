@@ -1,0 +1,13 @@
+[workspace]
+members = ["crates/*", "examples/headless", "examples/tauri-host", "examples/acx-provider"]
+default-members = ["crates/unge-core", "crates/unge-executor", "crates/unge-render", "examples/headless", "crates/unge-acx", "examples/acx-provider"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1

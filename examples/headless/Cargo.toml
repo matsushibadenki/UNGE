@@ -1,0 +1,10 @@
+[package]
+name = "unge-headless"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+[dependencies]
+unge-core = { path = "../../crates/unge-core" }
+unge-executor = { path = "../../crates/unge-executor" }
+futures = "0.3"
+serde_json = "1"

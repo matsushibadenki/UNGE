@@ -1,0 +1,15 @@
+[package]
+name = "unge-tauri-host"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+[dependencies]
+unge-core = { path = "../../crates/unge-core" }
+unge-executor = { path = "../../crates/unge-executor" }
+unge-render = { path = "../../crates/unge-render" }
+unge-tauri = { path = "../../crates/unge-tauri", features = ["acx"] }
+unge-acx = { path = "../../crates/unge-acx" }
+tauri = { version = "2", features = ["unstable"] }
+pollster = "0.4"
+[build-dependencies]
+tauri-build = { version = "2", features = [] }

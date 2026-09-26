@@ -1,0 +1,13 @@
+:root { color-scheme: dark; font: 15px/1.65 system-ui,sans-serif; color: #dbe4ed; background:#111923; }
+* { box-sizing:border-box; }
+body { margin:0; padding:24px; }
+main { max-width:480px; margin:auto; }
+header { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+strong { letter-spacing:.16em; color:#67d4bb; }
+h1 { font-size:25px; line-height:1.4; text-wrap:balance; margin-top:32px; }
+p { white-space:pre-line; color:#9cadbd; text-wrap:pretty; }
+.actions { display:flex; flex-wrap:wrap; gap:8px; margin:24px 0; }
+button,select { font:inherit; color:inherit; background:#243141; border:1px solid #435368; border-radius:6px; padding:7px 12px; cursor:pointer; }
+button:hover { border-color:#67d4bb; } button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid #67d4bb; outline-offset:3px; }
+input { display:block; width:100%; margin:12px 0 20px; accent-color:#67d4bb; }
+output { display:block; overflow-wrap:anywhere; font-variant-numeric:tabular-nums; color:#9cadbd; }

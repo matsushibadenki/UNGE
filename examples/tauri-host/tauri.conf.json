@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "UNGE Integration Example",
+  "version": "0.1.0",
+  "identifier": "dev.unge.example",
+  "build": { "frontendDist": "ui" },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [{ "label": "controls", "title": "UNGE Controls", "width": 380, "height": 430, "minWidth": 320, "minHeight": 400 }],
+    "security": { "csp": "default-src 'self'; script-src 'self'; style-src 'self'; connect-src ipc: http://ipc.localhost" }
+  },
+  "bundle": { "active": false }
+}

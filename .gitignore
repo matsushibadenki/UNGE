@@ -1,0 +1,7 @@
+/target/
+.DS_Store
+node_modules/
+/examples/tauri-host/gen/
+/dist/
+__pycache__/
+acx/
