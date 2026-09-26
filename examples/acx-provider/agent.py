@@ -7,6 +7,7 @@ from pathlib import Path
 import queue
 import subprocess
 import threading
+import time
 import uuid
 
 
@@ -58,8 +59,15 @@ class Agent:
             raise RuntimeError('provider changed the requested intent')
         if preflight['cost'] != {'currency': 'USD', 'estimated': '0.00', 'max': '0.00'}:
             raise RuntimeError('unexpected cost')
-        if preflight['approval']['type'] != 'policy':
-            raise RuntimeError('unsupported approval policy')
+        definition = self.capabilities[capability]
+        if preflight['version'] != definition['version'] or preflight['effects'] != definition['effects']:
+            raise RuntimeError('preflight version/effects mismatch')
+        if preflight['approval']['type'] != 'policy' or preflight['approval']['scope'] not in definition['authority']['scopes']:
+            raise RuntimeError('unsupported approval policy or scope')
+        if preflight['recovery']['reversible'] != definition['recovery']['reversible'] or preflight['recovery']['expiresAt'] != preflight['expiresAt']:
+            raise RuntimeError('recovery terms mismatch')
+        if preflight['expiresAt'] <= time.time():
+            raise RuntimeError('preflight expired before authorization')
         bound = {'preflightId': preflight['preflightId'], 'preflightDigest': preflight['preflightDigest']}
         authorization = self.call('authorize', bound)
         if authorization['provider'] != self.provider or authorization['scope'] != preflight['approval']['scope'] or authorization['expiresAt'] != preflight['expiresAt']:
@@ -69,12 +77,15 @@ class Agent:
             raise RuntimeError('commit binding mismatch')
         return preflight, authorization, commit
 
-    def receipt(self, execution, preflight):
+    def receipt(self, execution, preflight, recovered=False):
         receipt = self.call('receipt', {'receiptId': execution['receiptId']})
         self.validate(receipt, 'receipt')
         if receipt['provider'] != self.provider or receipt['capability'] != preflight['capability'] or receipt['requestHash'] != preflight['requestHash'] or receipt['receiptId'] != execution['receiptId']:
             raise RuntimeError('receipt binding mismatch')
         self.verify_json(execution['resultJson'], execution['result'], receipt['resultHash'])
+        expected_effects = ['graph-edit-rollback'] if recovered else preflight['effects']
+        if receipt['effects'] != expected_effects or receipt['cost'] != {'currency': 'USD', 'amount': '0.00'}:
+            raise RuntimeError('receipt effects/cost mismatch')
         if receipt['status'] != 'succeeded':
             raise RuntimeError('execution did not succeed')
         return receipt
@@ -120,6 +131,7 @@ def run_demo(binary, desktop=False, validate=None, progress=print):
         agent.validate(execution['result'], agent.capabilities['org.unge.graph.edit']['outputSchema'])
         after = execution['result']['summary']
         assert after['nodes'] == before['nodes'] + 3 and after['edges'] == before['edges'] + 2
+        assert after['documentId'] == before['documentId'] and after['revision'] == before['revision'] + 1
         assert agent.call('execute', {'commitId': commit['commitId']}) == execution
         progress('edit / receipt / retry PASS — added 3 nodes and 2 edges once')
         run_intent = {'kind': 'run', 'document_id': after['documentId'], 'expected_revision': after['revision']}
@@ -131,7 +143,7 @@ def run_demo(binary, desktop=False, validate=None, progress=print):
         progress('run PASS — 20 + 22 = 42')
         recovery_args = {'commitId': commit['commitId'], 'authorization': grant['authorization'], 'expectedRevision': after['revision']}
         recovery = agent.call('recover', recovery_args)
-        recovery_receipt = agent.receipt(recovery, pf)
+        recovery_receipt = agent.receipt(recovery, pf, recovered=True)
         assert recovery_receipt['recovery']['state'] == 'recovered'
         assert recovery['result']['documentHash'] == pf['documentHash']
         assert agent.call('recover', recovery_args) == recovery
