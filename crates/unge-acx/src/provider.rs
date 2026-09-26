@@ -538,7 +538,8 @@ impl Provider {
         let snapshot = self.fresh(session)?;
         let input = session.input.clone();
         let command = session.command.clone();
-        let preflight = session.preflight.clone();
+        let mut preflight = session.preflight.clone();
+        let is_edit = command.is_some();
         self.sessions.get_mut(&id).unwrap().started = true;
         let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(
             || -> Result<(Value, bool, Option<u64>)> {
@@ -598,6 +599,9 @@ impl Provider {
                 None,
             ),
         };
+        if is_edit && status == "failed" {
+            preflight["effects"] = json!([]);
+        }
         let recovery = if after.is_some() {
             preflight["recovery"].clone()
         } else {

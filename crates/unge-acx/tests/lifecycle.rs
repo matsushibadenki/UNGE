@@ -458,3 +458,52 @@ fn non_binary_fraction_has_identical_structured_and_hashed_input() {
     h.execute(&commit);
     assert_eq!(h.host.snapshot().unwrap().revision, 1);
 }
+
+#[test]
+fn host_race_failure_is_receipted_without_claiming_mutation_or_retrying() {
+    use std::sync::atomic::AtomicUsize;
+    struct RacingHost {
+        inner: MemoryHost,
+        attempts: AtomicUsize,
+    }
+    impl GraphHost for RacingHost {
+        fn snapshot(&self) -> Result<Snapshot> {
+            self.inner.snapshot()
+        }
+        fn apply(&self, _: Id, _: u64, _: Command) -> Result<Snapshot> {
+            self.attempts.fetch_add(1, Ordering::SeqCst);
+            Err(AcxError::new(
+                "revision_conflict",
+                "a UI edit won the atomic host check",
+            ))
+        }
+        fn undo(&self, id: Id, revision: u64) -> Result<Snapshot> {
+            self.inner.undo(id, revision)
+        }
+    }
+    let host = Arc::new(RacingHost {
+        inner: MemoryHost::new(Document::default()).unwrap(),
+        attempts: AtomicUsize::new(0),
+    });
+    let mut provider = Provider::new(host.clone(), Arc::new(math_registry()), Policy::math_demo());
+    let input = json!({"kind":"edit","document_id":host.snapshot().unwrap().document.graph().id,"expected_revision":0,"operations":[{"kind":"auto_layout","gap":[10,10]}]});
+    let pf = provider
+        .dispatch("preflight", json!({"input":input}))
+        .unwrap();
+    let grant = provider
+        .dispatch(
+            "authorize",
+            json!({"preflightId":pf["preflightId"],"preflightDigest":pf["preflightDigest"]}),
+        )
+        .unwrap();
+    let commit=provider.dispatch("commit",json!({"preflightId":pf["preflightId"],"preflightDigest":pf["preflightDigest"],"authorization":grant["authorization"],"input":pf["input"]})).unwrap();
+    let args = json!({"commitId":commit["commitId"]});
+    let result = provider.dispatch("execute", args.clone()).unwrap();
+    assert_eq!(provider.dispatch("execute", args).unwrap(), result);
+    assert_eq!(host.attempts.load(Ordering::SeqCst), 1);
+    let receipt = provider
+        .dispatch("receipt", json!({"receiptId":result["receiptId"]}))
+        .unwrap();
+    assert_eq!(receipt["status"], "failed");
+    assert_eq!(receipt["effects"], json!([]));
+}
