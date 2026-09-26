@@ -43,7 +43,7 @@ Observation queries: `summary`, `definitions`, `nodes`, `node` (requires `id`), 
 
 ### Node Graph Intent
 
-[`acx-node-graph-intent.schema.json`](../schemas/profiles/acx-node-graph-intent.schema.json) defines `edit` and `run`. Every intent names `document_id` and `expected_revision`. Editing accepts 1–256 sequential operations:
+[`acx-node-graph-intent.schema.json`](../crates/unge-acx/spec/acx-node-graph-intent.schema.json) defines `edit` and `run`. Every intent names `document_id` and `expected_revision`. Editing accepts 1–256 sequential operations:
 
 `create_node`, `delete_node`, `move_node`, `connect`, `disconnect`, `set_property`, `create_group`, `delete_group`, `auto_layout`.
 

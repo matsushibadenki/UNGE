@@ -1,0 +1,127 @@
+# ACXからUNGEを操作する
+
+[English](#english) · [日本語](#日本語) · [简体中文](#简体中文)
+
+## 日本語
+
+`unge-acx` がACX 0.1のManifest・Preflight・Policy承認・Commit・Execute・Receipt・Recoverを実装します。
+AIからはJSON Linesの標準入出力で操作します。対象のノードグラフはRustの共有Documentに保持されます。
+
+### すぐに試す
+
+UNGEルートで実行します。Python 3.10以上が必要です。AI APIキーは不要です。
+
+```sh
+cargo build --locked -p unge-acx-provider
+python3 examples/acx-provider/agent.py
+```
+
+PythonのクライアントがRustプロセスを起動し、次の操作を実行して終了します。
+
+1. 能力とノード定義を取得する。
+2. 20・22・加算の3ノードと2本の接続を事前確認する。この時点でDocumentは変わらない。
+3. ホストのポリシー承認を取得して確定し、1つのCommand Batchとして適用する。
+4. 指定リビジョンのグラフを実行し、42を確認する。
+5. Python側でReceiptと正確なJSONバイト列のSHA-256を照合する。
+6. Recoverで元のグラフに戻す。再送しても二重にUndoしない。
+
+### Tauriの画面と同じグラフを操作する
+
+```sh
+cargo build --locked -p unge-tauri-host
+python3 examples/acx-provider/agent.py --binary target/debug/unge-tauri-host --desktop
+```
+
+TauriのGPUウインドウを起動して同じ操作を行います。初期の12ノードを保持したまま3ノードを追加し、最後に元の12ノードへ戻ります。
+テストクライアント終了時にアプリも終了します。Windowsでは実行ファイル名に `.exe` を付けてください。
+
+AI側で常時接続する場合は `target/debug/unge-tauri-host --acx-stdio` を子プロセスとして起動し、そのstdin/stdoutを保持します。
+通常起動ではACXの入力スレッドを開きません。既に起動した別プロセスへ接続する方式ではありません。
+
+### 最小リクエスト
+
+```json
+{"id":"1","method":"discover","params":{}}
+{"id":"2","method":"observe","params":{"query":"summary"}}
+{"id":"3","method":"observe","params":{"query":"definitions","limit":20}}
+```
+
+`summary` の `documentId` と `revision` を使って、次のintentを `preflight.params.input` に渡します。
+UUIDは例の値を固定利用せず、作成する要素ごとに新しく発行してください。
+
+```json
+{
+  "kind": "edit",
+  "document_id": "<summary.documentId>",
+  "expected_revision": 0,
+  "operations": [{
+    "kind": "create_node",
+    "id": "<new UUID>",
+    "type_id": "math.number",
+    "properties": {"value": 42},
+    "rect": {"x": 40, "y": 40, "width": 180, "height": 90}
+  }]
+}
+```
+
+その後は `authorize → commit → execute → receipt` を順に呼びます。
+完全な通信例は `examples/acx-provider/agent.py`、各フィールドは[Node Graph Profile](ACX_NODE_GRAPH_PROFILE.md)を参照してください。
+
+### ホストへ取り込む
+
+```toml
+[dependencies]
+unge-acx = { path = "../vendor/unge/crates/unge-acx" }
+unge-tauri = { path = "../vendor/unge/crates/unge-tauri", features = ["acx"] }
+```
+
+```rust,ignore
+let provider = unge_acx::Provider::new(
+    Arc::new(engine.clone()), // 画面が使う同じEngine
+    Arc::new(registry),
+    unge_acx::Policy::math_demo(), // 例。製品ではホストが許可範囲を決める
+);
+```
+
+`GraphHost` はsnapshot・同一ロック内のrevision検査とapply・条件付きundoの3メソッドです。
+TauriのEngineは `acx` featureでこのtraitを実装します。GUI不要なら `MemoryHost` を使います。
+`Provider::dispatch` は同期APIです。Tauriの描画スレッドではなくworkerで実行します。
+`serve` の変更通知コールバックから `unge://changed` を配信する統合例をTauriサンプルに含めています。
+
+デフォルトPolicyは読み取り専用です。編集には `allow_edit` と作成可能type ID、実行には `allow_run` と実行可能type IDをホスト側で設定します。
+このProfileの実行対象はpureとして登録した信頼済みノードに限定します。pureフラグだけでは許可せず、型の許可リストも照合します。
+画像やTensorの処理に拡張する場合も、データはホストのResourceStoreに保持し、ACXには参照IDを渡します。
+
+TypeScriptクライアントは `bindings/typescript/acx.ts` です。pipe送受信関数を注入します。
+通常のWebView向け `dispatch` 命令とは別の契約です。クライアントは承認や編集の再試行を自動では行いません。
+エラー翻訳は `acx-i18n.ts` に英語・日本語・简体中文を揃えています。
+
+### 仕様と運用の境界
+
+- ACX側に `docs/NODE-GRAPH-PROFILE.md`、Intent Schema、入力例、テストを追加しました。既存のManifest/Receipt schemaは変更していません。
+- コピーして使えるよう、参照SchemaとProfileはUNGE側にも同梱しました。ビルド・実行に `acx` シンボリックリンクは不要です。
+- このbindingは実験段階のACX JSON Lines契約です。MCPのwire protocolや自動ツール登録は実装していません。
+- 承認・Receipt・再送記録はメモリ上です。Providerの再起動をまたぐ永続保証はありません。
+- 既定では120秒、128 preflight、編集256操作、実行256ノード、グラフ10000ノードです。件数上限に達したProviderは新しいpreflightを拒否し、既存Receiptを保護します。
+- Recoverは対象編集後のrevisionが変わっていない場合だけ許可します。途中の人間の操作を誤ってUndoしません。
+- 署名・多ユーザー認証・課金・外部副作用の標準Backendは今後の機能です。
+
+## English
+
+`unge-acx` exposes graph discovery, bounded observations, transactional editing, revision-bound execution and conditional undo through ACX 0.1. Run the two commands in the first example to launch the Rust provider from an independent Python agent. It creates/connects three arithmetic nodes, computes 42, verifies receipt hashes and restores the original graph.
+
+Use the desktop command to operate the same Engine that the Tauri UI uses. `--acx-stdio` opts into a dedicated parent-owned pipe; closing it ends the sample process. There is no network listener and no automatic MCP registration.
+
+For embedding, use `MemoryHost` or enable `unge-tauri`'s `acx` feature and pass the shared Engine to `Provider::new`. Policy is host-owned and read-only by default. Creation/execution types are allowlisted; execution also requires trusted pure definitions. Run the synchronous provider on a worker thread and forward its change callback to the UI.
+
+The [profile](ACX_NODE_GRAPH_PROFILE.md) specifies exact messages, digest byte strings, rejection rules, expiry and recovery. Schema snapshots are bundled, so the optional `acx` symlink is not needed in a copied project. State and unsigned receipts are in memory, with no restart persistence or durable exactly-once guarantee.
+
+## 简体中文
+
+`unge-acx` 通过ACX 0.1提供能力发现、分页查询、事务编辑、绑定版本的执行和有条件的撤销。运行第一组命令，Python代理会启动Rust Provider，创建并连接三个算术节点，得到42，验证回执摘要，然后恢复原图。
+
+桌面命令操作与Tauri界面完全相同的Engine。`--acx-stdio` 显式启用父进程管理的专用管道；关闭管道会结束示例进程。不会开放网络端口，也不会自动注册MCP工具。
+
+集成时使用MemoryHost，或开启 `unge-tauri` 的 `acx` feature并传入共享Engine。策略由宿主设置，默认只读；创建和执行需匹配类型白名单，执行还要求可信pure定义。在worker线程运行同步Provider，并将变化通知转发给界面。
+
+完整消息、摘要字节格式、拒绝规则、有效期和恢复条件见[Profile](ACX_NODE_GRAPH_PROFILE.md)。Schema快照已随UNGE提供，复制项目后无需 `acx` 符号链接。状态和未签名回执仅在内存中，没有跨重启持久化保证。

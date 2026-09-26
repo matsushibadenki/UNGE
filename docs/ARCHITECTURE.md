@@ -83,3 +83,17 @@ TauriのCapabilityはホストで設定し、操作ウインドウへ外部Web�
 - [wgpu 27.0.1 API](https://docs.rs/wgpu/27.0.1/wgpu/)
 
 原設計の機能ごとの対応状況はROADMAP.mdを参照してください。
+
+## ACX接続
+
+`unge-acx` はcore/executorだけに依存する任意アダプターです。UI/GPU依存はありません。
+ProviderはGraphHostを介して共有Documentにアクセスします。Tauri側のtrait実装は `acx` featureで有効化します。
+この経路も同じEditor・Undo履歴・revisionを使い、AI編集完了後に既存のSceneIndexを再構築します。
+
+Preflightはコピー上で命令を組み立てて検証します。Commit後は保存済みの命令だけを実行します。
+実行直前のrevision照合と編集をホストの同一ロック内で行います。Runは保存時点のsnapshotを使い、描画側のロックを保持しません。
+失敗を含む実行結果とReceiptを保持し、同じcommitIdの再送では再実行しません。回復時は編集直後のrevisionとUndoの利用可否を照合します。
+
+正確なJSON文字列をハッシュ材料として返し、Rustのf32と他言語の浮動小数点シリアライズの差を避けます。
+RegistryやPolicyは信頼済みホストが提供し、AIから変更できません。能力の既定値は読み取り専用です。
+詳細は [ACX_INTEGRATION.md](ACX_INTEGRATION.md) を参照してください。

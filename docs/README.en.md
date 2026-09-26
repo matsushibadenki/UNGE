@@ -28,3 +28,7 @@ Start an AI handoff with [AGENTS.md](../AGENTS.md), [AI_INTEGRATION.md](AI_INTEG
 The headless example computes `20 + 22 = 42` and can save a versioned graph JSON file.
 Only trusted Rust executors are supported today. WASM sandboxing, streaming, subgraphs, collaboration and browser-only hosting remain planned.
 The 10,000-node / 30,000-edge / 60-FPS goal has not been benchmarked.
+
+## Agent control with ACX
+
+`cargo build -p unge-acx-provider` then `python3 examples/acx-provider/agent.py` runs discovery, approved editing, execution, receipt verification and recovery. The same adapter connects to the live Tauri Engine. See [ACX integration](ACX_INTEGRATION.md). The optional ACX symlink is not needed at runtime.

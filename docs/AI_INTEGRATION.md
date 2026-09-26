@@ -77,3 +77,10 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 - render: wgpuのRust Device/TextureViewを受け取る。ホストのネイティブウインドウと組み合わせる。
 - tauri: Tauri 2専用。グラフ変更はworkerへ移し、Surfaceの生成・描画スレッドはホストで調整する。
 - ブラウザー単独版: wgpuのWebGPUバックエンドを利用するWASMホストは未提供。UUIDのWASM設定、Canvas初期化、非Send future等の対応が必要。
+
+## ACXエージェントから実行中のグラフを操作する
+
+コード生成の引き継ぎに加え、実行中のノード操作には `unge-acx` を利用できます。
+[ACX_INTEGRATION.md](ACX_INTEGRATION.md) を読み、`examples/acx-provider/agent.py` と同じライフサイクルを使ってください。
+通常UIと同じRustのEngineに接続し、別Documentを作って同期する設計にしないでください。
+事前確認のdigest・内容・revisionを照合し、競合時には新しく観測してpreflightを作り直します。

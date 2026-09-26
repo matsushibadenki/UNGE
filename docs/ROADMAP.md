@@ -45,3 +45,15 @@
 - [Later] Minimap、検索、Smart Connection、CRDT共同編集、Git連携
 
 設計書の「10000 Nodes / 30000 Edges / 60 FPS」は測定前の目標です。
+
+## ACXによるAI操作
+
+- [Done] 実験的Node Graph Profile、ACX Manifest/Receiptに適合するRust Provider
+- [Done] ページ付きノード定義・グラフ照会、型付きノード生成、接続・削除・移動・プロパティ・Group・レイアウト操作
+- [Done] Preflightの無変更プレビュー、ホストポリシー承認、digestとrevisionに固定したCommit/Execute
+- [Done] 同一ロック内の編集、失敗を含む結果の再送、条件付きRecover、元Receiptを維持した回復証明
+- [Done] Rust/Python間の正確なハッシュ材料照合、型付きTypeScriptクライアント、3言語エラー辞書
+- [Done] Headless JSON Lines Provider、Tauriの共有Documentへ接続する `--acx-stdio` モード
+- [Done] acx側へのProfile仕様・Schema・例・テスト追加、UNGEへの持ち運び可能なSchema同梱
+- [Next] 別実装Providerとの相互運用、承認・Receipt・再送記録の永続化、セッション保持上限の運用
+- [Later] MCP/A2A binding、署名、多ユーザー認証、外部副作用や課金を伴う実行Profile

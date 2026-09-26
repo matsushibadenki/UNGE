@@ -12,10 +12,11 @@ Tauri 2・Rust・WebGPU向けの、ディレクトリごと再利用できるノ
 | `crates/unge-core` | 型付きグラフ、Document、Workspace、命令、履歴、JSON、BVH、レイアウト | UI/GPU依存なし |
 | `crates/unge-executor` | ノード登録、非同期DAG実行、並列数制限、キャッシュ、キャンセル | core |
 | `crates/unge-render` | 描画シーン、WGSL、インスタンシング、ネイティブSurface | core、wgpu 27 |
+| `crates/unge-acx` | ACX能力公開、事前確認・承認・実行・Receipt・回復 | core、executor |
 | `crates/unge-tauri` | Rust共有状態、Tauri 2命令、リビジョン競合検出 | core、render、Tauri 2 |
 | `bindings/typescript` | 型付きIPCクライアント、英語・日本語・简体中文のメッセージ | invokeを外から注入 |
 | `examples/headless` | `20 + 22 = 42` のGUI不要な実行例 | core、executor |
-| `examples/tauri-host` | WebView操作画面＋ネイティブwgpuウインドウ | 4クレート |
+| `examples/tauri-host` | WebView操作画面＋ネイティブwgpuウインドウ | ACXを含む5クレート |
 
 Document・表示状態・RendererはRustで所有します。WebViewは命令と小さなメタデータをやり取りします。
 画像、動画、Tensor、GPUバッファをフレームごとにJavaScriptへ渡しません。
@@ -88,3 +89,14 @@ python3 scripts/export.py
 `dist/unge-0.1.0.zip` を生成します。展開したディレクトリをそのまま渡せます。
 ビルド済みのtarget、node_modules、Tauri生成スキーマを除外し、設計書・コード・テスト・統合例を含めます。
 Python 3.9以降が必要です。
+
+## ACX対応AIからノードを操作する
+
+```sh
+cargo build --locked -p unge-acx-provider
+python3 examples/acx-provider/agent.py
+```
+
+ACXの発見・事前確認・ポリシー承認・確定を経て、3ノードと2接続を作り、42を計算し、Receiptを検証して元に戻します。
+Tauriの画面と同じDocumentを操作する起動方法、ホストの権限設定、JSON Linesの契約は [ACX_INTEGRATION.md](docs/ACX_INTEGRATION.md) にまとめています。
+`acx` 側に追加したNode Graph ProfileとSchemaを同梱しているため、シンボリックリンクを含めずに再利用できます。
