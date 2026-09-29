@@ -50,3 +50,52 @@ Windows/Linux実機、ブラウザーWASM、Surfaceの同一ウインドウ合�
 新規Rustテストには事前確認の無変更、改変入力、他preflightの承認、重複Commit、期限境界、失敗結果の再送、容量制限、型の許可リスト、UI編集との競合、回復時の競合、過大な通信行の拒否、0.1等のf32小数のハッシュ整合を含みます。
 
 今回GPUシェーダー/レンダラーのコードは変更していません。実GPUの独立ピクセルテストは前回の結果を維持し、今回はTauriプロセスを使うACX統合経路を確認しました。
+
+## 編集時検証・履歴容量の追加（2026-09-28）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust 52件成功。GPUテスト1件はignore |
+| `cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings` | 成功 |
+| `cargo fmt --all -- --check` / `git diff --check` | 成功 |
+| TypeScript `tsc -p bindings/typescript` | 新しいDefinition型・定義照会・3言語辞書を含め成功 |
+| `python3 scripts/test_acx.py -v` | 4件成功。実Rustプロセスのプロパティ定義照会、不正値拒否、初期値適用と既存ライフサイクル |
+| acxのNode Graph Profileテスト | 5件成功。既存のIntent Schema互換性を確認 |
+| headlessサンプル | Registry検証を有効にしたグラフで42を確認 |
+| Tauri `--acx-stdio` | 実Tauri/Metalへ接続し、3ノード・2接続追加、42を実行、Receiptを確認、元の12ノードへ回復 |
+
+追加したRustテスト13件は、型・範囲・選択肢・Unicode長・初期値・必須値、旧Definition読込、登録時の不正制約拒否、最終Batchの検証、失敗時のDocument/revision/両履歴保持、Undo/Redo合算容量、逆命令の容量増加、巨大な編集による履歴破棄、UIとAIの共通検証、容量不足時のACX回復拒否を確認します。
+
+今回レンダラーやシェーダーは変更していません。GPUピクセルテストは再実行せず、Tauri実プロセスの統合経路を確認しました。履歴バイト数はシリアライズした命令ペイロードの容量であり、プロセス全体のメモリ上限ではありません。大規模グラフのFPS測定は今回も対象外です。
+
+## ポインター操作の追加（2026-09-28）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust 62件成功。GPU1件は通常実行ではignore |
+| `cargo test --locked --offline -p unge-render --test render -- --ignored` | Metal実GPUで1件成功。移動プレビューの位置にNodeを描き、元の位置が背景になったこととGPU検証エラーなしを確認 |
+| `cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings` | 成功 |
+| `cargo fmt --all -- --check` / `git diff --check` | 成功 |
+| TypeScript型チェック / `node --check examples/tauri-host/ui/app.js` | 成功。JS構文チェックをCIにも追加 |
+| `python3 scripts/test_acx.py -v` | 4件成功 |
+| Tauri実画面 | 単一NodeのDrag、Undo、加算Node追加、Port接続、Box Select、2Node同時Drag、ホイール操作を確認 |
+| 同じ実プロセスのACX照会 | Drag後の座標100/90とrevision 1、Undo後revision 2、追加後3、接続数3/revision 4、2Node同時Drag後の座標320/60とrevision 5を確認 |
+| Tauri `--acx-stdio` のPythonクライアント | 3Node/2Edge追加、42を実行、Receipt照合、元の12Node/2Edgeへ回復 |
+
+追加したテストは、確定前にDocument/revisionが変わらないこと、1回のUndoで複数Nodeを復元できること、Box/Shift選択、クリックの揺れ、キャンセル、同一pointerの所有権、Zoom変換、双方向接続、占有/循環/同側Portの拒否、古いrevisionの拒否、ビュー更新時のキャンセル、移動Node/Edgeのカリングと残像防止を確認します。
+
+macOSの実画面でドラッグした距離と、ACXで照会した論理座標の変化が一致することを確認しました。日本語パネルのボタン配置・意味単位の改行も確認しました。英語・简体中文の文言は追加済みですが、今回は全言語・全画面サイズの実操作試験は行っていません。Windows/Linux実機、同一ウインドウ合成、タッチ、キーボードだけの編集、GPU文字、大規模FPSは未検証または未実装です。
+
+## GPU文字の追加（2026-09-28）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust 66件成功。GPU2件は通常実行ではignore |
+| `cargo test --locked --offline -p unge-render --test render -- --ignored` | Metal実GPUで2件成功。英語・日本語・简体中文の欠落グリフなし、1倍/2倍解像度、文字クリップ、前面ノードによる遮蔽、アトラス再利用、移動プレビューのピクセルを確認 |
+| `cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings` | 成功 |
+| TypeScript型チェック / JavaScript構文チェック | 成功。`set_locale` のRust/TypeScript/wire値を同期 |
+| `python3 scripts/test_acx.py -v` | 4件成功 |
+| 最終Tauriビルドの `--acx-stdio` | 3Node/2Edge作成、再送時の重複防止、42の実行、Receipt照合、元のグラフへの回復が成功 |
+| macOS実画面 | 日本語と英語のノード名/Port名、言語変更後revision 0維持を確認 |
+
+追加の通常テストはAtlas配置上限、表示名の翻訳/識別子フォールバック/長さ制限、LOD、Port位置と移動プレビュー、描画順序、Viewごとの言語分離とDocument不変性を確認します。文字の描画順を保つためノード単位でバッチを分けています。大規模FPSは未測定です。フォントは検証端末のシステムフォントを使用しました。フォントのない環境、全DPI、Windows/Linux実画面、全言語の操作パネルは未検証です。配布先にCJKフォントを用意する方法と容量上限は [GPU_TEXT.md](GPU_TEXT.md) を参照してください。

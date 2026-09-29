@@ -1,22 +1,88 @@
+mod input;
 use std::sync::Arc;
 use tauri::{Emitter, Listener, Manager};
 use unge_core::*;
-use unge_render::SurfaceRenderer;
+use unge_render::{LabelCatalog, LabelText, NodeLabels, SurfaceRenderer};
 use unge_tauri::Engine;
 
+fn labels(registry: &unge_executor::Registry) -> LabelCatalog {
+    let mut catalog = LabelCatalog::new();
+    for type_id in ["math.number", "math.add"] {
+        let definition = registry.definition(type_id).unwrap();
+        let title = &definition.name;
+        let value = LabelText {
+            en: "Value".into(),
+            ja: "値".into(),
+            zh_cn: "数值".into(),
+        };
+        catalog.insert(
+            type_id.into(),
+            NodeLabels {
+                title: LabelText {
+                    en: title.en.clone(),
+                    ja: title.ja.clone(),
+                    zh_cn: title.zh_cn.clone(),
+                },
+                inputs: [
+                    (
+                        "a".into(),
+                        LabelText {
+                            en: "A".into(),
+                            ja: "入力 A".into(),
+                            zh_cn: "输入 A".into(),
+                        },
+                    ),
+                    (
+                        "b".into(),
+                        LabelText {
+                            en: "B".into(),
+                            ja: "入力 B".into(),
+                            zh_cn: "输入 B".into(),
+                        },
+                    ),
+                ]
+                .into(),
+                outputs: [("value".into(), value)].into(),
+            },
+        );
+    }
+    catalog
+}
 fn initial_document() -> Document {
     let registry = unge_executor::math_registry();
     let mut editor = Editor::new(Document::default(), 100).unwrap();
     let mut commands = Vec::new();
+    let mut ids = Vec::new();
     for i in 0..12 {
-        let mut node = registry.definition("math.number").unwrap().instantiate();
-        node.properties.insert("value".into(), i.into());
+        let mut node = registry
+            .definition(if i == 11 { "math.add" } else { "math.number" })
+            .unwrap()
+            .instantiate();
+        if i != 11 {
+            node.properties.insert("value".into(), i.into());
+        }
+        ids.push(node.id);
         commands.push(Command::AddNode {
             node,
             rect: Rect {
                 x: 40. + (i % 3) as f32 * 240.,
                 y: 40. + (i / 3) as f32 * 140.,
                 ..Rect::default()
+            },
+        });
+    }
+    for (source, port) in [(9, "a"), (10, "b")] {
+        commands.push(Command::Connect {
+            edge: Edge {
+                id: Id::new_v4(),
+                from: Endpoint {
+                    node: ids[source],
+                    port: "value".into(),
+                },
+                to: Endpoint {
+                    node: ids[11],
+                    port: port.into(),
+                },
             },
         });
     }
@@ -29,7 +95,11 @@ fn redraw(app: &tauri::AppHandle) {
     };
     if let Some(canvas) = app.get_window("canvas")
         && let Ok(size) = canvas.inner_size()
-        && let Err(error) = engine.draw("controls", [size.width, size.height])
+        && let Err(error) = engine.draw_scaled(
+            "controls",
+            [size.width, size.height],
+            canvas.scale_factor().unwrap_or(1.0),
+        )
     {
         eprintln!("{}: {}", error.code, error.message);
     }
@@ -38,7 +108,12 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(unge_tauri::handler())
         .setup(|app| {
-            let engine = Engine::new(initial_document())?;
+            let registry = Arc::new(unge_executor::math_registry());
+            let editor = Editor::new(initial_document(), 256)?.with_validator(registry.clone())?;
+            let engine = Engine::from_editor(editor);
+            engine
+                .set_labels(labels(&registry))
+                .map_err(|e| e.message)?;
             engine
                 .register_view(
                     "controls",
@@ -62,6 +137,10 @@ fn main() {
             engine
                 .attach_renderer("controls", renderer)
                 .map_err(|e| e.message)?;
+            app.wry_plugin(input::InputBridge {
+                app: app.handle().clone(),
+                engine: engine.clone(),
+            });
             app.manage(engine);
             redraw(app.handle());
             let handle = app.handle().clone();
@@ -75,7 +154,7 @@ fn main() {
                 std::thread::spawn(move || {
                     let mut provider = unge_acx::Provider::new(
                         Arc::new(engine.clone()),
-                        Arc::new(unge_executor::math_registry()),
+                        registry,
                         unge_acx::Policy::math_demo(),
                     );
                     let result = unge_acx::serve(

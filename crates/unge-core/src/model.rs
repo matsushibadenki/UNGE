@@ -14,6 +14,8 @@ pub enum Error {
     Duplicate(String),
     #[error("invalid graph: {0}")]
     Invalid(String),
+    #[error("invalid properties: {0}")]
+    Properties(String),
     #[error("graph contains a cycle")]
     Cycle,
     #[error("unsupported schema version: {0}")]

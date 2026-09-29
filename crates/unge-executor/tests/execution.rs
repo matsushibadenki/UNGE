@@ -86,20 +86,51 @@ fn execution_cache_and_changed_input() {
 #[test]
 fn failure_blocks_dependents_but_independent_nodes_complete() {
     futures::executor::block_on(async {
-        let (registry, mut editor, aid, sid) = graph();
-        editor
-            .execute(Command::SetProperty {
-                id: aid,
-                key: "value".into(),
-                value: None,
-            })
+        let (registry, editor, aid, sid) = graph();
+        // A runtime failure with schema-valid input must block only its dependents.
+        struct SometimesFails;
+        impl NodeExecutor for SometimesFails {
+            fn execute(
+                &self,
+                ctx: ExecutionContext,
+                _: Inputs,
+            ) -> futures::future::BoxFuture<'_, std::result::Result<Outputs, String>> {
+                Box::pin(async move {
+                    let value = ctx.properties["value"].as_f64().unwrap();
+                    if value == 20.0 {
+                        Err("host resource unavailable".into())
+                    } else {
+                        Ok(Outputs::from([("value".into(), Value::Float(value))]))
+                    }
+                })
+            }
+        }
+        let mut failing = Registry::default();
+        failing
+            .register(
+                registry.definition("math.number").unwrap().clone(),
+                std::sync::Arc::new(SometimesFails),
+            )
+            .unwrap();
+        // The dependent must never be polled after its input fails.
+        struct Add;
+        impl NodeExecutor for Add {
+            fn execute(
+                &self,
+                _: ExecutionContext,
+                _: Inputs,
+            ) -> futures::future::BoxFuture<'_, std::result::Result<Outputs, String>> {
+                panic!("dependent of failed input must not execute")
+            }
+        }
+        failing
+            .register(
+                registry.definition("math.add").unwrap().clone(),
+                std::sync::Arc::new(Add),
+            )
             .unwrap();
         let result = Scheduler::new(2, 10)
-            .run(
-                editor.document().graph(),
-                &registry,
-                Cancellation::default(),
-            )
+            .run(editor.document().graph(), &failing, Cancellation::default())
             .await
             .unwrap();
         assert_eq!(result.nodes[&aid].status, Status::Failed);
@@ -191,6 +222,7 @@ fn concurrency_is_bounded_and_actually_overlaps() {
         inputs: vec![],
         outputs: vec![],
         pure: false,
+        property_schema: PropertySchema::default(),
     };
     let mut editor = Editor::new(Document::default(), 1).unwrap();
     editor

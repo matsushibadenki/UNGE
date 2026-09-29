@@ -110,7 +110,7 @@ pub(crate) fn compile_edit(
                     .ok_or_else(|| AcxError::new("unknown_node_type", type_id))?;
                 let mut node = definition.instantiate();
                 node.id = *id;
-                node.properties = properties.clone();
+                node.properties.extend(properties.clone());
                 Command::AddNode { node, rect: *rect }
             }
             Operation::DeleteNode { id } => Command::RemoveNode { id: *id },
@@ -148,5 +148,6 @@ pub(crate) fn compile_edit(
         preview.execute(command.clone())?;
         commands.push(command);
     }
+    registry.validate_edit(preview.document().graph())?;
     Ok((Command::Batch { commands }, preview.document().clone()))
 }

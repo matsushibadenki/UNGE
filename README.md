@@ -11,7 +11,8 @@ Tauri 2・Rust・WebGPU向けの、ディレクトリごと再利用できるノ
 |---|---|---|
 | `crates/unge-core` | 型付きグラフ、Document、Workspace、命令、履歴、JSON、BVH、レイアウト | UI/GPU依存なし |
 | `crates/unge-executor` | ノード登録、非同期DAG実行、並列数制限、キャッシュ、キャンセル | core |
-| `crates/unge-render` | 描画シーン、WGSL、インスタンシング、ネイティブSurface | core、wgpu 27 |
+| `crates/unge-interaction` | ポインター操作、選択、ドラッグ、Port接続、一時プレビュー | core |
+| `crates/unge-render` | 描画シーン、WGSL、インスタンシング、ネイティブSurface | core、interaction、wgpu 27 |
 | `crates/unge-acx` | ACX能力公開、事前確認・承認・実行・Receipt・回復 | core、executor |
 | `crates/unge-tauri` | Rust共有状態、Tauri 2命令、リビジョン競合検出 | core、render、Tauri 2 |
 | `bindings/typescript` | 型付きIPCクライアント、英語・日本語・简体中文のメッセージ | invokeを外から注入 |
@@ -46,9 +47,9 @@ cargo fmt --all -- --check
 cargo test --locked -p unge-render --test render -- --ignored
 ```
 
-デスクトップ例は機能確認用です。別ウインドウにグラフを描画し、操作画面でノード追加・Undo/Redo・ズームを試せます。
+デスクトップ例は機能確認用です。別ウインドウにグラフを描画し、操作画面で数値/加算ノード追加・Undo/Redoを試せます。グラフ上ではノードDrag、範囲選択、Port接続、右ドラッグPan、ホイールZoomが使えます。
 この例のネイティブウインドウ生成にはTauriの `unstable` featureを使用します。
-ノード上の文字、マウスでのノード編集、同一ウインドウ内のネイティブSurface合成は今後の実装項目です。
+ノード名・Port名をRust/GPU側で描画し、3言語の表示名をホストから登録できます。[GPU文字の取り込み](docs/GPU_TEXT.md)を参照してください。同一ウインドウ内のネイティブSurface合成は今後の実装項目です。入力の取り込み方とOS別の検証範囲は [POINTER_INPUT.md](docs/POINTER_INPUT.md) を参照してください。
 
 ## 別プロジェクトに取り込む
 
@@ -75,7 +76,7 @@ AIに渡す場合は、ルートの `AGENTS.md` と [AI_INTEGRATION.md](docs/AI_
 - 実行はDAGのみです。独立ノードを同じ階層で並列実行し、失敗したノードの下流をBlockedにします。
 - 自動型変換は行いません。変換処理を明示的なノードとして登録してください。
 - `pure: true` のノードだけをキャッシュします。外部API、時刻、乱数、可変リソースを使うノードは原則falseにします。
-- 描画はノード・ポート・Bezier接続線・選択枠・グリッドに対応します。文字描画とCPUフォールバックは未実装です。
+- 描画はノード・ポート・Bezier接続線・選択枠・グリッドに対応します。文字はGlyph Atlasで描画します。CPUフォールバックは未実装です。
 - 10,000ノード・30,000エッジ・60FPSは設計上の目標です。この実装で達成済みとはしていません。
 
 詳細は [ARCHITECTURE.md](docs/ARCHITECTURE.md) と [ROADMAP.md](docs/ROADMAP.md) を参照してください。
@@ -100,3 +101,7 @@ python3 examples/acx-provider/agent.py
 ACXの発見・事前確認・ポリシー承認・確定を経て、3ノードと2接続を作り、42を計算し、Receiptを検証して元に戻します。
 Tauriの画面と同じDocumentを操作する起動方法、ホストの権限設定、JSON Linesの契約は [ACX_INTEGRATION.md](docs/ACX_INTEGRATION.md) にまとめています。
 `acx` 側に追加したNode Graph ProfileとSchemaを同梱しているため、シンボリックリンクを含めずに再利用できます。
+
+## プロパティ検証と履歴容量
+
+プロパティの型・範囲・選択肢・初期値をDefinitionで宣言し、共有Editorで編集・Undo/Redoを検証できます。履歴は件数とバイト容量で制限します。全サンプルで編集時検証を有効にしました。取り込み方法と互換性は [PROPERTY_VALIDATION.md](docs/PROPERTY_VALIDATION.md) を参照してください。

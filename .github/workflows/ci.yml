@@ -15,6 +15,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node --check examples/tauri-host/ui/app.js
       - run: npx --yes --package typescript@5.9.3 tsc -p bindings/typescript
       - uses: actions/setup-python@v5
         with:

@@ -6,7 +6,7 @@ WebView toolbar / inspector (en, ja, zh-CN)
        ▼
 unge-tauri Engine (application-owned)
        ├ Editor → Document → Graph
-       ├ Viewport / selection per view
+       ├ Viewport / selection / Interaction preview per view
        ├ SceneIndex (BVH) → visible Scene
        └ SurfaceRenderer → retained GPU buffers → native surface
 
@@ -22,20 +22,24 @@ Viewportと選択はDocumentに保存せず、EngineのViewに置きます。
 core::Workspaceは複数Document、資産参照、言語設定を保持します。
 Tauriアダプターは1つのDocumentを共有する最小構成です。
 
+ポインター入力とViewportのsizeは論理ピクセルです。draw_scaledは物理Surfaceサイズとscale factorから論理サイズを求めます。ネイティブ入力は物理座標をscale factorで割って渡します。
+
 GPU座標のオーバーフローを避けるため、保存する矩形とViewportのワールド座標は絶対値10億以内に制限します。
 Graphのノード・エッジ・Groupは外部から可変アクセスできません。
 CommandだけがEditorのDocumentを更新します。逆命令で履歴を保持し、変更のたびに全Documentを複製しません。
 Batchの途中や最後の検証に失敗した場合、逆順に戻してrevisionと履歴を維持します。
-Undo履歴は件数制限です。バイト数での制限やディスク退避は未実装です。
+Undo/Redo履歴は合算の件数とシリアライズ後ペイロード容量で制限します（既定256件・16MiB）。巨大な逆命令を保持できなければ履歴を破棄し、途中の編集を飛ばしたUndoを防ぎます。総ヒープ使用量の制限やディスク退避は未実装です。
+
+coreのDocumentValidatorをEditorへ設定すると、ロード時と編集・Undo/Redo確定時にホスト検証を適用できます。Registryがこのtraitを実装し、Port一致とPropertySchemaを検証します。Batchの最終状態だけを検証し、失敗時はDocument・revision・履歴を維持します。基本のnewコンストラクターは構造検証だけを維持し、サンプルはwith_validatorとfrom_editorで有効化しています。詳細は [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md)。
 
 保存順序を安定させるため主データはBTreeMapです。設計書のHashMap推奨からの意図的な差分です。
 依存探索にはHashMapのGraphIndex、表示探索にはBVHを使います。
-Document編集完了後に全体検証とSceneIndex再構築を行うため、連続ドラッグは描画のプレビューと確定Commandを分けて統合してください。
+Document編集完了後に全体検証とSceneIndex再構築を行います。unge-interactionはドラッグ中の一時座標を保持し、Upだけを確定Commandにします。描画は同じBVHと移動ノードの接続Indexを使い、一時座標で可視性を再評価します。
 細粒度のIndex差分更新は今後の最適化項目です。
 
 ## 実行
 
-Graphの接続・型・循環を検証した後、登録DefinitionとNodeのPortスキーマを照合します。
+Graphの接続・型・循環を検証した後、登録DefinitionとNodeのPortスキーマ・プロパティの型/制約を照合します。
 必須入力を検査し、決定的なトポロジカル階層を生成します。
 各階層内を `buffer_unordered(concurrency)` で実行し、完了を待って次の階層へ進みます。
 後続ノードは、依存ノードが失敗・出力欠損した場合Blockedになります。無関係なノードは続行します。
@@ -51,10 +55,10 @@ pureノードのキャッシュキーはtype_id・definition version・入力・
 ネイティブではwgpuがMetal/Vulkan/DX12等を使います。「WebGPU向け」はwgpu/WGSLによるWebGPU系APIを指し、TauriのWebView内でGPU処理を実行する意味ではありません。
 現在の検証対象はwgpu 27.0.1です。将来のメジャーバージョン追従は別途検証してください。
 
-ノード・Port・選択枠・曲線をQuadのインスタンスに変換し、1 draw callで描画します。
+ノード・Port・選択枠・曲線をQuadのインスタンスに変換します。文字のないSceneは1 draw callで描き、文字がある場合は各ノードの形状とGlyphを交互に描いて重なり順を守ります。
 Bezier曲線はズームに応じて8/24区間へ分割し、線分を同じインスタンスバッファに入れます。
 Node BVHとEdge BVHを別々に使い、接続線が画面内を横切る場合は端点ノードが画面外でも描画します。
-遠景はPortを省略します。文字・Group描画・Minimapは未実装です。
+遠景はPortと文字を段階的に省略します。文字はcosmic-textで整形し、固定容量のGlyph Atlasに保持します。表示名はホストのLabelCatalog、言語はRustのView状態に置きます。実装・フォント注入・容量制限は [GPU_TEXT.md](GPU_TEXT.md)。Group描画・Minimapは未実装です。
 
 GpuRendererは容量に余裕を持ったバッファを再利用し、不足時のみ拡張します。
 表示Sceneの更新時には可視インスタンスをCPU→GPUへアップロードします。
@@ -97,3 +101,9 @@ Preflightはコピー上で命令を組み立てて検証します。Commit後�
 正確なJSON文字列をハッシュ材料として返し、Rustのf32と他言語の浮動小数点シリアライズの差を避けます。
 RegistryやPolicyは信頼済みホストが提供し、AIから変更できません。能力の既定値は読み取り専用です。
 詳細は [ACX_INTEGRATION.md](ACX_INTEGRATION.md) を参照してください。
+
+## ポインター入力
+
+`unge-interaction` はcoreにだけ依存します。TauriはViewごとに操作状態を持ち、Down時のrevisionをMove/Upでも照合します。MoveはDocumentを更新せず、Up時に同一ロック内でCommandを実行します。外部編集時は一時描画を消して古い操作を拒否します。接続プレビューは型・占有・重複・循環を検証します。
+
+サンプルの `input.rs` だけがunstableなWry/Tao入力APIへ依存します。OS入力の取得、論理座標への変換、連続Moveの集約、Cancelと小さな通知を担当します。ホストへの実装手順と未対応項目は [POINTER_INPUT.md](POINTER_INPUT.md)。

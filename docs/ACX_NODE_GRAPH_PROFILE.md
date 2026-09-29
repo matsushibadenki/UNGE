@@ -47,9 +47,17 @@ Observation queries: `summary`, `definitions`, `nodes`, `node` (requires `id`), 
 
 `create_node`, `delete_node`, `move_node`, `connect`, `disconnect`, `set_property`, `create_group`, `delete_group`, `auto_layout`.
 
-Client-assigned UUIDs let later operations reference newly created nodes within the same transaction. Node creation names a registered type; the host supplies its Port schema. Clients do not supply executable code or Port definitions. Connection/type/cycle validation applies during preview and at the final atomic command. Required-input/property validation happens before execution in the host executor. `set_property.value` null (or omitted) deletes the property; storing JSON null itself is not supported by this draft adapter.
+Client-assigned UUIDs let later operations reference newly created nodes within the same transaction. Node creation names a registered type; the host supplies its Port schema. Clients do not supply executable code or Port definitions. Connection/type/cycle validation applies during preview and at the final atomic command. Registered property constraints are validated on the final edited state during preflight and by the shared host editor at mutation. Required input connections are checked before node execution, allowing incomplete connections while editing. `set_property.value` null (or omitted) deletes the property; storing JSON null itself is not supported by this draft adapter.
 
 Preflight MUST NOT mutate the graph, execute nodes, consume graph history or create an externally visible effect. It previews edits on an isolated document. The provider checks document identity/revision/content at authorization, commit and execution. The host applies revision checking and mutation under the same lock. Invalid edits roll back as one transaction. Run executes the captured revision; subsequent UI edits do not alter that snapshot.
+
+### Property metadata and edit validation (UNGE reference)
+
+Definition observations include `property_schema: { fields, additional_properties }`. Each field has localized `name`/`description` (`en`, `ja`, `zh_cn`), `value_type`, `required` and `default` (null means no default). The typed `value_type.kind` is `bool`, `int`, `float`, `string` or `json`. Int uses i64 values; float accepts finite numbers. Numeric `minimum`/`maximum` bounds are inclusive and nullable. String constraints are `min_length` (default 0), nullable `max_length` and nullable `choices`; lengths count Unicode scalar values. This metadata is UNGE's typed schema, not arbitrary JSON Schema. JavaScript clients need safe integers or lossless integer parsing for i64 data.
+
+`create_node` applies definition defaults and then overlays the submitted properties. Subsequent validation never fills missing fields. A missing required value, invalid type or violated constraint returns `invalid_properties` before approval. A multi-operation edit validates its final properties; it may temporarily remove a required property if a later operation restores it. Unknown properties follow `additional_properties` (default true). Definitions without `property_schema` retain the open legacy behavior. Hosts must freeze the registry across preflight/execute, share it with their UI editor and bump the definition version when constraints/defaults change. `math.number` version 2 requires a finite `value` with creation default 0.
+
+Undo capacity is host-owned. The UNGE reference bounds total serialized undo/redo payloads and step count; it clears history when an inverse cannot fit, avoiding skipped edits. This bounds retained command payloads, not total process memory. If the required history was discarded, `recover` returns `recovery_unavailable` without changing the graph. Recovery terms remain conditional on retained history.
 
 ### Digest artifacts: `provider-json-utf8-v1`
 
@@ -73,10 +81,11 @@ The reference retains at most 128 preflights and their outcomes per provider pro
 
 Core Manifest/Receipt validators remain unchanged. Consumers that do not support the `other` binding or extension can skip these capabilities. Export the intent schema alongside adapters so a copied UNGE directory does not depend on an ACX symlink. A Python agent example independently verifies Rust-emitted hashes and receipts. This remains experimental until independently maintained providers and governance review establish interoperability.
 
-Required vectors: discover/schema validation; one edit creates/connects arithmetic nodes; result 42; preflight has no mutation; foreign token; changed intent/digest; stale revision at authorize/commit/execute; invalid edge/cycle; duplicate commit; replay after expiry; failed execution replay; denied executor types; successful recovery and replay; recovery after a UI edit is refused; bounded malformed/oversized messages.
+Required vectors: discover/schema validation; one edit creates/connects arithmetic nodes; result 42; preflight has no mutation; foreign token; changed intent/digest; stale revision at authorize/commit/execute; invalid edge/cycle; duplicate commit; replay after expiry; failed execution replay; denied executor types; successful recovery and replay; recovery after a UI edit is refused; bounded malformed/oversized messages; property metadata/defaults; invalid-property preflight without mutation; final-batch property validation; recovery after history-budget eviction.
 
 - [Done] Experimental intent schema, example and profile validation vectors.
 - [Done] UNGE Rust adapter and Python client, including shared Tauri Document integration.
+- [Done] UNGE property metadata, edit-time validation and bounded-history recovery rules.
 - [Next] Independent provider interoperability and durable policy/receipt storage.
 - [Later] MCP/A2A bindings, signatures, paid/external executors and multi-user authentication.
 
@@ -85,6 +94,8 @@ Required vectors: discover/schema validation; one edit creates/connects arithmet
 この実験的Profileは、AIからRustが所有するノードグラフを照会・編集・実行するための任意拡張です。既存のACX Manifest/Receiptをそのまま使い、標準必須機能は増やしません。MCPではなく、専用の標準入出力へJSONを1行ずつ送るbindingです。
 
 `discover → observe → preflight → authorize → commit → execute → receipt` の順に操作します。編集は `document_id` と `expected_revision` に固定した単一トランザクションです。作成・削除・移動・接続・切断・プロパティ変更・グループ・自動配置に対応します。Port定義はホストの登録ノード定義から取得し、AIが実行コードやPortを持ち込む形式にはしません。
+
+定義照会は `property_schema` の型・範囲・選択肢・必須値・初期値を返します。生成時に初期値を適用してから指定値で上書きし、編集後の値をPreflightと共有Editorで検証します。不正な値は `invalid_properties` です。必須入力の接続は実行前に検証します。履歴容量により対象Undoが失われた場合は `recovery_unavailable` とし、グラフを変更しません。
 
 承認ポリシーはホストが設定します。既定では読み取りのみで、UNGEの例では算術ノードだけを明示的に許可します。実行には型の許可リストとpureな信頼済み定義の両方が必要です。API課金や外部への副作用はこのProfileの無料ローカル実行権限には含めません。
 
@@ -101,6 +112,8 @@ Required vectors: discover/schema validation; one edit creates/connects arithmet
 此实验性Profile是可选扩展，使AI能够查询、编辑和执行由Rust持有的节点图。它沿用现有ACX Manifest/Receipt，不增加核心必选字段。它不是MCP，而是通过专用标准输入输出逐行传递JSON的binding。
 
 流程为 `discover → observe → preflight → authorize → commit → execute → receipt`。编辑绑定 `document_id` 和 `expected_revision`，作为单一事务执行。支持创建、删除、移动、连接、断开、属性修改、分组和自动布局。Port定义来自宿主注册表，代理不能提交可执行代码或伪造Port。
+
+定义查询返回 `property_schema` 中的类型、范围、选项、必填值和初始值。创建时应用初始值后由请求值覆盖；预检及共享Editor验证编辑后的属性。无效值返回 `invalid_properties`，必填连接在执行前检查。历史容量导致所需Undo丢失时，恢复返回 `recovery_unavailable`，不会更改节点图。
 
 授权策略由宿主配置，默认只读。UNGE示例仅明确允许算术节点。执行必须同时满足类型白名单和可信pure定义；免费本地执行授权不包含付费API及外部副作用。
 

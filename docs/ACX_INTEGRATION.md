@@ -76,9 +76,12 @@ unge-tauri = { path = "../vendor/unge/crates/unge-tauri", features = ["acx"] }
 ```
 
 ```rust,ignore
+let registry = Arc::new(registry);
+let editor = unge_core::Editor::new(document, 256)?.with_validator(registry.clone())?;
+let engine = unge_tauri::Engine::from_editor(editor);
 let provider = unge_acx::Provider::new(
     Arc::new(engine.clone()), // 画面が使う同じEngine
-    Arc::new(registry),
+    registry,
     unge_acx::Policy::math_demo(), // 例。製品ではホストが許可範囲を決める
 );
 ```
@@ -125,3 +128,11 @@ The [profile](ACX_NODE_GRAPH_PROFILE.md) specifies exact messages, digest byte s
 集成时使用MemoryHost，或开启 `unge-tauri` 的 `acx` feature并传入共享Engine。策略由宿主设置，默认只读；创建和执行需匹配类型白名单，执行还要求可信pure定义。在worker线程运行同步Provider，并将变化通知转发给界面。
 
 完整消息、摘要字节格式、拒绝规则、有效期和恢复条件见[Profile](ACX_NODE_GRAPH_PROFILE.md)。Schema快照已随UNGE提供，复制项目后无需 `acx` 符号链接。状态和未签名回执仅在内存中，没有跨重启持久化保证。
+
+## 編集制約 / Editing constraints / 编辑约束
+
+`observe(query: "definitions")` は `property_schema` を返します。AIは制約・初期値を参照でき、不正なプロパティはPreflightで `invalid_properties` として拒否されます。必須入力の接続は実行前に検証します。共有Editorの検証と履歴容量の設定は [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md) を参照してください。
+
+Definition observations include property constraints and defaults. Invalid properties fail preflight with `invalid_properties`; required connections are checked before execution. Use a validated shared Editor to enforce the same rules for UI edits. History eviction can make recovery unavailable.
+
+定义查询包含属性约束与初始值。无效属性在预检时以 `invalid_properties` 拒绝，必填连接在执行前检查。请为共享Editor配置验证器，使界面与AI遵循相同规则。历史被移除后可能无法恢复。

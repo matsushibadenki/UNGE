@@ -1,6 +1,6 @@
 [workspace]
 members = ["crates/*", "examples/headless", "examples/tauri-host", "examples/acx-provider"]
-default-members = ["crates/unge-core", "crates/unge-executor", "crates/unge-render", "examples/headless", "crates/unge-acx", "examples/acx-provider"]
+default-members = ["crates/unge-interaction", "crates/unge-core", "crates/unge-executor", "crates/unge-render", "examples/headless", "crates/unge-acx", "examples/acx-provider"]
 resolver = "2"
 
 [workspace.package]

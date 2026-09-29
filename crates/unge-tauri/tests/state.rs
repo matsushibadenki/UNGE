@@ -166,3 +166,314 @@ fn ai_and_windows_share_revision_history_and_document() {
     );
     assert_eq!(provider.dispatch("recover",json!({"commitId":commit["commitId"],"authorization":auth["authorization"],"expectedRevision":1})).unwrap_err().code,"revision_conflict");
 }
+
+#[test]
+fn configured_validator_is_shared_by_ui_and_ai_without_losing_history_on_failure() {
+    let registry = std::sync::Arc::new(unge_executor::math_registry());
+    let editor = Editor::new(Document::default(), 16)
+        .unwrap()
+        .with_validator(registry.clone())
+        .unwrap();
+    let engine = Engine::from_editor(editor);
+    engine
+        .register_view(
+            "main",
+            Viewport {
+                origin: [0., 0.],
+                zoom: 1.,
+                size: [800., 600.],
+            },
+        )
+        .unwrap();
+    let node = registry.definition("math.number").unwrap().instantiate();
+    let id = node.id;
+    engine
+        .dispatch(
+            "main",
+            Request::Apply {
+                expected_revision: 0,
+                command: Command::AddNode {
+                    node,
+                    rect: Rect::default(),
+                },
+            },
+        )
+        .unwrap();
+    let before = engine.snapshot().unwrap();
+    let invalid = Command::SetProperty {
+        id,
+        key: "value".into(),
+        value: Some("bad".into()),
+    };
+    assert_eq!(
+        engine
+            .dispatch(
+                "main",
+                Request::Apply {
+                    expected_revision: 1,
+                    command: invalid.clone()
+                }
+            )
+            .unwrap_err()
+            .code,
+        "invalid_properties"
+    );
+    #[cfg(feature = "acx")]
+    assert_eq!(
+        unge_acx::GraphHost::apply(&engine, before.graph().id, 1, invalid)
+            .unwrap_err()
+            .code,
+        "invalid_properties"
+    );
+    assert_eq!(engine.snapshot().unwrap(), before);
+    assert_eq!(
+        engine.dispatch("main", Request::Summary).unwrap().revision,
+        1
+    );
+    engine
+        .dispatch(
+            "main",
+            Request::Undo {
+                expected_revision: 1,
+            },
+        )
+        .unwrap();
+    assert!(engine.snapshot().unwrap().graph().nodes().is_empty());
+    engine
+        .dispatch(
+            "main",
+            Request::Redo {
+                expected_revision: 2,
+            },
+        )
+        .unwrap();
+    assert_eq!(engine.snapshot().unwrap(), before);
+}
+
+#[test]
+fn gestures_use_shared_revision_and_commit_once_after_preview() {
+    use unge_interaction::{PointerButton, PointerEvent};
+    let engine = engine();
+    let cmd = command();
+    let id = match &cmd {
+        Command::AddNode { node, .. } => node.id,
+        _ => unreachable!(),
+    };
+    engine
+        .dispatch(
+            "main",
+            Request::Apply {
+                expected_revision: 0,
+                command: cmd,
+            },
+        )
+        .unwrap();
+    let pointer = |event, revision| {
+        engine.dispatch(
+            "main",
+            Request::Pointer {
+                expected_revision: revision,
+                event,
+            },
+        )
+    };
+    pointer(
+        PointerEvent::Down {
+            pointer: 0,
+            position: [30., 30.],
+            button: PointerButton::Primary,
+            additive: false,
+        },
+        1,
+    )
+    .unwrap();
+    pointer(
+        PointerEvent::Move {
+            pointer: 0,
+            position: [100., 100.],
+        },
+        1,
+    )
+    .unwrap();
+    assert_eq!(engine.snapshot().unwrap().placement()[&id].x, 0.);
+    assert!(engine.view_state("main").unwrap().interacting);
+    assert!(!engine.view_state("second").unwrap().interacting);
+    assert_eq!(
+        pointer(
+            PointerEvent::Up {
+                pointer: 0,
+                position: [110., 90.]
+            },
+            1
+        )
+        .unwrap()
+        .revision,
+        2
+    );
+    assert_eq!(engine.snapshot().unwrap().placement()[&id].x, 80.);
+    engine
+        .dispatch(
+            "second",
+            Request::Undo {
+                expected_revision: 2,
+            },
+        )
+        .unwrap();
+    assert_eq!(engine.snapshot().unwrap().placement()[&id].x, 0.);
+    pointer(
+        PointerEvent::Down {
+            pointer: 0,
+            position: [30., 30.],
+            button: PointerButton::Primary,
+            additive: false,
+        },
+        3,
+    )
+    .unwrap();
+    engine
+        .dispatch(
+            "second",
+            Request::Apply {
+                expected_revision: 3,
+                command: Command::MoveNode {
+                    id,
+                    rect: Rect {
+                        x: 400.,
+                        ..Rect::default()
+                    },
+                },
+            },
+        )
+        .unwrap();
+    assert_eq!(
+        pointer(
+            PointerEvent::Up {
+                pointer: 0,
+                position: [110., 90.]
+            },
+            3
+        )
+        .unwrap_err()
+        .code,
+        "revision_conflict"
+    );
+    assert_eq!(engine.snapshot().unwrap().placement()[&id].x, 400.);
+    assert!(!engine.view_state("main").unwrap().interacting);
+}
+#[test]
+fn viewport_changes_cancel_pending_drag_and_unknown_views_cannot_send_input() {
+    use unge_interaction::{PointerButton, PointerEvent};
+    let engine = engine();
+    engine
+        .dispatch(
+            "main",
+            Request::Apply {
+                expected_revision: 0,
+                command: command(),
+            },
+        )
+        .unwrap();
+    let down = PointerEvent::Down {
+        pointer: 0,
+        position: [30., 30.],
+        button: PointerButton::Primary,
+        additive: false,
+    };
+    assert_eq!(
+        engine
+            .dispatch(
+                "missing",
+                Request::Pointer {
+                    expected_revision: 1,
+                    event: down
+                }
+            )
+            .unwrap_err()
+            .code,
+        "unknown_view"
+    );
+    engine
+        .dispatch(
+            "main",
+            Request::Pointer {
+                expected_revision: 1,
+                event: down,
+            },
+        )
+        .unwrap();
+    engine
+        .dispatch(
+            "main",
+            Request::SetViewport {
+                viewport: Viewport {
+                    origin: [0., 0.],
+                    zoom: 2.,
+                    size: [800., 600.],
+                },
+            },
+        )
+        .unwrap();
+    assert!(!engine.view_state("main").unwrap().interacting);
+    engine
+        .dispatch(
+            "main",
+            Request::Pointer {
+                expected_revision: 1,
+                event: PointerEvent::Up {
+                    pointer: 0,
+                    position: [300., 300.],
+                },
+            },
+        )
+        .unwrap();
+    assert_eq!(
+        engine.dispatch("main", Request::Summary).unwrap().revision,
+        1
+    );
+    assert_eq!(engine.view_state("main").unwrap().viewport.zoom, 2.);
+}
+
+#[test]
+fn locale_is_per_view_and_does_not_change_document_or_revision() {
+    let engine = Engine::new(Document::default()).unwrap();
+    engine
+        .register_view(
+            "en",
+            Viewport {
+                origin: [0., 0.],
+                zoom: 1.,
+                size: [800., 600.],
+            },
+        )
+        .unwrap();
+    engine
+        .register_view(
+            "ja",
+            Viewport {
+                origin: [0., 0.],
+                zoom: 1.,
+                size: [800., 600.],
+            },
+        )
+        .unwrap();
+    let before = engine.snapshot().unwrap().to_json().unwrap();
+    let request: Request =
+        serde_json::from_str(r#"{"kind":"set_locale","locale":"zh-cn"}"#).unwrap();
+    assert_eq!(engine.dispatch("ja", request).unwrap().revision, 0);
+    assert!(matches!(
+        engine.view_state("ja").unwrap().locale,
+        Locale::ZhCn
+    ));
+    assert!(matches!(
+        engine.view_state("en").unwrap().locale,
+        Locale::En
+    ));
+    assert_eq!(engine.snapshot().unwrap().to_json().unwrap(), before);
+    assert_eq!(
+        engine
+            .dispatch("unknown", Request::SetLocale { locale: Locale::Ja })
+            .unwrap_err()
+            .code,
+        "unknown_view"
+    );
+}

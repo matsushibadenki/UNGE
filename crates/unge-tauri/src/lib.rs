@@ -5,13 +5,17 @@ use std::{
     sync::{Arc, Mutex},
 };
 use unge_core::*;
-use unge_render::{SceneIndex, SurfaceRenderer};
+use unge_interaction::{Interaction, InteractionError, PointerEvent};
+use unge_render::{LabelCatalog, SceneIndex, SurfaceRenderer};
 
 struct ViewState {
+    locale: Locale,
     viewport: Viewport,
     selection: BTreeSet<Id>,
+    interaction: Interaction,
 }
 struct State {
+    labels: LabelCatalog,
     editor: Editor,
     scene: SceneIndex,
     views: BTreeMap<String, ViewState>,
@@ -43,13 +47,43 @@ impl ApiError {
 }
 impl From<Error> for ApiError {
     fn from(error: Error) -> Self {
-        Self::new("invalid_command", error)
+        let code = if matches!(&error, Error::Properties(_)) {
+            "invalid_properties"
+        } else {
+            "invalid_command"
+        };
+        Self::new(code, error)
     }
+}
+impl From<InteractionError> for ApiError {
+    fn from(error: InteractionError) -> Self {
+        let code = match error {
+            InteractionError::Conflict => "revision_conflict",
+            InteractionError::PointerBusy => "pointer_busy",
+            InteractionError::Invalid => "invalid_pointer",
+            InteractionError::Connection => "invalid_connection",
+        };
+        Self::new(code, error)
+    }
+}
+#[derive(Debug, Clone)]
+pub struct ViewSnapshot {
+    pub viewport: Viewport,
+    pub selection: BTreeSet<Id>,
+    pub interacting: bool,
+    pub locale: Locale,
 }
 type ApiResult<T> = std::result::Result<T, ApiError>;
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Request {
+    SetLocale {
+        locale: Locale,
+    },
+    Pointer {
+        expected_revision: u64,
+        event: PointerEvent,
+    },
     Apply {
         expected_revision: u64,
         command: Command,
@@ -86,6 +120,7 @@ fn refresh_scene(state: &mut State) {
         .copied()
         .collect();
     for view in state.views.values_mut() {
+        view.interaction.invalidate_preview();
         view.selection.retain(|id| existing.contains(id));
     }
 }
@@ -106,16 +141,28 @@ fn check_command(command: &Command, depth: usize, budget: &mut usize) -> ApiResu
 }
 impl Engine {
     pub fn new(document: Document) -> Result<Self> {
-        let editor = Editor::new(document, 256)?;
+        Ok(Self::from_editor(Editor::new(document, 256)?))
+    }
+    /// Reuse a host-configured validator and history budget for all UI/AI edits.
+    pub fn from_editor(editor: Editor) -> Self {
         let scene = SceneIndex::new(editor.document());
-        Ok(Self {
+        Self {
             state: Arc::new(Mutex::new(State {
+                labels: LabelCatalog::new(),
                 editor,
                 scene,
                 views: BTreeMap::new(),
             })),
             renderers: Arc::new(Mutex::new(BTreeMap::new())),
-        })
+        }
+    }
+    /// Host presentation metadata is shared; each view selects its own language.
+    pub fn set_labels(&self, labels: LabelCatalog) -> ApiResult<()> {
+        self.state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?
+            .labels = labels;
+        Ok(())
     }
     /// Called by trusted Rust host setup. WebViews cannot create arbitrary views.
     pub fn register_view(&self, label: impl Into<String>, viewport: Viewport) -> ApiResult<()> {
@@ -127,8 +174,10 @@ impl Engine {
         state.views.insert(
             label.into(),
             ViewState {
+                locale: Locale::En,
                 viewport,
                 selection: BTreeSet::new(),
+                interaction: Interaction::default(),
             },
         );
         Ok(())
@@ -164,20 +213,46 @@ impl Engine {
     }
     /// Call on the host's render thread/main-thread callback after edits and resize.
     pub fn draw(&self, view: &str, physical_size: [u32; 2]) -> ApiResult<bool> {
-        let state = self
+        self.draw_scaled(view, physical_size, 1.0)
+    }
+    /// Surface size is physical; gesture positions and viewport.size are logical.
+    pub fn draw_scaled(
+        &self,
+        view: &str,
+        physical_size: [u32; 2],
+        scale_factor: f64,
+    ) -> ApiResult<bool> {
+        if !scale_factor.is_finite() || scale_factor <= 0.0 {
+            return Err(ApiError::new("invalid_pointer", "invalid scale factor"));
+        }
+        let mut state = self
             .state
             .lock()
             .map_err(|e| ApiError::new("state_unavailable", e))?;
         let view_state = state
             .views
-            .get(view)
+            .get_mut(view)
             .ok_or_else(|| ApiError::new("unknown_view", view))?;
         let mut viewport = view_state.viewport;
-        viewport.size = [
-            physical_size[0].max(1) as f32,
-            physical_size[1].max(1) as f32,
-        ];
-        let scene = state.scene.scene(viewport, &view_state.selection)?;
+        viewport.size = physical_size.map(|v| (f64::from(v.max(1)) / scale_factor) as f32);
+        viewport.validate()?;
+        if view_state.viewport.size != viewport.size {
+            view_state
+                .interaction
+                .cancel(&mut view_state.viewport, &mut view_state.selection);
+            // Preserve a finished pan; cancel an active gesture before changing metrics.
+            viewport.origin = view_state.viewport.origin;
+            viewport.zoom = view_state.viewport.zoom;
+            view_state.viewport = viewport;
+        }
+        let view_state = &state.views[view];
+        let scene = state.scene.scene_with_labels(
+            viewport,
+            &view_state.selection,
+            view_state.interaction.preview(),
+            &state.labels,
+            view_state.locale,
+        )?;
         drop(state);
         let mut renderers = self
             .renderers
@@ -216,15 +291,61 @@ impl Engine {
             Request::Apply {
                 expected_revision, ..
             }
+            | Request::Pointer {
+                expected_revision, ..
+            }
             | Request::Undo { expected_revision }
             | Request::Redo { expected_revision } => Some(*expected_revision),
             _ => None,
         };
         if expected.is_some_and(|r| r != state.editor.revision()) {
+            if matches!(request, Request::Pointer { .. }) {
+                let v = state.views.get_mut(view).unwrap();
+                v.interaction.cancel(&mut v.viewport, &mut v.selection);
+                let existing: BTreeSet<_> = state
+                    .editor
+                    .document()
+                    .graph()
+                    .nodes()
+                    .keys()
+                    .copied()
+                    .collect();
+                state
+                    .views
+                    .get_mut(view)
+                    .unwrap()
+                    .selection
+                    .retain(|id| existing.contains(id));
+            }
             return Err(ApiError::new("revision_conflict", state.editor.revision()));
         }
         let before = state.editor.revision();
         match request {
+            Request::SetLocale { locale } => {
+                state.views.get_mut(view).unwrap().locale = locale;
+            }
+            Request::Pointer { event, .. } => {
+                let State {
+                    editor,
+                    scene,
+                    views,
+                    ..
+                } = &mut *state;
+                let v = views.get_mut(view).unwrap();
+                let result = v.interaction.handle(
+                    editor.document(),
+                    editor.revision(),
+                    scene.spatial_index(),
+                    &mut v.viewport,
+                    &mut v.selection,
+                    event,
+                );
+                v.selection
+                    .retain(|id| editor.document().graph().nodes().contains_key(id));
+                if let Some(command) = result? {
+                    editor.execute(command)?;
+                }
+            }
             Request::Apply { command, .. } => {
                 state.editor.execute(command)?;
             }
@@ -236,7 +357,9 @@ impl Engine {
             }
             Request::SetViewport { viewport } => {
                 viewport.validate()?;
-                state.views.get_mut(view).unwrap().viewport = viewport;
+                let v = state.views.get_mut(view).unwrap();
+                v.interaction.cancel(&mut v.viewport, &mut v.selection);
+                v.viewport = viewport;
             }
             Request::Select { ids } => {
                 if ids.len() > 10_000
@@ -249,7 +372,9 @@ impl Engine {
                         "selection includes missing nodes or exceeds 10000",
                     ));
                 }
-                state.views.get_mut(view).unwrap().selection = ids;
+                let v = state.views.get_mut(view).unwrap();
+                v.interaction.cancel(&mut v.viewport, &mut v.selection);
+                v.selection = ids;
             }
             Request::Summary => {}
         }
@@ -257,6 +382,23 @@ impl Engine {
             refresh_scene(&mut state);
         }
         Ok(summary(&state))
+    }
+    /// Rust host metadata; contains no document clone or frame data.
+    pub fn view_state(&self, view: &str) -> ApiResult<ViewSnapshot> {
+        let state = self
+            .state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let v = state
+            .views
+            .get(view)
+            .ok_or_else(|| ApiError::new("unknown_view", view))?;
+        Ok(ViewSnapshot {
+            viewport: v.viewport,
+            selection: v.selection.clone(),
+            interacting: v.interaction.is_active(),
+            locale: v.locale,
+        })
     }
     pub fn inspect(&self, view: &str, id: Id) -> ApiResult<Node> {
         let state = self

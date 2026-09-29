@@ -1,8 +1,8 @@
 use unge_core::*;
 use unge_executor::*;
 fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
-    let registry = math_registry();
-    let mut editor = Editor::new(Document::default(), 100)?;
+    let registry = std::sync::Arc::new(math_registry());
+    let mut editor = Editor::new(Document::default(), 100)?.with_validator(registry.clone())?;
     let mut a = registry.definition("math.number").unwrap().instantiate();
     let mut b = registry.definition("math.number").unwrap().instantiate();
     let sum = registry.definition("math.add").unwrap().instantiate();

@@ -38,7 +38,12 @@ impl std::fmt::Display for AcxError {
 impl std::error::Error for AcxError {}
 impl From<unge_core::Error> for AcxError {
     fn from(error: unge_core::Error) -> Self {
-        Self::new("invalid_graph", error)
+        let code = if matches!(&error, unge_core::Error::Properties(_)) {
+            "invalid_properties"
+        } else {
+            "invalid_graph"
+        };
+        Self::new(code, error)
     }
 }
 impl From<serde_json::Error> for AcxError {

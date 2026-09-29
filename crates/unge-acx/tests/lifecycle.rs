@@ -402,7 +402,30 @@ fn malformed_and_oversized_lines_are_bounded_and_next_line_still_works() {
 #[test]
 fn failed_run_has_failed_receipt_and_is_not_reexecuted() {
     let mut h = Harness::new();
-    user_edit(&h); // Missing math.number.value causes a node failure.
+    use unge_executor::{ExecutionContext, Inputs, NodeExecutor, Outputs, Registry};
+    struct Fails(Arc<AtomicU64>);
+    impl NodeExecutor for Fails {
+        fn execute(
+            &self,
+            _: ExecutionContext,
+            _: Inputs,
+        ) -> futures::future::BoxFuture<'_, std::result::Result<Outputs, String>> {
+            Box::pin(async move {
+                self.0.fetch_add(1, Ordering::SeqCst);
+                Err("resource unavailable".into())
+            })
+        }
+    }
+    let calls = Arc::new(AtomicU64::new(0));
+    let mut registry = Registry::default();
+    registry
+        .register(
+            math_registry().definition("math.number").unwrap().clone(),
+            Arc::new(Fails(calls.clone())),
+        )
+        .unwrap();
+    h.provider = Provider::new(h.host.clone(), Arc::new(registry), Policy::math_demo());
+    user_edit(&h);
     let snapshot = h.host.snapshot().unwrap();
     let input = json!({"kind":"run","document_id":snapshot.document.graph().id,"expected_revision":snapshot.revision});
     let pf = h.preflight(input);
@@ -411,6 +434,7 @@ fn failed_run_has_failed_receipt_and_is_not_reexecuted() {
     let result = h.execute(&commit);
     assert_eq!(result["result"]["succeeded"], false);
     assert_eq!(h.execute(&commit), result);
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
     let receipt = h
         .provider
         .dispatch("receipt", json!({"receiptId":result["receiptId"]}))
@@ -519,4 +543,101 @@ fn host_race_failure_is_receipted_without_claiming_mutation_or_retrying() {
         .unwrap();
     assert_eq!(receipt["status"], "failed");
     assert_eq!(receipt["effects"], json!([]));
+}
+
+#[test]
+fn property_metadata_defaults_and_final_batch_validation_are_available_to_ai() {
+    let mut h = Harness::new();
+    let definitions = h
+        .provider
+        .dispatch("observe", json!({"query":"definitions"}))
+        .unwrap();
+    let number = definitions["items"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|d| d["type_id"] == "math.number")
+        .unwrap();
+    assert_eq!(
+        number["property_schema"]["fields"]["value"]["value_type"]["kind"],
+        "float"
+    );
+    for locale in ["en", "ja", "zh_cn"] {
+        assert!(number["property_schema"]["fields"]["value"]["name"][locale].is_string());
+    }
+    let mut input = h.input();
+    input["operations"][0]["properties"] = json!({});
+    let id: Id = serde_json::from_value(input["operations"][0]["id"].clone()).unwrap();
+    let pf = h.preflight(input);
+    let auth = h.authorize(&pf);
+    let commit = h.commit(&pf, &auth);
+    h.execute(&commit);
+    assert_eq!(
+        h.host.snapshot().unwrap().document.graph().nodes()[&id].properties["value"],
+        0
+    );
+    let snapshot = h.host.snapshot().unwrap();
+    let mut input = json!({"kind":"edit","document_id":snapshot.document.graph().id,"expected_revision":snapshot.revision,"operations":[{"kind":"set_property","id":id,"key":"value","value":null}]});
+    assert_eq!(
+        h.provider
+            .dispatch("preflight", json!({"input":input}))
+            .unwrap_err()
+            .code,
+        "invalid_properties"
+    );
+    assert_eq!(h.host.snapshot().unwrap().document, snapshot.document);
+    assert_eq!(h.host.snapshot().unwrap().revision, snapshot.revision);
+    input["operations"]
+        .as_array_mut()
+        .unwrap()
+        .push(json!({"kind":"set_property","id":id,"key":"value","value":12}));
+    let pf = h.preflight(input);
+    let auth = h.authorize(&pf);
+    let commit = h.commit(&pf, &auth);
+    h.execute(&commit);
+    assert_eq!(
+        h.host.snapshot().unwrap().document.graph().nodes()[&id].properties["value"],
+        12
+    );
+}
+#[test]
+fn invalid_create_is_rejected_before_approval_and_does_not_consume_session_capacity() {
+    let mut policy = Policy::math_demo();
+    policy.max_sessions = 1;
+    let mut h = Harness::policy(policy);
+    let mut input = h.input();
+    input["operations"][0]["properties"]["value"] = json!("oops");
+    assert_eq!(
+        h.provider
+            .dispatch("preflight", json!({"input":input}))
+            .unwrap_err()
+            .code,
+        "invalid_properties"
+    );
+    let valid = h.input();
+    h.preflight(valid);
+    assert_eq!(h.host.snapshot().unwrap().revision, 0);
+}
+#[test]
+fn recovery_reports_unavailable_when_history_budget_cannot_retain_the_edit() {
+    use unge_core::{Editor, HistoryLimits};
+    let host = Arc::new(MemoryHost::from_editor(
+        Editor::with_history_limits(
+            Document::default(),
+            HistoryLimits {
+                max_steps: 10,
+                max_bytes: 1,
+            },
+        )
+        .unwrap(),
+    ));
+    let mut h = Harness::new();
+    h.host = host.clone();
+    h.provider = Provider::new(host, Arc::new(math_registry()), Policy::math_demo());
+    let (_, auth, commit) = h.plan();
+    h.execute(&commit);
+    let before = h.host.snapshot().unwrap();
+    assert_eq!(h.provider.dispatch("recover", json!({"commitId":commit["commitId"],"authorization":auth["authorization"],"expectedRevision":before.revision})).unwrap_err().code, "recovery_unavailable");
+    assert_eq!(h.host.snapshot().unwrap().document, before.document);
+    assert_eq!(h.host.snapshot().unwrap().revision, before.revision);
 }

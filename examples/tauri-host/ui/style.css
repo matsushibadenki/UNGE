@@ -6,7 +6,7 @@ header { display:flex; align-items:center; justify-content:space-between; gap:16
 strong { letter-spacing:.16em; color:#67d4bb; }
 h1 { font-size:25px; line-height:1.4; text-wrap:balance; margin-top:32px; }
 p { white-space:pre-line; color:#9cadbd; text-wrap:pretty; }
-.actions { display:flex; flex-wrap:wrap; gap:8px; margin:24px 0; }
+.actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:24px 0; }
 button,select { font:inherit; color:inherit; background:#243141; border:1px solid #435368; border-radius:6px; padding:7px 12px; cursor:pointer; }
 button:hover { border-color:#67d4bb; } button:focus-visible,input:focus-visible,select:focus-visible { outline:2px solid #67d4bb; outline-offset:3px; }
 input { display:block; width:100%; margin:12px 0 20px; accent-color:#67d4bb; }

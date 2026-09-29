@@ -49,6 +49,13 @@ impl SurfaceRenderer {
             suspended: size.contains(&0),
         })
     }
+    pub fn text_stats(&self) -> crate::TextStats {
+        self.renderer.text_stats()
+    }
+    /// Replaces font selection and invalidates layout/atlas caches.
+    pub fn set_font_system(&mut self, fonts: cosmic_text::FontSystem) {
+        self.renderer.set_font_system(fonts);
+    }
     pub fn resize(&mut self, size: [u32; 2]) -> Result<(), String> {
         self.suspended = size.contains(&0);
         if self.suspended {
@@ -82,7 +89,13 @@ impl SurfaceRenderer {
             Err(error) => return Err(error.to_string()),
         };
         self.renderer
-            .prepare(&self.device, &self.queue, scene, viewport)
+            .prepare_sized(
+                &self.device,
+                &self.queue,
+                scene,
+                viewport,
+                [self.config.width, self.config.height],
+            )
             .map_err(|e| e.to_string())?;
         let view = frame.texture.create_view(&Default::default());
         let mut encoder = self.device.create_command_encoder(&Default::default());

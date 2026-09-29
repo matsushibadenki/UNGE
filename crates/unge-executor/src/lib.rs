@@ -1,4 +1,7 @@
 //! Async DAG execution with bounded concurrency and opt-in pure-node caching.
+mod properties;
+pub use properties::*;
+
 use futures::{StreamExt, future::BoxFuture, stream};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -81,6 +84,8 @@ pub struct Definition {
     pub inputs: Vec<Port>,
     pub outputs: Vec<Port>,
     pub pure: bool,
+    #[serde(default)]
+    pub property_schema: PropertySchema,
 }
 impl Definition {
     pub fn instantiate(&self) -> Node {
@@ -89,7 +94,7 @@ impl Definition {
             type_id: self.type_id.clone(),
             inputs: self.inputs.clone(),
             outputs: self.outputs.clone(),
-            properties: Properties::new(),
+            properties: self.property_schema.defaults(),
         }
     }
 }
@@ -107,6 +112,7 @@ impl Registry {
         if definition.type_id.is_empty() || definition.version.is_empty() {
             return Err("missing type id or version".into());
         }
+        definition.property_schema.validate_schema()?;
         if self.entries.contains_key(&definition.type_id) {
             return Err("duplicate node definition".into());
         }
@@ -120,16 +126,36 @@ impl Registry {
     pub fn definitions(&self) -> impl Iterator<Item = &Definition> {
         self.entries.values().map(|e| &e.0)
     }
+    /// Editing allows unconnected required inputs while a graph is being built.
+    /// Unknown types, forged ports and invalid properties are rejected.
+    pub fn validate_edit(&self, graph: &Graph) -> unge_core::Result<()> {
+        graph.validate()?;
+        for node in graph.nodes().values() {
+            let definition = self.definition(&node.type_id).ok_or_else(|| {
+                unge_core::Error::Invalid(format!("unregistered node type: {}", node.type_id))
+            })?;
+            if node.inputs != definition.inputs || node.outputs != definition.outputs {
+                return Err(unge_core::Error::Invalid(format!(
+                    "schema mismatch: {}",
+                    node.type_id
+                )));
+            }
+            definition
+                .property_schema
+                .validate(&node.properties)
+                .map_err(|e| {
+                    unge_core::Error::Properties(format!(
+                        "node {} ({}): {e}",
+                        node.id, node.type_id
+                    ))
+                })?;
+        }
+        Ok(())
+    }
     pub fn validate(&self, graph: &Graph) -> Result<(), String> {
-        graph.validate().map_err(|e| e.to_string())?;
+        self.validate_edit(graph).map_err(|e| e.to_string())?;
         let index = GraphIndex::new(graph);
         for node in graph.nodes().values() {
-            let definition = self
-                .definition(&node.type_id)
-                .ok_or_else(|| format!("unregistered node type: {}", node.type_id))?;
-            if node.inputs != definition.inputs || node.outputs != definition.outputs {
-                return Err(format!("schema mismatch: {}", node.type_id));
-            }
             for port in &node.inputs {
                 if port.required
                     && !index
@@ -144,6 +170,11 @@ impl Registry {
             }
         }
         Ok(())
+    }
+}
+impl unge_core::DocumentValidator for Registry {
+    fn validate(&self, document: &unge_core::Document) -> unge_core::Result<()> {
+        self.validate_edit(document.graph())
     }
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -394,12 +425,28 @@ pub fn math_registry() -> Registry {
         .register(
             Definition {
                 type_id: "math.number".into(),
-                version: "1".into(),
+                version: "2".into(),
                 name: text("Number", "数値", "数值"),
                 description: text("Emit a constant number", "定数を出力", "输出常数"),
                 inputs: vec![],
                 outputs: vec![port("value")],
                 pure: true,
+                property_schema: PropertySchema {
+                    fields: BTreeMap::from([(
+                        "value".into(),
+                        PropertyDefinition {
+                            name: text("Value", "値", "值"),
+                            description: text("Finite constant number", "有限の定数", "有限常数"),
+                            value_type: PropertyType::Float {
+                                minimum: None,
+                                maximum: None,
+                            },
+                            required: true,
+                            default: Some(0.into()),
+                        },
+                    )]),
+                    additional_properties: true,
+                },
             },
             Arc::new(Number),
         )
@@ -414,6 +461,7 @@ pub fn math_registry() -> Registry {
                 inputs: vec![port("a"), port("b")],
                 outputs: vec![port("value")],
                 pure: true,
+                property_schema: PropertySchema::default(),
             },
             Arc::new(Add),
         )

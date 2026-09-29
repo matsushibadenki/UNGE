@@ -1,4 +1,5 @@
 /** Experimental ACX JSON Lines profile. The transport is a host-owned process/pipe. */
+import type { Definition } from './definitions';
 import type { Edge, Group, Id, Json, Rect } from './index';
 export type AcxOperation =
   | { kind: 'create_node'; id: Id; type_id: string; properties?: Record<string, Json>; rect: Rect }
@@ -35,6 +36,7 @@ export interface Receipt {
   requestHash: string; resultHash?: string; effects?: string[]; recovery?: Record<string, unknown>;
 }
 export interface Observation { query: 'summary' | 'definitions' | 'nodes' | 'node' | 'edges' | 'groups'; id?: Id; after?: string; limit?: number; expected_revision?: number }
+export interface DefinitionPage { documentId: Id; revision: number; nodes: number; edges: number; groups: number; items: Definition[]; nextCursor: string | null }
 /** No implicit authorization or retry. Inspect/hash-check a preflight before calling authorize. */
 export function createAcxClient(transport: AcxTransport) {
   let sequence = 0;
@@ -49,6 +51,7 @@ export function createAcxClient(transport: AcxTransport) {
   return {
     discover: () => call<Record<string, unknown>>('discover'),
     observe: (params: Observation) => call<Record<string, unknown>>('observe', params),
+    definitions: (params: Omit<Observation, 'query' | 'id'> = {}) => call<DefinitionPage>('observe', { ...params, query: 'definitions' }),
     preflight: (input: AcxIntent) => call<Preflight>('preflight', { input }),
     authorize: (preflight: Preflight) => call<Grant>('authorize', binding(preflight)),
     commit: (preflight: Preflight, grant: Grant) => call<Commit>('commit', { ...binding(preflight), authorization: grant.authorization, input: preflight.input }),

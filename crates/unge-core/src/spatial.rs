@@ -158,3 +158,11 @@ impl Viewport {
         ];
     }
 }
+
+/// Shared world-space port geometry for rendering and hit testing.
+pub fn port_anchor(rect: Rect, index: usize, count: usize, output: bool) -> [f32; 2] {
+    [
+        rect.x + if output { rect.width } else { 0.0 },
+        rect.y + rect.height * ((index as f32 + 1.0) / (count as f32 + 1.0)),
+    ]
+}

@@ -13,7 +13,7 @@ cargo run --locked -p unge-tauri-host
 
 桌面示例需要安装 [Tauri 所需依赖](https://v2.tauri.app/start/prerequisites/)。
 WebView 提供操作界面，独立原生窗口负责 GPU 绘制。
-示例支持添加节点、撤销、重做和缩放。节点文字及鼠标直接编辑尚未实现。
+示例支持添加节点、撤销、重做、拖动、框选、端口连接、平移和缩放。节点与端口文字已使用Rust持有的字形图集渲染，宿主可提供三语名称；见[GPU文字集成](GPU_TEXT.md#简体中文)。逻辑坐标和宿主设置见[指针集成](POINTER_INPUT.md#简体中文)。
 
 ## 集成
 
@@ -32,3 +32,7 @@ core 和 executor 不依赖 Tauri。render 接收 Rust 管理的纹理或原生 
 ## 通过ACX由AI操作节点
 
 运行 `cargo build -p unge-acx-provider` 和 `python3 examples/acx-provider/agent.py`，完成能力发现、授权编辑、执行、回执验证和恢复。相同适配器可连接正在运行的Tauri Engine。请参阅[ACX集成指南](ACX_INTEGRATION.md)。运行时不需要ACX符号链接。
+
+## 编辑验证和历史容量
+
+Definition支持属性类型、范围、选项和初始值。共享Editor可安装Registry验证器，原子验证编辑、撤销及重做。历史按Undo与Redo合计步数和序列化字节限制。所有示例均已启用验证。参阅[集成与兼容性](PROPERTY_VALIDATION.md#简体中文)。

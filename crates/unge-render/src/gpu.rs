@@ -3,15 +3,26 @@ use unge_core::Viewport;
 use wgpu::util::DeviceExt;
 
 pub struct GpuRenderer {
+    text: crate::text::TextRenderer,
     pipeline: wgpu::RenderPipeline,
     camera: wgpu::Buffer,
     bind_group: wgpu::BindGroup,
     instances: wgpu::Buffer,
     capacity: usize,
     count: u32,
+    prepared: bool,
 }
 impl GpuRenderer {
     pub fn new(device: &wgpu::Device, format: wgpu::TextureFormat) -> Self {
+        Self::with_font_system(device, format, cosmic_text::FontSystem::new())
+    }
+    /// Inject a host font database for portable, licensed bundled fonts.
+    pub fn with_font_system(
+        device: &wgpu::Device,
+        format: wgpu::TextureFormat,
+        fonts: cosmic_text::FontSystem,
+    ) -> Self {
+        let text = crate::text::TextRenderer::new(device, format, fonts);
         let camera = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("UNGE camera"),
             contents: bytemuck::cast_slice(&[0.0f32; 8]),
@@ -79,13 +90,22 @@ impl GpuRenderer {
         let capacity = 256;
         let instances = Self::buffer(device, capacity);
         Self {
+            text,
             pipeline,
             camera,
             bind_group,
             instances,
             capacity,
             count: 0,
+            prepared: false,
         }
+    }
+    pub fn text_stats(&self) -> crate::TextStats {
+        self.text.stats
+    }
+    pub fn set_font_system(&mut self, fonts: cosmic_text::FontSystem) {
+        self.prepared = false;
+        self.text.set_fonts(fonts);
     }
     fn buffer(device: &wgpu::Device, capacity: usize) -> wgpu::Buffer {
         device.create_buffer(&wgpu::BufferDescriptor {
@@ -102,7 +122,34 @@ impl GpuRenderer {
         scene: &Scene,
         viewport: Viewport,
     ) -> unge_core::Result<()> {
+        self.prepare_sized(
+            device,
+            queue,
+            scene,
+            viewport,
+            viewport.size.map(|v| v.round().max(1.0) as u32),
+        )
+    }
+    /// Physical target size enables crisp text on HiDPI surfaces.
+    pub fn prepare_sized(
+        &mut self,
+        device: &wgpu::Device,
+        queue: &wgpu::Queue,
+        scene: &Scene,
+        viewport: Viewport,
+        size: [u32; 2],
+    ) -> unge_core::Result<()> {
+        self.prepared = false;
+        self.count = 0;
         viewport.validate()?;
+        if size.contains(&0)
+            || size
+                .iter()
+                .any(|v| *v > device.limits().max_texture_dimension_2d)
+        {
+            return Err(unge_core::Error::Invalid("invalid text target size".into()));
+        }
+        self.text.prepare(queue, scene, viewport, size)?;
         let bytes = scene
             .quads
             .len()
@@ -139,9 +186,10 @@ impl GpuRenderer {
                 0.0,
             ]),
         );
+        self.prepared = true;
         Ok(())
     }
-    /// One draw call for all visible geometry. Text is an optional host overlay pass.
+    /// Geometry and glyph batches share a pass and preserve node paint order.
     pub fn render(&self, encoder: &mut wgpu::CommandEncoder, target: &wgpu::TextureView) {
         let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             label: Some("UNGE graph pass"),
@@ -163,9 +211,24 @@ impl GpuRenderer {
             timestamp_writes: None,
             occlusion_query_set: None,
         });
+        if !self.prepared {
+            return;
+        }
+        let mut first = 0;
+        for (after, range) in &self.text.batches {
+            self.geometry(&mut pass, first..*after);
+            self.text.render(&mut pass, range.clone());
+            first = *after;
+        }
+        self.geometry(&mut pass, first..self.count);
+    }
+    fn geometry(&self, pass: &mut wgpu::RenderPass<'_>, range: std::ops::Range<u32>) {
+        if range.is_empty() {
+            return;
+        }
         pass.set_pipeline(&self.pipeline);
         pass.set_bind_group(0, &self.bind_group, &[]);
         pass.set_vertex_buffer(0, self.instances.slice(..));
-        pass.draw(0..6, 0..self.count);
+        pass.draw(0..6, range);
     }
 }

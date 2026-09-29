@@ -1,5 +1,6 @@
 import type { Locale } from './i18n';
 const en = {
+  invalid_properties: 'A property value is invalid or missing.',
   invalid_request: 'The ACX request is invalid.', invalid_graph: 'The graph is invalid.',
   limit_exceeded: 'The request exceeds a host limit.', capacity_exceeded: 'The provider session is full.',
   policy_denied: 'The host policy does not permit this operation.', unknown_node_type: 'The node type is not registered.',
@@ -13,6 +14,7 @@ const en = {
 } as const;
 type Translations = { [K in keyof typeof en]: string };
 const ja: Translations = {
+  invalid_properties: 'プロパティの値が無効、または必須項目が未入力です。',
   invalid_request: 'ACXリクエストが無効です。', invalid_graph: 'グラフが無効です。',
   limit_exceeded: 'ホストが定める上限を超えています。', capacity_exceeded: 'Providerのセッション保持数が上限に達しました。',
   policy_denied: 'ホストのポリシーで許可されていない操作です。', unknown_node_type: 'ノード型が登録されていません。',
@@ -25,6 +27,7 @@ const ja: Translations = {
   execution_failed: 'ノードの実行に失敗しました。', invalid_policy: 'ホストのポリシーが無効です。',
 };
 const zh: Translations = {
+  invalid_properties: '属性值无效或缺少必填项。',
   invalid_request: 'ACX请求无效。', invalid_graph: '节点图无效。',
   limit_exceeded: '请求超出宿主限制。', capacity_exceeded: 'Provider会话保留数量已达上限。',
   policy_denied: '宿主策略不允许此操作。', unknown_node_type: '节点类型尚未注册。',

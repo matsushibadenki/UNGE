@@ -42,9 +42,13 @@ pub struct MemoryHost {
 }
 impl MemoryHost {
     pub fn new(document: Document) -> Result<Self> {
-        Ok(Self {
-            editor: Mutex::new(Editor::new(document, 256)?),
-        })
+        Ok(Self::from_editor(Editor::new(document, 256)?))
+    }
+    /// Preserve the same validator and history budget for direct and AI edits.
+    pub fn from_editor(editor: Editor) -> Self {
+        Self {
+            editor: Mutex::new(editor),
+        }
     }
 }
 fn snapshot(editor: &Editor) -> Snapshot {

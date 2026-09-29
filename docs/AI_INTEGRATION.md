@@ -12,14 +12,16 @@
 
 1. `cargo run -p unge-headless` を実行し、42が返ることを確認する。
 2. `examples/headless/src/main.rs` を基に、アプリ固有のグラフをCommandで組み立てる。
-3. `Definition` に安定したtype_id、意味を説明する3言語の文言、version、Portを定義する。
+3. `Definition` に安定したtype_id、意味を説明する3言語の文言、version、Port、PropertySchemaを定義する。
 4. `NodeExecutor` を実装し、`Registry::register` で登録する。
 5. `Scheduler::run` にDocumentのグラフを渡す。実行中の編集を許すなら、Rust内で取得したsnapshotを実行する。
-6. Tauriホストで `Engine::new(document)` を作り、`app.manage(engine)` する。ウインドウは `register_view` で登録する。
+6. Tauriホストで `Editor::new(document, 256)?.with_validator(registry.clone())?` を作り、`Engine::from_editor(editor)` へ渡して`app.manage(engine)` する。ウインドウは `register_view` で登録する。
 7. `invoke_handler(unge_tauri::handler())` を接続する。既存命令と共存するときは `generate_handler![unge_tauri::dispatch, unge_tauri::inspect, your_command]` を使う。
 8. `createClient(invoke)` でWebViewから操作する。描画フレームを返す命令を追加しない。
-9. Rustネイティブウインドウから `SurfaceRenderer` を作り、Engineに登録する。実装例は `examples/tauri-host/src/main.rs`。
-10. ノードを選んだときだけinspectを呼び、`unge://changed`イベントで小さなSummaryを受け取る。
+9. Rustネイティブウインドウから `SurfaceRenderer` を作り、Engineに登録する。HiDPIでは `draw_scaled` を使う。実装例は `examples/tauri-host/src/main.rs`。
+10. [POINTER_INPUT.md](POINTER_INPUT.md) に従い、論理座標のDown/Move/Up/Cancelを順に送る。1操作のrevisionを固定し、Rust内のプレビューと確定Commandを分ける。
+11. [GPU_TEXT.md](GPU_TEXT.md) に従い、LabelCatalogで型・Portの表示名を登録する。配布環境の日本語・简体中文フォントを確認し、必要ならFontSystemを注入する。言語はViewに置く。
+12. ノードを選んだときだけinspectを呼び、`unge://changed`イベントで小さなSummaryを受け取る。
 
 ## インターフェース
 
@@ -38,6 +40,8 @@ await engine.apply({ kind: 'move_node', id: selectedId,
 `set_property.value: null` はプロパティ削除を意味する。JSON null自体の保存は現APIでは扱わない。
 
 ## Rustのノード拡張
+
+[PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md) にプロパティ制約・初期値・編集時検証・Undo容量の組み込み例があります。RegistryをArcに包み、UI・ACXで同じ定義を共有してください。
 
 `math_registry()` が最小の実例です。`NodeExecutor::execute` はBoxFutureを返すためdyn traitとして登録できます。
 `Inputs` はPort名→Value列です。Single入力も1要素の列として受け取ります。
@@ -73,7 +77,7 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 
 ## 移植範囲
 
-- core/executor: TauriなしでCLI・サーバーに使用可能。
+- core/executor/interaction: TauriなしでCLI・サーバーに使用可能。
 - render: wgpuのRust Device/TextureViewを受け取る。ホストのネイティブウインドウと組み合わせる。
 - tauri: Tauri 2専用。グラフ変更はworkerへ移し、Surfaceの生成・描画スレッドはホストで調整する。
 - ブラウザー単独版: wgpuのWebGPUバックエンドを利用するWASMホストは未提供。UUIDのWASM設定、Canvas初期化、非Send future等の対応が必要。
