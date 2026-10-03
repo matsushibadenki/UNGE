@@ -34,7 +34,7 @@ let renderer = unge_render::GpuRenderer::with_font_system(&device, format, fonts
 - 移動プレビューの位置を使い、タイトルとPort名を各ノードの直後に描きます。前面ノードは背面文字を隠し、選択矩形・仮接続は文字の後に描きます。このため文字のあるノードごとに描画バッチを分けます。1 draw callで全ノードを描く構成ではありません。
 - Atlasは固定2048²のR8（4MiB）、グリフインスタンスは最大65536（3MiB）。整形結果は最大1024ラベルのFIFO、Atlasキーは最大16384件です。CPU側にラスタ画像を重複保持しません。フォントデータと文字整形ライブラリ内部の保持量はこの上限に含みません。
 - 1フレーム最大16384ラベル。Atlasが埋まったらUVを破棄し、フレーム全体を一度だけ再構築します。それでも収まらなければエラーを返します。未送信の描画コマンドがある間に次フレームのprepareを呼ばず、prepare→render→submitの順序を守ってください。
-- ラスタサイズは最大512px。さらに拡大する場合はその画像を拡大表示します。色付き絵文字も単色の輪郭として扱います。テーマ、アクセシビリティ、独立したカラー絵文字表示は未実装です。
+- ラスタサイズは最大512px。さらに拡大する場合はその画像を拡大表示します。色付き絵文字も単色の輪郭として扱います。テーマは [THEMES.md](THEMES.md) のDark/Lightに対応します。アクセシビリティ、独立したカラー絵文字表示は未実装です。
 
 ### 検証
 
@@ -54,7 +54,7 @@ Use `prepare_sized` for physical texture dimensions and logical Viewport coordin
 
 System fonts are the default. Hosts must supply licensed fonts covering their required scripts for reproducible deployment; use `with_font_system` or `set_font_system`. Font files are not bundled here. `text_stats()` reports glyph/cache counts and missing glyphs. Font fallback does not guarantee every regional variant.
 
-Limits: 256 Unicode scalars per label, 16384 labels and 65536 visible glyphs per frame, 1024 cached layouts, a 4MiB R8 atlas and a 3MiB instance buffer. Atlas exhaustion resets and retries the frame once, then returns an error. Font-library memory is outside these limits. Submit each prepared frame before preparing the next. Raster sizes above 512px are magnified from a bounded bitmap; colour glyphs render as monochrome silhouettes. Ellipsis, full-name tooltips, themes and accessibility remain planned.
+Limits: 256 Unicode scalars per label, 16384 labels and 65536 visible glyphs per frame, 1024 cached layouts, a 4MiB R8 atlas and a 3MiB instance buffer. Atlas exhaustion resets and retries the frame once, then returns an error. Font-library memory is outside these limits. Submit each prepared frame before preparing the next. Raster sizes above 512px are magnified from a bounded bitmap; colour glyphs render as monochrome silhouettes. Dark/Light themes are covered in [theme integration](THEMES.md#english). Ellipsis, full-name tooltips and accessibility remain planned.
 
 ## 简体中文
 
@@ -64,7 +64,7 @@ Limits: 256 Unicode scalars per label, 16384 labels and 65536 visible glyphs per
 
 默认读取系统字体。宿主需为部署环境提供有再分发许可、覆盖所需语言的字体，通过 `with_font_system` / `set_font_system` 注入。本仓库不附带系统字体。`text_stats()` 提供字形、缓存与缺失字形数量；字体回退不保证所有地区字形完全一致。
 
-每个标签最多256个Unicode scalar值；每帧最多16384个标签、65536个可见字形；最多缓存1024个排版结果。R8图集4MiB，实例缓冲区3MiB。图集满时清空并重建该帧一次，仍不足则报错。字体库内部内存不包含在这些限制内。请按prepare→render→submit顺序逐帧调用。超过512px的字形使用有界位图放大；彩色字形显示为单色轮廓。省略号、完整名称提示、主题和无障碍仍待实现。
+每个标签最多256个Unicode scalar值；每帧最多16384个标签、65536个可见字形；最多缓存1024个排版结果。R8图集4MiB，实例缓冲区3MiB。图集满时清空并重建该帧一次，仍不足则报错。字体库内部内存不包含在这些限制内。请按prepare→render→submit顺序逐帧调用。超过512px的字形使用有界位图放大；彩色字形显示为单色轮廓。深色/浅色主题见[主题集成](THEMES.md#简体中文)。省略号、完整名称提示和无障碍仍待实现。
 
 ## Sources
 

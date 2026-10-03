@@ -13,7 +13,7 @@ cargo run --locked -p unge-tauri-host
 
 The desktop sample needs the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/).
 It uses a WebView for controls and a separate native window for GPU rendering.
-The sample offers node creation, undo/redo, dragging, box selection, port connections, panning and zoom. Node and port labels now use a Rust-owned glyph atlas with three-language host metadata; see [GPU text integration](GPU_TEXT.md#english). See [pointer integration](POINTER_INPUT.md#english) for logical coordinates and host setup.
+The sample includes Dark/Light switching for controls and GPU rendering, with saved preferences; see [theme integration](THEMES.md#english). It offers node creation, undo/redo, dragging, box selection, port connections, panning and zoom. Node and port labels now use a Rust-owned glyph atlas with three-language host metadata; see [GPU text integration](GPU_TEXT.md#english). See [pointer integration](POINTER_INPUT.md#english) for logical coordinates and host setup.
 
 ## Reuse
 
@@ -36,3 +36,9 @@ The 10,000-node / 30,000-edge / 60-FPS goal has not been benchmarked.
 ## Validated editing and bounded history
 
 Definitions now describe property types, bounds, choices and defaults. Install a Registry validator in the shared Editor to validate edits, undo and redo atomically. History is bounded by total undo/redo steps and serialized bytes. All examples enable validation. See [integration and compatibility](PROPERTY_VALIDATION.md#english).
+
+Execution caching uses exact-key hash lookup and entry/byte limits. See [cache integration](EXECUTION_CACHE.md#english) for host configuration and the pure-node contract.
+
+Rust hosts can observe node progress and provide a future for the run deadline. See [execution progress and cancellation](EXECUTION_PROGRESS.md#english).
+
+Share RunService between Tauri and ACX for run identity, frozen revisions, bounded progress state and host cancellation. See [execution service](EXECUTION_SERVICE.md#english).

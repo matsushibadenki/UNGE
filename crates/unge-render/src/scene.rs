@@ -1,4 +1,4 @@
-use crate::{LabelCatalog, TextLabel, labels::label_text};
+use crate::{LabelCatalog, TextLabel, Theme, labels::label_text};
 use std::collections::{BTreeMap, BTreeSet};
 use unge_core::{Document, Id, Locale, Rect, SpatialIndex, Viewport, port_anchor};
 use unge_interaction::{MAX_SELECTION, PORT_LOD_ZOOM, Preview};
@@ -23,7 +23,7 @@ impl Quad {
             params: [0.0, radius, 0.0, 0.0],
         }
     }
-    fn line(a: [f32; 2], b: [f32; 2]) -> Self {
+    fn line(a: [f32; 2], b: [f32; 2], color: [f32; 4]) -> Self {
         let dx = b[0] - a[0];
         let dy = b[1] - a[1];
         Self {
@@ -33,7 +33,7 @@ impl Quad {
                 dx.hypot(dy).max(0.001),
                 2.0,
             ],
-            color: [0.32, 0.65, 0.74, 1.0],
+            color,
             params: [dy.atan2(dx), 0.8, 0.0, 0.0],
         }
     }
@@ -59,12 +59,28 @@ pub struct SceneIndex {
     edge_index: SpatialIndex,
     incident: BTreeMap<Id, BTreeSet<Id>>,
 }
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct Scene {
+    /// Linear RGBA, matching the target's GPU colour space.
+    pub background: [f32; 4],
+    pub grid_color: [f32; 4],
     pub quads: Vec<Quad>,
     pub labels: Vec<TextLabel>,
     pub visible_nodes: usize,
     pub visible_edges: usize,
+}
+impl Default for Scene {
+    fn default() -> Self {
+        let palette = Theme::Dark.palette();
+        Self {
+            background: palette.background.linear(),
+            grid_color: palette.grid.linear(),
+            quads: Vec::new(),
+            labels: Vec::new(),
+            visible_nodes: 0,
+            visible_edges: 0,
+        }
+    }
 }
 fn curve(a: [f32; 2], b: [f32; 2]) -> [[f32; 2]; 4] {
     let dx = ((b[0] - a[0]).abs() * 0.5).max(50.0);
@@ -86,7 +102,7 @@ fn curve_bounds(points: [[f32; 2]; 4]) -> Rect {
         height: max_y - min_y,
     }
 }
-fn push_curve(scene: &mut Scene, points: [[f32; 2]; 4], zoom: f32, color: Option<[f32; 4]>) {
+fn push_curve(scene: &mut Scene, points: [[f32; 2]; 4], zoom: f32, color: [f32; 4]) {
     let segments = if zoom < PORT_LOD_ZOOM { 8 } else { 24 };
     let mut previous = points[0];
     for i in 1..=segments {
@@ -98,11 +114,7 @@ fn push_curve(scene: &mut Scene, points: [[f32; 2]; 4], zoom: f32, color: Option
                 + 3.0 * u * t * t * points[2][axis]
                 + t * t * t * points[3][axis]
         });
-        let mut quad = Quad::line(previous, next);
-        if let Some(color) = color {
-            quad.color = color;
-        }
-        scene.quads.push(quad);
+        scene.quads.push(Quad::line(previous, next, color));
         previous = next;
     }
 }
@@ -204,6 +216,18 @@ impl SceneIndex {
         catalog: &LabelCatalog,
         locale: Locale,
     ) -> unge_core::Result<Scene> {
+        self.scene_with_theme(viewport, selection, preview, catalog, locale, Theme::Dark)
+    }
+    /// Reuse geometry indexes while resolving view-local presentation colours.
+    pub fn scene_with_theme(
+        &self,
+        viewport: Viewport,
+        selection: &BTreeSet<Id>,
+        preview: &Preview,
+        catalog: &LabelCatalog,
+        locale: Locale,
+        theme: Theme,
+    ) -> unge_core::Result<Scene> {
         viewport.validate()?;
         if preview.placement.len() > MAX_SELECTION
             || preview
@@ -223,8 +247,13 @@ impl SceneIndex {
             ));
         }
         let area = viewport.world_rect();
-        let mut scene = Scene::default();
-        let mut grid = Quad::rectangle(area, [0.04, 0.052, 0.075, 1.0], 0.0);
+        let palette = theme.palette();
+        let mut scene = Scene {
+            background: palette.background.linear(),
+            grid_color: palette.grid.linear(),
+            ..Scene::default()
+        };
+        let mut grid = Quad::rectangle(area, scene.background, 0.0);
         grid.params[2] = 1.0;
         scene.quads.push(grid);
         let mut edges: BTreeSet<_> = self.edge_index.query(area).into_iter().collect();
@@ -266,7 +295,7 @@ impl SceneIndex {
             if !curve_bounds(points).intersects(area) {
                 continue;
             }
-            push_curve(&mut scene, points, viewport.zoom, None);
+            push_curve(&mut scene, points, viewport.zoom, palette.edge.linear());
             scene.visible_edges += 1;
         }
         // Include ports/selection borders protruding from the node bounds.
@@ -286,9 +315,9 @@ impl SceneIndex {
             }
             let selected = selection.contains(&id);
             let border = if selected {
-                [0.2, 0.8, 0.72, 1.0]
+                palette.accent.linear()
             } else {
-                [0.24, 0.29, 0.37, 1.0]
+                palette.border.linear()
             };
             scene.quads.push(Quad::rectangle(rect, border, 8.0));
             scene.quads.push(Quad::rectangle(
@@ -298,7 +327,7 @@ impl SceneIndex {
                     width: (rect.width - 3.0).max(0.1),
                     height: (rect.height - 3.0).max(0.1),
                 },
-                [0.09, 0.115, 0.16, 1.0],
+                palette.node.linear(),
                 7.0,
             ));
             if viewport.zoom >= PORT_LOD_ZOOM {
@@ -312,7 +341,7 @@ impl SceneIndex {
                                 width: 8.0,
                                 height: 8.0,
                             },
-                            [0.35, 0.78, 0.72, 1.0],
+                            palette.port.linear(),
                             4.0,
                         ));
                     }
@@ -331,7 +360,7 @@ impl SceneIndex {
                     },
                     font_size: 14.0,
                     right_aligned: false,
-                    color: [0.86, 0.9, 0.96, 1.0],
+                    color: palette.text.linear(),
                     after_quad,
                 });
                 if viewport.zoom >= 0.75 {
@@ -363,7 +392,7 @@ impl SceneIndex {
                                 },
                                 font_size: 11.0,
                                 right_aligned: output,
-                                color: [0.65, 0.73, 0.82, 1.0],
+                                color: palette.muted.linear(),
                                 after_quad,
                             });
                         }
@@ -377,17 +406,17 @@ impl SceneIndex {
                 &mut scene,
                 curve(cable.from, cable.to),
                 viewport.zoom,
-                Some(if cable.valid {
-                    [0.2, 0.9, 0.65, 1.0]
+                if cable.valid {
+                    palette.cable_valid.linear()
                 } else {
-                    [0.9, 0.5, 0.25, 1.0]
-                }),
+                    palette.cable_invalid.linear()
+                },
             );
         }
         if let Some(rect) = preview.marquee {
-            scene
-                .quads
-                .push(Quad::rectangle(rect, [0.2, 0.8, 0.72, 0.15], 0.0));
+            let mut fill = palette.accent.linear();
+            fill[3] = 0.15;
+            scene.quads.push(Quad::rectangle(rect, fill, 0.0));
             let width = (1.0 / viewport.zoom).min(rect.width.min(rect.height));
             for border in [
                 Rect {
@@ -408,7 +437,7 @@ impl SceneIndex {
             ] {
                 scene
                     .quads
-                    .push(Quad::rectangle(border, [0.2, 0.8, 0.72, 1.0], 0.0));
+                    .push(Quad::rectangle(border, palette.accent.linear(), 0.0));
             }
         }
         Ok(scene)

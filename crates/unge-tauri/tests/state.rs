@@ -477,3 +477,108 @@ fn locale_is_per_view_and_does_not_change_document_or_revision() {
         "unknown_view"
     );
 }
+
+#[test]
+fn theme_is_per_view_round_trips_and_preserves_edits_history_and_gestures() {
+    use unge_render::Theme;
+    let engine = engine();
+    engine
+        .dispatch(
+            "main",
+            Request::Apply {
+                expected_revision: 0,
+                command: command(),
+            },
+        )
+        .unwrap();
+    let id = *engine
+        .snapshot()
+        .unwrap()
+        .graph()
+        .nodes()
+        .keys()
+        .next()
+        .unwrap();
+    let before = engine.snapshot().unwrap().to_json().unwrap();
+    engine
+        .dispatch(
+            "main",
+            Request::Pointer {
+                expected_revision: 1,
+                event: unge_interaction::PointerEvent::Down {
+                    pointer: 0,
+                    position: [50., 40.],
+                    button: unge_interaction::PointerButton::Primary,
+                    additive: false,
+                },
+            },
+        )
+        .unwrap();
+    let request: Request = serde_json::from_str(r#"{"kind":"set_theme","theme":"light"}"#).unwrap();
+    let summary = engine.dispatch("main", request).unwrap();
+    assert_eq!(summary.revision, 1);
+    assert_eq!(engine.appearance("main").unwrap().theme, Theme::Light);
+    assert_eq!(engine.view_state("main").unwrap().theme, Theme::Light);
+    assert_eq!(engine.appearance("second").unwrap().theme, Theme::Dark);
+    assert_eq!(
+        engine.appearance("main").unwrap().colors,
+        Theme::Light.palette().css_variables()
+    );
+    assert!(engine.view_state("main").unwrap().interacting);
+    assert_eq!(engine.snapshot().unwrap().to_json().unwrap(), before);
+    engine
+        .dispatch(
+            "main",
+            Request::Pointer {
+                expected_revision: 1,
+                event: unge_interaction::PointerEvent::Up {
+                    pointer: 0,
+                    position: [80., 70.],
+                },
+            },
+        )
+        .unwrap();
+    assert_eq!(
+        engine.dispatch("main", Request::Summary).unwrap().revision,
+        2
+    );
+    engine
+        .dispatch("main", Request::SetTheme { theme: Theme::Dark })
+        .unwrap();
+    engine
+        .dispatch(
+            "main",
+            Request::Undo {
+                expected_revision: 2,
+            },
+        )
+        .unwrap();
+    assert_eq!(engine.snapshot().unwrap().to_json().unwrap(), before);
+    assert_eq!(engine.snapshot().unwrap().placement()[&id].x, 0.);
+    engine
+        .dispatch(
+            "main",
+            Request::Redo {
+                expected_revision: 3,
+            },
+        )
+        .unwrap();
+    assert_eq!(engine.snapshot().unwrap().placement()[&id].x, 30.);
+    assert_eq!(
+        engine.appearance("unknown").unwrap_err().code,
+        "unknown_view"
+    );
+    assert_eq!(
+        engine
+            .dispatch(
+                "unknown",
+                Request::SetTheme {
+                    theme: Theme::Light
+                }
+            )
+            .unwrap_err()
+            .code,
+        "unknown_view"
+    );
+    assert!(serde_json::from_str::<Request>(r#"{"kind":"set_theme","theme":"invalid"}"#).is_err());
+}

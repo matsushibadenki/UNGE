@@ -14,7 +14,7 @@ Tauri 2・Rust・WebGPU向けの、ディレクトリごと再利用できるノ
 | `crates/unge-interaction` | ポインター操作、選択、ドラッグ、Port接続、一時プレビュー | core |
 | `crates/unge-render` | 描画シーン、WGSL、インスタンシング、ネイティブSurface | core、interaction、wgpu 27 |
 | `crates/unge-acx` | ACX能力公開、事前確認・承認・実行・Receipt・回復 | core、executor |
-| `crates/unge-tauri` | Rust共有状態、Tauri 2命令、リビジョン競合検出 | core、render、Tauri 2 |
+| `crates/unge-tauri` | Rust共有状態、Tauri 2命令、リビジョン競合検出 | core、executor、render、Tauri 2 |
 | `bindings/typescript` | 型付きIPCクライアント、英語・日本語・简体中文のメッセージ | invokeを外から注入 |
 | `examples/headless` | `20 + 22 = 42` のGUI不要な実行例 | core、executor |
 | `examples/tauri-host` | WebView操作画面＋ネイティブwgpuウインドウ | ACXを含む5クレート |
@@ -47,7 +47,7 @@ cargo fmt --all -- --check
 cargo test --locked -p unge-render --test render -- --ignored
 ```
 
-デスクトップ例は機能確認用です。別ウインドウにグラフを描画し、操作画面で数値/加算ノード追加・Undo/Redoを試せます。グラフ上ではノードDrag、範囲選択、Port接続、右ドラッグPan、ホイールZoomが使えます。
+デスクトップ例は機能確認用です。別ウインドウにグラフを描画し、操作画面で数値/加算ノード追加・Undo/Redoを試せます。「ダーク」「ライト」で操作画面と描画画面を切り替え、設定を再起動後にも復元します。[テーマの取り込み](docs/THEMES.md)を参照してください。グラフ上ではノードDrag、範囲選択、Port接続、右ドラッグPan、ホイールZoomが使えます。
 この例のネイティブウインドウ生成にはTauriの `unstable` featureを使用します。
 ノード名・Port名をRust/GPU側で描画し、3言語の表示名をホストから登録できます。[GPU文字の取り込み](docs/GPU_TEXT.md)を参照してください。同一ウインドウ内のネイティブSurface合成は今後の実装項目です。入力の取り込み方とOS別の検証範囲は [POINTER_INPUT.md](docs/POINTER_INPUT.md) を参照してください。
 
@@ -105,3 +105,9 @@ Tauriの画面と同じDocumentを操作する起動方法、ホストの権限�
 ## プロパティ検証と履歴容量
 
 プロパティの型・範囲・選択肢・初期値をDefinitionで宣言し、共有Editorで編集・Undo/Redoを検証できます。履歴は件数とバイト容量で制限します。全サンプルで編集時検証を有効にしました。取り込み方法と互換性は [PROPERTY_VALIDATION.md](docs/PROPERTY_VALIDATION.md) を参照してください。
+
+実行キャッシュはハッシュ検索と件数・バイト容量制限に対応します。ホスト設定とpureの契約は [EXECUTION_CACHE.md](docs/EXECUTION_CACHE.md)。
+
+Rustホストへ実行進捗を通知し、ホストが提供するFutureでrun全体の期限を設定できます。[実行進捗とキャンセル](docs/EXECUTION_PROGRESS.md) を参照してください。
+
+共有RunServiceをTauriとACXへ接続し、実行ID・snapshot revisionで進捗とキャンセルを管理できます。[共有実行サービス](docs/EXECUTION_SERVICE.md)。

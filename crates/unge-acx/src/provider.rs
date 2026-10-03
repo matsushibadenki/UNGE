@@ -10,7 +10,7 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 use unge_core::{Command, Id};
-use unge_executor::{Cancellation, Registry, Scheduler, Status};
+use unge_executor::{Cancellation, Registry, RunService, RunSummary, Scheduler, Status};
 
 /// Configured by the host, never supplied in agent requests. Denies edits/runs by default.
 #[derive(Clone)]
@@ -136,6 +136,8 @@ fn clock() -> u64 {
         .as_secs()
 }
 
+type RunObserver = Arc<dyn Fn(RunSummary) + Send + Sync>;
+
 /// Serial lifecycle service. Execute on a host worker thread, not the UI/render thread.
 /// State/receipt retention is bounded and in memory; no guarantees survive a restart.
 pub struct Provider {
@@ -145,6 +147,7 @@ pub struct Provider {
     sessions: BTreeMap<String, Session>,
     receipts: BTreeMap<String, Value>,
     scheduler: Scheduler,
+    execution: Option<(RunService, RunObserver)>,
     now: Arc<dyn Fn() -> u64 + Send + Sync>,
     provider_id: String,
     changed: bool,
@@ -166,10 +169,26 @@ impl Provider {
             sessions: BTreeMap::new(),
             receipts: BTreeMap::new(),
             scheduler: Scheduler::new(4, 128),
+            execution: None,
             now,
             provider_id: format!("urn:unge:session:{}", Id::new_v4()),
             changed: false,
         }
+    }
+    /// Trusted host integration; preserves the approved synchronous ACX run/Receipt contract.
+    pub fn with_execution(
+        mut self,
+        service: RunService,
+        observer: impl Fn(RunSummary) + Send + Sync + 'static,
+    ) -> Result<Self> {
+        if !service.uses_registry(&self.registry) {
+            return Err(AcxError::new(
+                "registry_mismatch",
+                "execution service must use the provider Registry Arc",
+            ));
+        }
+        self.execution = Some((service, Arc::new(observer)));
+        Ok(self)
     }
     pub fn take_changed(&mut self) -> bool {
         std::mem::take(&mut self.changed)
@@ -560,12 +579,21 @@ impl Provider {
                         ))
                     }
                     Intent::Run { .. } => {
-                        let report = futures::executor::block_on(self.scheduler.run(
-                            snapshot.document.graph(),
-                            &self.registry,
-                            Cancellation::default(),
-                        ))
-                        .map_err(|e| AcxError::new("execution_failed", e))?;
+                        let report = if let Some((service, observer)) = &self.execution {
+                            service
+                                .prepare(&snapshot.document, snapshot.revision)
+                                .map_err(|e| AcxError::new(&e.code, e.message))?
+                                .execute(|summary| observer(summary))
+                                .map_err(|e| AcxError::new(&e.code, e.message))?
+                                .report
+                        } else {
+                            futures::executor::block_on(self.scheduler.run(
+                                snapshot.document.graph(),
+                                &self.registry,
+                                Cancellation::default(),
+                            ))
+                            .map_err(|e| AcxError::new("execution_failed", e))?
+                        };
                         let success = report
                             .nodes
                             .values()

@@ -5,10 +5,12 @@ use std::{
     sync::{Arc, Mutex},
 };
 use unge_core::*;
+use unge_executor::{PreparedRun, RunError, RunService, RunSummary};
 use unge_interaction::{Interaction, InteractionError, PointerEvent};
-use unge_render::{LabelCatalog, SceneIndex, SurfaceRenderer};
+use unge_render::{LabelCatalog, SceneIndex, SurfaceRenderer, Theme};
 
 struct ViewState {
+    theme: Theme,
     locale: Locale,
     viewport: Viewport,
     selection: BTreeSet<Id>,
@@ -24,6 +26,7 @@ struct State {
 #[derive(Clone)]
 pub struct Engine {
     state: Arc<Mutex<State>>,
+    execution: Option<RunService>,
     renderers: Arc<Mutex<BTreeMap<String, SurfaceRenderer>>>,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -43,6 +46,11 @@ impl ApiError {
             code: code.into(),
             message: message.to_string(),
         }
+    }
+}
+impl From<RunError> for ApiError {
+    fn from(error: RunError) -> Self {
+        Self::new(&error.code, error.message)
     }
 }
 impl From<Error> for ApiError {
@@ -72,11 +80,20 @@ pub struct ViewSnapshot {
     pub selection: BTreeSet<Id>,
     pub interacting: bool,
     pub locale: Locale,
+    pub theme: Theme,
+}
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Appearance {
+    pub theme: Theme,
+    pub colors: BTreeMap<String, String>,
 }
 type ApiResult<T> = std::result::Result<T, ApiError>;
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Request {
+    SetTheme {
+        theme: Theme,
+    },
     SetLocale {
         locale: Locale,
     },
@@ -147,6 +164,7 @@ impl Engine {
     pub fn from_editor(editor: Editor) -> Self {
         let scene = SceneIndex::new(editor.document());
         Self {
+            execution: None,
             state: Arc::new(Mutex::new(State {
                 labels: LabelCatalog::new(),
                 editor,
@@ -155,6 +173,78 @@ impl Engine {
             })),
             renderers: Arc::new(Mutex::new(BTreeMap::new())),
         }
+    }
+    /// Configure before sharing Engine clones. Registry/executors are trusted host code.
+    pub fn with_execution(mut self, service: RunService) -> Self {
+        self.execution = Some(service);
+        self
+    }
+    pub fn prepare_run(&self, view: &str, expected_revision: u64) -> ApiResult<PreparedRun> {
+        let state = self
+            .state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        if !state.views.contains_key(view) {
+            return Err(ApiError::new("unknown_view", view));
+        }
+        if state.editor.revision() != expected_revision {
+            return Err(ApiError::new("revision_conflict", state.editor.revision()));
+        }
+        let service = self.execution.as_ref().ok_or_else(|| {
+            ApiError::new("execution_unavailable", "host did not configure execution")
+        })?;
+        Ok(service.prepare(state.editor.document(), expected_revision)?)
+    }
+    pub fn current_execution(&self, view: &str) -> ApiResult<Option<RunSummary>> {
+        let state = self
+            .state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        if !state.views.contains_key(view) {
+            return Err(ApiError::new("unknown_view", view));
+        }
+        let service = self.execution.as_ref().ok_or_else(|| {
+            ApiError::new("execution_unavailable", "host did not configure execution")
+        })?;
+        let current = service.current()?;
+        if current
+            .as_ref()
+            .is_some_and(|run| run.document_id != state.editor.document().graph().id)
+        {
+            return Err(ApiError::new(
+                "document_mismatch",
+                "run belongs to another document",
+            ));
+        }
+        Ok(current)
+    }
+    pub fn execution_status(&self, view: &str, id: Id) -> ApiResult<RunSummary> {
+        let state = self
+            .state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        if !state.views.contains_key(view) {
+            return Err(ApiError::new("unknown_view", view));
+        }
+        let service = self.execution.as_ref().ok_or_else(|| {
+            ApiError::new("execution_unavailable", "host did not configure execution")
+        })?;
+        let summary = service.inspect(id)?;
+        if summary.document_id != state.editor.document().graph().id {
+            return Err(ApiError::new(
+                "document_mismatch",
+                "run belongs to another document",
+            ));
+        }
+        Ok(summary)
+    }
+    pub fn cancel_execution(&self, view: &str, id: Id) -> ApiResult<RunSummary> {
+        self.execution_status(view, id)?;
+        Ok(self
+            .execution
+            .as_ref()
+            .expect("checked execution")
+            .cancel(id)?)
     }
     /// Host presentation metadata is shared; each view selects its own language.
     pub fn set_labels(&self, labels: LabelCatalog) -> ApiResult<()> {
@@ -174,6 +264,7 @@ impl Engine {
         state.views.insert(
             label.into(),
             ViewState {
+                theme: Theme::Dark,
                 locale: Locale::En,
                 viewport,
                 selection: BTreeSet::new(),
@@ -246,12 +337,13 @@ impl Engine {
             view_state.viewport = viewport;
         }
         let view_state = &state.views[view];
-        let scene = state.scene.scene_with_labels(
+        let scene = state.scene.scene_with_theme(
             viewport,
             &view_state.selection,
             view_state.interaction.preview(),
             &state.labels,
             view_state.locale,
+            view_state.theme,
         )?;
         drop(state);
         let mut renderers = self
@@ -321,6 +413,9 @@ impl Engine {
         }
         let before = state.editor.revision();
         match request {
+            Request::SetTheme { theme } => {
+                state.views.get_mut(view).unwrap().theme = theme;
+            }
             Request::SetLocale { locale } => {
                 state.views.get_mut(view).unwrap().locale = locale;
             }
@@ -398,6 +493,22 @@ impl Engine {
             selection: v.selection.clone(),
             interacting: v.interaction.is_active(),
             locale: v.locale,
+            theme: v.theme,
+        })
+    }
+    /// Read the authoritative view theme and its CSS palette, without a graph clone.
+    pub fn appearance(&self, view: &str) -> ApiResult<Appearance> {
+        let state = self
+            .state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let v = state
+            .views
+            .get(view)
+            .ok_or_else(|| ApiError::new("unknown_view", view))?;
+        Ok(Appearance {
+            theme: v.theme,
+            colors: v.theme.palette().css_variables(),
         })
     }
     pub fn inspect(&self, view: &str, id: Id) -> ApiResult<Node> {
@@ -448,7 +559,9 @@ mod commands {
     ) -> ApiResult<Summary> {
         use tauri::{Emitter, Manager};
         let changed = !matches!(request, Request::Summary);
+        let appearance_changed = matches!(request, Request::SetTheme { .. });
         let engine = engine.inner().clone();
+        let service = engine.clone();
         let label = window.label().to_owned();
         let result = tauri::async_runtime::spawn_blocking(move || engine.dispatch(&label, request))
             .await
@@ -457,7 +570,82 @@ mod commands {
         if changed {
             let _ = window.app_handle().emit("unge://changed", &result);
         }
+        if appearance_changed {
+            let _ = window.emit(
+                "unge://appearance-changed",
+                service.appearance(window.label())?,
+            );
+        }
         Ok(result)
+    }
+    /// Aggregate counters only. Terminal notification bypasses the 100 ms rate limit.
+    pub fn execution_observer<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+    ) -> impl Fn(RunSummary) + Send + Sync {
+        use tauri::Emitter;
+        let last = Mutex::new(None::<std::time::Instant>);
+        move |summary| {
+            let terminal = matches!(
+                summary.state,
+                unge_executor::RunState::Finished | unge_executor::RunState::Failed
+            );
+            let mut sent = last.lock().expect("notification clock");
+            if terminal
+                || sent.is_none_or(|at| at.elapsed() >= std::time::Duration::from_millis(100))
+            {
+                *sent = Some(std::time::Instant::now());
+                let _ = window.emit("unge://execution", summary);
+            }
+        }
+    }
+    #[tauri::command]
+    pub async fn start_execution<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+        expected_revision: u64,
+    ) -> ApiResult<RunSummary> {
+        let service = engine.inner().clone();
+        let label = window.label().to_owned();
+        let prepared = tauri::async_runtime::spawn_blocking(move || {
+            service.prepare_run(&label, expected_revision)
+        })
+        .await
+        .map_err(|e| ApiError::new("worker_error", e))??;
+        let queued = prepared.summary()?;
+        tauri::async_runtime::spawn_blocking(move || {
+            let _ = prepared.execute(execution_observer(window));
+        });
+        Ok(queued)
+    }
+    #[tauri::command]
+    pub fn current_execution<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+    ) -> ApiResult<Option<RunSummary>> {
+        engine.current_execution(window.label())
+    }
+    #[tauri::command]
+    pub fn execution_status<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+        id: Id,
+    ) -> ApiResult<RunSummary> {
+        engine.execution_status(window.label(), id)
+    }
+    #[tauri::command]
+    pub fn cancel_execution<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+        id: Id,
+    ) -> ApiResult<RunSummary> {
+        engine.cancel_execution(window.label(), id)
+    }
+    #[tauri::command]
+    pub fn appearance<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+    ) -> ApiResult<Appearance> {
+        engine.appearance(window.label())
     }
     #[tauri::command]
     pub fn inspect<R: tauri::Runtime>(
@@ -468,11 +656,23 @@ mod commands {
         engine.inspect(window.label(), id)
     }
 }
-pub use commands::{dispatch, inspect};
-/// Combine with your host's invoke handler by using generate_handler![unge_tauri::dispatch, unge_tauri::inspect, ...].
+pub use commands::{
+    appearance, cancel_execution, current_execution, dispatch, execution_observer,
+    execution_status, inspect, start_execution,
+};
+/// Combine with your host handler using generate_handler!. Include start_execution,
+/// current_execution, execution_status and cancel_execution when configuring RunService.
 pub fn handler<R: tauri::Runtime>() -> impl Fn(tauri::ipc::Invoke<R>) -> bool + Send + Sync + 'static
 {
-    tauri::generate_handler![dispatch, inspect]
+    tauri::generate_handler![
+        dispatch,
+        inspect,
+        appearance,
+        start_execution,
+        current_execution,
+        execution_status,
+        cancel_execution
+    ]
 }
 
 #[cfg(feature = "acx")]

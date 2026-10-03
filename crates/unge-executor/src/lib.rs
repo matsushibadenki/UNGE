@@ -1,15 +1,23 @@
 //! Async DAG execution with bounded concurrency and opt-in pure-node caching.
+mod service;
+pub use service::{PreparedRun, RunError, RunLimits, RunService, RunState, RunSummary};
+mod progress;
+pub use progress::{ExecutionOutcome, ProgressEvent, StopReason};
+mod cache;
+pub use cache::{CacheLimits, CacheUsage};
 mod properties;
 pub use properties::*;
 
-use futures::{StreamExt, future::BoxFuture, stream};
+use futures::{
+    FutureExt, StreamExt,
+    future::{BoxFuture, Either, select},
+    stream,
+};
 use serde::{Deserialize, Serialize};
+use std::future::Future;
 use std::{
-    collections::{BTreeMap, VecDeque},
-    sync::{
-        Arc,
-        atomic::{AtomicBool, Ordering},
-    },
+    collections::BTreeMap,
+    sync::{Arc, atomic::Ordering},
 };
 use unge_core::{Cardinality, DataType, Graph, GraphIndex, Id, Node, Port, Properties};
 
@@ -45,13 +53,17 @@ impl Value {
 pub type Inputs = BTreeMap<String, Vec<Value>>;
 pub type Outputs = BTreeMap<String, Value>;
 #[derive(Debug, Clone, Default)]
-pub struct Cancellation(Arc<AtomicBool>);
+pub struct Cancellation(Arc<progress::CancellationState>);
 impl Cancellation {
     pub fn cancel(&self) {
-        self.0.store(true, Ordering::Release);
+        self.0.cancel();
     }
     pub fn is_cancelled(&self) -> bool {
-        self.0.load(Ordering::Acquire)
+        self.0.cancelled.load(Ordering::Acquire)
+    }
+    /// Resolves on cancellation, waking every registered waiter.
+    pub async fn cancelled(&self) {
+        progress::CancellationWait::new(self.0.clone()).await;
     }
 }
 #[derive(Clone)]
@@ -196,22 +208,34 @@ pub struct NodeResult {
 pub struct Report {
     pub nodes: BTreeMap<Id, NodeResult>,
 }
-struct CacheEntry {
-    key: String,
-    outputs: Outputs,
-}
+/// Bounded concurrent execution with a FIFO cache of successful pure outputs.
 pub struct Scheduler {
     concurrency: usize,
-    cache_limit: usize,
-    cache: VecDeque<CacheEntry>,
+    cache: cache::Cache,
 }
 impl Scheduler {
+    /// Retains at most `cache_limit` entries and 16 MiB of serialized payload.
     pub fn new(concurrency: usize, cache_limit: usize) -> Self {
+        Self::with_cache_limits(
+            concurrency,
+            CacheLimits {
+                max_entries: cache_limit,
+                ..CacheLimits::default()
+            },
+        )
+    }
+    pub fn with_cache_limits(concurrency: usize, limits: CacheLimits) -> Self {
         Self {
             concurrency: concurrency.max(1),
-            cache_limit,
-            cache: VecDeque::new(),
+            cache: cache::Cache::new(limits),
         }
+    }
+    pub fn cache_usage(&self) -> CacheUsage {
+        self.cache.usage()
+    }
+    /// Applies immediately, evicting oldest entries until both limits are met.
+    pub fn set_cache_limits(&mut self, limits: CacheLimits) {
+        self.cache.set_limits(limits);
     }
     pub fn clear_cache(&mut self) {
         self.cache.clear();
@@ -222,23 +246,60 @@ impl Scheduler {
         registry: &Registry,
         cancellation: Cancellation,
     ) -> Result<Report, String> {
+        self.run_with_progress(graph, registry, cancellation, |_| {})
+            .await
+            .map(|outcome| outcome.report)
+    }
+    /// Observer runs synchronously on the scheduler task; keep it short and nonblocking.
+    pub async fn run_with_progress<F: Fn(ProgressEvent) + Sync>(
+        &mut self,
+        graph: &Graph,
+        registry: &Registry,
+        cancellation: Cancellation,
+        observer: F,
+    ) -> Result<ExecutionOutcome, String> {
+        self.run_with_deadline(
+            graph,
+            registry,
+            cancellation,
+            futures::future::pending(),
+            observer,
+        )
+        .await
+    }
+    /// Host-provided deadline future avoids coupling this library to a timer runtime.
+    /// On expiry, pending executor futures are dropped and remaining nodes are Cancelled.
+    pub async fn run_with_deadline<D: Future<Output = ()>, F: Fn(ProgressEvent) + Sync>(
+        &mut self,
+        graph: &Graph,
+        registry: &Registry,
+        cancellation: Cancellation,
+        deadline: D,
+        observer: F,
+    ) -> Result<ExecutionOutcome, String> {
         registry.validate(graph)?;
         let layers = graph.layers().map_err(|e| e.to_string())?;
         let index = GraphIndex::new(graph);
         let mut report = Report::default();
-        for layer in layers {
+        let total = graph.nodes().len();
+        observer(ProgressEvent::Started { total });
+        let token = cancellation.clone();
+        let stop = async move {
+            futures::pin_mut!(deadline);
+            match select(Box::pin(token.cancelled()), deadline).await {
+                Either::Left(_) => StopReason::Cancelled,
+                Either::Right(_) => StopReason::DeadlineExceeded,
+            }
+        };
+        futures::pin_mut!(stop);
+        let mut reason = StopReason::Completed;
+        'layers: for layer in layers {
             let mut jobs = Vec::new();
             for id in layer {
-                if cancellation.is_cancelled() {
-                    report.nodes.insert(
-                        id,
-                        NodeResult {
-                            status: Status::Cancelled,
-                            outputs: Outputs::new(),
-                            error: None,
-                        },
-                    );
-                    continue;
+                if let Some(stopped) = stop.as_mut().now_or_never() {
+                    reason = stopped;
+                    cancellation.cancel();
+                    break 'layers;
                 }
                 let node = &graph.nodes()[&id];
                 let (definition, executor) = &registry.entries[&node.type_id];
@@ -260,7 +321,10 @@ impl Scheduler {
                     }
                 }
                 if blocked {
-                    report.nodes.insert(
+                    progress::finish(
+                        &mut report,
+                        &observer,
+                        total,
                         id,
                         NodeResult {
                             status: Status::Blocked,
@@ -270,21 +334,27 @@ impl Scheduler {
                     );
                     continue;
                 }
-                let key = serde_json::to_string(&(
-                    &definition.type_id,
-                    &definition.version,
-                    &inputs,
-                    &node.properties,
-                ))
-                .map_err(|e| e.to_string())?;
-                if definition.pure
-                    && let Some(entry) = self.cache.iter().find(|entry| entry.key == key)
-                {
-                    report.nodes.insert(
+                // Executor identity prevents reuse across unrelated host registries.
+                let key = if definition.pure && self.cache.enabled() {
+                    self.cache.key(&(
+                        &definition.type_id,
+                        &definition.version,
+                        Arc::as_ptr(executor) as *const () as usize,
+                        &inputs,
+                        &node.properties,
+                    ))
+                } else {
+                    None
+                };
+                if let Some(outputs) = key.as_deref().and_then(|key| self.cache.get(key)) {
+                    progress::finish(
+                        &mut report,
+                        &observer,
+                        total,
                         id,
                         NodeResult {
                             status: Status::Cached,
-                            outputs: entry.outputs.clone(),
+                            outputs,
                             error: None,
                         },
                     );
@@ -295,11 +365,17 @@ impl Scheduler {
                     properties: node.properties.clone(),
                     cancellation: cancellation.clone(),
                 };
+                let observer = &observer;
                 jobs.push(async move {
                     let result = if context.cancellation.is_cancelled() {
                         Err("cancelled".into())
                     } else {
-                        executor.execute(context.clone(), inputs).await
+                        observer(ProgressEvent::NodeStarted { node: id });
+                        if context.cancellation.is_cancelled() {
+                            Err("cancelled".into())
+                        } else {
+                            executor.execute(context.clone(), inputs).await
+                        }
                     };
                     let result = result.and_then(|outputs| {
                         validate_outputs(&definition.outputs, &outputs)?;
@@ -307,15 +383,26 @@ impl Scheduler {
                     });
                     (
                         id,
-                        definition.pure,
                         key,
+                        executor.clone(),
                         context.cancellation.is_cancelled(),
                         result,
                     )
                 });
             }
             let mut pending = stream::iter(jobs).buffer_unordered(self.concurrency);
-            while let Some((id, pure, key, cancelled, result)) = pending.next().await {
+            loop {
+                let next = match select(stop.as_mut(), Box::pin(pending.next())).await {
+                    Either::Left((stopped, _)) => {
+                        reason = stopped;
+                        cancellation.cancel();
+                        break 'layers;
+                    }
+                    Either::Right((next, _)) => next,
+                };
+                let Some((id, key, executor, cancelled, result)) = next else {
+                    break;
+                };
                 let record = if cancelled {
                     NodeResult {
                         status: Status::Cancelled,
@@ -325,14 +412,8 @@ impl Scheduler {
                 } else {
                     match result {
                         Ok(outputs) => {
-                            if pure && self.cache_limit > 0 {
-                                self.cache.push_back(CacheEntry {
-                                    key,
-                                    outputs: outputs.clone(),
-                                });
-                                while self.cache.len() > self.cache_limit {
-                                    self.cache.pop_front();
-                                }
+                            if let Some(key) = key {
+                                self.cache.insert(key, &outputs, executor);
                             }
                             NodeResult {
                                 status: Status::Completed,
@@ -347,10 +428,38 @@ impl Scheduler {
                         },
                     }
                 };
-                report.nodes.insert(id, record);
+                progress::finish(&mut report, &observer, total, id, record);
             }
         }
-        Ok(report)
+        if reason == StopReason::Completed
+            && let Some(stopped) = stop.as_mut().now_or_never()
+        {
+            reason = stopped;
+        }
+        if reason != StopReason::Completed {
+            cancellation.cancel();
+            for id in graph.nodes().keys() {
+                if !report.nodes.contains_key(id) {
+                    progress::finish(
+                        &mut report,
+                        &observer,
+                        total,
+                        *id,
+                        NodeResult {
+                            status: Status::Cancelled,
+                            outputs: Outputs::new(),
+                            error: None,
+                        },
+                    );
+                }
+            }
+        }
+        observer(ProgressEvent::Finished {
+            reason,
+            finished: report.nodes.len(),
+            total,
+        });
+        Ok(ExecutionOutcome { report, reason })
     }
 }
 fn validate_outputs(ports: &[Port], outputs: &Outputs) -> Result<(), String> {

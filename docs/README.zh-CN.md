@@ -13,7 +13,7 @@ cargo run --locked -p unge-tauri-host
 
 桌面示例需要安装 [Tauri 所需依赖](https://v2.tauri.app/start/prerequisites/)。
 WebView 提供操作界面，独立原生窗口负责 GPU 绘制。
-示例支持添加节点、撤销、重做、拖动、框选、端口连接、平移和缩放。节点与端口文字已使用Rust持有的字形图集渲染，宿主可提供三语名称；见[GPU文字集成](GPU_TEXT.md#简体中文)。逻辑坐标和宿主设置见[指针集成](POINTER_INPUT.md#简体中文)。
+示例支持操作面板与GPU的深色/浅色切换并保存选择；见[主题集成](THEMES.md#简体中文)。还支持添加节点、撤销、重做、拖动、框选、端口连接、平移和缩放。节点与端口文字已使用Rust持有的字形图集渲染，宿主可提供三语名称；见[GPU文字集成](GPU_TEXT.md#简体中文)。逻辑坐标和宿主设置见[指针集成](POINTER_INPUT.md#简体中文)。
 
 ## 集成
 
@@ -36,3 +36,9 @@ core 和 executor 不依赖 Tauri。render 接收 Rust 管理的纹理或原生 
 ## 编辑验证和历史容量
 
 Definition支持属性类型、范围、选项和初始值。共享Editor可安装Registry验证器，原子验证编辑、撤销及重做。历史按Undo与Redo合计步数和序列化字节限制。所有示例均已启用验证。参阅[集成与兼容性](PROPERTY_VALIDATION.md#简体中文)。
+
+执行缓存支持完整键哈希查找及条目数、字节容量限制。主机配置与纯节点约定见[缓存集成](EXECUTION_CACHE.md#简体中文)。
+
+Rust主机可以接收节点执行进度，并通过Future设置整个run的期限。参见[执行进度与取消](EXECUTION_PROGRESS.md#简体中文)。
+
+Tauri与ACX可共享RunService，通过执行ID、冻结revision及有限状态记录管理进度和主机取消。参见[共享执行服务](EXECUTION_SERVICE.md#简体中文)。

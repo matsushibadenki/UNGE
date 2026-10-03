@@ -1,4 +1,4 @@
-struct Camera { origin_zoom: vec4<f32>, size: vec4<f32> };
+struct Camera { origin_zoom: vec4<f32>, size: vec4<f32>, grid_color: vec4<f32> };
 @group(0) @binding(0) var<uniform> camera: Camera;
 struct Output {
     @builtin(position) position: vec4<f32>,
@@ -24,7 +24,7 @@ struct Output {
         let spacing = select(24.,120.,camera.origin_zoom.z < 0.3);
         let cell = abs(fract(in.world/spacing-0.5)-0.5)*spacing;
         let line = 1.-smoothstep(0.,1.2/camera.origin_zoom.z,min(cell.x,cell.y));
-        return vec4(in.color.rgb+vec3(line*0.025),1.);
+        return vec4(mix(in.color.rgb,camera.grid_color.rgb,line*camera.grid_color.a),in.color.a);
     }
     let radius = min(in.params.y,min(in.half_size.x,in.half_size.y));
     let q = abs(in.local)-in.half_size+vec2(radius);

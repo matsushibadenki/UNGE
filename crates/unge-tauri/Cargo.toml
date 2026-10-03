@@ -18,5 +18,5 @@ acx = ["dep:unge-acx"]
 path = "../unge-acx"
 optional = true
 
-[dev-dependencies]
-unge-executor = { path = "../unge-executor" }
+[dependencies.unge-executor]
+path = "../unge-executor"

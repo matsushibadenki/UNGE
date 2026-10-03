@@ -28,7 +28,12 @@
 - [Done] Completed/Cached/Failed/Blocked/Cancelledレポート、独立分岐の継続
 - [Done] pureノードのFIFOキャッシュ、変更入力からの再実行、下流探索
 - [Done] 協調キャンセル、ホストのリソースストア向け型付きID
-- [Next] 実行進捗イベント、タイムアウト方針、キャッシュのハッシュ検索とバイト容量制限
+- [Done] 完全キーのハッシュ検索、FIFOの件数＋バイト容量制限、使用量照会、実行時の上限変更、executor識別子によるキャッシュ分離
+- [Done] Rustホスト向け開始/終了/ノード進捗イベント、ホストFutureによるrun期限、待機中のキャンセル通知、未完了結果のCancelled記録
+- [Done] run ID/revision付き共有実行サービス、1実行の予約、snapshot/概要保持上限、破棄・panic時の予約解放
+- [Done] Tauriの開始/現在実行/進捗照会/キャンセルAPI、集約通知、TypeScript型と3言語文言
+- [Done] ACX承認済み実行の共有サービス接続、ホスト向け進捗通知、UIとの二重実行防止、既存Receipt再送契約維持
+- [Next] 実行ボタンと進捗UI、ACXの非同期job Profile・wire上の進捗照会/キャンセル
 - [Next] 入出力型・プロパティ・IPC型のスキーマ自動生成
 - [Later] Converter Registry、Remote/Python/AI/GPU Backendの標準アダプター
 - [Later] Streaming、Reactive、Simulation、Subgraph実行
@@ -42,7 +47,9 @@
 - [Done] Tauri 2共有Engine、呼び出し元View検査、revision競合検出、変更Summaryイベント
 - [Done] TypeScriptクライアント、3言語のエラー辞書、CLIとTauri実行例
 - [Done] GPU文字描画（Glyph Atlas）、3言語のホスト表示名、View単位の言語、HiDPI・クリップ・重なり順・容量制限
-- [Next] Group描画、テーマAPI、アクセシビリティ
+- [Done] ダーク/ライトのテーマAPI、Rust View単位の設定、GPU/CSS共通配色、3言語の切り替えUIと設定復元
+- [Next] Group描画、アクセシビリティ
+- [Later] 任意のテーマ登録、OS配色/高コントラストへの自動追従
 - [Next] 10000ノード/30000エッジの実測、Index差分更新、曲線テッセレーションの改善
 - [Done] Tauri/Taoのネイティブ入力ブリッジ、HiDPIの論理座標、ホイール拡大縮小（macOS実操作確認）
 - [Next] Windows/LinuxのネイティブSurface/入力検証、同一ウインドウ合成
@@ -64,9 +71,13 @@
 - [Next] 別実装Providerとの相互運用、承認・Receipt・再送記録の永続化、セッション保持上限の運用
 - [Later] MCP/A2A binding、署名、多ユーザー認証、外部副作用や課金を伴う実行Profile
 
-## 今回の優先順位（2026-09-28）
+## 今回の優先順位（2026-10-03）
 
 - [Done] AIと通常UIの双方に効く編集時検証、履歴容量制限を先行。統合手順は [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md)。
 - [Done] Pointer状態機械とDrag/接続操作。取り込み手順は [POINTER_INPUT.md](POINTER_INPUT.md)。
 - [Done] GPU文字描画。型名・Port名の3言語表示、ホストのフォント注入。取り込み手順は [GPU_TEXT.md](GPU_TEXT.md)。
-- [Next] 実行進捗とキャッシュ容量/検索の改善。処理状況の可視化と大きなグラフの再実行を改善する。
+- [Done] ダーク/ライト切り替え。取り込み手順は [THEMES.md](THEMES.md)。
+- [Done] 実行キャッシュのハッシュ検索とバイト容量制限。大きすぎる結果を保持せず、件数と容量の両方でFIFOを管理する。
+- [Done] Rustホストへの進捗通知とrun期限。取り込み手順は [EXECUTION_PROGRESS.md](EXECUTION_PROGRESS.md)。
+- [Done] run ID/revision付き実行サービスとTauri操作API、ACXのホスト接続。取り込み手順は [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
+- [Next] 実行UIとACX非同期job Profile。AIが実行中に照会・キャンセルできるwire契約を追加する。

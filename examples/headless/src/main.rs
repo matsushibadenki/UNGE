@@ -33,14 +33,44 @@ fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     }
     editor.execute(Command::Batch { commands })?;
     editor.execute(auto_layout(editor.document(), [80.0, 40.0])?)?;
-    let mut scheduler = Scheduler::new(4, 128);
-    let report = futures::executor::block_on(scheduler.run(
+    let mut scheduler = Scheduler::with_cache_limits(
+        4,
+        CacheLimits {
+            max_entries: 128,
+            max_bytes: 16 * 1024 * 1024,
+        },
+    );
+    let outcome = futures::executor::block_on(scheduler.run_with_progress(
+        editor.document().graph(),
+        &registry,
+        Cancellation::default(),
+        |event| {
+            eprintln!(
+                "{}",
+                serde_json::to_string(&event).expect("progress serialization")
+            )
+        },
+    ))?;
+    assert_eq!(outcome.reason, StopReason::Completed);
+    let report = outcome.report;
+    assert_eq!(report.nodes[&sum_id].outputs["value"], Value::Float(42.0));
+    println!("{}", serde_json::to_string_pretty(&report)?);
+    let cached = futures::executor::block_on(scheduler.run(
         editor.document().graph(),
         &registry,
         Cancellation::default(),
     ))?;
-    assert_eq!(report.nodes[&sum_id].outputs["value"], Value::Float(42.0));
-    println!("{}", serde_json::to_string_pretty(&report)?);
+    assert!(
+        cached
+            .nodes
+            .values()
+            .all(|node| node.status == Status::Cached)
+    );
+    let usage = scheduler.cache_usage();
+    eprintln!(
+        "cache: {} entries, {} serialized bytes",
+        usage.entries, usage.bytes
+    );
     if let Some(path) = std::env::args().nth(1) {
         std::fs::write(path, editor.document().to_json()?)?;
     }

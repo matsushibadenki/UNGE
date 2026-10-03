@@ -99,3 +99,64 @@ macOSの実画面でドラッグした距離と、ACXで照会した論理座標
 | macOS実画面 | 日本語と英語のノード名/Port名、言語変更後revision 0維持を確認 |
 
 追加の通常テストはAtlas配置上限、表示名の翻訳/識別子フォールバック/長さ制限、LOD、Port位置と移動プレビュー、描画順序、Viewごとの言語分離とDocument不変性を確認します。文字の描画順を保つためノード単位でバッチを分けています。大規模FPSは未測定です。フォントは検証端末のシステムフォントを使用しました。フォントのない環境、全DPI、Windows/Linux実画面、全言語の操作パネルは未検証です。配布先にCJKフォントを用意する方法と容量上限は [GPU_TEXT.md](GPU_TEXT.md) を参照してください。
+
+## ダーク/ライトの追加（2026-10-03）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust 70件成功。GPU3件は通常実行ではignore |
+| `cargo test --locked --offline -p unge-render -- --ignored` | Metal実GPUで3件成功。Dark→Light→Darkの背景clear・グリッド・Node・Port・文字のピクセル、Atlas再利用、既存のCJK/HiDPI/クリップ/プレビューを確認 |
+| `cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings` | 成功 |
+| `cargo fmt --all -- --check` / `git diff --check` | 成功 |
+| TypeScript型チェック / JavaScript構文チェック | 成功。SetTheme・AppearanceをRustと同期 |
+| `python3 scripts/test_acx.py -v` | 4件成功 |
+| 最終TauriビルドのACX連携 | 3Node/2Edge作成・再送時の重複防止・42の実行・Receipt照合・元のグラフへの回復が成功 |
+| 3言語のJSロジック確認 | 一時的なNode VMテストで、Dark/Lightの翻訳、保存選択の再適用、変更失敗時の設定維持、無効な保存値、ストレージ利用不可時を確認。実画面テストとは別のロジック検証 |
+| macOS実画面 | 日本語のDark→Light→Dark、操作画面/ネイティブ枠/GPUの連動、revision 0維持、Lightを保存して再起動後の復元を確認 |
+| 操作画面の配置 | 380×720の日本語表示で、テーマ選択・既存ボタン・ヘルプ・状態表示が収まることを確認 |
+
+配色のテストは、文字4.5以上・操作色3以上のコントラスト、テーマごとの同一形状とラベル、仮接続と選択矩形、View分離、Document/Undo/Redo維持、操作中の切り替え、未知Viewと無効テーマの拒否を含みます。パレットのsRGB→線形変換はScene生成前にまとめて計算し、ノードごとの変換を避けています。
+
+対象はネイティブTauriの `tauri://localhost` 操作画面とMetal描画面です。Browserプラグインは未提供で、埋め込みWebViewとネイティブ描画をCUAで操作しました。単独ブラウザーやPlaywrightは使用していません。表示は空白やエラー画面にならず、操作後のAX状態とスクリーンショットで配色・選択状態・revisionを確認しました。WebViewの開発者コンソールは取得していません。Windows/Linux実画面、全言語の画面配置、最小幅320pxの実画面は未検証です。実装/API/ネイティブ枠のOS制約と設定保存範囲は [THEMES.md](THEMES.md)。
+
+## 実行キャッシュの追加（2026-10-03）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust 76件成功。追加6件で件数・バイトの境界、即時縮小、保存無効化、FIFO、重複保存、巨大キー/出力、executor分離・version、Arc解放、失敗・無効出力・キャンセルを確認 |
+| `cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings` | 成功 |
+| `cargo fmt --all -- --check` / `git diff --check` | 成功 |
+| TypeScript型チェック | 成功。今回Report/IPC/ACXのwire形式は変更なし |
+| `python3 scripts/test_acx.py -v` | 4件成功 |
+| `cargo run --locked --offline -p unge-headless` | 20+22=42、再実行で全3ノードCached、保持量3件/313シリアライズバイトを確認。executorアドレスの桁数でバイト数は変わり得る |
+
+今回の変更対象はexecutorと取り込み文書・headless例です。GPUの変更はなく、実GPUテストは再実行していません。検索は標準HashMapの平均計算量に基づく改善で、10kノードの実測性能やプロセス全体のメモリ上限は未検証です。容量の意味とホスト資源管理の範囲は [EXECUTION_CACHE.md](EXECUTION_CACHE.md)。
+
+## 実行進捗・期限・待機中キャンセルの追加（2026-10-03）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust 85件成功。追加9件で終端イベントとReportの一致、Cached/Blocked/Failed、事前キャンセル、即時期限、Pending executorの破棄、完了済み結果の保持、callbackからのキャンセル、空/不正グラフ、Send、複数waiterの起床とdrop時の解除を確認 |
+| `cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings` | 成功 |
+| `cargo fmt --all -- --check` / `git diff --check` | 成功 |
+| TypeScript型チェック | 成功。ProgressEvent、停止理由、3言語の表示文言を追加 |
+| ACX Providerの再ビルド後 `python3 scripts/test_acx.py -v` | 4件成功。従来のReport/ACX wire形式とライフサイクルを維持 |
+| headless実行例 | 20+22=42、stderrにstarted→node_started/node_finished→finished、再実行の全ノードCachedを確認 |
+
+期限テストはoneshot Futureを使い、実時間のsleepや特定ランタイムへ依存せず停止の順序と結果を確認します。ホストのタイマー精度、外部worker/GPU/HTTP処理の停止、Tauri/ACXの進捗転送とキャンセル命令は今回の検証対象ではありません。今回GPU変更はなく、実GPUテストは再実行していません。ホストが守る契約とAPIは [EXECUTION_PROGRESS.md](EXECUTION_PROGRESS.md)。
+
+## 共有実行サービス・Tauri操作API・ACXホスト接続（2026-10-03）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust 95件成功。追加10件でsnapshot/revisionの固定、共有cache、単一予約、drop・panic後の復旧、容量と保持上限、別スレッドのcancel、View/revision/Document検証、編集・Undoと実行の分離、ACXのcancel/Receipt再送・busy・Registry不一致を確認 |
+| `cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings` | 成功 |
+| `cargo build --workspace --locked --offline` | 全サンプルとTauri命令登録のビルド成功 |
+| `cargo fmt --all -- --check` / `git diff --check` | 成功 |
+| TypeScript型チェック | 成功。RunSummary、操作クライアント、3言語文言・エラー辞書を追加 |
+| 新ビルド後 `python3 scripts/test_acx.py -v` | 4件成功。headless Providerも共有サービス経由で検証 |
+| macOS Tauri `agent.py --binary target/debug/unge-tauri-host --desktop` | 発見・事前確認・承認・commit、3Node/2Edge編集、Receiptと再送、42の共有サービス実行、元Documentへの回復が成功 |
+
+Tauriの4実行命令は登録・ビルドとEngine側の直接APIテストで検証しました。実WebViewからのinvoke、通知購読の実画面、Windows/Linuxは未検証です。HTML操作画面への実行ボタンと進捗表示は今回追加していません。今回GPU変更はなく実GPUテストは再実行していません。
+
+サービスはlatest RunSummaryのみ保持し、Tauriへ集約・レート制限したadvisory通知を送ります。配送欠損や応答前の通知はsequenceと照会で回復します。ACXの承認済みexecute/Receiptのwire形式は維持し、同期JSON Lines処理中のAI照会・cancelは未実装です。ホスト設定、保持上限、失敗時の再送、今後のwire仕様との境界は [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。

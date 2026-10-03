@@ -4241,6 +4241,7 @@ dependencies = [
  "bytemuck",
  "cosmic-text",
  "pollster",
+ "serde",
  "unge-core",
  "unge-interaction",
  "wgpu",

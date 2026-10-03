@@ -641,3 +641,95 @@ fn recovery_reports_unavailable_when_history_budget_cannot_retain_the_edit() {
     assert_eq!(h.host.snapshot().unwrap().document, before.document);
     assert_eq!(h.host.snapshot().unwrap().revision, before.revision);
 }
+
+#[test]
+fn shared_execution_service_preserves_receipt_replay_and_allows_host_cancellation() {
+    use unge_executor::{RunLimits, RunService, RunState, Scheduler};
+    for cancel in [false, true] {
+        let host = Arc::new(MemoryHost::new(Document::default()).unwrap());
+        let registry = Arc::new(math_registry());
+        let service = RunService::new(
+            registry.clone(),
+            Scheduler::new(1, 10),
+            RunLimits::default(),
+        );
+        let summaries = Arc::new(std::sync::Mutex::new(Vec::new()));
+        let observed = summaries.clone();
+        let control = service.clone();
+        let provider = Provider::new(host.clone(), registry, Policy::math_demo())
+            .with_execution(service.clone(), move |summary| {
+                if cancel && summary.state == RunState::Running {
+                    control.cancel(summary.id).unwrap();
+                }
+                observed.lock().unwrap().push(summary);
+            })
+            .unwrap();
+        let mut h = Harness {
+            host,
+            provider,
+            now: Arc::new(AtomicU64::new(1000)),
+        };
+        user_edit(&h);
+        let snapshot = h.host.snapshot().unwrap();
+        let pf=h.preflight(json!({"kind":"run","document_id":snapshot.document.graph().id,"expected_revision":snapshot.revision}));
+        let auth = h.authorize(&pf);
+        let commit = h.commit(&pf, &auth);
+        let result = h.execute(&commit);
+        assert_eq!(result["result"]["succeeded"], !cancel);
+        let count = summaries.lock().unwrap().len();
+        assert_eq!(h.execute(&commit), result);
+        assert_eq!(summaries.lock().unwrap().len(), count);
+        let receipt = h
+            .provider
+            .dispatch("receipt", json!({"receiptId":result["receiptId"]}))
+            .unwrap();
+        assert_eq!(
+            receipt["status"],
+            if cancel { "failed" } else { "succeeded" }
+        );
+        let summaries = summaries.lock().unwrap();
+        let terminal = summaries.last().unwrap();
+        assert_eq!(terminal.state, RunState::Finished);
+        assert_eq!(terminal.revision, snapshot.revision);
+        assert_eq!(service.inspect(terminal.id).unwrap().finished, 1);
+    }
+}
+#[test]
+fn shared_service_refuses_registry_mismatch_and_busy_run_is_receipted_once() {
+    use unge_executor::{RunLimits, RunService, Scheduler};
+    let host = Arc::new(MemoryHost::new(Document::default()).unwrap());
+    let registry = Arc::new(math_registry());
+    let service = RunService::new(
+        registry.clone(),
+        Scheduler::new(1, 10),
+        RunLimits::default(),
+    );
+    assert_eq!(
+        Provider::new(host.clone(), Arc::new(math_registry()), Policy::math_demo())
+            .with_execution(service.clone(), |_| {})
+            .err()
+            .unwrap()
+            .code,
+        "registry_mismatch"
+    );
+    let provider = Provider::new(host.clone(), registry, Policy::math_demo())
+        .with_execution(service.clone(), |_| {})
+        .unwrap();
+    let mut h = Harness {
+        host,
+        provider,
+        now: Arc::new(AtomicU64::new(1000)),
+    };
+    user_edit(&h);
+    let snapshot = h.host.snapshot().unwrap();
+    let reservation = service
+        .prepare(&snapshot.document, snapshot.revision)
+        .unwrap();
+    let pf=h.preflight(json!({"kind":"run","document_id":snapshot.document.graph().id,"expected_revision":snapshot.revision}));
+    let auth = h.authorize(&pf);
+    let commit = h.commit(&pf, &auth);
+    let result = h.execute(&commit);
+    assert_eq!(result["result"]["error"]["code"], "execution_busy");
+    drop(reservation);
+    assert_eq!(h.execute(&commit), result);
+}

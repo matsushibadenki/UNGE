@@ -6,18 +6,19 @@ WebView toolbar / inspector (en, ja, zh-CN)
        ▼
 unge-tauri Engine (application-owned)
        ├ Editor → Document → Graph
+       ├ RunService → frozen snapshot / bounded run summaries / cancellation
        ├ Viewport / selection / Interaction preview per view
        ├ SceneIndex (BVH) → visible Scene
        └ SurfaceRenderer → retained GPU buffers → native surface
 
-Document snapshot → Registry → Scheduler → trusted NodeExecutor
+Document snapshot + revision → RunService → Registry → Scheduler → trusted NodeExecutor
                          └ host resource store (CPU/GPU objects)
 ```
 
 ## 所有権と契約
 
 Graphは論理モデル、DocumentはGraphと保存する表示座標を持ちます。
-Viewportと選択はDocumentに保存せず、EngineのViewに置きます。
+Viewport・選択・言語・テーマはDocumentに保存せず、EngineのViewに置きます。
 ウインドウが所有するのはOS上の表示面だけで、可変DocumentとRendererはアプリ共有Engineが所有します。
 core::Workspaceは複数Document、資産参照、言語設定を保持します。
 Tauriアダプターは1つのDocumentを共有する最小構成です。
@@ -43,10 +44,10 @@ Graphの接続・型・循環を検証した後、登録DefinitionとNodeのPort
 必須入力を検査し、決定的なトポロジカル階層を生成します。
 各階層内を `buffer_unordered(concurrency)` で実行し、完了を待って次の階層へ進みます。
 後続ノードは、依存ノードが失敗・出力欠損した場合Blockedになります。無関係なノードは続行します。
-階層をまたぐ即時スケジューリング、進捗イベント、Streaming、周期実行は未実装です。
+Rustホストへ開始/終了/ノード進捗を通知し、ホストのdeadline Futureと協調キャンセルで未完了Futureを破棄できます。結果・キャンセル・外部副作用の契約は [EXECUTION_PROGRESS.md](EXECUTION_PROGRESS.md)。階層をまたぐ即時スケジューリング、Streaming、周期実行、ACX wire上の非同期ジョブ操作は未実装です。共有RunServiceとTauri集約通知・ACXホストobserverは [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
 
-pureノードのキャッシュキーはtype_id・definition version・入力・propertiesの決定的なJSONです。
-キャッシュは容量を件数で制限したFIFOです。キー探索は線形で、大容量ワークフローではハッシュ化・バイト容量制限が次の改善点です。
+pureノードのキャッシュキーはtype_id・definition version・executorのプロセス内識別子・入力・propertiesの決定的なJSONです。
+標準HashMapで完全なキーを照合し、ハッシュ衝突でも異なる入力を取り違えません。FIFOを件数とシリアライズしたキー＋出力のバイト数で制限します。既定のバイト上限は16 MiBです。ヒットで挿入順を変えず、同じキーの重複保存を避けます。大きすぎるキーや出力は保存しません。詳細とホスト設定は [EXECUTION_CACHE.md](EXECUTION_CACHE.md)。
 入力が変わるとそのノードと出力が変わる下流だけが再実行されます。
 同じ結果が出た下流の既存キャッシュは利用できます。GraphIndex::downstreamは明示的なDirty集合にも使えます。
 
@@ -64,6 +65,8 @@ GpuRendererは容量に余裕を持ったバッファを再利用し、不足時
 表示Sceneの更新時には可視インスタンスをCPU→GPUへアップロードします。
 JavaScriptを経由するコピーやGPU→CPUの毎フレームreadbackはありません。
 テストのみ検証用にピクセルをreadbackします。
+
+Dark/LightのsRGB配色はRustのThemePaletteに集約し、GPUには線形RGB、WebViewにはCSS tokensを渡します。Sceneの背景clear・グリッド・形状・文字を同時に更新します。テーマ変更でSceneIndexやGlyph Atlasを作り直しません。操作画面の小さなappearance命令とView別通知、ネイティブ枠のOS制約は [THEMES.md](THEMES.md)。
 
 SurfaceRendererはゼロサイズ、Resize、Timeout、Lost/Outdatedを扱います。
 GPU Device LostとOutOfMemoryはエラーとしてホストに返します。ホストは必要に応じてRendererを再生成します。

@@ -93,6 +93,24 @@ fn redraw(app: &tauri::AppHandle) {
     let Some(engine) = app.try_state::<Engine>() else {
         return;
     };
+    if let Ok(appearance) = engine.appearance("controls") {
+        let native = match appearance.theme {
+            unge_render::Theme::Dark => tauri::Theme::Dark,
+            unge_render::Theme::Light => tauri::Theme::Light,
+        };
+        if let Some(canvas) = app.get_window("canvas")
+            && canvas.theme().ok() != Some(native)
+            && let Err(error) = canvas.set_theme(Some(native))
+        {
+            eprintln!("native theme: {error}");
+        }
+        if let Some(controls) = app.get_webview_window("controls")
+            && controls.theme().ok() != Some(native)
+            && let Err(error) = controls.set_theme(Some(native))
+        {
+            eprintln!("control theme: {error}");
+        }
+    }
     if let Some(canvas) = app.get_window("canvas")
         && let Ok(size) = canvas.inner_size()
         && let Err(error) = engine.draw_scaled(
@@ -110,7 +128,12 @@ fn main() {
         .setup(|app| {
             let registry = Arc::new(unge_executor::math_registry());
             let editor = Editor::new(initial_document(), 256)?.with_validator(registry.clone())?;
-            let engine = Engine::from_editor(editor);
+            let execution = unge_executor::RunService::new(
+                registry.clone(),
+                unge_executor::Scheduler::new(4, 128),
+                unge_executor::RunLimits::default(),
+            );
+            let engine = Engine::from_editor(editor).with_execution(execution.clone());
             engine
                 .set_labels(labels(&registry))
                 .map_err(|e| e.message)?;
@@ -151,12 +174,17 @@ fn main() {
             if std::env::args().any(|arg| arg == "--acx-stdio") {
                 let engine = app.state::<Engine>().inner().clone();
                 let handle = app.handle().clone();
+                let controls = app
+                    .get_webview_window("controls")
+                    .ok_or("controls window missing")?;
                 std::thread::spawn(move || {
                     let mut provider = unge_acx::Provider::new(
                         Arc::new(engine.clone()),
                         registry,
                         unge_acx::Policy::math_demo(),
-                    );
+                    )
+                    .with_execution(execution, unge_tauri::execution_observer(controls))
+                    .expect("same host registry");
                     let result = unge_acx::serve(
                         &mut provider,
                         std::io::stdin().lock(),

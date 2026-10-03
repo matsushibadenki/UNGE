@@ -11,7 +11,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let registry = Arc::new(unge_executor::math_registry());
     let editor = Editor::new(document, 256)?.with_validator(registry.clone())?;
     let host = Arc::new(MemoryHost::from_editor(editor));
-    let mut provider = Provider::new(host, registry, Policy::math_demo());
+    let execution = unge_executor::RunService::new(
+        registry.clone(),
+        unge_executor::Scheduler::new(4, 128),
+        unge_executor::RunLimits::default(),
+    );
+    let mut provider =
+        Provider::new(host, registry, Policy::math_demo()).with_execution(execution, |_| {})?;
     serve(
         &mut provider,
         io::stdin().lock(),

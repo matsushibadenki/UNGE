@@ -11,6 +11,7 @@ pub struct GpuRenderer {
     capacity: usize,
     count: u32,
     prepared: bool,
+    background: [f32; 4],
 }
 impl GpuRenderer {
     pub fn new(device: &wgpu::Device, format: wgpu::TextureFormat) -> Self {
@@ -25,7 +26,7 @@ impl GpuRenderer {
         let text = crate::text::TextRenderer::new(device, format, fonts);
         let camera = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("UNGE camera"),
-            contents: bytemuck::cast_slice(&[0.0f32; 8]),
+            contents: bytemuck::cast_slice(&[0.0f32; 12]),
             usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
         });
         let layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
@@ -98,6 +99,7 @@ impl GpuRenderer {
             capacity,
             count: 0,
             prepared: false,
+            background: crate::Theme::Dark.palette().background.linear(),
         }
     }
     pub fn text_stats(&self) -> crate::TextStats {
@@ -149,6 +151,15 @@ impl GpuRenderer {
         {
             return Err(unge_core::Error::Invalid("invalid text target size".into()));
         }
+        if scene
+            .background
+            .iter()
+            .chain(scene.grid_color.iter())
+            .any(|c| !c.is_finite() || !(0.0..=1.0).contains(c))
+        {
+            return Err(unge_core::Error::Invalid("invalid scene colours".into()));
+        }
+        self.background = scene.background;
         self.text.prepare(queue, scene, viewport, size)?;
         let bytes = scene
             .quads
@@ -184,6 +195,10 @@ impl GpuRenderer {
                 viewport.size[1],
                 0.0,
                 0.0,
+                scene.grid_color[0],
+                scene.grid_color[1],
+                scene.grid_color[2],
+                scene.grid_color[3],
             ]),
         );
         self.prepared = true;
@@ -199,10 +214,10 @@ impl GpuRenderer {
                 resolve_target: None,
                 ops: wgpu::Operations {
                     load: wgpu::LoadOp::Clear(wgpu::Color {
-                        r: 0.04,
-                        g: 0.052,
-                        b: 0.075,
-                        a: 1.0,
+                        r: f64::from(self.background[0]),
+                        g: f64::from(self.background[1]),
+                        b: f64::from(self.background[2]),
+                        a: f64::from(self.background[3]),
                     }),
                     store: wgpu::StoreOp::Store,
                 },

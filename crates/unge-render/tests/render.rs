@@ -251,8 +251,9 @@ fn gpu_renders_pixels_without_validation_errors() {
         rx.recv().unwrap().unwrap();
         let pixels = buffer.slice(..).get_mapped_range();
         let center = &pixels[(160 * 256 + 160) * 4..(160 * 256 + 160) * 4 + 4];
+        let expected = (Theme::Dark.palette().node.linear()[0] * 255.).round() as u8;
         assert!(
-            center[0] > 18 && center[0] < 30,
+            center[0].abs_diff(expected) <= 1,
             "node body pixel: {center:?}"
         );
         assert_eq!(center[3], 255);

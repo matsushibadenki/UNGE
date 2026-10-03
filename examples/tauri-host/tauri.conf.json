@@ -6,7 +6,7 @@
   "build": { "frontendDist": "ui" },
   "app": {
     "withGlobalTauri": true,
-    "windows": [{ "label": "controls", "title": "UNGE Controls", "width": 380, "height": 600, "minWidth": 320, "minHeight": 400 }],
+    "windows": [{ "label": "controls", "title": "UNGE Controls", "width": 380, "height": 720, "minWidth": 320, "minHeight": 400 }],
     "security": { "csp": "default-src 'self'; script-src 'self'; style-src 'self'; connect-src ipc: http://ipc.localhost" }
   },
   "bundle": { "active": false }

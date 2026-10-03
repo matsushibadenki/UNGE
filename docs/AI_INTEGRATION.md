@@ -16,12 +16,13 @@
 4. `NodeExecutor` を実装し、`Registry::register` で登録する。
 5. `Scheduler::run` にDocumentのグラフを渡す。実行中の編集を許すなら、Rust内で取得したsnapshotを実行する。
 6. Tauriホストで `Editor::new(document, 256)?.with_validator(registry.clone())?` を作り、`Engine::from_editor(editor)` へ渡して`app.manage(engine)` する。ウインドウは `register_view` で登録する。
-7. `invoke_handler(unge_tauri::handler())` を接続する。既存命令と共存するときは `generate_handler![unge_tauri::dispatch, unge_tauri::inspect, your_command]` を使う。
+7. `invoke_handler(unge_tauri::handler())` を接続する。既存命令と共存するときは `generate_handler![unge_tauri::dispatch, unge_tauri::inspect, unge_tauri::appearance, unge_tauri::start_execution, unge_tauri::current_execution, unge_tauri::execution_status, unge_tauri::cancel_execution, your_command]` を使う。
 8. `createClient(invoke)` でWebViewから操作する。描画フレームを返す命令を追加しない。
 9. Rustネイティブウインドウから `SurfaceRenderer` を作り、Engineに登録する。HiDPIでは `draw_scaled` を使う。実装例は `examples/tauri-host/src/main.rs`。
 10. [POINTER_INPUT.md](POINTER_INPUT.md) に従い、論理座標のDown/Move/Up/Cancelを順に送る。1操作のrevisionを固定し、Rust内のプレビューと確定Commandを分ける。
 11. [GPU_TEXT.md](GPU_TEXT.md) に従い、LabelCatalogで型・Portの表示名を登録する。配布環境の日本語・简体中文フォントを確認し、必要ならFontSystemを注入する。言語はViewに置く。
-12. ノードを選んだときだけinspectを呼び、`unge://changed`イベントで小さなSummaryを受け取る。
+12. [THEMES.md](THEMES.md) に従い、ViewのテーマとRustから取得したCSS配色を使う。独自invoke handlerにはappearanceも登録する。
+13. ノードを選んだときだけinspectを呼び、`unge://changed`イベントで小さなSummaryを受け取る。
 
 ## インターフェース
 
@@ -43,12 +44,15 @@ await engine.apply({ kind: 'move_node', id: selectedId,
 
 [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md) にプロパティ制約・初期値・編集時検証・Undo容量の組み込み例があります。RegistryをArcに包み、UI・ACXで同じ定義を共有してください。
 
+[EXECUTION_CACHE.md](EXECUTION_CACHE.md) に `CacheLimits`・使用量照会・上限変更・pureの契約を記載しています。キャッシュはRust内に保持し、Report/IPC/ACXの形式は変わりません。
+
 `math_registry()` が最小の実例です。`NodeExecutor::execute` はBoxFutureを返すためdyn traitとして登録できます。
 `Inputs` はPort名→Value列です。Single入力も1要素の列として受け取ります。
 Multiple入力の値の順序はEdge ID順です。意味のある順序が必要なアプリは明示的な順序プロパティを設計してください。
 出力名・型・必須出力は実行後に検証され、違反はFailedになります。
 
 CPU処理でasync executorを塞がないよう、ホストの `spawn_blocking` / Rayonなどへ処理を逃がしてください。
+進捗は `run_with_progress`、run全体の期限は `run_with_deadline` でホストへ組み込めます。[EXECUTION_PROGRESS.md](EXECUTION_PROGRESS.md) のイベント契約・Future破棄・通知の制限を参照してください。
 キャンセルは協調式です。長時間ノードは `context.cancellation.is_cancelled()` をチェックし、HTTPタイムアウト等も実装します。
 Schedulerは実行中の外部副作用を巻き戻しません。GPU処理はホスト所有のDevice/Queue/ResourceStoreをexecutorにArcで注入します。
 
@@ -88,3 +92,7 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 [ACX_INTEGRATION.md](ACX_INTEGRATION.md) を読み、`examples/acx-provider/agent.py` と同じライフサイクルを使ってください。
 通常UIと同じRustのEngineに接続し、別Documentを作って同期する設計にしないでください。
 事前確認のdigest・内容・revisionを照合し、競合時には新しく観測してpreflightを作り直します。
+
+## 実行サービスを接続する
+
+[EXECUTION_SERVICE.md](EXECUTION_SERVICE.md) のRunServiceをEngineのclone/manage前にwith_executionで設定します。Registry ArcとサービスをACX Providerにも共有し、実行IDとsnapshot revisionを使って進捗を管理してください。Tauriには開始・現在実行・照会・キャンセル命令があります。既存ACX pipeのexecuteは同期で、AIの実行中照会・キャンセルはまだwire対応していません。

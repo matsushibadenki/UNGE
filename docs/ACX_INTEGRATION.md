@@ -136,3 +136,11 @@ The [profile](ACX_NODE_GRAPH_PROFILE.md) specifies exact messages, digest byte s
 Definition observations include property constraints and defaults. Invalid properties fail preflight with `invalid_properties`; required connections are checked before execution. Use a validated shared Editor to enforce the same rules for UI edits. History eviction can make recovery unavailable.
 
 定义查询包含属性约束与初始值。无效属性在预检时以 `invalid_properties` 拒绝，必填连接在执行前检查。请为共享Editor配置验证器，使界面与AI遵循相同规则。历史被移除后可能无法恢复。
+
+## 共有実行サービス / Shared execution service / 共享执行服务
+
+TauriとACXに同じRunServiceとRegistry Arcを渡すと、承認済みrunの二重実行を防ぎ、ホストへRunSummaryを通知できます。既存execute/Receiptは同期形式を維持し、同じcommitの再送で再実行しません。busy解消後の実行も新しいpreflight/承認/commitで行います。JSON Linesの実行中AI照会・キャンセルは未対応です。設定は [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
+
+Share RunService and the exact Registry Arc with Tauri/Provider to avoid overlapping UI/AI runs and notify a host observer. Existing synchronous execute/Receipt and replay contracts are preserved. A busy failure requires a new approved commit; it is not retried automatically. AI queries/cancellation during blocking JSON Lines execution remain unfinished. See [execution service](EXECUTION_SERVICE.md#english).
+
+Tauri与Provider共享RunService及同一Registry Arc可防止UI/AI同时重复执行，并通知主机。既有同步execute/Receipt及重放约定保持不变。busy失败后的执行需要重新获批的commit，不会自动重试。JSON Lines执行期间的AI查询与取消尚未支持。详见[共享服务](EXECUTION_SERVICE.md#简体中文)。

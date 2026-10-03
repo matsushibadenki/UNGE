@@ -1,3 +1,6 @@
+import type { RunSummary } from './execution';
+export type { ExecutionStatus, ExecutionStopReason, ProgressEvent, RunSummary, RunState } from './execution';
+export { executionStatusMessages, executionStopMessages, runStateMessages } from './execution';
 export type { Definition, LocalizedText, PropertyDefinition, PropertySchema, PropertyType } from './definitions';
 /** No graph mirror or frame data. Inject Tauri's invoke from the host application. */
 export type Id = string;
@@ -25,8 +28,12 @@ export type PointerEvent =
   | { kind: 'down'; pointer: number; position: [number, number]; button: 'primary' | 'pan'; additive?: boolean }
   | { kind: 'move' | 'up'; pointer: number; position: [number, number] }
   | { kind: 'cancel' };
+export type Theme = 'dark' | 'light';
+export type ThemeToken = 'background' | 'surface' | 'border' | 'accent' | 'text' | 'muted' | 'hover';
+export interface Appearance { theme: Theme; colors: Record<ThemeToken, string> }
 export type Locale = 'en' | 'ja' | 'zh-cn';
 export type Request =
+  | { kind: 'set_theme'; theme: Theme }
   | { kind: 'set_locale'; locale: Locale }
   | { kind: 'pointer'; expected_revision: number; event: PointerEvent }
   | { kind: 'apply'; expected_revision: number; command: Command }
@@ -39,7 +46,13 @@ export type Invoke = <T>(command: string, args?: Record<string, unknown>) => Pro
 export function createClient(invoke: Invoke) {
   const dispatch = (request: Request) => invoke<Summary>('dispatch', { request });
   return {
+    startExecution: (revision: number) => invoke<RunSummary>('start_execution', { expectedRevision: revision }),
+    currentExecution: () => invoke<RunSummary | null>('current_execution'),
+    executionStatus: (id: Id) => invoke<RunSummary>('execution_status', { id }),
+    cancelExecution: (id: Id) => invoke<RunSummary>('cancel_execution', { id }),
     pointer: (event: PointerEvent, revision: number) => dispatch({ kind: 'pointer', event, expected_revision: revision }),
+    appearance: () => invoke<Appearance>('appearance'),
+    theme: (theme: Theme) => dispatch({ kind: 'set_theme', theme }),
     locale: (locale: Locale) => dispatch({ kind: 'set_locale', locale }),
     summary: () => dispatch({ kind: 'summary' }),
     apply: (command: Command, revision: number) => dispatch({ kind: 'apply', command, expected_revision: revision }),
