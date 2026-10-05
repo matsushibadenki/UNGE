@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "edges": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "nodes": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "revision": {
+      "format": "uint64",
+      "minimum": 0.0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "edges",
+    "nodes",
+    "revision"
+  ],
+  "title": "Summary",
+  "type": "object"
+}

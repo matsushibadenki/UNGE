@@ -7,3 +7,11 @@ license = "MIT OR Apache-2.0"
 unge-core = { path = "../unge-core" }
 serde = { version = "1", features = ["derive"] }
 thiserror = "2"
+
+[features]
+schema = ["dep:schemars", "unge-core/schema"]
+
+[dependencies.schemars]
+version = "=0.8.22"
+optional = true
+features = ["uuid1"]

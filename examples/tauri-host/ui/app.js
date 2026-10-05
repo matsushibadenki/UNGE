@@ -10,7 +10,7 @@ let locale = navigator.language.startsWith('ja') ? 'ja' : navigator.language.sta
 let summary = { revision:0,nodes:0,edges:0 };
 let pending = Promise.resolve();
 function status() { $('status').textContent = `${summary.nodes} ${text[locale].nodes} · ${text[locale].revision} ${summary.revision}`; }
-function translate() { document.documentElement.lang=locale; for (const key of ['title','description','add','addSum','undo','redo','zoomLabel','help','themeLabel','themeDark','themeLight']) $(key).textContent=text[locale][key]; $('locale').setAttribute('aria-label',text[locale].language); status(); }
+function translate() { document.documentElement.lang=locale; for (const key of ['title','description','add','addSum','undo','redo','zoomLabel','help','themeLabel','themeDark','themeLight']) $(key).textContent=text[locale][key]; $('locale').setAttribute('aria-label',text[locale].language); status(); if (window.executionUI) window.executionUI.translate(locale); if (window.accessibleGraph) window.accessibleGraph.translate(); if (window.groupControls) window.groupControls.translate(); }
 async function send(request) { summary=await invoke('dispatch',{request}); status(); return summary; }
 function applyAppearance(appearance) {
   const root = document.documentElement;
@@ -26,7 +26,7 @@ async function chooseTheme(theme, remember = true) {
 }
 function enqueue(action) { pending=pending.then(action).catch(async error => { await send({kind:'summary'}).catch(()=>{}); console.error(error); $('status').textContent=inputErrors[locale][error.code] ?? text[locale].failed; }); }
 for (const [id, theme] of [['themeDark','dark'],['themeLight','light']]) $(id).onclick=()=>enqueue(()=>chooseTheme(theme));
-$('locale').value=locale; $('locale').onchange=()=>{locale=$('locale').value;translate();enqueue(()=>send({kind:'set_locale',locale:locale.toLowerCase()}));};
+$('locale').value=locale; $('locale').onchange=()=>{locale=$('locale').value;translate();enqueue(async ()=>{ await send({kind:'set_locale',locale:locale.toLowerCase()}); await window.accessibleGraph.refresh(); });};
 function addNode(sum) {
   const port = name => ({name,data_type:{kind:'float'},cardinality:'single',required:true});
   return send({kind:'apply',expected_revision:summary.revision,command:{kind:'add_node',node:{id:crypto.randomUUID(),type_id:sum?'math.add':'math.number',inputs:sum?[port('a'),port('b')]:[],outputs:[port('value')],properties:sum?{}:{value:42}},rect:{x:40+(summary.nodes%3)*240,y:40+Math.floor(summary.nodes/3)*140,width:180,height:90}}});
@@ -47,8 +47,17 @@ enqueue(async ()=> {
 listen('unge://appearance-changed',({payload})=>applyAppearance(payload)).catch(error=>console.error(error));
 
 const inputErrors = {
-  en: { invalid_request:'The request is invalid.', state_unavailable:'The view is unavailable.', unknown_view:'This window is not registered.', revision_conflict:'The graph changed. Repeat the gesture.', invalid_connection:'These ports cannot be connected.', invalid_pointer:'The pointer position is invalid.', pointer_busy:'Another pointer is editing this view.' },
-  ja: { invalid_request:'リクエストが無効です。', state_unavailable:'画面を利用できません。', unknown_view:'このウインドウは登録されていません。', revision_conflict:'グラフが更新されました。操作をやり直してください。', invalid_connection:'このポート同士は接続できません。', invalid_pointer:'ポインターの座標が無効です。', pointer_busy:'別のポインターで操作中です。' },
-  'zh-CN': { invalid_request:'请求无效。', state_unavailable:'视图不可用。', unknown_view:'此窗口尚未注册。', revision_conflict:'节点图已更新，请重新操作。', invalid_connection:'这些端口无法连接。', invalid_pointer:'指针位置无效。', pointer_busy:'另一个指针正在操作。' }
+  en: { missing_group:'This group no longer exists. Refresh the list.', invalid_request:'The request is invalid.', state_unavailable:'The view is unavailable.', unknown_view:'This window is not registered.', revision_conflict:'The graph changed. Repeat the gesture.', invalid_connection:'These ports cannot be connected.', invalid_pointer:'The pointer position is invalid.', pointer_busy:'Another pointer is editing this view.' },
+  ja: { missing_group:'このグループは削除されています。一覧を更新してください。', invalid_request:'リクエストが無効です。', state_unavailable:'画面を利用できません。', unknown_view:'このウインドウは登録されていません。', revision_conflict:'グラフが更新されました。操作をやり直してください。', invalid_connection:'このポート同士は接続できません。', invalid_pointer:'ポインターの座標が無効です。', pointer_busy:'別のポインターで操作中です。' },
+  'zh-CN': { missing_group:'此组已删除，请刷新列表。', invalid_request:'请求无效。', state_unavailable:'视图不可用。', unknown_view:'此窗口尚未注册。', revision_conflict:'节点图已更新，请重新操作。', invalid_connection:'这些端口无法连接。', invalid_pointer:'指针位置无效。', pointer_busy:'另一个指针正在操作。' }
 };
 listen('unge://interaction-error', ({payload}) => { console.error(payload); $('status').textContent=inputErrors[locale][payload.code] ?? text[locale].failed; });
+
+window.executionUI = createExecutionUI({ invoke, listen, locale: () => locale, revision: () => summary.revision });
+window.executionUI.translate(locale);
+
+window.accessibleGraph = createAccessibleGraph({ invoke, send, enqueue, locale: () => locale });
+enqueue(() => window.accessibleGraph.refresh());
+
+window.groupControls = createGroupControls({ invoke, send, enqueue, locale: () => locale });
+enqueue(() => window.groupControls.refresh());

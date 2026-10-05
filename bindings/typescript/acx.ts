@@ -1,3 +1,4 @@
+import type { RunSummary } from './execution';
 /** Experimental ACX JSON Lines profile. The transport is a host-owned process/pipe. */
 import type { Definition } from './definitions';
 import type { Edge, Group, Id, Json, Rect } from './index';
@@ -35,6 +36,7 @@ export interface Receipt {
   status: 'accepted' | 'succeeded' | 'failed' | 'cancelled'; issuedAt: string;
   requestHash: string; resultHash?: string; effects?: string[]; recovery?: Record<string, unknown>;
 }
+export interface RunJob { commitId: string; run: RunSummary; execution: Execution | null }
 export interface Observation { query: 'summary' | 'definitions' | 'nodes' | 'node' | 'edges' | 'groups'; id?: Id; after?: string; limit?: number; expected_revision?: number }
 export interface DefinitionPage { documentId: Id; revision: number; nodes: number; edges: number; groups: number; items: Definition[]; nextCursor: string | null }
 /** No implicit authorization or retry. Inspect/hash-check a preflight before calling authorize. */
@@ -55,6 +57,9 @@ export function createAcxClient(transport: AcxTransport) {
     preflight: (input: AcxIntent) => call<Preflight>('preflight', { input }),
     authorize: (preflight: Preflight) => call<Grant>('authorize', binding(preflight)),
     commit: (preflight: Preflight, grant: Grant) => call<Commit>('commit', { ...binding(preflight), authorization: grant.authorization, input: preflight.input }),
+    startRun: (commitId: string) => call<RunJob>('run_start', { commitId }),
+    runStatus: (commitId: string) => call<RunJob>('run_status', { commitId }),
+    cancelRun: (commitId: string) => call<RunJob>('run_cancel', { commitId }),
     execute: (commitId: string) => call<Execution>('execute', { commitId }),
     receipt: (receiptId: string) => call<Receipt>('receipt', { receiptId }),
     recover: (commitId: string, grant: Grant, expectedRevision: number) => call<Execution>('recover', { commitId, authorization: grant.authorization, expectedRevision }),

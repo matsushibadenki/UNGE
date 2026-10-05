@@ -1,0 +1,125 @@
+use unge_core::{Id, Rect, SpatialIndex};
+
+#[test]
+fn bvh_queries_match_brute_force_across_dense_and_sparse_geometry() {
+    let mut seed = 17_u64;
+    let mut random = || {
+        seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1);
+        (seed >> 32) as u32 as f32 / u32::MAX as f32
+    };
+    let mut items: Vec<_> = (1..=2048)
+        .map(|id| {
+            (
+                Id::from_u128(id),
+                Rect {
+                    x: random() * 20000.0 - 10000.0,
+                    y: random() * 20000.0 - 10000.0,
+                    width: random() * 800.0 + 1.0,
+                    height: random() * 800.0 + 1.0,
+                },
+            )
+        })
+        .collect();
+    // Equal split coordinates, nested bounds and coincident overlapping nodes.
+    items.extend((2049..=2112).map(|id| {
+        (
+            Id::from_u128(id),
+            Rect {
+                x: 0.0,
+                y: 0.0,
+                width: 180.0,
+                height: 90.0,
+            },
+        )
+    }));
+    let forward = SpatialIndex::from_rects(items.clone());
+    let mut reversed = items.clone();
+    reversed.reverse();
+    let backward = SpatialIndex::from_rects(reversed);
+    for _ in 0..200 {
+        let area = Rect {
+            x: random() * 20000.0 - 10000.0,
+            y: random() * 20000.0 - 10000.0,
+            width: random() * 3000.0 + 1.0,
+            height: random() * 3000.0 + 1.0,
+        };
+        let mut expected: Vec<_> = items
+            .iter()
+            .filter(|(_, rect)| rect.intersects(area))
+            .map(|(id, _)| *id)
+            .collect();
+        expected.sort();
+        assert_eq!(forward.query(area), expected);
+        assert_eq!(backward.query(area), expected);
+    }
+    assert_eq!(forward.hit_test([90.0, 45.0]), Some(Id::from_u128(2112)));
+}
+
+#[test]
+fn empty_invalid_and_boundary_geometry_preserves_query_contract() {
+    let rect = Rect {
+        x: -100.0,
+        y: -100.0,
+        width: 200.0,
+        height: 200.0,
+    };
+    let index = SpatialIndex::from_rects(vec![
+        (Id::from_u128(1), rect),
+        (
+            Id::from_u128(2),
+            Rect {
+                x: f32::NAN,
+                ..rect
+            },
+        ),
+    ]);
+    assert_eq!(
+        index.query(Rect {
+            x: 100.0,
+            y: 100.0,
+            width: 1.0,
+            height: 1.0
+        }),
+        vec![Id::from_u128(1)]
+    );
+    assert!(index.query(Rect { width: 0.0, ..rect }).is_empty());
+    assert!(SpatialIndex::from_rects(vec![]).query(rect).is_empty());
+    assert!(
+        SpatialIndex::from_rects(vec![(
+            Id::from_u128(1),
+            Rect {
+                width: -1.0,
+                ..rect
+            }
+        )])
+        .query(rect)
+        .is_empty()
+    );
+}
+
+#[test]
+fn bounded_updates_replace_old_bounds_and_reject_atomically() {
+    use std::collections::BTreeMap;
+    let old = Rect::default();
+    let moved = Rect { x: 5000.0, ..old };
+    let mut index = SpatialIndex::from_rects(vec![(Id::from_u128(1), old)]);
+    assert!(index.update_rects(&[(Id::from_u128(1), moved)].into()));
+    assert!(index.query(old).is_empty());
+    assert_eq!(index.query(moved), vec![Id::from_u128(1)]);
+    assert_eq!(index.hit_test([5010.0, 10.0]), Some(Id::from_u128(1)));
+    let bad = [
+        (Id::from_u128(1), old),
+        (Id::from_u128(2), Rect { width: 0.0, ..old }),
+    ]
+    .into();
+    assert!(!index.update_rects(&bad));
+    assert_eq!(index.query(moved), vec![Id::from_u128(1)]);
+    let full: BTreeMap<_, _> = (1..=128).map(|id| (Id::from_u128(id), moved)).collect();
+    assert!(index.update_rects(&full));
+    assert!(!index.update_rects(&[(Id::from_u128(129), old)].into()));
+    assert_eq!(index.query(moved).len(), 128);
+    assert!(index.query(old).is_empty());
+    // Replacing an existing ID stays within the overlay budget.
+    assert!(index.update_rects(&[(Id::from_u128(1), old)].into()));
+    assert_eq!(index.query(old), vec![Id::from_u128(1)]);
+}

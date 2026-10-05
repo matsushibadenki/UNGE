@@ -4195,9 +4195,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "unge-contracts"
+version = "0.1.0"
+dependencies = [
+ "schemars 0.8.22",
+ "serde_json",
+ "unge-core",
+ "unge-executor",
+ "unge-tauri",
+]
+
+[[package]]
 name = "unge-core"
 version = "0.1.0"
 dependencies = [
+ "schemars 0.8.22",
  "serde",
  "serde_json",
  "thiserror 2.0.20",
@@ -4209,6 +4221,7 @@ name = "unge-executor"
 version = "0.1.0"
 dependencies = [
  "futures",
+ "schemars 0.8.22",
  "serde",
  "serde_json",
  "thiserror 2.0.20",
@@ -4229,6 +4242,7 @@ dependencies = [
 name = "unge-interaction"
 version = "0.1.0"
 dependencies = [
+ "schemars 0.8.22",
  "serde",
  "thiserror 2.0.20",
  "unge-core",
@@ -4241,7 +4255,9 @@ dependencies = [
  "bytemuck",
  "cosmic-text",
  "pollster",
+ "schemars 0.8.22",
  "serde",
+ "serde_json",
  "unge-core",
  "unge-interaction",
  "wgpu",
@@ -4251,6 +4267,7 @@ dependencies = [
 name = "unge-tauri"
 version = "0.1.0"
 dependencies = [
+ "schemars 0.8.22",
  "serde",
  "serde_json",
  "tauri",

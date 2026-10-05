@@ -42,3 +42,21 @@ Execution caching uses exact-key hash lookup and entry/byte limits. See [cache i
 Rust hosts can observe node progress and provide a future for the run deadline. See [execution progress and cancellation](EXECUTION_PROGRESS.md#english).
 
 Share RunService between Tauri and ACX for run identity, frozen revisions, bounded progress state and host cancellation. See [execution service](EXECUTION_SERVICE.md#english).
+
+The control window now includes run/cancel buttons and progress, with polling recovery and a notice when the document has changed since execution began.
+
+Use `python3 examples/acx-provider/agent.py --async-run` for the optional async job lifecycle. Agents can query/cancel approved runs on the same pipe; see [the job profile](ACX_ASYNC_JOBS.md#english).
+
+Rust contracts generate TypeScript types and JSON Schema. See [contract generation](CONTRACT_GENERATION.md) for regeneration and property value constraints.
+
+A reproducible 10,000-node/30,000-edge CPU benchmark and median-partition BVH construction are available. See [performance measurements](PERFORMANCE.md); 60 FPS remains unverified.
+
+Small node moves update retained render indexes incrementally across UI, pointer and ACX edits. See [index updates](INDEX_UPDATES.md).
+
+Adaptive cubic subdivision reduces geometry for straight and distant edges. See [curve tessellation](CURVE_TESSELLATION.md) for error targets and bounds.
+
+GPU group frames and titles follow member geometry and drag previews. See [group rendering](GROUP_RENDERING.md).
+
+Added keyboard node selection, coordinate movement and deletion through HTML controls backed by bounded Rust semantic pages. [ACCESSIBILITY.md](ACCESSIBILITY.md)。
+
+Group creation, rename, membership edits, deletion and member selection are available from the three-language UI. [GROUP_EDITING.md](GROUP_EDITING.md)。

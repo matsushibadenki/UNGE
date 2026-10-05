@@ -12,6 +12,7 @@ serde_json = "1"
 tauri = { version = "2", default-features = false }
 
 [features]
+schema = ["dep:schemars", "unge-core/schema", "unge-executor/schema", "unge-interaction/schema", "unge-render/schema"]
 acx = ["dep:unge-acx"]
 
 [dependencies.unge-acx]
@@ -20,3 +21,8 @@ optional = true
 
 [dependencies.unge-executor]
 path = "../unge-executor"
+
+[dependencies.schemars]
+version = "=0.8.22"
+optional = true
+features = ["uuid1"]

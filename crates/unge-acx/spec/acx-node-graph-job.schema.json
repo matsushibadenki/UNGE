@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://acx.dev/schema/experimental/0.1/node-graph-job.json",
+  "title": "Experimental Node Graph Async Job Response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "commitId",
+    "run",
+    "execution"
+  ],
+  "properties": {
+    "commitId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "revision",
+        "sequence",
+        "total",
+        "started",
+        "finished",
+        "completed",
+        "cached",
+        "failed",
+        "blocked",
+        "cancelled",
+        "id",
+        "document_id",
+        "state",
+        "cancel_requested",
+        "reason",
+        "error_code"
+      ],
+      "properties": {
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "started": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "finished": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cached": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "blocked": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cancelled": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "document_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "running",
+            "finished",
+            "failed"
+          ]
+        },
+        "cancel_requested": {
+          "type": "boolean"
+        },
+        "reason": {
+          "enum": [
+            null,
+            "completed",
+            "cancelled",
+            "deadline_exceeded"
+          ]
+        },
+        "error_code": {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      }
+    },
+    "execution": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "result",
+            "resultJson",
+            "receiptId"
+          ],
+          "properties": {
+            "result": {
+              "type": "object"
+            },
+            "resultJson": {
+              "type": "string"
+            },
+            "receiptId": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "params": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "commitId"
+      ],
+      "properties": {
+        "commitId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

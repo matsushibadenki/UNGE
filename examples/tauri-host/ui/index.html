@@ -6,6 +6,21 @@
 <h1 id="title"></h1><p id="description"></p>
 <div class="actions"><button id="add"></button><button id="addSum"></button><button id="undo"></button><button id="redo"></button></div>
 <label for="zoom" id="zoomLabel"></label><input id="zoom" type="range" min="0.2" max="2" step="0.05" value="1">
+<section class="execution" aria-labelledby="executionLabel"><h2 id="executionLabel"></h2><div class="actions"><button id="run" type="button"></button><button id="cancelRun" type="button" disabled></button></div><progress aria-labelledby="executionLabel" id="runProgress" max="1" value="0"></progress><output id="runStatus" role="status" aria-live="polite"></output></section>
+<section class="graph-controls" aria-labelledby="graphLabel">
+<h2 id="graphLabel"></h2><p id="graphHelp"></p>
+<label for="nodeChoice" id="nodeLabel"></label><select id="nodeChoice" aria-describedby="graphHelp"></select>
+<div class="actions"><button id="selectNode" type="button" disabled></button><button id="deleteNode" type="button" disabled></button></div>
+<form id="moveForm"><div class="coordinates"><div><label for="nodeX" id="xLabel"></label><input id="nodeX" type="number" min="-1000000000" max="1000000000" step="any" required disabled></div><div><label for="nodeY" id="yLabel"></label><input id="nodeY" type="number" min="-1000000000" max="1000000000" step="any" required disabled></div></div><button id="moveNode" type="submit" disabled></button></form>
+<div class="actions"><button id="previousNodes" type="button"></button><button id="nextNodes" type="button" disabled></button><button id="refreshNodes" type="button"></button></div><output id="graphStatus" role="status" aria-live="polite"></output>
+</section>
+<section class="graph-controls" aria-labelledby="groupsLabel">
+<h2 id="groupsLabel"></h2><p id="groupsHelp"></p>
+<label for="groupChoice" id="groupChoiceLabel"></label><select id="groupChoice" aria-describedby="groupsHelp" disabled></select>
+<label for="groupName" id="groupNameLabel"></label><input id="groupName" type="text" maxlength="256" required>
+<div class="actions"><button id="createGroup" type="button" disabled></button><button id="renameGroup" type="button" disabled></button><button id="selectGroup" type="button" disabled></button><button id="deleteGroup" type="button" disabled></button><button id="addGroupMembers" type="button" disabled></button><button id="removeGroupMembers" type="button" disabled></button></div>
+<div class="actions"><button id="firstGroups" type="button"></button><button id="nextGroups" type="button" disabled></button><button id="refreshGroups" type="button"></button></div><output id="groupStatus" role="status" aria-live="polite"></output>
+</section>
 <p id="help"></p>
 <output id="status" aria-live="polite"></output>
-</main><script src="app.js"></script></body></html>
+</main><script src="execution.js"></script><script src="accessibility.js"></script><script src="groups.js"></script><script src="app.js"></script></body></html>

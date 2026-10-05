@@ -104,7 +104,7 @@ class Agent:
         self.process.stdout.close()
 
 
-def run_demo(binary, desktop=False, validate=None, progress=print):
+def run_demo(binary, desktop=False, validate=None, progress=print, async_run=False):
     agent = Agent(binary, desktop, validate)
     try:
         manifest = agent.call('discover')
@@ -136,7 +136,30 @@ def run_demo(binary, desktop=False, validate=None, progress=print):
         progress('edit / receipt / retry PASS — added 3 nodes and 2 edges once')
         run_intent = {'kind': 'run', 'document_id': after['documentId'], 'expected_revision': after['revision']}
         run_pf, _, run_commit = agent.prepare(run_intent)
-        run = agent.call('execute', {'commitId': run_commit['commitId']})
+        if async_run:
+            extension = agent.capabilities['org.unge.graph.run']['extensions']['org.unge.node-graph'].get('asyncJobs')
+            if not extension or extension['profile'] != 'experimental-node-graph-jobs-v1':
+                raise RuntimeError('provider does not advertise async jobs')
+            bound = {'commitId': run_commit['commitId']}
+            job = agent.call('run_start', bound)
+            agent.validate(job, 'node-graph-job')
+            identity = job['run']['id']
+            assert agent.call('run_start', bound)['run']['id'] == identity
+            until = time.monotonic() + 10
+            while job['execution'] is None:
+                if time.monotonic() >= until:
+                    agent.call('run_cancel', bound)
+                    raise RuntimeError('job outcome uncertain after client deadline; do not retry execution')
+                time.sleep(0.01)
+                job = agent.call('run_status', bound)
+                agent.validate(job, 'node-graph-job')
+                assert job['run']['id'] == identity
+            run = job['execution']
+            assert agent.call('run_cancel', bound) == job
+            assert agent.call('execute', bound) == run
+            progress('async job / status / terminal cancellation replay PASS')
+        else:
+            run = agent.call('execute', {'commitId': run_commit['commitId']})
         run_receipt = agent.receipt(run, run_pf)
         agent.validate(run['result'], agent.capabilities['org.unge.graph.run']['outputSchema'])
         assert run['result']['nodes'][total]['outputs']['value'] == {'kind': 'float', 'value': 42.0}
@@ -159,5 +182,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--binary', type=Path, default=Path(__file__).resolve().parents[2] / 'target/debug/unge-acx-provider')
     parser.add_argument('--desktop', action='store_true', help='Launch a Tauri host with --acx-stdio')
+    parser.add_argument('--async-run', action='store_true')
     args = parser.parse_args()
-    run_demo(args.binary.resolve(), args.desktop)
+    run_demo(args.binary.resolve(), args.desktop, async_run=args.async_run)

@@ -1,0 +1,1035 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Cardinality": {
+      "enum": [
+        "single",
+        "multiple"
+      ],
+      "type": "string"
+    },
+    "Command": {
+      "oneOf": [
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "add_node"
+              ],
+              "type": "string"
+            },
+            "node": {
+              "$ref": "#/definitions/Node"
+            },
+            "rect": {
+              "$ref": "#/definitions/Rect"
+            }
+          },
+          "required": [
+            "kind",
+            "node",
+            "rect"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "remove_node"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "move_node"
+              ],
+              "type": "string"
+            },
+            "rect": {
+              "$ref": "#/definitions/Rect"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "rect"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "edge": {
+              "$ref": "#/definitions/Edge"
+            },
+            "kind": {
+              "enum": [
+                "connect"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "edge",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "disconnect"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "key": {
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "set_property"
+              ],
+              "type": "string"
+            },
+            "value": true
+          },
+          "required": [
+            "id",
+            "key",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "group": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/Group"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "set_group"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "commands": {
+              "items": {
+                "$ref": "#/definitions/Command"
+              },
+              "type": "array"
+            },
+            "kind": {
+              "enum": [
+                "batch"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "commands",
+            "kind"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "DataType": {
+      "oneOf": [
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "bool"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "int"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "float"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "string"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "json"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "bytes"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "image"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "audio"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "video"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "tensor"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "event"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "any"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "custom"
+              ],
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "name"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Edge": {
+      "properties": {
+        "from": {
+          "$ref": "#/definitions/Endpoint"
+        },
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "to": {
+          "$ref": "#/definitions/Endpoint"
+        }
+      },
+      "required": [
+        "from",
+        "id",
+        "to"
+      ],
+      "type": "object"
+    },
+    "Endpoint": {
+      "properties": {
+        "node": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "port": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "node",
+        "port"
+      ],
+      "type": "object"
+    },
+    "Group": {
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "nodes": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "nodes"
+      ],
+      "type": "object"
+    },
+    "GroupAction": {
+      "description": "UI operations derive membership from the invoking Rust view, never a JS graph mirror.",
+      "oneOf": [
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "create"
+              ],
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "label"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "rename"
+              ],
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind",
+            "label"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "add_selection"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "remove_selection"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "delete"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "select_members"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "kind"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Locale": {
+      "enum": [
+        "en",
+        "ja",
+        "zh-cn"
+      ],
+      "type": "string"
+    },
+    "Node": {
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "inputs": {
+          "items": {
+            "$ref": "#/definitions/Port"
+          },
+          "type": "array"
+        },
+        "outputs": {
+          "items": {
+            "$ref": "#/definitions/Port"
+          },
+          "type": "array"
+        },
+        "properties": {
+          "additionalProperties": true,
+          "default": {},
+          "type": "object"
+        },
+        "type_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "inputs",
+        "outputs",
+        "type_id"
+      ],
+      "type": "object"
+    },
+    "PointerButton": {
+      "enum": [
+        "primary",
+        "pan"
+      ],
+      "type": "string"
+    },
+    "PointerEvent": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "additive": {
+              "default": false,
+              "type": "boolean"
+            },
+            "button": {
+              "$ref": "#/definitions/PointerButton"
+            },
+            "kind": {
+              "enum": [
+                "down"
+              ],
+              "type": "string"
+            },
+            "pointer": {
+              "format": "uint32",
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            "position": {
+              "items": {
+                "format": "float",
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            }
+          },
+          "required": [
+            "button",
+            "kind",
+            "pointer",
+            "position"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "move"
+              ],
+              "type": "string"
+            },
+            "pointer": {
+              "format": "uint32",
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            "position": {
+              "items": {
+                "format": "float",
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            }
+          },
+          "required": [
+            "kind",
+            "pointer",
+            "position"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "up"
+              ],
+              "type": "string"
+            },
+            "pointer": {
+              "format": "uint32",
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            "position": {
+              "items": {
+                "format": "float",
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            }
+          },
+          "required": [
+            "kind",
+            "pointer",
+            "position"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "cancel"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Port": {
+      "properties": {
+        "cardinality": {
+          "$ref": "#/definitions/Cardinality"
+        },
+        "data_type": {
+          "$ref": "#/definitions/DataType"
+        },
+        "name": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "cardinality",
+        "data_type",
+        "name",
+        "required"
+      ],
+      "type": "object"
+    },
+    "Rect": {
+      "properties": {
+        "height": {
+          "format": "float",
+          "type": "number"
+        },
+        "width": {
+          "format": "float",
+          "type": "number"
+        },
+        "x": {
+          "format": "float",
+          "type": "number"
+        },
+        "y": {
+          "format": "float",
+          "type": "number"
+        }
+      },
+      "required": [
+        "height",
+        "width",
+        "x",
+        "y"
+      ],
+      "type": "object"
+    },
+    "Theme": {
+      "description": "Presentation only. A theme belongs to a view, never to a Document.",
+      "enum": [
+        "dark",
+        "light"
+      ],
+      "type": "string"
+    },
+    "Viewport": {
+      "properties": {
+        "origin": {
+          "items": {
+            "format": "float",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "size": {
+          "items": {
+            "format": "float",
+            "type": "number"
+          },
+          "maxItems": 2,
+          "minItems": 2,
+          "type": "array"
+        },
+        "zoom": {
+          "format": "float",
+          "type": "number"
+        }
+      },
+      "required": [
+        "origin",
+        "size",
+        "zoom"
+      ],
+      "type": "object"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "action": {
+          "$ref": "#/definitions/GroupAction"
+        },
+        "expected_revision": {
+          "format": "uint64",
+          "minimum": 0.0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "group"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "expected_revision",
+        "kind"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "kind": {
+          "enum": [
+            "set_theme"
+          ],
+          "type": "string"
+        },
+        "theme": {
+          "$ref": "#/definitions/Theme"
+        }
+      },
+      "required": [
+        "kind",
+        "theme"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "kind": {
+          "enum": [
+            "set_locale"
+          ],
+          "type": "string"
+        },
+        "locale": {
+          "$ref": "#/definitions/Locale"
+        }
+      },
+      "required": [
+        "kind",
+        "locale"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "event": {
+          "$ref": "#/definitions/PointerEvent"
+        },
+        "expected_revision": {
+          "format": "uint64",
+          "minimum": 0.0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "pointer"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "event",
+        "expected_revision",
+        "kind"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "command": {
+          "$ref": "#/definitions/Command"
+        },
+        "expected_revision": {
+          "format": "uint64",
+          "minimum": 0.0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "apply"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "command",
+        "expected_revision",
+        "kind"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "expected_revision": {
+          "format": "uint64",
+          "minimum": 0.0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "undo"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_revision",
+        "kind"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "expected_revision": {
+          "format": "uint64",
+          "minimum": 0.0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "redo"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "expected_revision",
+        "kind"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "kind": {
+          "enum": [
+            "set_viewport"
+          ],
+          "type": "string"
+        },
+        "viewport": {
+          "$ref": "#/definitions/Viewport"
+        }
+      },
+      "required": [
+        "kind",
+        "viewport"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "kind": {
+          "enum": [
+            "select"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "ids",
+        "kind"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "kind": {
+          "enum": [
+            "summary"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "type": "object"
+    }
+  ],
+  "title": "Request"
+}

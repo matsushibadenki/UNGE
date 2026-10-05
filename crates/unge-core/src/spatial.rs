@@ -1,6 +1,7 @@
 use crate::{Document, Id, Rect};
+use std::collections::BTreeMap;
 
-/// Balanced BVH. Rebuild on committed geometry changes, query during pan/zoom.
+/// Balanced BVH with bounded rectangle updates; query during pan/zoom.
 #[derive(Debug)]
 enum Branch {
     Leaf {
@@ -26,7 +27,10 @@ impl Branch {
                 bounds: items[0].1,
             };
         }
-        items.sort_by(|a, b| {
+        // Only the median partition is needed. Sorting every subtree repeats
+        // ordering work; selection keeps balanced partitions with linear work
+        // per level. Query results are still sorted by ID at the API boundary.
+        items.select_nth_unstable_by(items.len() / 2, |a, b| {
             if depth.is_multiple_of(2) {
                 a.1.x.total_cmp(&b.1.x)
             } else {
@@ -67,6 +71,7 @@ impl Branch {
 #[derive(Debug, Default)]
 pub struct SpatialIndex {
     root: Option<Branch>,
+    updates: BTreeMap<Id, Rect>,
 }
 impl SpatialIndex {
     pub fn new(doc: &Document) -> Self {
@@ -82,7 +87,26 @@ impl SpatialIndex {
         items.retain(|(_, rect)| rect.valid());
         Self {
             root: (!items.is_empty()).then(|| Branch::build(&mut items, 0)),
+            updates: BTreeMap::new(),
         }
+    }
+    /// Bounded rectangle upserts over an immutable BVH. False leaves the index
+    /// unchanged: rebuild from authoritative geometry when the overlay fills.
+    /// Repeated updates to one ID replace its previous rectangle.
+    pub fn update_rects(&mut self, changes: &BTreeMap<Id, Rect>) -> bool {
+        if changes.values().any(|rect| !rect.valid())
+            || self.updates.len()
+                + changes
+                    .keys()
+                    .filter(|id| !self.updates.contains_key(id))
+                    .count()
+                > 128
+        {
+            return false;
+        }
+        self.updates
+            .extend(changes.iter().map(|(id, rect)| (*id, *rect)));
+        true
     }
     pub fn query(&self, area: Rect) -> Vec<Id> {
         let mut result = Vec::new();
@@ -90,6 +114,15 @@ impl SpatialIndex {
             && let Some(root) = &self.root
         {
             root.query(area, &mut result);
+        }
+        if area.valid() && !self.updates.is_empty() {
+            result.retain(|id| !self.updates.contains_key(id));
+            result.extend(
+                self.updates
+                    .iter()
+                    .filter(|(_, rect)| rect.intersects(area))
+                    .map(|(id, _)| *id),
+            );
         }
         result.sort();
         result
@@ -106,6 +139,7 @@ impl SpatialIndex {
     }
 }
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, serde::Serialize, serde::Deserialize)]
 pub struct Viewport {
     pub origin: [f32; 2],

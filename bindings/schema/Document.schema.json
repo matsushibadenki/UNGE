@@ -1,0 +1,419 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Cardinality": {
+      "enum": [
+        "single",
+        "multiple"
+      ],
+      "type": "string"
+    },
+    "DataType": {
+      "oneOf": [
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "bool"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "int"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "float"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "string"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "json"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "bytes"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "image"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "audio"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "video"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "tensor"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "event"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "any"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "properties": {
+            "kind": {
+              "enum": [
+                "custom"
+              ],
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "name"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Edge": {
+      "properties": {
+        "from": {
+          "$ref": "#/definitions/Endpoint"
+        },
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "to": {
+          "$ref": "#/definitions/Endpoint"
+        }
+      },
+      "required": [
+        "from",
+        "id",
+        "to"
+      ],
+      "type": "object"
+    },
+    "Endpoint": {
+      "properties": {
+        "node": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "port": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "node",
+        "port"
+      ],
+      "type": "object"
+    },
+    "Graph": {
+      "properties": {
+        "edges": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Edge"
+          },
+          "type": "object"
+        },
+        "groups": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Group"
+          },
+          "type": "object"
+        },
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "nodes": {
+          "additionalProperties": {
+            "$ref": "#/definitions/Node"
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "edges",
+        "groups",
+        "id",
+        "name",
+        "nodes"
+      ],
+      "type": "object"
+    },
+    "Group": {
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "nodes": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "nodes"
+      ],
+      "type": "object"
+    },
+    "Node": {
+      "properties": {
+        "id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "inputs": {
+          "items": {
+            "$ref": "#/definitions/Port"
+          },
+          "type": "array"
+        },
+        "outputs": {
+          "items": {
+            "$ref": "#/definitions/Port"
+          },
+          "type": "array"
+        },
+        "properties": {
+          "additionalProperties": true,
+          "default": {},
+          "type": "object"
+        },
+        "type_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "inputs",
+        "outputs",
+        "type_id"
+      ],
+      "type": "object"
+    },
+    "Port": {
+      "properties": {
+        "cardinality": {
+          "$ref": "#/definitions/Cardinality"
+        },
+        "data_type": {
+          "$ref": "#/definitions/DataType"
+        },
+        "name": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "cardinality",
+        "data_type",
+        "name",
+        "required"
+      ],
+      "type": "object"
+    },
+    "Rect": {
+      "properties": {
+        "height": {
+          "format": "float",
+          "type": "number"
+        },
+        "width": {
+          "format": "float",
+          "type": "number"
+        },
+        "x": {
+          "format": "float",
+          "type": "number"
+        },
+        "y": {
+          "format": "float",
+          "type": "number"
+        }
+      },
+      "required": [
+        "height",
+        "width",
+        "x",
+        "y"
+      ],
+      "type": "object"
+    }
+  },
+  "properties": {
+    "engine_version": {
+      "type": "string"
+    },
+    "graph": {
+      "$ref": "#/definitions/Graph"
+    },
+    "placement": {
+      "additionalProperties": {
+        "$ref": "#/definitions/Rect"
+      },
+      "default": {},
+      "type": "object"
+    },
+    "plugin_versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "default": {},
+      "type": "object"
+    },
+    "schema_version": {
+      "format": "uint32",
+      "minimum": 0.0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "engine_version",
+    "graph",
+    "schema_version"
+  ],
+  "title": "Document",
+  "type": "object"
+}

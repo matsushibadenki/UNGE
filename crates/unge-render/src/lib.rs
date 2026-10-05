@@ -1,5 +1,7 @@
 //! Rust-owned instanced renderer. The host supplies a texture or native surface.
+mod curves;
 mod gpu;
+mod groups;
 mod labels;
 mod text;
 pub use cosmic_text;

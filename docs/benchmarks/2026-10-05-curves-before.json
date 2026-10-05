@@ -1,0 +1,88 @@
+{
+  "arch": "aarch64",
+  "benchmark_version": 2,
+  "delta_normal_scene": {
+    "max_ms": 0.054542,
+    "median_ms": 0.039625,
+    "min_ms": 0.038541000000000006,
+    "p95_ms": 0.048417
+  },
+  "delta_overview_scene": {
+    "max_ms": 4.959583,
+    "median_ms": 4.436875,
+    "min_ms": 4.291958999999999,
+    "p95_ms": 4.592166
+  },
+  "document_validation": {
+    "max_ms": 8.29975,
+    "median_ms": 7.738333,
+    "min_ms": 7.650333,
+    "p95_ms": 8.216541000000001
+  },
+  "edges": 30000,
+  "fixture_batch_ms": 19.147750000000002,
+  "iterations": 30,
+  "move_command_validation": {
+    "max_ms": 7.906834,
+    "median_ms": 7.761209,
+    "min_ms": 7.641292,
+    "p95_ms": 7.888125
+  },
+  "move_index_delta": {
+    "max_ms": 0.0014160000000000002,
+    "median_ms": 0.000458,
+    "min_ms": 0.000458,
+    "p95_ms": 0.000833
+  },
+  "move_index_full_rebuild": {
+    "max_ms": 25.721959,
+    "median_ms": 12.325792,
+    "min_ms": 12.101458000000001,
+    "p95_ms": 16.79675
+  },
+  "node_index_build": {
+    "max_ms": 1.095834,
+    "median_ms": 0.903292,
+    "min_ms": 0.847792,
+    "p95_ms": 1.067
+  },
+  "node_query": {
+    "max_ms": 0.006334,
+    "median_ms": 0.0005,
+    "min_ms": 0.000458,
+    "p95_ms": 0.001166
+  },
+  "nodes": 10000,
+  "normal_counts": {
+    "edges": 174,
+    "labels": 126,
+    "nodes": 42,
+    "quads": 4345
+  },
+  "normal_scene": {
+    "max_ms": 0.041625,
+    "median_ms": 0.03825,
+    "min_ms": 0.037750000000000006,
+    "p95_ms": 0.040916
+  },
+  "os": "macos",
+  "overview_counts": {
+    "edges": 30000,
+    "labels": 0,
+    "nodes": 10000,
+    "quads": 260001
+  },
+  "overview_scene": {
+    "max_ms": 4.329458,
+    "median_ms": 4.181166,
+    "min_ms": 4.132000000000001,
+    "p95_ms": 4.249458000000001
+  },
+  "scene_index_build": {
+    "max_ms": 12.858958,
+    "median_ms": 12.306583,
+    "min_ms": 12.177375000000001,
+    "p95_ms": 12.535625
+  },
+  "scope": "CPU geometry only; no GPU/frame-rate claim"
+}

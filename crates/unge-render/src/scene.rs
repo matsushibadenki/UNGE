@@ -1,6 +1,6 @@
 use crate::{LabelCatalog, TextLabel, Theme, labels::label_text};
 use std::collections::{BTreeMap, BTreeSet};
-use unge_core::{Document, Id, Locale, Rect, SpatialIndex, Viewport, port_anchor};
+use unge_core::{Command, Document, Id, Locale, Rect, SpatialIndex, Viewport, port_anchor};
 use unge_interaction::{MAX_SELECTION, PORT_LOD_ZOOM, Preview};
 
 #[repr(C)]
@@ -51,14 +51,51 @@ struct RenderEdge {
     from: (Id, usize),
     to: (Id, usize),
 }
-/// Build once per document revision, not once per animation frame.
+/// Retained geometry. Rebuild for topology; small committed moves update bounded overlays.
 pub struct SceneIndex {
     nodes: BTreeMap<Id, RenderNode>,
     edges: BTreeMap<Id, RenderEdge>,
     node_index: SpatialIndex,
     edge_index: SpatialIndex,
     incident: BTreeMap<Id, BTreeSet<Id>>,
+    groups: crate::groups::GroupIndex,
 }
+/// Capture before consuming a Command; apply only after that edit commits.
+#[derive(Debug, Default)]
+pub struct SceneChanges {
+    moved: BTreeSet<Id>,
+    rebuild: bool,
+    groups_changed: bool,
+}
+impl SceneChanges {
+    pub fn from_command(command: &Command) -> Self {
+        fn collect(command: &Command, changes: &mut SceneChanges) {
+            match command {
+                Command::MoveNode { id, .. } => {
+                    changes.moved.insert(*id);
+                }
+                Command::SetProperty { .. } => {}
+                Command::SetGroup { .. } => changes.groups_changed = true,
+                Command::Batch { commands } => {
+                    for command in commands {
+                        collect(command, changes);
+                    }
+                }
+                _ => changes.rebuild = true,
+            }
+        }
+        let mut changes = Self::default();
+        collect(command, &mut changes);
+        changes
+    }
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SceneUpdate {
+    Unchanged,
+    Incremental,
+    Rebuilt,
+}
+
 #[derive(Debug)]
 pub struct Scene {
     /// Linear RGBA, matching the target's GPU colour space.
@@ -68,6 +105,7 @@ pub struct Scene {
     pub labels: Vec<TextLabel>,
     pub visible_nodes: usize,
     pub visible_edges: usize,
+    pub visible_groups: usize,
 }
 impl Default for Scene {
     fn default() -> Self {
@@ -79,6 +117,7 @@ impl Default for Scene {
             labels: Vec::new(),
             visible_nodes: 0,
             visible_edges: 0,
+            visible_groups: 0,
         }
     }
 }
@@ -103,20 +142,9 @@ fn curve_bounds(points: [[f32; 2]; 4]) -> Rect {
     }
 }
 fn push_curve(scene: &mut Scene, points: [[f32; 2]; 4], zoom: f32, color: [f32; 4]) {
-    let segments = if zoom < PORT_LOD_ZOOM { 8 } else { 24 };
-    let mut previous = points[0];
-    for i in 1..=segments {
-        let t = i as f32 / segments as f32;
-        let u = 1.0 - t;
-        let next = [0, 1].map(|axis| {
-            u * u * u * points[0][axis]
-                + 3.0 * u * u * t * points[1][axis]
-                + 3.0 * u * t * t * points[2][axis]
-                + t * t * t * points[3][axis]
-        });
-        scene.quads.push(Quad::line(previous, next, color));
-        previous = next;
-    }
+    crate::curves::for_each_segment(points, zoom, |a, b| {
+        scene.quads.push(Quad::line(a, b, color));
+    });
 }
 impl SceneIndex {
     pub fn new(doc: &Document) -> Self {
@@ -185,7 +213,79 @@ impl SceneIndex {
             incident,
             node_index: SpatialIndex::new(doc),
             edge_index: SpatialIndex::from_rects(bounds),
+            groups: crate::groups::GroupIndex::new(doc),
         }
+    }
+    /// The index must correspond to the state immediately before the captured
+    /// command. Document validation and revision checks remain the host's job.
+    pub fn update(&mut self, doc: &Document, changes: &SceneChanges) -> SceneUpdate {
+        if changes.rebuild
+            || changes.moved.len() > 128
+            || changes
+                .moved
+                .iter()
+                .any(|id| !self.nodes.contains_key(id) || !doc.graph().nodes().contains_key(id))
+        {
+            *self = Self::new(doc);
+            return SceneUpdate::Rebuilt;
+        }
+        if changes.moved.is_empty() {
+            if changes.groups_changed {
+                self.groups = crate::groups::GroupIndex::new(doc);
+                return SceneUpdate::Incremental;
+            }
+            return SceneUpdate::Unchanged;
+        }
+        let rects: BTreeMap<_, _> = changes
+            .moved
+            .iter()
+            .map(|id| (*id, doc.placement().get(id).copied().unwrap_or_default()))
+            .collect();
+        let incident: BTreeSet<_> = changes
+            .moved
+            .iter()
+            .flat_map(|id| self.incident.get(id).into_iter().flatten())
+            .copied()
+            .collect();
+        if incident.len() > 128 {
+            *self = Self::new(doc);
+            return SceneUpdate::Rebuilt;
+        }
+        let mut points = BTreeMap::new();
+        let mut bounds = BTreeMap::new();
+        for id in incident {
+            let edge = &self.edges[&id];
+            let from = &self.nodes[&edge.from.0];
+            let to = &self.nodes[&edge.to.0];
+            let curve = curve(
+                port_anchor(
+                    rects.get(&edge.from.0).copied().unwrap_or(from.rect),
+                    edge.from.1,
+                    from.outputs,
+                    true,
+                ),
+                port_anchor(
+                    rects.get(&edge.to.0).copied().unwrap_or(to.rect),
+                    edge.to.1,
+                    to.inputs,
+                    false,
+                ),
+            );
+            bounds.insert(id, curve_bounds(curve));
+            points.insert(id, curve);
+        }
+        if !self.node_index.update_rects(&rects) || !self.edge_index.update_rects(&bounds) {
+            *self = Self::new(doc);
+            return SceneUpdate::Rebuilt;
+        }
+        for (id, rect) in rects {
+            self.nodes.get_mut(&id).unwrap().rect = rect;
+        }
+        for (id, points) in points {
+            self.edges.get_mut(&id).unwrap().points = points;
+        }
+        self.groups = crate::groups::GroupIndex::new(doc);
+        SceneUpdate::Incremental
     }
     pub fn scene(&self, viewport: Viewport, selection: &BTreeSet<Id>) -> unge_core::Result<Scene> {
         self.scene_with_preview(viewport, selection, &Preview::default())
@@ -256,6 +356,41 @@ impl SceneIndex {
         let mut grid = Quad::rectangle(area, scene.background, 0.0);
         grid.params[2] = 1.0;
         scene.quads.push(grid);
+        for (rect, label) in self.groups.visible(area, preview, |id| {
+            self.nodes.get(&id).map(|node| node.rect)
+        }) {
+            scene
+                .quads
+                .push(Quad::rectangle(rect, palette.border.linear(), 10.0));
+            let background = [0, 1, 2, 3]
+                .map(|i| (palette.background.linear()[i] + palette.node.linear()[i]) * 0.5);
+            scene.quads.push(Quad::rectangle(
+                Rect {
+                    x: rect.x + 1.5,
+                    y: rect.y + 1.5,
+                    width: rect.width - 3.0,
+                    height: rect.height - 3.0,
+                },
+                background,
+                8.5,
+            ));
+            if viewport.zoom >= 0.6 && !label.is_empty() {
+                scene.labels.push(TextLabel {
+                    text: label.to_owned(),
+                    rect: Rect {
+                        x: rect.x + 12.0,
+                        y: rect.y + 6.0,
+                        width: rect.width - 24.0,
+                        height: 22.0,
+                    },
+                    font_size: 14.0,
+                    right_aligned: false,
+                    color: palette.text.linear(),
+                    after_quad: scene.quads.len(),
+                });
+            }
+            scene.visible_groups += 1;
+        }
         let mut edges: BTreeSet<_> = self.edge_index.query(area).into_iter().collect();
         for id in preview.placement.keys() {
             edges.extend(self.incident.get(id).into_iter().flatten());

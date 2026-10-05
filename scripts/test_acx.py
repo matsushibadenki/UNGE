@@ -23,6 +23,15 @@ class AcxInteropTests(unittest.TestCase):
         transcript = agent.run_demo(ROOT / 'target/debug/unge-acx-provider', validate=validate, progress=lambda _: None)
         self.assertEqual(transcript['restored']['nodes'], 0)
         self.assertEqual(transcript['restored']['revision'], 2)
+    def test_async_job_profile_over_real_stdio(self):
+        schema = json.loads((SPEC / 'acx-node-graph-job.schema.json').read_text())
+        def validate(value, definition):
+            if definition == 'node-graph-job': definition = schema
+            elif isinstance(definition, str): definition = json.loads((SPEC / f'acx-{definition}.schema.json').read_text())
+            Draft202012Validator(definition, format_checker=FormatChecker()).validate(value)
+        result = agent.run_demo(ROOT / 'target/debug/unge-acx-provider', validate=validate, progress=lambda _: None, async_run=True)
+        self.assertEqual(result['restored']['nodes'], 0)
+
     def test_property_metadata_rejection_and_creation_defaults_over_stdio(self):
         client = agent.Agent(ROOT / 'target/debug/unge-acx-provider')
         try:
@@ -62,5 +71,7 @@ class AcxInteropTests(unittest.TestCase):
         if not upstream.exists():
             self.skipTest('optional ACX checkout absent')
         self.assertEqual(json.loads(upstream.read_text()), json.loads((SPEC / upstream.name).read_text()))
+        job = upstream.with_name('acx-node-graph-job.schema.json')
+        self.assertEqual(json.loads(job.read_text()), json.loads((SPEC / job.name).read_text()))
 
 if __name__ == '__main__': unittest.main()

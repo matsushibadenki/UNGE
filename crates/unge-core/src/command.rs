@@ -2,6 +2,7 @@ use crate::*;
 use serde::{Deserialize, Serialize};
 use std::{collections::VecDeque, sync::Arc};
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Command {

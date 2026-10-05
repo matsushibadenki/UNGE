@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "RunState": {
+      "enum": [
+        "queued",
+        "running",
+        "finished",
+        "failed"
+      ],
+      "type": "string"
+    },
+    "StopReason": {
+      "enum": [
+        "completed",
+        "cancelled",
+        "deadline_exceeded"
+      ],
+      "type": "string"
+    }
+  },
+  "properties": {
+    "blocked": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "cached": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "cancel_requested": {
+      "type": "boolean"
+    },
+    "cancelled": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "completed": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "document_id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "error_code": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failed": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "finished": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/StopReason"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "revision": {
+      "format": "uint64",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "sequence": {
+      "format": "uint64",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "started": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "state": {
+      "$ref": "#/definitions/RunState"
+    },
+    "total": {
+      "format": "uint",
+      "minimum": 0.0,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "blocked",
+    "cached",
+    "cancel_requested",
+    "cancelled",
+    "completed",
+    "document_id",
+    "failed",
+    "finished",
+    "id",
+    "revision",
+    "sequence",
+    "started",
+    "state",
+    "total"
+  ],
+  "title": "RunSummary",
+  "type": "object"
+}

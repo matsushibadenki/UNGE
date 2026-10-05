@@ -21,6 +21,7 @@ use std::{
 };
 use unge_core::{Cardinality, DataType, Graph, GraphIndex, Id, Node, Port, Properties};
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "kind", content = "value", rename_all = "snake_case")]
 pub enum Value {
@@ -80,12 +81,14 @@ pub trait NodeExecutor: Send + Sync {
         inputs: Inputs,
     ) -> BoxFuture<'_, Result<Outputs, String>>;
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LocalizedText {
     pub en: String,
     pub ja: String,
     pub zh_cn: String,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Definition {
     pub type_id: String,
@@ -189,6 +192,7 @@ impl unge_core::DocumentValidator for Registry {
         self.validate_edit(document.graph())
     }
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Status {
@@ -198,12 +202,14 @@ pub enum Status {
     Blocked,
     Cancelled,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NodeResult {
     pub status: Status,
     pub outputs: Outputs,
     pub error: Option<String>,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Report {
     pub nodes: BTreeMap<Id, NodeResult>,

@@ -6,6 +6,7 @@ use serde_json::Value;
 use std::collections::BTreeMap;
 use unge_core::Properties;
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum PropertyType {
@@ -96,6 +97,7 @@ impl PropertyType {
         }
     }
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct PropertyDefinition {
@@ -108,6 +110,7 @@ pub struct PropertyDefinition {
     /// Null represents no default, matching SetProperty's deletion convention.
     pub default: Option<Value>,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct PropertySchema {
@@ -128,6 +131,70 @@ impl Default for PropertySchema {
     }
 }
 impl PropertySchema {
+    /// Export value constraints for host tools. Metadata derives describe the
+    /// declaration itself; this describes the properties accepted by a node.
+    #[cfg(feature = "schema")]
+    pub fn json_schema(&self) -> Result<Value, String> {
+        self.validate_schema()?;
+        let mut properties = serde_json::Map::new();
+        let mut required = Vec::new();
+        for (key, field) in &self.fields {
+            let mut schema = serde_json::Map::new();
+            match &field.value_type {
+                PropertyType::Bool => {
+                    schema.insert("type".into(), "boolean".into());
+                }
+                PropertyType::Int { minimum, maximum } => {
+                    schema.insert("type".into(), "integer".into());
+                    // validate() accepts only values representable as i64.
+                    schema.insert("minimum".into(), minimum.unwrap_or(i64::MIN).into());
+                    schema.insert("maximum".into(), maximum.unwrap_or(i64::MAX).into());
+                }
+                PropertyType::Float { minimum, maximum } => {
+                    schema.insert("type".into(), "number".into());
+                    if let Some(min) = minimum {
+                        schema.insert("minimum".into(), (*min).into());
+                    }
+                    if let Some(max) = maximum {
+                        schema.insert("maximum".into(), (*max).into());
+                    }
+                }
+                PropertyType::String {
+                    min_length,
+                    max_length,
+                    choices,
+                } => {
+                    schema.insert("type".into(), "string".into());
+                    schema.insert("minLength".into(), (*min_length).into());
+                    if let Some(max) = max_length {
+                        schema.insert("maxLength".into(), (*max).into());
+                    }
+                    if let Some(items) = choices {
+                        schema.insert("enum".into(), serde_json::json!(items));
+                    }
+                }
+                PropertyType::Json => {}
+            }
+            // Keep all translations; consumers choose their locale.
+            schema.insert("x-unge-name".into(), serde_json::json!(field.name));
+            schema.insert(
+                "x-unge-description".into(),
+                serde_json::json!(field.description),
+            );
+            if let Some(default) = &field.default {
+                schema.insert("default".into(), default.clone());
+            }
+            properties.insert(key.clone(), schema.into());
+            if field.required {
+                required.push(key);
+            }
+        }
+        Ok(serde_json::json!({
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "type": "object", "properties": properties,
+            "required": required, "additionalProperties": self.additional_properties
+        }))
+    }
     pub fn defaults(&self) -> Properties {
         self.fields
             .iter()
@@ -174,5 +241,67 @@ impl PropertySchema {
             return Err(format!("{key}: unknown property"));
         }
         Ok(())
+    }
+}
+
+#[cfg(all(test, feature = "schema"))]
+mod schema_tests {
+    use super::*;
+    fn field(value_type: PropertyType, default: Option<Value>) -> PropertyDefinition {
+        let text = LocalizedText {
+            en: "Value".into(),
+            ja: "値".into(),
+            zh_cn: "值".into(),
+        };
+        PropertyDefinition {
+            name: text.clone(),
+            description: text,
+            value_type,
+            required: false,
+            default,
+        }
+    }
+    #[test]
+    fn invalid_declarations_are_not_exported() {
+        let schema = PropertySchema {
+            fields: [(
+                "value".into(),
+                field(
+                    PropertyType::Int {
+                        minimum: Some(3),
+                        maximum: Some(2),
+                    },
+                    None,
+                ),
+            )]
+            .into(),
+            additional_properties: false,
+        };
+        assert!(schema.json_schema().is_err());
+        let schema = PropertySchema {
+            fields: [("value".into(), field(PropertyType::Bool, Some(Value::Null)))].into(),
+            additional_properties: true,
+        };
+        assert!(schema.json_schema().is_err());
+    }
+    #[test]
+    fn defaults_and_translations_are_annotations() {
+        let schema = PropertySchema {
+            fields: [(
+                "value".into(),
+                field(PropertyType::Bool, Some(Value::Bool(true))),
+            )]
+            .into(),
+            additional_properties: false,
+        };
+        let exported = schema.json_schema().unwrap();
+        assert_eq!(exported["properties"]["value"]["default"], true);
+        assert_eq!(exported["properties"]["value"]["x-unge-name"]["ja"], "値");
+        assert_eq!(
+            exported["properties"]["value"]["x-unge-name"]["zh_cn"],
+            "值"
+        );
+        assert_eq!(exported["required"], serde_json::json!([]));
+        assert!(schema.validate(&Properties::new()).is_ok());
     }
 }

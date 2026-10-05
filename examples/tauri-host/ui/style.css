@@ -19,3 +19,21 @@ output { display:block; overflow-wrap:anywhere; font-variant-numeric:tabular-num
 .theme-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
 .theme-options button[aria-pressed="true"] { border-color:var(--accent); color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
 @media (max-width:340px) { body { padding:20px 16px; } }
+.execution { border-top:1px solid var(--border); margin-top:20px; padding-top:14px; }
+.execution h2 { font-size:15px; font-weight:600; margin:0; }
+.execution .actions { margin:10px 0; }
+button:disabled { cursor:default; opacity:.5; }
+progress { display:block; width:100%; height:8px; margin:12px 0; accent-color:var(--accent); }
+#runStatus { white-space:pre-line; font-size:13px; }
+
+.graph-controls { border-top:1px solid var(--border); margin-top:24px; padding-top:16px; }
+.graph-controls h2 { font-size:18px; text-wrap:balance; }
+.graph-controls .actions { margin:12px 0; }
+#nodeChoice { width:100%; min-width:0; }
+.coordinates { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.coordinates input { font:inherit; color:inherit; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:8px; min-width:0; }
+button { overflow-wrap:anywhere; }
+@media (forced-colors: active) { button:focus-visible,input:focus-visible,select:focus-visible { outline-color:Highlight; } }
+
+#groupChoice { width:100%; min-width:0; }
+#groupName { font:inherit; color:inherit; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:8px; }

@@ -12,6 +12,7 @@ use std::{
 };
 use unge_core::Id;
 
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum StopReason {
@@ -21,6 +22,7 @@ pub enum StopReason {
 }
 
 /// Small metadata only: no properties, outputs, resource contents or error strings.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ProgressEvent {

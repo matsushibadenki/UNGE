@@ -86,6 +86,15 @@ fn initial_document() -> Document {
             },
         });
     }
+    let group_id = Id::new_v4();
+    commands.push(Command::SetGroup {
+        id: group_id,
+        group: Some(unge_core::Group {
+            id: group_id,
+            label: "9 + 10 = 19".into(),
+            nodes: ids[9..12].iter().copied().collect(),
+        }),
+    });
     editor.execute(Command::Batch { commands }).unwrap();
     editor.document().clone()
 }

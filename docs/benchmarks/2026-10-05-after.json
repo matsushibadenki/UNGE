@@ -1,0 +1,64 @@
+{
+  "arch": "aarch64",
+  "benchmark_version": 1,
+  "document_validation": {
+    "max_ms": 49.372667,
+    "median_ms": 19.776958,
+    "min_ms": 16.150624999999998,
+    "p95_ms": 24.208959
+  },
+  "edges": 30000,
+  "fixture_batch_ms": 40.830375000000004,
+  "iterations": 30,
+  "move_command_validation": {
+    "max_ms": 38.541542,
+    "median_ms": 22.015166999999998,
+    "min_ms": 16.392291,
+    "p95_ms": 38.087500000000006
+  },
+  "node_index_build": {
+    "max_ms": 2.7244159999999997,
+    "median_ms": 2.5626249999999997,
+    "min_ms": 2.38975,
+    "p95_ms": 2.675041
+  },
+  "node_query": {
+    "max_ms": 0.0047090000000000005,
+    "median_ms": 0.0012079999999999999,
+    "min_ms": 0.001083,
+    "p95_ms": 0.002875
+  },
+  "nodes": 10000,
+  "normal_counts": {
+    "edges": 174,
+    "labels": 126,
+    "nodes": 42,
+    "quads": 4345
+  },
+  "normal_scene": {
+    "max_ms": 0.096542,
+    "median_ms": 0.085167,
+    "min_ms": 0.08475,
+    "p95_ms": 0.089125
+  },
+  "os": "macos",
+  "overview_counts": {
+    "edges": 30000,
+    "labels": 0,
+    "nodes": 10000,
+    "quads": 260001
+  },
+  "overview_scene": {
+    "max_ms": 12.759208,
+    "median_ms": 10.177834,
+    "min_ms": 9.175333,
+    "p95_ms": 12.742750000000001
+  },
+  "scene_index_build": {
+    "max_ms": 121.127792,
+    "median_ms": 30.35575,
+    "min_ms": 28.122709,
+    "p95_ms": 81.961792
+  },
+  "scope": "CPU geometry only; no GPU/frame-rate claim"
+}

@@ -16,7 +16,7 @@
 4. `NodeExecutor` を実装し、`Registry::register` で登録する。
 5. `Scheduler::run` にDocumentのグラフを渡す。実行中の編集を許すなら、Rust内で取得したsnapshotを実行する。
 6. Tauriホストで `Editor::new(document, 256)?.with_validator(registry.clone())?` を作り、`Engine::from_editor(editor)` へ渡して`app.manage(engine)` する。ウインドウは `register_view` で登録する。
-7. `invoke_handler(unge_tauri::handler())` を接続する。既存命令と共存するときは `generate_handler![unge_tauri::dispatch, unge_tauri::inspect, unge_tauri::appearance, unge_tauri::start_execution, unge_tauri::current_execution, unge_tauri::execution_status, unge_tauri::cancel_execution, your_command]` を使う。
+7. `invoke_handler(unge_tauri::handler())` を接続する。既存命令と共存するときは `generate_handler![unge_tauri::dispatch, unge_tauri::inspect, unge_tauri::appearance, unge_tauri::accessible_nodes, unge_tauri::groups, unge_tauri::start_execution, unge_tauri::current_execution, unge_tauri::execution_status, unge_tauri::cancel_execution, your_command]` を使う。
 8. `createClient(invoke)` でWebViewから操作する。描画フレームを返す命令を追加しない。
 9. Rustネイティブウインドウから `SurfaceRenderer` を作り、Engineに登録する。HiDPIでは `draw_scaled` を使う。実装例は `examples/tauri-host/src/main.rs`。
 10. [POINTER_INPUT.md](POINTER_INPUT.md) に従い、論理座標のDown/Move/Up/Cancelを順に送る。1操作のrevisionを固定し、Rust内のプレビューと確定Commandを分ける。
@@ -77,7 +77,7 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 - Undo/Redo後のJSONが元に戻ることを確認する。
 - 2ウインドウから同じrevisionで編集し、後の編集が拒否されることを確認する。
 - GPUテストを動かす。SurfaceはOSごとに、縮小・復帰・DPI変更・終了時も確認する。
-- IPCのTypeScript型は手書きのため、Rust enum変更時に必ず同期する。
+- Rust契約変更後は `python3 scripts/generate_contracts.py` で型・Schemaを更新し、`--check` と `scripts/test_contracts.py` を実行する。[CONTRACT_GENERATION.md](CONTRACT_GENERATION.md) を参照。ACXライフサイクル型は引き続き手書き。
 
 ## 移植範囲
 
@@ -95,4 +95,12 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 
 ## 実行サービスを接続する
 
-[EXECUTION_SERVICE.md](EXECUTION_SERVICE.md) のRunServiceをEngineのclone/manage前にwith_executionで設定します。Registry ArcとサービスをACX Providerにも共有し、実行IDとsnapshot revisionを使って進捗を管理してください。Tauriには開始・現在実行・照会・キャンセル命令があります。既存ACX pipeのexecuteは同期で、AIの実行中照会・キャンセルはまだwire対応していません。
+[EXECUTION_SERVICE.md](EXECUTION_SERVICE.md) のRunServiceをEngineのclone/manage前にwith_executionで設定します。Registry ArcとサービスをACX Providerにも共有し、実行IDとsnapshot revisionを使って進捗を管理してください。Tauriには開始・現在実行・照会・キャンセル命令があります。既存executeは同期です。AIの実行中照会・キャンセルには [ACX_ASYNC_JOBS.md](ACX_ASYNC_JOBS.md) の任意Profileを発見してから使います。
+
+## 大規模グラフを取り込むとき
+
+[PERFORMANCE.md](PERFORMANCE.md) のrelease計測例を使って、取り込み先でも検証・Index構築・シーン生成を確認してください。公開値は単一のmacOS環境でのCPU計測です。60FPSやOS間の性能を保証しません。編集後の全体検証は残ります。小さな移動と表示に影響しない編集は [INDEX_UPDATES.md](INDEX_UPDATES.md) の経路を使い、構造変更・Undo/Redo・容量超過ではSceneIndexを再構築します。
+
+Group表示には既存SetGroupを使います。境界をDocumentやWebViewへ保存せず、[GROUP_RENDERING.md](GROUP_RENDERING.md) の派生描画と更新契約を使ってください。Groupの所属Node選択・名前/所属編集は [GROUP_EDITING.md](GROUP_EDITING.md) を使います。枠ドラッグは未実装です。
+
+GPU表示に対応するHTML操作には [ACCESSIBILITY.md](ACCESSIBILITY.md) の有界ノード概要を利用してください。独自handlerへaccessible_nodesを追加し、編集にはページのrevisionを付けます。WebViewにDocumentの可変コピーを持たせず、競合時に自動再送しません。

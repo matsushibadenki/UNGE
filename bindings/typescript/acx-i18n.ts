@@ -1,5 +1,6 @@
 import type { Locale } from './i18n';
 const en = {
+  unknown_job: 'No job exists for this commit.', jobs_unavailable: 'The host does not support asynchronous jobs.',
   execution_busy: 'Another execution is active.', execution_panicked: 'A host error interrupted execution.', execution_aborted: 'Execution was abandoned.', state_unavailable: 'Execution state is unavailable.', registry_mismatch: 'The host execution registry does not match.',
   invalid_properties: 'A property value is invalid or missing.',
   invalid_request: 'The ACX request is invalid.', invalid_graph: 'The graph is invalid.',
@@ -15,6 +16,7 @@ const en = {
 } as const;
 type Translations = { [K in keyof typeof en]: string };
 const ja: Translations = {
+  unknown_job: 'このcommitのジョブは存在しません。', jobs_unavailable: 'ホストは非同期ジョブに対応していません。',
   execution_busy: '別の実行が進行中です。', execution_panicked: 'ホストのエラーで実行中断しました。', execution_aborted: '実行が破棄されました。', state_unavailable: '実行状態を利用できません。', registry_mismatch: 'ホストの実行Registryが一致しません。',
   invalid_properties: 'プロパティの値が無効、または必須項目が未入力です。',
   invalid_request: 'ACXリクエストが無効です。', invalid_graph: 'グラフが無効です。',
@@ -29,6 +31,7 @@ const ja: Translations = {
   execution_failed: 'ノードの実行に失敗しました。', invalid_policy: 'ホストのポリシーが無効です。',
 };
 const zh: Translations = {
+  unknown_job: '此commit没有对应任务。', jobs_unavailable: '主机不支持异步任务。',
   execution_busy: '另一个执行正在进行。', execution_panicked: '主机错误导致执行中断。', execution_aborted: '执行已被放弃。', state_unavailable: '执行状态不可用。', registry_mismatch: '主机执行Registry不匹配。',
   invalid_properties: '属性值无效或缺少必填项。',
   invalid_request: 'ACX请求无效。', invalid_graph: '节点图无效。',

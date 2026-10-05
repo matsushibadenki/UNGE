@@ -160,3 +160,102 @@ macOSの実画面でドラッグした距離と、ACXで照会した論理座標
 Tauriの4実行命令は登録・ビルドとEngine側の直接APIテストで検証しました。実WebViewからのinvoke、通知購読の実画面、Windows/Linuxは未検証です。HTML操作画面への実行ボタンと進捗表示は今回追加していません。今回GPU変更はなく実GPUテストは再実行していません。
 
 サービスはlatest RunSummaryのみ保持し、Tauriへ集約・レート制限したadvisory通知を送ります。配送欠損や応答前の通知はsequenceと照会で回復します。ACXの承認済みexecute/Receiptのwire形式は維持し、同期JSON Lines処理中のAI照会・cancelは未実装です。ホスト設定、保持上限、失敗時の再送、今後のwire仕様との境界は [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
+
+## 実行・キャンセルUI（2026-10-05）
+
+対象フロー: 操作画面→グラフ実行→終端件数とsnapshot revision表示。通知欠損時は1秒ごとの照会で回復します。
+
+| 確認 | 結果 |
+|---|---|
+| Browser環境 | Browser plugin not available。対象はTauriのネイティブWebViewで、UI操作をCUAへ限定する環境指示に従いCUAを使用。Playwrightは使用していません |
+| ページ識別 / 空白 / overlay | macOSのUNGE Controls、tauri://localhost、380×720。実行操作画面が描画され、空白やframeworkエラーoverlayなし |
+| 実操作 | 実行後12/12、実行ボタン再有効化、キャンセル無効化、Document revision不変をAXと画像で確認。未接続加算ノード追加後のエラー、snapshotと編集後revisionの区別、Undo後の再実行成功を確認 |
+| 最終ビルド | 再起動して再実行し、日本語の「実行終了 · 12/12 · リビジョン 0」を確認 |
+| スクリーンショット | CUAで最終ビルドの配置、文字、進捗バーを確認。検証画像は /tmp/unge-execution-ui.png（配布ソース外） |
+| UIロジック | `node scripts/test_execution_ui.cjs` の英語・日本語・简体中文で、cancel要求、古いsequence拒否、終端通知欠損時のポーリング回復、入力エラー、ボタン状態を確認 |
+| Rust / clippy / fmt | ワークスペース95テスト成功、clippy全feature/all-targets -D warnings、fmt成功 |
+| ACX / TS / JS | ACX4件成功、TypeScript型チェック、app.jsとexecution.js構文チェック成功 |
+
+ネイティブWebViewの開発者コンソールは取得していません。キャンセル操作と通知欠損はロジックテストで検証し、長時間実行の実画面では未検証です。Windows/Linux、英語/简体中文の実画面、320px幅は未検証です。表示が縦に長い場合は通常スクロールを使います。GPU実装の変更はなく実GPUテストは再実行していません。ACXの非同期job/wire照会・cancelは次の項目です。
+
+## 任意ACX非同期ジョブ（2026-10-05）
+
+| 確認 | 結果 |
+|---|---|
+| `cargo test --workspace --all-features --locked --offline` | Rust100件成功。追加5件でPending executor中の照会・cancel、開始再送、Receipt確定と同期execute再送、状態保持の独立性、未承認/編集/stale commit拒否、busy時の未消費、引数検証、Provider破棄時のcancelを確認 |
+| clippy / fmt / diff | all-features/all-targets -D warnings、fmt、git diff --check成功 |
+| `python3 scripts/test_acx.py -v` | 5件成功。実stdioの非同期開始・status、終端cancelの冪等性、同期executeとの結果同一性、元Receipt・正確なJSONハッシュ・Schemaを確認 |
+| `python3 -m unittest discover -s acx/tests -v` | acx適合テスト9件成功。新job Schemaのpending/terminal、有効状態、必須ID、追加引数拒否を含む |
+| TypeScript / Python | 型チェック、agent.py構文確認成功。startRun/runStatus/cancelRunと3言語エラー文言を追加 |
+| macOS Tauri `agent.py --binary target/debug/unge-tauri-host --desktop --async-run` | 非同期開始・照会・終端再送、42の計算、Receipt照合、元Documentへの回復成功 |
+
+Pending executorの実行中キャンセルはRust Providerテストで検証しました。Python/Tauri実stdio例は高速算術ノードを使い、終了後のcancel再送を確認しています。Windows/Linux、非yield処理の強制停止、再起動後の永続Receipt、他Providerとの相互運用は未検証または未実装です。今回GPU実装は変更せず、実GPUテストは再実行していません。
+
+acx側へ任意の実験Profile、Schema、適合テストを追加しました。UNGEにもProfile文書とSchemaを同梱し、シンボリックリンクなしで配布できます。既存の同期execute/Receiptは維持します。開始前のrun_start busyはcommit未消費ですが、開始後は再送で実行を増やしません。結果とReceiptは後続dispatchで確定するため、executionが非nullになるまで照会します。仕様は [ACX_ASYNC_JOBS.md](ACX_ASYNC_JOBS.md)。
+
+## 2026-10-05: Rust契約から型・Schema生成
+
+- `cargo test --workspace --all-features --locked`: 102件成功、既存GPU3件ignored。GPU処理の変更はなく今回は実GPUテストを再実行していない。
+- `cargo clippy --workspace --all-features --all-targets --locked -- -D warnings`、fmt、diff check成功。既存依存block 0.1.6のfuture compatibility警告は継続。
+- 10種類のroot JSON SchemaとTypeScript入力/出力型を生成。`generate_contracts.py --check` 成功。
+- `test_contracts.py -v`: 5件成功。実際のRust JSON、誤ったtag/欠損revision/座標tuple/未知pointer field、Serdeの省略規則、生成器の拒否、プロパティ判定72例を検証。
+- TypeScript strict型検査成功。固定tuple、custom型のname必須、出力フィールドの非省略をcompile-time checksで確認。
+- ACX実stdioテスト5件と実行UIの3言語ロジックテスト成功。UI表示・IPC実行・GPU処理は今回変更していない。
+- Schemaは入力構造契約。Port値マップ、ACX規範Schema生成、JSON数値表現とRust i64の完全な同値性は実装済みとしない。
+
+## 2026-10-05: 大規模CPU計測とBVH構築
+
+- `cargo test --workspace --all-features --locked`: 104件成功、GPU3件ignored。新規2件は2,112矩形の総当たり/逆順検索照合、同一座標、境界、無効/空Indexを検証。
+- fmt、diff check、`cargo clippy --workspace --all-features --all-targets --locked -- -D warnings` 成功。既存block 0.1.6のfuture compatibility警告は継続。
+- `cargo test --locked -p unge-render -- --ignored`: サンドボックス内ではMetalアダプターが見つからず、デスクトップ環境で再実行して実GPU3件成功（ピクセル、3言語文字とDPI、テーマ）。
+- Schema再生成差分チェックと契約Pythonテスト5件成功。公開型/IPC/Schemaの変更はない。
+- release exampleで10,000ノード/30,000エッジを構築・検証。改善前後30回ずつの可視ノード/エッジ/Quad/ラベル件数一致。生JSONと中央値/p95はPERFORMANCE.md参照。
+- ノードBVH構築中央値3.880→2.563ms、SceneIndex構築40.857→30.356ms。この固定データ・単一機械の比較で、一般的な改善率や60FPSを保証しない。
+- 細粒度Index更新、GPU/Surfaceを含むフレーム時間、Windows/Linux性能は未検証/未実装のまま。
+
+## 2026-10-05: 小さな編集のIndex差分更新
+
+- `cargo test --workspace --all-features --locked`: 109件成功、通常実行ではGPU3件ignored。追加5件はbounded upsertの原子性、旧境界除外、反復移動/容量再構築、Batch最終座標、プロパティ/Group、構造変更、高接続ノード、共有Engineの競合・Undo/Redo・失敗Batch・ACX経路を検証。
+- 差分Indexと全体再構築のQuadバイト列・文字ラベル・可視件数・spatial queryを複数Viewportで照合。一時プレビューも照合。
+- fmt、diff check、workspace/all-features/all-targets clippy -D warnings成功。既存block 0.1.6警告は継続。
+- macOSデスクトップ環境の `cargo test --locked -p unge-render -- --ignored`: ピクセル、3言語文字/DPI、テーマの実GPU3件成功。新しい差分描画の等価性はCPU側のScene比較で検証している。
+- Schema再生成差分チェックと契約Python5件成功。実stdio ACX5件成功。IPC/Schema変更はない。
+- release benchmark version 2で10,000ノード/30,000エッジ、30回計測。生データは docs/benchmarks/2026-10-05-delta.json。1ノード/接続4本の定常更新と全体再構築を別々に計測し、Document検証・Tauri待ちを差分更新時間へ含めていない。
+- 曲線生成量、トポロジー/Undo/Redoの差分更新、GPU/Surfaceを含む60FPS、他OS性能は引き続き未実装/未検証。
+
+## 2026-10-05: Bezier適応分割
+
+- workspace/all-features Rust 112件成功、通常実行ではGPU3件ignored。追加3件で直線/退化/逆向き/端点一致、zoom0.02〜16、解析曲線4,097サンプルの誤差、極端座標の有限性/連続性/128線分上限を確認。
+- 既存の差分Indexと全体再構築のScene照合も成功。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6警告は継続。
+- macOS実GPU ignoredテスト3件成功。描画テストに接続プレビュー曲線の中点ピクセルを追加して確認。
+- Schema生成差分チェック成功。Graph/Document/IPC契約、TypeScript型、ACXライフサイクルの変更はない。
+- 同一の10,000ノード/30,000エッジ、旧/新releaseバイナリを30回ずつ計測。可視ノード/Edge/ラベル件数一致。全体表示Quad260,001→55,347、CPU中央値4.181→2.578ms。データと限界はPERFORMANCE.md参照。
+- 上限に達する曲線やf32丸めでは誤差目標を保証しない。HiDPI物理誤差、極端曲線のGPU品質、GPU/Surfaceを含む60FPS、他OS性能は新たに検証していない。
+
+## 2026-10-05: GroupのGPU描画
+
+- workspace/all-features Rust 115件成功、通常実行ではGPU3件ignored。新規3件で所属ノードからの枠算出、空Group、画面内を囲む枠のカリング、描画順、低ズーム、ドラッグプレビュー、名前変更/所属変更/削除、重複所属、テーマ、極端座標を確認。保持Indexと全体再構築のSceneを照合。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。
+- macOS実GPU ignoredテスト3件成功。既存ピクセルテストにGroup背景色と見出し文字の確認を追加。
+- Schema生成差分チェック、契約Python5件、ACX実stdio5件成功。TauriホストとACX Providerのビルド成功。IPC/Schemaの変更はない。
+- RustのSceneにvisible_groupsを追加。Sceneを全フィールド指定で構築するホストは新フィールドを初期化するか、Scene::default()を併用する。
+- Group編集/ノード移動時はGroupIndexを再構築する。大規模Groupの性能、ネイティブ画面操作、Windows/Linux、Group選択/編集UI、アクセシビリティは今回検証または実装していない。
+
+## 2026-10-05: ノード概要APIとキーボード操作
+
+- workspace/all-features Rust117件成功、GPU3件ignored。追加2件で有界ページ・排他的cursor・3言語・View別選択・古いrevisionの照会/編集拒否・移動/削除/Undo・ラベル上限とフォールバックを確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。GPUコードは変更せず、今回実GPUテストは再実行していない。
+- Schema生成差分チェック（13 artifacts）、契約Python5件、ACX実stdio5件、TypeScript strict型検査、JS構文検査成功。Tauriホスト/ACX Providerのビルド成功。
+- 新しいノード操作UIロジックテストと既存実行UIテストはそれぞれ3言語で成功。移動要求の座標/revision保持、入力中の座標保持、競合時の再送なし、ページ切り替えを確認。CIに追加。
+- Browser plugin not availableのため既存Playwright/Chromiumを使用。http://127.0.0.1:8769/index.html の静的ソースをrouteで配信し、Tauri IPC mockで検証。サーバー待受や新規依存の導入は不要。英語/日本語/简体中文、960×850・320×850の6条件でpage title/lang/content、keyboard Tab/Enterによる選択と移動、50/1件ページ切り替え、削除、フォームラベル、アクセシビリティ情報、横はみ出しなし、console/page errorsなしを確認。日本語のスクリーンショットを確認。
+- Tauri実画面での新操作、VoiceOver/NVDA、他OS、ネイティブGPU Surfaceのアクセシビリティツリー、WCAG適合は確認していない。Group/Portのキーボード操作は未実装。
+
+## 2026-10-05: Groupの選択と編集
+
+- workspace/all-features Rust120件成功、GPU3件ignored。追加3件でGroup作成/改名/所属追加・除外/削除/所属Node選択、View分離、空Group、無変更の履歴維持、5編集のUndo/Redo、競合/重複ID/欠落ID/名称/空選択の原子的拒否、105Groupのページ境界と概要の上限を確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。GPU実装は変更せず、実GPUテストは再実行していない。
+- Schema生成差分チェック14 artifacts、契約Python5件、ACX実stdio5件、TypeScript strict型検査、JS構文検査成功。TauriホストとACX Providerのビルド成功。ACXの変更なし。
+- 新Group UI/既存ノードUI/実行UIのロジックテストはそれぞれ3言語で成功。クリック時点のGroup ID/名称/revision保持、入力名保持、競合時に再送しないことを確認。CIに追加。
+- Browser plugin not availableのため既存Playwright/Chromiumを使用。http://127.0.0.1:8769/index.html の静的ソースをrouteで配信、IPC mockで検証。960×850/320×850、3言語の6条件でtitle/lang/content、キーボード作成/改名、所属選択/除外/追加/削除、50/1件ページ切り替え、フォームラベル/アクセシビリティ情報、横はみ出しなし、console/page errorsなしを確認。日本語スクリーンショットを確認。
+- Tauri実画面での新操作、読み上げソフト、他OS、10,000超の所属操作の実負荷は未検証。Group枠のHit Test・枠ドラッグ・折りたたみ・OSアクセシビリティツリーは未実装。

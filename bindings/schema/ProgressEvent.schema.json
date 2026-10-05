@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Status": {
+      "enum": [
+        "completed",
+        "cached",
+        "failed",
+        "blocked",
+        "cancelled"
+      ],
+      "type": "string"
+    },
+    "StopReason": {
+      "enum": [
+        "completed",
+        "cancelled",
+        "deadline_exceeded"
+      ],
+      "type": "string"
+    }
+  },
+  "description": "Small metadata only: no properties, outputs, resource contents or error strings.",
+  "oneOf": [
+    {
+      "properties": {
+        "kind": {
+          "enum": [
+            "started"
+          ],
+          "type": "string"
+        },
+        "total": {
+          "format": "uint",
+          "minimum": 0.0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "total"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "kind": {
+          "enum": [
+            "node_started"
+          ],
+          "type": "string"
+        },
+        "node": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "node"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "finished": {
+          "format": "uint",
+          "minimum": 0.0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "node_finished"
+          ],
+          "type": "string"
+        },
+        "node": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/Status"
+        },
+        "total": {
+          "format": "uint",
+          "minimum": 0.0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "finished",
+        "kind",
+        "node",
+        "status",
+        "total"
+      ],
+      "type": "object"
+    },
+    {
+      "properties": {
+        "finished": {
+          "format": "uint",
+          "minimum": 0.0,
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "finished"
+          ],
+          "type": "string"
+        },
+        "reason": {
+          "$ref": "#/definitions/StopReason"
+        },
+        "total": {
+          "format": "uint",
+          "minimum": 0.0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "finished",
+        "kind",
+        "reason",
+        "total"
+      ],
+      "type": "object"
+    }
+  ],
+  "title": "ProgressEvent"
+}

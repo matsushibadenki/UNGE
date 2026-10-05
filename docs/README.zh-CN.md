@@ -42,3 +42,21 @@ Definition支持属性类型、范围、选项和初始值。共享Editor可安�
 Rust主机可以接收节点执行进度，并通过Future设置整个run的期限。参见[执行进度与取消](EXECUTION_PROGRESS.md#简体中文)。
 
 Tauri与ACX可共享RunService，通过执行ID、冻结revision及有限状态记录管理进度和主机取消。参见[共享执行服务](EXECUTION_SERVICE.md#简体中文)。
+
+操作窗口新增执行、取消按钮及进度显示，支持查询恢复，并提示执行开始后文档的版本变化。
+
+使用 `python3 examples/acx-provider/agent.py --async-run` 验证可选异步任务流程，AI可在同一pipe查询、取消获批执行。参见[任务扩展](ACX_ASYNC_JOBS.md#简体中文)。
+
+Rust契约可生成TypeScript类型和JSON Schema。重新生成及属性值约束见 [契约生成](CONTRACT_GENERATION.md)。
+
+已添加10,000节点、30,000连线的可重复CPU计测和BVH中位数分区优化。见 [性能测量](PERFORMANCE.md)；60FPS仍未验证。
+
+小规模节点移动可增量更新绘制Index，UI、指针操作及ACX共用此路径。见 [Index更新](INDEX_UPDATES.md)。
+
+三次曲线按形状及zoom自适应细分，减少直线和远景连线的几何生成量。误差目标及上限见 [曲线细分](CURVE_TESSELLATION.md)。
+
+GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘制](GROUP_RENDERING.md)。
+
+新增基于Rust分页节点概要的HTML控件，支持键盘选择、移动和删除节点。 [ACCESSIBILITY.md](ACCESSIBILITY.md)。
+
+三语言UI支持创建组、改名、编辑成员、删除组和选中组成员。 [GROUP_EDITING.md](GROUP_EDITING.md)。

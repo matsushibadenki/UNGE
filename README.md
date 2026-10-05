@@ -15,6 +15,7 @@ Tauri 2・Rust・WebGPU向けの、ディレクトリごと再利用できるノ
 | `crates/unge-render` | 描画シーン、WGSL、インスタンシング、ネイティブSurface | core、interaction、wgpu 27 |
 | `crates/unge-acx` | ACX能力公開、事前確認・承認・実行・Receipt・回復 | core、executor |
 | `crates/unge-tauri` | Rust共有状態、Tauri 2命令、リビジョン競合検出 | core、executor、render、Tauri 2 |
+| `crates/unge-contracts` | Rustから型・Schemaを生成するビルド用ツール | schema feature付きの既存クレート |
 | `bindings/typescript` | 型付きIPCクライアント、英語・日本語・简体中文のメッセージ | invokeを外から注入 |
 | `examples/headless` | `20 + 22 = 42` のGUI不要な実行例 | core、executor |
 | `examples/tauri-host` | WebView操作画面＋ネイティブwgpuウインドウ | ACXを含む5クレート |
@@ -111,3 +112,21 @@ Tauriの画面と同じDocumentを操作する起動方法、ホストの権限�
 Rustホストへ実行進捗を通知し、ホストが提供するFutureでrun全体の期限を設定できます。[実行進捗とキャンセル](docs/EXECUTION_PROGRESS.md) を参照してください。
 
 共有RunServiceをTauriとACXへ接続し、実行ID・snapshot revisionで進捗とキャンセルを管理できます。[共有実行サービス](docs/EXECUTION_SERVICE.md)。
+
+操作画面に実行・キャンセルと進捗表示を追加しました。実行後に編集したグラフとsnapshotの違いも表示します。
+
+ACXの非同期実行例は `python3 examples/acx-provider/agent.py --async-run`。AIが同じpipeで実行中の照会・キャンセルを行えます。[任意job Profile](docs/ACX_ASYNC_JOBS.md)。
+
+Rust契約からTypeScript型・JSON Schemaを生成できます。プロパティ値制約の公開とCI差分チェックは [CONTRACT_GENERATION.md](docs/CONTRACT_GENERATION.md)。
+
+10,000ノード・30,000エッジのCPU計測例とBVH構築の改善を追加しました。[PERFORMANCE.md](docs/PERFORMANCE.md)。60FPSは未検証です。
+
+小さなノード移動では描画Indexを差分更新します。UI・ポインター・ACX共通の取り込み契約は [INDEX_UPDATES.md](docs/INDEX_UPDATES.md)。
+
+接続線を形状・ズームに応じて適応分割し、全体表示時のQuad生成量を減らしました。[CURVE_TESSELLATION.md](docs/CURVE_TESSELLATION.md)。
+
+Groupの枠と見出しをGPUで描画します。既存Command/ACXで設定でき、ドラッグにも追従します。[GROUP_RENDERING.md](docs/GROUP_RENDERING.md)。
+
+キーボードからノードを選択・座標移動・削除するHTML操作と、有界なRustノード概要APIを追加しました。 [ACCESSIBILITY.md](docs/ACCESSIBILITY.md)。
+
+Groupの作成・名前/所属編集・削除と所属ノード選択を3言語UIから操作できます。 [GROUP_EDITING.md](docs/GROUP_EDITING.md)。

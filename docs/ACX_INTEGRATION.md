@@ -139,8 +139,16 @@ Definition observations include property constraints and defaults. Invalid prope
 
 ## 共有実行サービス / Shared execution service / 共享执行服务
 
-TauriとACXに同じRunServiceとRegistry Arcを渡すと、承認済みrunの二重実行を防ぎ、ホストへRunSummaryを通知できます。既存execute/Receiptは同期形式を維持し、同じcommitの再送で再実行しません。busy解消後の実行も新しいpreflight/承認/commitで行います。JSON Linesの実行中AI照会・キャンセルは未対応です。設定は [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
+TauriとACXに同じRunServiceとRegistry Arcを渡すと、承認済みrunの二重実行を防ぎ、ホストへRunSummaryを通知できます。既存execute/Receiptは同期形式を維持し、同じcommitの再送で再実行しません。busy解消後の実行も新しいpreflight/承認/commitで行います。同期execute中の照会には非同期job拡張を使います。設定は [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
 
-Share RunService and the exact Registry Arc with Tauri/Provider to avoid overlapping UI/AI runs and notify a host observer. Existing synchronous execute/Receipt and replay contracts are preserved. A busy failure requires a new approved commit; it is not retried automatically. AI queries/cancellation during blocking JSON Lines execution remain unfinished. See [execution service](EXECUTION_SERVICE.md#english).
+Share RunService and the exact Registry Arc with Tauri/Provider to avoid overlapping UI/AI runs and notify a host observer. Existing synchronous execute/Receipt and replay contracts are preserved. A busy failure requires a new approved commit; it is not retried automatically. Use the optional async job methods for queries/cancellation instead of blocking execute. See [execution service](EXECUTION_SERVICE.md#english).
 
-Tauri与Provider共享RunService及同一Registry Arc可防止UI/AI同时重复执行，并通知主机。既有同步execute/Receipt及重放约定保持不变。busy失败后的执行需要重新获批的commit，不会自动重试。JSON Lines执行期间的AI查询与取消尚未支持。详见[共享服务](EXECUTION_SERVICE.md#简体中文)。
+Tauri与Provider共享RunService及同一Registry Arc可防止UI/AI同时重复执行，并通知主机。既有同步execute/Receipt及重放约定保持不变。busy失败后的执行需要重新获批的commit，不会自动重试。执行期间的AI查询与取消请使用可选异步任务方法。详见[共享服务](EXECUTION_SERVICE.md#简体中文)。
+
+## 非同期job拡張 / Async jobs / 异步任务
+
+[ACX_ASYNC_JOBS.md](ACX_ASYNC_JOBS.md) の任意拡張に対応しました。発見情報のasyncJobsを確認し、承認済みrun commitをrun_startで開始、run_statusで照会、run_cancelでキャンセルします。executionがnullでなくなるまで照会し、既存Receiptを照合します。同期executeも維持します。Python例は `agent.py --async-run`、TypeScriptはstartRun/runStatus/cancelRunです。
+
+Discover asyncJobs before calling startRun/runStatus/cancelRun for an approved run commit. Poll until execution is non-null, then verify the existing Receipt and exact result bytes. Synchronous execute remains available. See [the optional job profile](ACX_ASYNC_JOBS.md#english).
+
+先发现asyncJobs，再对获批run commit调用startRun/runStatus/cancelRun。轮询至execution非null后验证原Receipt及准确结果字节。同步execute仍可用。参见[可选任务扩展](ACX_ASYNC_JOBS.md#简体中文)。

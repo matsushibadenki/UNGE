@@ -7,12 +7,14 @@ use unge_core::*;
 pub const MAX_SELECTION: usize = 10_000;
 pub const DRAG_THRESHOLD: f32 = 3.0;
 pub const PORT_LOD_ZOOM: f32 = 0.3;
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum PointerButton {
     Primary,
     Pan,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum PointerEvent {

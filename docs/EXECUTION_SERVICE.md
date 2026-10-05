@@ -71,7 +71,7 @@ await client.cancelExecution(latest.id);
 latest = await client.executionStatus(latest.id); // 停止完了はfinished/failedまで確認
 ```
 
-custom invoke handlerにはdispatch/inspect/appearanceに加えstart_execution/current_execution/execution_status/cancel_executionを登録します。RunSummary、RunState、3言語の表示文言・エラー辞書をTypeScriptへ追加しました。現デスクトップ例はサービスと命令・イベントを接続済みですが、HTML操作画面の実行ボタンと進捗表示は未追加です。
+custom invoke handlerにはdispatch/inspect/appearanceに加えstart_execution/current_execution/execution_status/cancel_executionを登録します。RunSummary、RunState、3言語の表示文言・エラー辞書をTypeScriptへ追加しました。デスクトップ例は実行・キャンセルボタンと進捗表示を備えます。1秒ごととfocus時に状態を照会し、通知欠損から回復します。実行snapshotと現在のrevisionが異なる場合は編集後であることを表示します。
 
 ## ACXとの共有
 
@@ -85,7 +85,7 @@ RegistryはサービスとProviderで同じArcを渡します。異なるArcはr
 
 ACXの承認済みrunは同じ予約・Schedulerを使うため、UIとの二重実行を防ぎます。既存の同期execute/Report/Receipt形式を維持します。キャンセル結果やexecution_busyも失敗Receiptに記録し、同じcommitを再送しても再実行しません。busy解消後に同じcommitを自動再試行してはいけません。新しい実行には再観測・新しいpreflight/承認/commitが必要です。
 
-現在のJSON Lines serveは同期処理なので、executeの処理中に同じpipeでAIから進捗照会・キャンセルすることはできません。ホスト/Tauriから共有サービスを照会・キャンセルできます。AI用の非同期job Profileとwire上の進捗・キャンセルは次の実装でacx側の仕様も更新する予定です。今回ACXのwire仕様は変更しません。
+同期executeは維持します。任意の [ACX_ASYNC_JOBS.md](ACX_ASYNC_JOBS.md) 拡張を使うと、AIが同じpipeからrun_start/run_status/run_cancelで操作できます。必要な仕様・Schema・適合テストはacx側にも追加しています。
 
 ## English
 
@@ -93,9 +93,9 @@ RunService is owned by the Rust host, independent of Tauri/GPU/ACX. Share one se
 
 prepare validates and freezes a snapshot; the host checks its document identity and revision. PreparedRun owns the reservation and is executed on a worker. Dropping unused work releases it. Panic handling releases the slot and clears cached outputs; external effects are not rolled back. current/inspect/cancel expose shared state. Cancellation is idempotent and never edits document history. RunSummary identifies the frozen document/revision, with per-run monotonic sequence and terminal counters. Finished traversal can contain failed nodes; check reason and counters for success. Deadline support is available through execute_until; built-in Tauri/ACX calls do not set a deadline.
 
-Tauri provides start_execution, current_execution, execution_status and cancel_execution, with matching TypeScript methods. Registered views of the same document can inspect and cancel a run after the document is edited. The initiating window receives aggregate unge://execution notifications, throttled to about 10 per second with immediate terminal delivery. Events are advisory; query status after start and after lost notifications, and accept only newer sequences for the same ID. Rust retains latest state rather than a notification backlog. The sample wires the service and commands, but execution buttons/progress UI remain unfinished.
+Tauri provides start_execution, current_execution, execution_status and cancel_execution, with matching TypeScript methods. Registered views of the same document can inspect and cancel a run after the document is edited. The initiating window receives aggregate unge://execution notifications, throttled to about 10 per second with immediate terminal delivery. Events are advisory; query status after start and after lost notifications, and accept only newer sequences for the same ID. Rust retains latest state rather than a notification backlog. The sample includes run/cancel controls and progress, polls every second and on focus, and labels runs whose snapshot revision differs from the edited document.
 
-Provider::with_execution shares the exact Registry Arc and service. Approved ACX runs preserve existing synchronous execute and Receipt formats; failed/busy/cancelled outcomes are recorded and commit replay does not rerun work. Host/Tauri cancellation is supported. The serial JSON Lines pipe cannot process AI queries/cancellation while execute blocks; a future asynchronous ACX job Profile requires upstream specification changes.
+Provider::with_execution shares the exact Registry Arc and service. Approved ACX runs preserve existing synchronous execute and Receipt formats; failed/busy/cancelled outcomes are recorded and commit replay does not rerun work. Host/Tauri cancellation is supported. Synchronous execute still blocks the pipe; the optional [async job extension](ACX_ASYNC_JOBS.md#english) enables run_start/run_status/run_cancel without changing existing execute/Receipt forms.
 
 ## 简体中文
 
@@ -103,6 +103,6 @@ RunService由Rust主机拥有，不依赖Tauri/GPU/ACX。UI与AI应共享同一�
 
 prepare验证并冻结snapshot，由主机核对文档ID与revision。PreparedRun持有执行预约，在worker中执行；未执行就drop会释放预约。panic处理释放执行槽并清除缓存，外部副作用不会回滚。current/inspect/cancel提供共享状态，取消操作幂等且不修改文档历史。RunSummary保存原文档/revision、单调sequence及终端计数。遍历结束可能包含失败节点，应检查reason和计数判断成功。execute_until支持主机期限Future；默认Tauri/ACX调用不设置期限。
 
-Tauri提供start_execution、current_execution、execution_status、cancel_execution及对应TypeScript方法。同一文档的注册View可以在文档修改后继续查询、取消原run。启动窗口收到unge://execution概要通知，通常最多约每秒10次，终端状态立即发送。事件只作提示；启动返回后及通知丢失后应查询状态，只接受同一ID的更高sequence。Rust只保存最新状态，不保存通知队列。样例已接通服务及命令，执行按钮和进度UI尚未添加。
+Tauri提供start_execution、current_execution、execution_status、cancel_execution及对应TypeScript方法。同一文档的注册View可以在文档修改后继续查询、取消原run。启动窗口收到unge://execution概要通知，通常最多约每秒10次，终端状态立即发送。事件只作提示；启动返回后及通知丢失后应查询状态，只接受同一ID的更高sequence。Rust只保存最新状态，不保存通知队列。样例包含执行、取消按钮和进度，每秒及focus时查询状态，文档修改后显示snapshot版本差异。
 
-Provider::with_execution使用相同Registry Arc与服务。获批ACX执行保持既有同步execute及Receipt格式，失败、busy、取消结果写入Receipt，重放commit不会重跑。主机/Tauri可以取消共享任务。串行JSON Lines在execute阻塞时无法处理AI查询和取消；后续异步job Profile需要更新acx规格。
+Provider::with_execution使用相同Registry Arc与服务。获批ACX执行保持既有同步execute及Receipt格式，失败、busy、取消结果写入Receipt，重放commit不会重跑。主机/Tauri可以取消共享任务。同步execute仍会阻塞pipe；可选[异步任务扩展](ACX_ASYNC_JOBS.md#简体中文)支持run_start/run_status/run_cancel，保持原execute/Receipt格式。

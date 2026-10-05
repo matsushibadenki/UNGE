@@ -33,8 +33,10 @@
 - [Done] run ID/revision付き共有実行サービス、1実行の予約、snapshot/概要保持上限、破棄・panic時の予約解放
 - [Done] Tauriの開始/現在実行/進捗照会/キャンセルAPI、集約通知、TypeScript型と3言語文言
 - [Done] ACX承認済み実行の共有サービス接続、ホスト向け進捗通知、UIとの二重実行防止、既存Receipt再送契約維持
-- [Next] 実行ボタンと進捗UI、ACXの非同期job Profile・wire上の進捗照会/キャンセル
-- [Next] 入出力型・プロパティ・IPC型のスキーマ自動生成
+- [Done] 3言語の実行/キャンセル操作UI、進捗表示、snapshot revisionの区別、通知欠損時の照会回復
+- [Done] 任意ACX非同期job Profile、承認済みcommitの開始/進捗照会/キャンセル、単一worker、終端Receiptと再送、Provider終了時のキャンセル
+- [Done] Rustのグラフ・実行値・定義・進捗・Tauri IPCからTypeScript入力/出力型とJSON Schema生成、プロパティ値制約のSchema公開、CI差分チェック
+- [Next] 個別ノードのPort名に対応する入出力値マップのSchema生成
 - [Later] Converter Registry、Remote/Python/AI/GPU Backendの標準アダプター
 - [Later] Streaming、Reactive、Simulation、Subgraph実行
 - [Later] 外部Plugin manifest、WASMサンドボックス、権限モデル
@@ -48,15 +50,22 @@
 - [Done] TypeScriptクライアント、3言語のエラー辞書、CLIとTauri実行例
 - [Done] GPU文字描画（Glyph Atlas）、3言語のホスト表示名、View単位の言語、HiDPI・クリップ・重なり順・容量制限
 - [Done] ダーク/ライトのテーマAPI、Rust View単位の設定、GPU/CSS共通配色、3言語の切り替えUIと設定復元
-- [Next] Group描画、アクセシビリティ
+- [Done] Group枠・見出しのGPU描画、BVHカリング、ドラッグ追従、テーマ/LOD、編集後の整合性
+- [Done] 有界なノード概要API、3言語のHTML一覧、キーボードで選択/座標移動/削除、revision競合拒否
+- [Done] Group概要のページ取得、選択から作成/改名/所属追加・除外/削除、所属Nodeの一括選択、3言語HTML操作とUndo/Redo・競合検証
+- [Later] Group枠のHit Test・枠ドラッグ・折りたたみ
+- [Later] ネイティブSurfaceのアクセシビリティツリー、Port/Groupのキーボード操作、読み上げ実機検証とWCAG評価
 - [Later] 任意のテーマ登録、OS配色/高コントラストへの自動追従
-- [Next] 10000ノード/30000エッジの実測、Index差分更新、曲線テッセレーションの改善
+- [Done] 10000ノード/30000エッジの再現可能なCPU計測、BVH中央値分割による構築改善、総当たり検索との回帰検証
+- [Done] 小さな移動のノード/接続Edge Index差分更新、プロパティ編集時の形状Index維持、Group編集時のGroup専用Index更新、128件上限と全体再構築への切り替え、UI/Pointer/ACXへの共通適用
+- [Done] 形状/ズームに応じたBezier適応分割、誤差目標と分割上限、逆向き/端点一致の検証、実GPU曲線ピクセル検証
+- [Next] トポロジー/Undo/RedoのIndex差分更新、実GPU/Surfaceを含むフレーム時間の計測
 - [Done] Tauri/Taoのネイティブ入力ブリッジ、HiDPIの論理座標、ホイール拡大縮小（macOS実操作確認）
 - [Next] Windows/LinuxのネイティブSurface/入力検証、同一ウインドウ合成
 - [Later] GPU不可時のフォールバック、ブラウザーWASMホスト
 - [Later] Minimap、検索、Smart Connection、CRDT共同編集、Git連携
 
-設計書の「10000 Nodes / 30000 Edges / 60 FPS」は測定前の目標です。
+設計書の「10000 Nodes / 30000 Edges / 60 FPS」のうちCPU処理は計測しました。GPU/Surfaceを含む60FPSは未検証です。詳細は [PERFORMANCE.md](PERFORMANCE.md)。
 
 ## ACXによるAI操作
 
@@ -71,7 +80,7 @@
 - [Next] 別実装Providerとの相互運用、承認・Receipt・再送記録の永続化、セッション保持上限の運用
 - [Later] MCP/A2A binding、署名、多ユーザー認証、外部副作用や課金を伴う実行Profile
 
-## 今回の優先順位（2026-10-03）
+## 今回の優先順位（2026-10-05）
 
 - [Done] AIと通常UIの双方に効く編集時検証、履歴容量制限を先行。統合手順は [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md)。
 - [Done] Pointer状態機械とDrag/接続操作。取り込み手順は [POINTER_INPUT.md](POINTER_INPUT.md)。
@@ -80,4 +89,13 @@
 - [Done] 実行キャッシュのハッシュ検索とバイト容量制限。大きすぎる結果を保持せず、件数と容量の両方でFIFOを管理する。
 - [Done] Rustホストへの進捗通知とrun期限。取り込み手順は [EXECUTION_PROGRESS.md](EXECUTION_PROGRESS.md)。
 - [Done] run ID/revision付き実行サービスとTauri操作API、ACXのホスト接続。取り込み手順は [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
-- [Next] 実行UIとACX非同期job Profile。AIが実行中に照会・キャンセルできるwire契約を追加する。
+- [Done] 実行ボタンと進捗UI。通常操作と実行状態を分け、通知欠損時は照会で回復する。
+- [Done] ACX非同期job Profile。取り込み仕様は [ACX_ASYNC_JOBS.md](ACX_ASYNC_JOBS.md)。
+- [Done] Rust契約から型・Schema生成。[取り込み手順](CONTRACT_GENERATION.md)。
+- [Done] 大規模グラフのCPU実測とBVH構築改善。[PERFORMANCE.md](PERFORMANCE.md)。
+- [Done] 小さな編集のIndex差分更新。[取り込み手順](INDEX_UPDATES.md)。
+- [Done] 全体表示時の曲線生成量を改善。[CURVE_TESSELLATION.md](CURVE_TESSELLATION.md)。
+- [Done] Group描画。[取り込み手順](GROUP_RENDERING.md)。
+- [Done] アクセシビリティの初期対応。[ノード概要とHTML操作](ACCESSIBILITY.md)。
+- [Done] Groupの所属Node選択と編集。[取り込み手順](GROUP_EDITING.md)。
+- [Next] 個別ノードのPort名に対応する入出力値マップのSchema生成。

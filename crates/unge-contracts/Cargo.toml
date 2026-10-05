@@ -1,0 +1,12 @@
+[package]
+name = "unge-contracts"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+[dependencies]
+unge-core = { path = "../unge-core", features = ["schema"] }
+unge-executor = { path = "../unge-executor", features = ["schema"] }
+unge-tauri = { path = "../unge-tauri", features = ["schema"] }
+schemars = "=0.8.22"
+serde_json = "1"

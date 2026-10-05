@@ -1,3 +1,5 @@
+#[path = "jobs.rs"]
+mod jobs;
 use crate::{
     AcxError, EDIT, GraphHost, Intent, MAX_MESSAGE_BYTES, OBSERVE, PROFILE, RUN, Result, Snapshot,
     check_snapshot, hash_bytes, hash_json, intent::compile_edit,
@@ -147,6 +149,7 @@ pub struct Provider {
     sessions: BTreeMap<String, Session>,
     receipts: BTreeMap<String, Value>,
     scheduler: Scheduler,
+    jobs: BTreeMap<String, jobs::Job>,
     execution: Option<(RunService, RunObserver)>,
     now: Arc<dyn Fn() -> u64 + Send + Sync>,
     provider_id: String,
@@ -169,6 +172,7 @@ impl Provider {
             sessions: BTreeMap::new(),
             receipts: BTreeMap::new(),
             scheduler: Scheduler::new(4, 128),
+            jobs: BTreeMap::new(),
             execution: None,
             now,
             provider_id: format!("urn:unge:session:{}", Id::new_v4()),
@@ -212,7 +216,7 @@ impl Provider {
                 "effects":if id==EDIT {vec!["graph-document-mutation"]}else if id==RUN {vec!["host-allowlisted-node-execution"]}else {vec![]},
                 "economics":{"model":"free","currency":"USD","max":"0.00"},"evidence":{"receipt":if id==OBSERVE {"none"}else{"plain"}},
                 "recovery":{"reversible":reversible,"condition":if reversible {"same document, latest unchanged revision, retained undo, unexpired grant"}else{"not supported"}},
-                "extensions":{"org.unge.node-graph":{"profileVersion":"0.1.0","description":{"en":description,"ja":ja,"zh-CN":zh},"requestSchema":"embedded inputSchema","digestEncoding":"provider-json-utf8-v1","policy":{"edit":self.policy.allow_edit,"run":self.policy.allow_run,"createTypes":self.policy.create_types,"executeTypes":self.policy.execute_types},"limits":{"requestBytes":MAX_MESSAGE_BYTES,"operations":256,"pageItems":100,"sessions":self.policy.max_sessions,"nodes":self.policy.max_nodes,"runNodes":self.policy.max_run_nodes}}}
+                "extensions":{"org.unge.node-graph":{"profileVersion":"0.1.0","asyncJobs":if id==RUN && self.execution.is_some(){json!({"profile":"experimental-node-graph-jobs-v1","methods":["run_start","run_status","run_cancel"],"key":"commitId"})}else{Value::Null},"description":{"en":description,"ja":ja,"zh-CN":zh},"requestSchema":"embedded inputSchema","digestEncoding":"provider-json-utf8-v1","policy":{"edit":self.policy.allow_edit,"run":self.policy.allow_run,"createTypes":self.policy.create_types,"executeTypes":self.policy.execute_types},"limits":{"requestBytes":MAX_MESSAGE_BYTES,"operations":256,"pageItems":100,"sessions":self.policy.max_sessions,"nodes":self.policy.max_nodes,"runNodes":self.policy.max_run_nodes}}}
             })
         };
         json!({"acx":"0.1","provider":{"id":self.provider_id,"name":"UNGE Rust graph provider"},"capabilities":[
@@ -222,6 +226,7 @@ impl Provider {
         ]})
     }
     pub fn dispatch(&mut self, method: &str, params: Value) -> Result<Value> {
+        self.collect_jobs()?;
         if encode(&params)?.len() > MAX_MESSAGE_BYTES {
             return Err(AcxError::new("limit_exceeded", "request exceeds 256 KiB"));
         }
@@ -233,6 +238,9 @@ impl Provider {
             "authorize" => self.authorize(parse(params)?),
             "commit" => self.commit(parse(params)?),
             "execute" => self.execute(parse(params)?),
+            "run_start" => self.start_job(parse(params)?),
+            "run_status" => self.job_response(&parse::<ExecuteArgs>(params)?.commit_id),
+            "run_cancel" => self.cancel_job(parse(params)?),
             "receipt" => {
                 let args: ReceiptArgs = parse(params)?;
                 self.receipts
@@ -547,13 +555,13 @@ impl Provider {
         if let Some(result) = &session.execution {
             return Ok(result.clone());
         }
-        self.unexpired(session)?;
         if session.started {
             return Err(AcxError::new(
                 "execution_uncertain",
                 "execution already started; do not retry effects",
             ));
         }
+        self.unexpired(session)?;
         let snapshot = self.fresh(session)?;
         let input = session.input.clone();
         let command = session.command.clone();
@@ -594,23 +602,8 @@ impl Provider {
                             ))
                             .map_err(|e| AcxError::new("execution_failed", e))?
                         };
-                        let success = report
-                            .nodes
-                            .values()
-                            .all(|n| matches!(n.status, Status::Completed | Status::Cached));
-                        let report_hash = hash_json(&report)?;
-                        // Scalars and resource handles only. JSON/large strings remain in Rust.
-                        let nodes: BTreeMap<_,_>=report.nodes.iter().map(|(id,n)| {
-                        let outputs:BTreeMap<_,_>=n.outputs.iter().filter_map(|(name,value)| {
-                            let safe=match value { unge_executor::Value::Json(_)=>false,unge_executor::Value::String(s)=>s.len()<=512,_=>true };
-                            safe.then(||(name,json!(value)))
-                        }).collect();
-                        (*id,json!({"status":n.status,"outputs":outputs,"outputsHash":hash_json(&n.outputs).unwrap(),"error":n.error.as_ref().map(|e|e.chars().take(256).collect::<String>())}))
-                    }).collect();
-                        let mut result = json!({"documentId":snapshot.document.graph().id,"executionRevision":snapshot.revision,"succeeded":success,"reportHash":report_hash,"nodes":nodes,"detailsOmitted":false});
-                        if encode(&result)?.len() > MAX_MESSAGE_BYTES / 4 {
-                            result = json!({"documentId":snapshot.document.graph().id,"executionRevision":snapshot.revision,"succeeded":success,"reportHash":report_hash,"detailsOmitted":true});
-                        }
+                        let (result, success) =
+                            run_result(snapshot.document.graph().id, snapshot.revision, &report)?;
                         Ok((result, success, None))
                     }
                 }
@@ -669,4 +662,30 @@ impl Provider {
         self.sessions.get_mut(&id).unwrap().recovery = Some(recovered.clone());
         Ok(recovered)
     }
+}
+
+fn run_result(
+    document_id: Id,
+    revision: u64,
+    report: &unge_executor::Report,
+) -> Result<(Value, bool)> {
+    let success = report
+        .nodes
+        .values()
+        .all(|n| matches!(n.status, Status::Completed | Status::Cached));
+    let report_hash = hash_json(&report)?;
+    // Scalars and resource handles only. JSON/large strings remain in Rust.
+    let nodes: BTreeMap<_,_>=report.nodes.iter().map(|(id,n)| {
+                        let outputs:BTreeMap<_,_>=n.outputs.iter().filter_map(|(name,value)| {
+                            let safe=match value { unge_executor::Value::Json(_)=>false,unge_executor::Value::String(s)=>s.len()<=512,_=>true };
+                            safe.then(||(name,json!(value)))
+                        }).collect();
+                        (*id,json!({"status":n.status,"outputs":outputs,"outputsHash":hash_json(&n.outputs).unwrap(),"error":n.error.as_ref().map(|e|e.chars().take(256).collect::<String>())}))
+                    }).collect();
+    let mut result = json!({"documentId":document_id,"executionRevision":revision,"succeeded":success,"reportHash":report_hash,"nodes":nodes,"detailsOmitted":false});
+    if encode(&result)?.len() > MAX_MESSAGE_BYTES / 4 {
+        result = json!({"documentId":document_id,"executionRevision":revision,"succeeded":success,"reportHash":report_hash,"detailsOmitted":true});
+    }
+
+    Ok((result, success))
 }

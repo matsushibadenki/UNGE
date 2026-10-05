@@ -29,6 +29,7 @@ impl Default for RunLimits {
         }
     }
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum RunState {
@@ -37,6 +38,7 @@ pub enum RunState {
     Finished,
     Failed,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RunSummary {
     pub id: Id,
@@ -56,6 +58,7 @@ pub struct RunSummary {
     pub reason: Option<StopReason>,
     pub error_code: Option<String>,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize, thiserror::Error)]
 #[error("{code}: {message}")]
 pub struct RunError {

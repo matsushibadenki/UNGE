@@ -195,7 +195,20 @@ fn gpu_renders_pixels_without_validation_errors() {
             zoom: 1.,
             size: [256., 256.],
         };
-        let document = document();
+        let mut grouped = Editor::new(document(), 0).unwrap();
+        let id = *grouped.document().graph().nodes().keys().next().unwrap();
+        let group_id = Id::new_v4();
+        grouped
+            .execute(Command::SetGroup {
+                id: group_id,
+                group: Some(Group {
+                    id: group_id,
+                    label: "Group".into(),
+                    nodes: BTreeSet::from([id]),
+                }),
+            })
+            .unwrap();
+        let document = grouped.document().clone();
         let id = *document.graph().nodes().keys().next().unwrap();
         let mut preview = unge_interaction::Preview::default();
         preview.placement.insert(
@@ -212,9 +225,15 @@ fn gpu_renders_pixels_without_validation_errors() {
             width: 20.,
             height: 30.,
         });
+        preview.cable = Some(unge_interaction::CablePreview {
+            from: [20.0, 180.0],
+            to: [200.0, 230.0],
+            valid: true,
+        });
         let scene = SceneIndex::new(&document)
             .scene_with_preview(viewport, &BTreeSet::from([id]), &preview)
             .unwrap();
+        assert_eq!(scene.visible_groups, 1);
         renderer.prepare(&device, &queue, &scene, viewport).unwrap();
         let mut encoder = device.create_command_encoder(&Default::default());
         renderer.render(&mut encoder, &texture.create_view(&Default::default()));
@@ -257,8 +276,26 @@ fn gpu_renders_pixels_without_validation_errors() {
             "node body pixel: {center:?}"
         );
         assert_eq!(center[3], 255);
+        // Symmetric cubic passes through (110, 205). Check an actual curved
+        // stroke independently of the node body and grid pixels.
+        let cable = &pixels[(205 * 256 + 110) * 4..(205 * 256 + 110) * 4 + 4];
+        assert!(cable[1] > center[1] + 50, "curve midpoint pixel: {cable:?}");
+
         let background = &pixels[(60 * 256 + 60) * 4..(60 * 256 + 60) * 4 + 4];
         assert!(background[0] < 18);
+        let fill = &pixels[(100 * 256 + 90) * 4..(100 * 256 + 90) * 4 + 4];
+        let palette = Theme::Dark.palette();
+        for axis in 0..3 {
+            let expected =
+                ((palette.background.linear()[axis] + palette.node.linear()[axis]) * 0.5 * 255.0)
+                    .round() as u8;
+            assert!(fill[axis].abs_diff(expected) <= 1, "group fill: {fill:?}");
+        }
+        let title_pixels = (82..104)
+            .flat_map(|y| (96..160).map(move |x| (y * 256 + x) * 4))
+            .filter(|offset| pixels[*offset] > 100)
+            .count();
+        assert!(title_pixels > 10, "group title pixels: {title_pixels}");
         drop(pixels);
         buffer.unmap();
         assert!(device.pop_error_scope().await.is_none());

@@ -11,4 +11,13 @@ bytemuck = { version = "1", features = ["derive"] }
 cosmic-text = "=0.15.0"
 serde = { version = "1", features = ["derive"] }
 [dev-dependencies]
+serde_json = "1"
 pollster = "0.4"
+
+[features]
+schema = ["dep:schemars", "unge-core/schema", "unge-interaction/schema"]
+
+[dependencies.schemars]
+version = "=0.8.22"
+optional = true
+features = ["uuid1"]

@@ -9,6 +9,9 @@ use unge_executor::{PreparedRun, RunError, RunService, RunSummary};
 use unge_interaction::{Interaction, InteractionError, PointerEvent};
 use unge_render::{LabelCatalog, SceneIndex, SurfaceRenderer, Theme};
 
+mod groups;
+pub use groups::{GroupAction, GroupPage, GroupSummary};
+
 struct ViewState {
     theme: Theme,
     locale: Locale,
@@ -29,12 +32,14 @@ pub struct Engine {
     execution: Option<RunService>,
     renderers: Arc<Mutex<BTreeMap<String, SurfaceRenderer>>>,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Summary {
     pub revision: u64,
     pub nodes: usize,
     pub edges: usize,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiError {
     pub code: String,
@@ -82,15 +87,38 @@ pub struct ViewSnapshot {
     pub locale: Locale,
     pub theme: Theme,
 }
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Appearance {
     pub theme: Theme,
     pub colors: BTreeMap<String, String>,
 }
+/// Bounded semantic metadata for a keyboard/screen-reader companion to a GPU view.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AccessibleNode {
+    pub id: Id,
+    pub title: String,
+    pub rect: Rect,
+    pub selected: bool,
+}
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AccessiblePage {
+    pub revision: u64,
+    pub total: usize,
+    pub nodes: Vec<AccessibleNode>,
+    pub next: Option<Id>,
+}
 type ApiResult<T> = std::result::Result<T, ApiError>;
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Request {
+    Group {
+        expected_revision: u64,
+        action: GroupAction,
+    },
     SetTheme {
         theme: Theme,
     },
@@ -126,8 +154,12 @@ fn summary(state: &State) -> Summary {
         edges: state.editor.document().graph().edges().len(),
     }
 }
-fn refresh_scene(state: &mut State) {
-    state.scene = SceneIndex::new(state.editor.document());
+fn refresh_scene(state: &mut State, changes: Option<&unge_render::SceneChanges>) {
+    if let Some(changes) = changes {
+        state.scene.update(state.editor.document(), changes);
+    } else {
+        state.scene = SceneIndex::new(state.editor.document());
+    }
     let existing: BTreeSet<_> = state
         .editor
         .document()
@@ -386,6 +418,9 @@ impl Engine {
             | Request::Pointer {
                 expected_revision, ..
             }
+            | Request::Group {
+                expected_revision, ..
+            }
             | Request::Undo { expected_revision }
             | Request::Redo { expected_revision } => Some(*expected_revision),
             _ => None,
@@ -412,7 +447,11 @@ impl Engine {
             return Err(ApiError::new("revision_conflict", state.editor.revision()));
         }
         let before = state.editor.revision();
+        let mut changes = None;
         match request {
+            Request::Group { action, .. } => {
+                changes = groups::apply_group(&mut state, view, action)?;
+            }
             Request::SetTheme { theme } => {
                 state.views.get_mut(view).unwrap().theme = theme;
             }
@@ -438,10 +477,12 @@ impl Engine {
                 v.selection
                     .retain(|id| editor.document().graph().nodes().contains_key(id));
                 if let Some(command) = result? {
+                    changes = Some(unge_render::SceneChanges::from_command(&command));
                     editor.execute(command)?;
                 }
             }
             Request::Apply { command, .. } => {
+                changes = Some(unge_render::SceneChanges::from_command(&command));
                 state.editor.execute(command)?;
             }
             Request::Undo { .. } => {
@@ -474,7 +515,7 @@ impl Engine {
             Request::Summary => {}
         }
         if state.editor.revision() != before {
-            refresh_scene(&mut state);
+            refresh_scene(&mut state, changes.as_ref());
         }
         Ok(summary(&state))
     }
@@ -509,6 +550,74 @@ impl Engine {
         Ok(Appearance {
             theme: v.theme,
             colors: v.theme.palette().css_variables(),
+        })
+    }
+    /// Stable ID order, exclusive cursor, at most 100 nodes. Reject stale pages.
+    /// No properties, resources, document mirror or frame data cross IPC.
+    pub fn accessible_nodes(
+        &self,
+        view: &str,
+        expected_revision: u64,
+        after: Option<Id>,
+        limit: usize,
+    ) -> ApiResult<AccessiblePage> {
+        if !(1..=100).contains(&limit) {
+            return Err(ApiError::new(
+                "invalid_request",
+                "page limit must be 1..100",
+            ));
+        }
+        let state = self
+            .state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let v = state
+            .views
+            .get(view)
+            .ok_or_else(|| ApiError::new("unknown_view", view))?;
+        if state.editor.revision() != expected_revision {
+            return Err(ApiError::new(
+                "revision_conflict",
+                "semantic page revision changed",
+            ));
+        }
+        let doc = state.editor.document();
+        let mut iter = doc.graph().nodes().range((
+            after.map_or(std::ops::Bound::Unbounded, std::ops::Bound::Excluded),
+            std::ops::Bound::Unbounded,
+        ));
+        let nodes: Vec<_> = iter
+            .by_ref()
+            .take(limit)
+            .map(|(id, node)| {
+                let title = state
+                    .labels
+                    .get(&node.type_id)
+                    .map(|labels| labels.title.get(v.locale))
+                    .filter(|text| !text.is_empty())
+                    .unwrap_or(&node.type_id);
+                AccessibleNode {
+                    id: *id,
+                    title: title
+                        .chars()
+                        .take(256)
+                        .map(|c| if c.is_control() { ' ' } else { c })
+                        .collect(),
+                    rect: doc.placement()[id],
+                    selected: v.selection.contains(id),
+                }
+            })
+            .collect();
+        let next = if iter.next().is_some() {
+            nodes.last().map(|node| node.id)
+        } else {
+            None
+        };
+        Ok(AccessiblePage {
+            revision: state.editor.revision(),
+            total: doc.graph().nodes().len(),
+            nodes,
+            next,
         })
     }
     pub fn inspect(&self, view: &str, id: Id) -> ApiResult<Node> {
@@ -648,6 +757,26 @@ mod commands {
         engine.appearance(window.label())
     }
     #[tauri::command]
+    pub fn groups<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+        expected_revision: u64,
+        after: Option<Id>,
+        limit: usize,
+    ) -> ApiResult<GroupPage> {
+        engine.groups(window.label(), expected_revision, after, limit)
+    }
+    #[tauri::command]
+    pub fn accessible_nodes<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+        expected_revision: u64,
+        after: Option<Id>,
+        limit: usize,
+    ) -> ApiResult<AccessiblePage> {
+        engine.accessible_nodes(window.label(), expected_revision, after, limit)
+    }
+    #[tauri::command]
     pub fn inspect<R: tauri::Runtime>(
         window: tauri::WebviewWindow<R>,
         engine: tauri::State<'_, Engine>,
@@ -657,8 +786,8 @@ mod commands {
     }
 }
 pub use commands::{
-    appearance, cancel_execution, current_execution, dispatch, execution_observer,
-    execution_status, inspect, start_execution,
+    accessible_nodes, appearance, cancel_execution, current_execution, dispatch,
+    execution_observer, execution_status, groups, inspect, start_execution,
 };
 /// Combine with your host handler using generate_handler!. Include start_execution,
 /// current_execution, execution_status and cancel_execution when configuring RunService.
@@ -666,6 +795,8 @@ pub fn handler<R: tauri::Runtime>() -> impl Fn(tauri::ipc::Invoke<R>) -> bool + 
 {
     tauri::generate_handler![
         dispatch,
+        accessible_nodes,
+        groups,
         inspect,
         appearance,
         start_execution,
@@ -704,8 +835,9 @@ impl unge_acx::GraphHost for Engine {
             revision: state.editor.revision(),
         };
         unge_acx::check_snapshot(&before, document, expected_revision)?;
+        let changes = unge_render::SceneChanges::from_command(&command);
         state.editor.execute(command)?;
-        refresh_scene(&mut state);
+        refresh_scene(&mut state, Some(&changes));
         Ok(unge_acx::Snapshot {
             document: state.editor.document().clone(),
             revision: state.editor.revision(),
@@ -727,10 +859,188 @@ impl unge_acx::GraphHost for Engine {
                 "undo history unavailable",
             ));
         }
-        refresh_scene(&mut state);
+        refresh_scene(&mut state, None);
         Ok(unge_acx::Snapshot {
             document: state.editor.document().clone(),
             revision: state.editor.revision(),
         })
+    }
+}
+
+#[cfg(test)]
+mod scene_update_tests {
+    use super::*;
+    #[test]
+    fn shared_engine_updates_geometry_and_preserves_conflict_and_history_rules() {
+        let engine = Engine::new(Document::default()).unwrap();
+        let viewport = Viewport {
+            origin: [0.0, 0.0],
+            zoom: 1.0,
+            size: [800.0, 600.0],
+        };
+        engine.register_view("main", viewport).unwrap();
+        engine.register_view("second", viewport).unwrap();
+        let id = Id::new_v4();
+        engine
+            .dispatch(
+                "main",
+                Request::Apply {
+                    expected_revision: 0,
+                    command: Command::AddNode {
+                        node: Node {
+                            id,
+                            type_id: "test".into(),
+                            inputs: vec![],
+                            outputs: vec![],
+                            properties: Default::default(),
+                        },
+                        rect: unge_core::Rect::default(),
+                    },
+                },
+            )
+            .unwrap();
+        let move_node = || Command::MoveNode {
+            id,
+            rect: unge_core::Rect {
+                x: 5000.0,
+                ..Default::default()
+            },
+        };
+        engine
+            .dispatch(
+                "second",
+                Request::Apply {
+                    expected_revision: 1,
+                    command: move_node(),
+                },
+            )
+            .unwrap();
+        assert!(
+            engine
+                .state
+                .lock()
+                .unwrap()
+                .scene
+                .spatial_index()
+                .query(viewport.world_rect())
+                .is_empty()
+        );
+        assert_eq!(
+            engine
+                .dispatch(
+                    "main",
+                    Request::Apply {
+                        expected_revision: 1,
+                        command: move_node()
+                    }
+                )
+                .unwrap_err()
+                .code,
+            "revision_conflict"
+        );
+        engine
+            .dispatch(
+                "main",
+                Request::Undo {
+                    expected_revision: 2,
+                },
+            )
+            .unwrap();
+        assert_eq!(
+            engine
+                .state
+                .lock()
+                .unwrap()
+                .scene
+                .spatial_index()
+                .query(viewport.world_rect()),
+            vec![id]
+        );
+        engine
+            .dispatch(
+                "main",
+                Request::Redo {
+                    expected_revision: 3,
+                },
+            )
+            .unwrap();
+        assert!(
+            engine
+                .state
+                .lock()
+                .unwrap()
+                .scene
+                .spatial_index()
+                .query(viewport.world_rect())
+                .is_empty()
+        );
+        let invalid = Command::Batch {
+            commands: vec![
+                Command::MoveNode {
+                    id,
+                    rect: Default::default(),
+                },
+                Command::MoveNode {
+                    id: Id::new_v4(),
+                    rect: Default::default(),
+                },
+            ],
+        };
+        assert!(
+            engine
+                .dispatch(
+                    "main",
+                    Request::Apply {
+                        expected_revision: 4,
+                        command: invalid
+                    }
+                )
+                .is_err()
+        );
+        assert!(
+            engine
+                .state
+                .lock()
+                .unwrap()
+                .scene
+                .spatial_index()
+                .query(viewport.world_rect())
+                .is_empty()
+        );
+        #[cfg(feature = "acx")]
+        {
+            let snapshot = unge_acx::GraphHost::snapshot(&engine).unwrap();
+            unge_acx::GraphHost::apply(
+                &engine,
+                snapshot.document.graph().id,
+                4,
+                Command::MoveNode {
+                    id,
+                    rect: Default::default(),
+                },
+            )
+            .unwrap();
+            assert_eq!(
+                engine
+                    .state
+                    .lock()
+                    .unwrap()
+                    .scene
+                    .spatial_index()
+                    .query(viewport.world_rect()),
+                vec![id]
+            );
+            unge_acx::GraphHost::undo(&engine, snapshot.document.graph().id, 5).unwrap();
+            assert!(
+                engine
+                    .state
+                    .lock()
+                    .unwrap()
+                    .scene
+                    .spatial_index()
+                    .query(viewport.world_rect())
+                    .is_empty()
+            );
+        }
     }
 }

@@ -34,9 +34,9 @@ Undo/Redo履歴は合算の件数とシリアライズ後ペイロード容量�
 coreのDocumentValidatorをEditorへ設定すると、ロード時と編集・Undo/Redo確定時にホスト検証を適用できます。Registryがこのtraitを実装し、Port一致とPropertySchemaを検証します。Batchの最終状態だけを検証し、失敗時はDocument・revision・履歴を維持します。基本のnewコンストラクターは構造検証だけを維持し、サンプルはwith_validatorとfrom_editorで有効化しています。詳細は [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md)。
 
 保存順序を安定させるため主データはBTreeMapです。設計書のHashMap推奨からの意図的な差分です。
-依存探索にはHashMapのGraphIndex、表示探索にはBVHを使います。
-Document編集完了後に全体検証とSceneIndex再構築を行います。unge-interactionはドラッグ中の一時座標を保持し、Upだけを確定Commandにします。描画は同じBVHと移動ノードの接続Indexを使い、一時座標で可視性を再評価します。
-細粒度のIndex差分更新は今後の最適化項目です。
+依存探索にはHashMapのGraphIndex、表示探索にはBVHを使います。BVH構築は各階層の中央値分割を使い、部分木ごとの全件ソートを避けます。
+Document編集完了後に全体検証を行います。小さな移動ではノードと接続Edgeの描画Indexだけを更新し、プロパティ編集では現在の形状Indexを維持し、Group編集とノード移動ではGroup専用Indexを更新します。構造変更・Undo/Redo・更新保持量の超過時はSceneIndexを再構築します。unge-interactionはドラッグ中の一時座標を保持し、Upだけを確定Commandにします。描画は同じBVHと移動ノードの接続Indexを使い、一時座標で可視性を再評価します。
+変更矩形を各Index最大128件の集合で保持し、検索時に旧境界を除外して新境界を検査します。取り込み契約は [INDEX_UPDATES.md](INDEX_UPDATES.md)。トポロジーとUndo/Redoの差分更新は今後の項目です。
 
 ## 実行
 
@@ -44,7 +44,7 @@ Graphの接続・型・循環を検証した後、登録DefinitionとNodeのPort
 必須入力を検査し、決定的なトポロジカル階層を生成します。
 各階層内を `buffer_unordered(concurrency)` で実行し、完了を待って次の階層へ進みます。
 後続ノードは、依存ノードが失敗・出力欠損した場合Blockedになります。無関係なノードは続行します。
-Rustホストへ開始/終了/ノード進捗を通知し、ホストのdeadline Futureと協調キャンセルで未完了Futureを破棄できます。結果・キャンセル・外部副作用の契約は [EXECUTION_PROGRESS.md](EXECUTION_PROGRESS.md)。階層をまたぐ即時スケジューリング、Streaming、周期実行、ACX wire上の非同期ジョブ操作は未実装です。共有RunServiceとTauri集約通知・ACXホストobserverは [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
+Rustホストへ開始/終了/ノード進捗を通知し、ホストのdeadline Futureと協調キャンセルで未完了Futureを破棄できます。結果・キャンセル・外部副作用の契約は [EXECUTION_PROGRESS.md](EXECUTION_PROGRESS.md)。階層をまたぐ即時スケジューリング、Streaming、周期実行、ACXは任意の非同期job操作に対応し、Provider所有のcommitで開始・照会・キャンセルします。仕様は [ACX_ASYNC_JOBS.md](ACX_ASYNC_JOBS.md)。共有RunServiceとTauri集約通知・ACXホストobserverは [EXECUTION_SERVICE.md](EXECUTION_SERVICE.md)。
 
 pureノードのキャッシュキーはtype_id・definition version・executorのプロセス内識別子・入力・propertiesの決定的なJSONです。
 標準HashMapで完全なキーを照合し、ハッシュ衝突でも異なる入力を取り違えません。FIFOを件数とシリアライズしたキー＋出力のバイト数で制限します。既定のバイト上限は16 MiBです。ヒットで挿入順を変えず、同じキーの重複保存を避けます。大きすぎるキーや出力は保存しません。詳細とホスト設定は [EXECUTION_CACHE.md](EXECUTION_CACHE.md)。
@@ -57,9 +57,9 @@ pureノードのキャッシュキーはtype_id・definition version・executor�
 現在の検証対象はwgpu 27.0.1です。将来のメジャーバージョン追従は別途検証してください。
 
 ノード・Port・選択枠・曲線をQuadのインスタンスに変換します。文字のないSceneは1 draw callで描き、文字がある場合は各ノードの形状とGlyphを交互に描いて重なり順を守ります。
-Bezier曲線はズームに応じて8/24区間へ分割し、線分を同じインスタンスバッファに入れます。
+Bezier曲線は形状とズームに応じて適応分割し、線分を同じインスタンスバッファに入れます。目標誤差0.75論理px、最大128区間で処理量を制限します。上限と数値精度の制限は [CURVE_TESSELLATION.md](CURVE_TESSELLATION.md)。
 Node BVHとEdge BVHを別々に使い、接続線が画面内を横切る場合は端点ノードが画面外でも描画します。
-遠景はPortと文字を段階的に省略します。文字はcosmic-textで整形し、固定容量のGlyph Atlasに保持します。表示名はホストのLabelCatalog、言語はRustのView状態に置きます。実装・フォント注入・容量制限は [GPU_TEXT.md](GPU_TEXT.md)。Group描画・Minimapは未実装です。
+遠景はPortと文字を段階的に省略します。文字はcosmic-textで整形し、固定容量のGlyph Atlasに保持します。表示名はホストのLabelCatalog、言語はRustのView状態に置きます。実装・フォント注入・容量制限は [GPU_TEXT.md](GPU_TEXT.md)。Groupは専用BVH、所属ノードの外接矩形、テーマに合う枠とGPU見出しに対応します。[GROUP_RENDERING.md](GROUP_RENDERING.md)。Minimapは未実装です。
 
 GpuRendererは容量に余裕を持ったバッファを再利用し、不足時のみ拡張します。
 表示Sceneの更新時には可視インスタンスをCPU→GPUへアップロードします。
@@ -95,7 +95,7 @@ TauriのCapabilityはホストで設定し、操作ウインドウへ外部Web�
 
 `unge-acx` はcore/executorだけに依存する任意アダプターです。UI/GPU依存はありません。
 ProviderはGraphHostを介して共有Documentにアクセスします。Tauri側のtrait実装は `acx` featureで有効化します。
-この経路も同じEditor・Undo履歴・revisionを使い、AI編集完了後に既存のSceneIndexを再構築します。
+この経路も同じEditor・Undo履歴・revisionを使い、AI編集完了後にも同じSceneChangesによる差分更新またはSceneIndex再構築を行います。
 
 Preflightはコピー上で命令を組み立てて検証します。Commit後は保存済みの命令だけを実行します。
 実行直前のrevision照合と編集をホストの同一ロック内で行います。Runは保存時点のsnapshotを使い、描画側のロックを保持しません。
@@ -110,3 +110,9 @@ RegistryやPolicyは信頼済みホストが提供し、AIから変更できま�
 `unge-interaction` はcoreにだけ依存します。TauriはViewごとに操作状態を持ち、Down時のrevisionをMove/Upでも照合します。MoveはDocumentを更新せず、Up時に同一ロック内でCommandを実行します。外部編集時は一時描画を消して古い操作を拒否します。接続プレビューは型・占有・重複・循環を検証します。
 
 サンプルの `input.rs` だけがunstableなWry/Tao入力APIへ依存します。OS入力の取得、論理座標への変換、連続Moveの集約、Cancelと小さな通知を担当します。ホストへの実装手順と未対応項目は [POINTER_INPUT.md](POINTER_INPUT.md)。
+
+グラフ・定義・実行値/進捗・Tauri IPCの構造契約を、任意schema featureとビルド用unge-contractsから生成します。入力の省略規則と出力の全フィールドを区別し、CIで生成差分を検出します。意味上の検証はRustに保持します。[CONTRACT_GENERATION.md](CONTRACT_GENERATION.md)。
+
+キーボード操作用のノード概要は登録済みViewの言語/選択からRustが生成し、1〜100件のページで返します。HTMLからの座標移動・削除もCommandと表示revisionを使用します。ネイティブSurfaceのOSアクセシビリティツリーは未実装です。[ACCESSIBILITY.md](ACCESSIBILITY.md)。
+
+Group UIはページ付き概要だけを受け取り、Rust Viewの選択から作成/所属編集します。Group Requestは同じロック内でrevisionを検査し、SetGroupで履歴とSceneIndexを更新します。所属Node選択はViewだけを更新します。[GROUP_EDITING.md](GROUP_EDITING.md)。
