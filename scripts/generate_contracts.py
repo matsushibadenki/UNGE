@@ -94,6 +94,8 @@ def main():
     if result.returncode:
         raise SystemExit(result.stderr)
     files = artifacts(json.loads(result.stdout))
+    port_result = subprocess.run(["cargo", "run", "--locked", "--quiet", "-p", "unge-contracts", "--", "--port-schemas"], cwd=ROOT, text=True, capture_output=True, check=True)
+    files[ROOT / "bindings/schema/math-port-values.json"] = json.dumps(json.loads(port_result.stdout), ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     stale = []
     for path, source in files.items():
         if args.check:

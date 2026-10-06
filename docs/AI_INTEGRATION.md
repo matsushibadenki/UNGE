@@ -104,3 +104,5 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 Group表示には既存SetGroupを使います。境界をDocumentやWebViewへ保存せず、[GROUP_RENDERING.md](GROUP_RENDERING.md) の派生描画と更新契約を使ってください。Groupの所属Node選択・名前/所属編集は [GROUP_EDITING.md](GROUP_EDITING.md) を使います。枠ドラッグは未実装です。
 
 GPU表示に対応するHTML操作には [ACCESSIBILITY.md](ACCESSIBILITY.md) の有界ノード概要を利用してください。独自handlerへaccessible_nodesを追加し、編集にはページのrevisionを付けます。WebViewにDocumentの可変コピーを持たせず、競合時に自動再送しません。
+
+実行値の事前検査にはDefinitionのvalidate_inputs/validate_outputsを使い、schema featureでPort名ごとのSchemaを生成できます。[PORT_VALUE_SCHEMAS.md](PORT_VALUE_SCHEMAS.md)。大容量ResourceはIDだけで表し、存在・内容・権限をホストで検証してください。

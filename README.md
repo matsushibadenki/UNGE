@@ -130,3 +130,5 @@ Groupの枠と見出しをGPUで描画します。既存Command/ACXで設定で�
 キーボードからノードを選択・座標移動・削除するHTML操作と、有界なRustノード概要APIを追加しました。 [ACCESSIBILITY.md](docs/ACCESSIBILITY.md)。
 
 Groupの作成・名前/所属編集・削除と所属ノード選択を3言語UIから操作できます。 [GROUP_EDITING.md](docs/GROUP_EDITING.md)。
+
+Definitionごとの入力/出力値マップSchemaとRust検証APIを追加しました。 [PORT_VALUE_SCHEMAS.md](docs/PORT_VALUE_SCHEMAS.md)。

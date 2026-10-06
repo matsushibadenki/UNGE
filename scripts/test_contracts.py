@@ -8,6 +8,18 @@ from generate_contracts import ROOT, artifacts, ts_type
 
 
 class Contracts(unittest.TestCase):
+    def test_port_map_runtime_parity(self):
+        count = 0
+        for case in self.fixtures["port_cases"]:
+            for direction in ("input", "output"):
+                schema = case[direction + "_schema"]
+                Draft7Validator.check_schema(schema)
+                validator = Draft7Validator(schema, format_checker=FormatChecker())
+                for sample in case[direction + "s"]:
+                    self.assertEqual(validator.is_valid(sample["value"]), sample["valid"], (schema, sample))
+                    count += 1
+        self.assertGreater(count, 3000)
+
     @classmethod
     def setUpClass(cls):
         result = subprocess.run(['cargo', 'run', '--quiet', '--locked', '-p', 'unge-contracts', '--', '--fixtures'], cwd=ROOT, check=True, text=True, capture_output=True)

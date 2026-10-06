@@ -31,10 +31,14 @@ fn fixtures() -> serde_json::Value {
         "Document": Document::default(), "Definition": definition,
         "Command": command, "Request": unge_tauri::Request::Apply { expected_revision: 0, command },
         "property_values_schema": definition.property_schema.json_schema().expect("property schema"),
-        "property_cases": property_cases()
+        "property_cases": property_cases(), "port_cases": port_cases()
     })
 }
 fn main() {
+    if std::env::args().nth(1).as_deref() == Some("--port-schemas") {
+        println!("{}", port_schemas());
+        return;
+    }
     if std::env::args().nth(1).as_deref() == Some("--fixtures") {
         println!("{}", fixtures());
         return;
@@ -125,4 +129,73 @@ fn property_cases() -> serde_json::Value {
         cases.push(serde_json::json!({ "schema": schema.json_schema().expect("schema"), "samples": values }));
     }
     serde_json::json!(cases)
+}
+
+fn port_cases() -> serde_json::Value {
+    use unge_core::{Cardinality, DataType, Id, Port};
+    use unge_executor::{Inputs, Outputs, Value, math_registry};
+    let types = vec![
+        DataType::Bool,
+        DataType::Int,
+        DataType::Float,
+        DataType::String,
+        DataType::Json,
+        DataType::Bytes,
+        DataType::Image,
+        DataType::Audio,
+        DataType::Video,
+        DataType::Tensor,
+        DataType::Event,
+        DataType::Any,
+        DataType::Custom("image.x".into()),
+    ];
+    let mut values = vec![
+        Value::Bool(true),
+        Value::Int(2),
+        Value::Float(2.5),
+        Value::String("组".into()),
+        Value::Json(serde_json::json!(null)),
+    ];
+    values.extend(types.iter().cloned().map(|data_type| Value::Resource {
+        id: Id::from_u128(1),
+        data_type,
+    }));
+    let base = math_registry();
+    let mut cases = Vec::new();
+    for data_type in types {
+        for cardinality in [Cardinality::Single, Cardinality::Multiple] {
+            for required in [false, true] {
+                let mut definition = base.definition("math.number").unwrap().clone();
+                let port = Port {
+                    name: "value / 组".into(),
+                    data_type: data_type.clone(),
+                    cardinality,
+                    required,
+                };
+                definition.inputs = vec![port.clone()];
+                definition.outputs = vec![port];
+                let mut inputs: Vec<Inputs> = vec![
+                    Inputs::new(),
+                    [("value / 组".into(), vec![])].into(),
+                    [("unknown".into(), vec![])].into(),
+                ];
+                let mut outputs: Vec<Outputs> = vec![
+                    Outputs::new(),
+                    [("unknown".into(), Value::Bool(true))].into(),
+                ];
+                for value in &values {
+                    inputs.push([("value / 组".into(), vec![value.clone()])].into());
+                    inputs.push([("value / 组".into(), vec![value.clone(), value.clone()])].into());
+                    outputs.push([("value / 组".into(), value.clone())].into());
+                }
+                cases.push(serde_json::json!({"input_schema":definition.input_values_schema().unwrap(),"output_schema":definition.output_values_schema().unwrap(),"inputs":inputs.into_iter().map(|v|serde_json::json!({"valid":definition.validate_inputs(&v).is_ok(),"value":v})).collect::<Vec<_>>(),"outputs":outputs.into_iter().map(|v|serde_json::json!({"valid":definition.validate_outputs(&v).is_ok(),"value":v})).collect::<Vec<_>>() }));
+            }
+        }
+    }
+    serde_json::json!(cases)
+}
+fn port_schemas() -> serde_json::Value {
+    let registry = unge_executor::math_registry();
+    let schemas:std::collections::BTreeMap<_,_>=registry.definitions().map(|d|(d.type_id.clone(),serde_json::json!({"version":d.version,"inputs":d.input_values_schema().unwrap(),"outputs":d.output_values_schema().unwrap()}))).collect();
+    serde_json::json!(schemas)
 }

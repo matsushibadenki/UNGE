@@ -47,7 +47,7 @@ JavaScriptではi64/u64/usizeもnumberになります。安全な整数範囲を
 
 ACX Core/Intent/Jobの規範SchemaとACXのTypeScriptライフサイクル型は今回の生成対象ではありません。
 既存のACX適合テストを維持し、別の契約として扱います。
-個別ノードのPort名に対応する値マップのSchema生成は今後の項目です。
+個別ノードの値マップSchemaは [PORT_VALUE_SCHEMAS.md](PORT_VALUE_SCHEMAS.md) のDefinition APIで生成できます。
 
 ## English
 
@@ -57,7 +57,7 @@ Committed Draft 7 schemas describe deserialization. `generated.ts` contains inpu
 Consumers need no generation dependency unless they enable the optional `schema` feature.
 `PropertySchema::json_schema()` exports node property value constraints and localized metadata.
 Rust remains authoritative for graph semantics, permissions and numeric representation.
-JavaScript callers must respect safe integer limits. ACX protocol schemas and per-node port value maps remain separate work.
+JavaScript callers must respect safe integer limits. ACX protocol schemas remain separate. Per-node value maps use the Definition APIs in PORT_VALUE_SCHEMAS.md.
 
 ## 简体中文
 
@@ -65,6 +65,6 @@ JavaScript callers must respect safe integer limits. ACX protocol schemas and pe
 Draft 7 Schema描述反序列化，`generated.ts` 提供输入类型，`generated-output.ts` 描述当前类型完整字段的序列化输出。
 使用已生成文件不需要启用 `schema` feature。启用后可用 `PropertySchema::json_schema()` 导出节点属性值约束和三语言元数据。
 图语义、权限和数值表示仍由Rust验证。JavaScript调用方必须遵守安全整数范围。
-ACX协议Schema和按节点Port名称生成值映射Schema尚未纳入此功能。
+ACX协议Schema仍为独立契约。按节点Port名称生成值映射Schema见 PORT_VALUE_SCHEMAS.md。
 
 生成は [Schemars 0.8.22の公式API](https://docs.rs/schemars/0.8.22/schemars/) を使用しています。バージョンを固定し、Serde属性との互換性を実際のJSONで検証しています。

@@ -36,7 +36,7 @@
 - [Done] 3言語の実行/キャンセル操作UI、進捗表示、snapshot revisionの区別、通知欠損時の照会回復
 - [Done] 任意ACX非同期job Profile、承認済みcommitの開始/進捗照会/キャンセル、単一worker、終端Receiptと再送、Provider終了時のキャンセル
 - [Done] Rustのグラフ・実行値・定義・進捗・Tauri IPCからTypeScript入力/出力型とJSON Schema生成、プロパティ値制約のSchema公開、CI差分チェック
-- [Next] 個別ノードのPort名に対応する入出力値マップのSchema生成
+- [Done] DefinitionごとのPort名/型/必須性/入力個数を反映した値マップSchema、Rust検証API、3,068例の判定照合
 - [Later] Converter Registry、Remote/Python/AI/GPU Backendの標準アダプター
 - [Later] Streaming、Reactive、Simulation、Subgraph実行
 - [Later] 外部Plugin manifest、WASMサンドボックス、権限モデル
@@ -98,4 +98,9 @@
 - [Done] Group描画。[取り込み手順](GROUP_RENDERING.md)。
 - [Done] アクセシビリティの初期対応。[ノード概要とHTML操作](ACCESSIBILITY.md)。
 - [Done] Groupの所属Node選択と編集。[取り込み手順](GROUP_EDITING.md)。
-- [Next] 個別ノードのPort名に対応する入出力値マップのSchema生成。
+- [Done] DefinitionごとのPort名/型/必須性/入力個数を反映した値マップSchema、Rust検証API、3,068例の判定照合。
+
+## 次の優先項目（2026-10-06）
+
+- [Done] Port値マップSchema。[取り込み手順](PORT_VALUE_SCHEMAS.md)。
+- [Next] トポロジー/Undo/RedoのIndex更新費用を削減し、CPU計測で検証する。

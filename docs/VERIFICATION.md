@@ -259,3 +259,11 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - 新Group UI/既存ノードUI/実行UIのロジックテストはそれぞれ3言語で成功。クリック時点のGroup ID/名称/revision保持、入力名保持、競合時に再送しないことを確認。CIに追加。
 - Browser plugin not availableのため既存Playwright/Chromiumを使用。http://127.0.0.1:8769/index.html の静的ソースをrouteで配信、IPC mockで検証。960×850/320×850、3言語の6条件でtitle/lang/content、キーボード作成/改名、所属選択/除外/追加/削除、50/1件ページ切り替え、フォームラベル/アクセシビリティ情報、横はみ出しなし、console/page errorsなしを確認。日本語スクリーンショットを確認。
 - Tauri実画面での新操作、読み上げソフト、他OS、10,000超の所属操作の実負荷は未検証。Group枠のHit Test・枠ドラッグ・折りたたみ・OSアクセシビリティツリーは未実装。
+
+## 2026-10-06: Port値マップSchema
+
+- workspace/all-features Rust121件成功、GPU3件ignored。追加Rustテストで必須/空/多重/未知入力、非有限Float、重複Portを確認。schema featureなしのexecutorテストも成功。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check、TypeScript strict型検査成功。既存block 0.1.6のfuture compatibility警告は継続。
+- 契約Python6件成功。13 DataType×Single/Multiple×必須/任意の52定義、3,068件の実Rust Value入力/出力をDraft7Validatorと照合。Resourceの型一致、未知Port、空/欠損、件数、Custom不一致を確認。Schema生成差分チェック15 artifacts成功。
+- Definitionへfeatureなしのvalidate_inputs/validate_outputs、任意schema featureのinput_values_schema/output_values_schemaを追加。Valueのwire形はSchemarsから生成。math-port-values.jsonを生成対象に追加し、既存CIの差分/契約テストで検証。
+- Scheduler、IPC、ACX、UI、GPU実装の変更はない。実GPU・ネイティブ画面・ACX実stdioテストは今回再実行していない。Schemaは資源の存在/内容/権限を検証しない。任意精度JSONとRust/JavaScriptの数値表現の完全同値性も保証しない。

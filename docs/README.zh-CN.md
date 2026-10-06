@@ -60,3 +60,5 @@ GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘�
 新增基于Rust分页节点概要的HTML控件，支持键盘选择、移动和删除节点。 [ACCESSIBILITY.md](ACCESSIBILITY.md)。
 
 三语言UI支持创建组、改名、编辑成员、删除组和选中组成员。 [GROUP_EDITING.md](GROUP_EDITING.md)。
+
+新增每个Definition的输入/输出值Schema及Rust验证API。 [PORT_VALUE_SCHEMAS.md](PORT_VALUE_SCHEMAS.md)。

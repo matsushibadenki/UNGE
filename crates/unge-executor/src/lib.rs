@@ -5,6 +5,7 @@ mod progress;
 pub use progress::{ExecutionOutcome, ProgressEvent, StopReason};
 mod cache;
 pub use cache::{CacheLimits, CacheUsage};
+mod port_values;
 mod properties;
 pub use properties::*;
 
