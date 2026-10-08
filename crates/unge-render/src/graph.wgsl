@@ -23,12 +23,13 @@ struct Output {
     if in.params.z > 0.5 {
         let spacing = select(24.,120.,camera.origin_zoom.z < 0.3);
         let cell = abs(fract(in.world/spacing-0.5)-0.5)*spacing;
-        let line = 1.-smoothstep(0.,1.2/camera.origin_zoom.z,min(cell.x,cell.y));
+        let line = 1.-smoothstep(0.55,1.35,length(cell)*camera.origin_zoom.z);
         return vec4(mix(in.color.rgb,camera.grid_color.rgb,line*camera.grid_color.a),in.color.a);
     }
     let radius = min(in.params.y,min(in.half_size.x,in.half_size.y));
     let q = abs(in.local)-in.half_size+vec2(radius);
     let distance = length(max(q,vec2(0.)))+min(max(q.x,q.y),0.)-radius;
-    let alpha = 1.-smoothstep(-1./camera.origin_zoom.z,0.,distance);
+    let feather = max(1./camera.origin_zoom.z,in.params.w);
+    let alpha = 1.-smoothstep(-feather,0.,distance);
     return vec4(in.color.rgb,in.color.a*alpha);
 }

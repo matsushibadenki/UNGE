@@ -1,4 +1,5 @@
 mod input;
+mod property_demo;
 use std::sync::Arc;
 use tauri::{Emitter, Listener, Manager};
 use unge_core::*;
@@ -7,7 +8,7 @@ use unge_tauri::Engine;
 
 fn labels(registry: &unge_executor::Registry) -> LabelCatalog {
     let mut catalog = LabelCatalog::new();
-    for type_id in ["math.number", "math.add"] {
+    for type_id in ["math.number", "math.add", "example.adjust"] {
         let definition = registry.definition(type_id).unwrap();
         let title = &definition.name;
         let value = LabelText {
@@ -18,12 +19,31 @@ fn labels(registry: &unge_executor::Registry) -> LabelCatalog {
         catalog.insert(
             type_id.into(),
             NodeLabels {
+                symbol: match type_id {
+                    "math.number" => "#",
+                    "example.adjust" => "ƒ",
+                    _ => "+",
+                }
+                .into(),
+                caption: LabelText {
+                    en: definition.description.en.clone(),
+                    ja: definition.description.ja.clone(),
+                    zh_cn: definition.description.zh_cn.clone(),
+                },
+                tone: if type_id == "math.number" {
+                    unge_render::NodeTone::Mint
+                } else if type_id == "example.adjust" {
+                    unge_render::NodeTone::Violet
+                } else {
+                    unge_render::NodeTone::Blue
+                },
                 title: LabelText {
                     en: title.en.clone(),
                     ja: title.ja.clone(),
                     zh_cn: title.zh_cn.clone(),
                 },
                 inputs: [
+                    ("value".into(), value.clone()),
                     (
                         "a".into(),
                         LabelText {
@@ -48,30 +68,52 @@ fn labels(registry: &unge_executor::Registry) -> LabelCatalog {
     }
     catalog
 }
-fn initial_document() -> Document {
-    let registry = unge_executor::math_registry();
+fn initial_document(registry: &unge_executor::Registry) -> Document {
     let mut editor = Editor::new(Document::default(), 100).unwrap();
     let mut commands = Vec::new();
     let mut ids = Vec::new();
-    for i in 0..12 {
+    // A connected composition leaves room to read names and follow each cable.
+    let positions = [
+        (64., 104.),
+        (64., 324.),
+        (380., 434.),
+        (380., 170.),
+        (696., 270.),
+        (1012., 270.),
+    ];
+    for (i, (x, y)) in positions.into_iter().enumerate() {
         let mut node = registry
-            .definition(if i == 11 { "math.add" } else { "math.number" })
+            .definition(if i == 5 {
+                "example.adjust"
+            } else if i >= 3 {
+                "math.add"
+            } else {
+                "math.number"
+            })
             .unwrap()
             .instantiate();
-        if i != 11 {
-            node.properties.insert("value".into(), i.into());
+        if i < 3 {
+            node.properties
+                .insert("value".into(), [20, 22, 8][i].into());
         }
         ids.push(node.id);
         commands.push(Command::AddNode {
             node,
             rect: Rect {
-                x: 40. + (i % 3) as f32 * 240.,
-                y: 40. + (i / 3) as f32 * 140.,
-                ..Rect::default()
+                x,
+                y,
+                width: 224.,
+                height: 128.,
             },
         });
     }
-    for (source, port) in [(9, "a"), (10, "b")] {
+    for (source, target, port) in [
+        (0, 3, "a"),
+        (1, 3, "b"),
+        (3, 4, "a"),
+        (2, 4, "b"),
+        (4, 5, "value"),
+    ] {
         commands.push(Command::Connect {
             edge: Edge {
                 id: Id::new_v4(),
@@ -80,7 +122,7 @@ fn initial_document() -> Document {
                     port: "value".into(),
                 },
                 to: Endpoint {
-                    node: ids[11],
+                    node: ids[target],
                     port: port.into(),
                 },
             },
@@ -91,8 +133,8 @@ fn initial_document() -> Document {
         id: group_id,
         group: Some(unge_core::Group {
             id: group_id,
-            label: "9 + 10 = 19".into(),
-            nodes: ids[9..12].iter().copied().collect(),
+            label: "20 + 22 = 42".into(),
+            nodes: [ids[0], ids[1], ids[3]].into(),
         }),
     });
     editor.execute(Command::Batch { commands }).unwrap();
@@ -135,14 +177,14 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(unge_tauri::handler())
         .setup(|app| {
-            let registry = Arc::new(unge_executor::math_registry());
-            let editor = Editor::new(initial_document(), 256)?.with_validator(registry.clone())?;
+            let registry = Arc::new(property_demo::registry());
             let execution = unge_executor::RunService::new(
                 registry.clone(),
                 unge_executor::Scheduler::new(4, 128),
                 unge_executor::RunLimits::default(),
             );
-            let engine = Engine::from_editor(editor).with_execution(execution.clone());
+            let engine = Engine::from_registry(initial_document(&registry), 256, registry.clone())?
+                .with_execution(execution.clone());
             engine
                 .set_labels(labels(&registry))
                 .map_err(|e| e.message)?;
@@ -152,14 +194,14 @@ fn main() {
                     Viewport {
                         origin: [0., 0.],
                         zoom: 1.,
-                        size: [960., 640.],
+                        size: [1280., 640.],
                     },
                 )
                 .map_err(|e| e.message)?;
             // A native window without a WebView is the portable baseline surface.
             let canvas = tauri::WindowBuilder::new(app, "canvas")
                 .title("UNGE · Rust / wgpu")
-                .inner_size(960., 640.)
+                .inner_size(1280., 640.)
                 .build()?;
             let size = canvas.inner_size()?;
             let renderer = pollster::block_on(SurfaceRenderer::new(

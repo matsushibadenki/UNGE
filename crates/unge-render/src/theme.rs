@@ -47,6 +47,11 @@ impl ThemeColor {
 
 /// Shared tokens for Rust/GPU and WebView controls.
 pub struct ThemePalette {
+    pub shadow: ThemeColor,
+    pub mint: ThemeColor,
+    pub violet: ThemeColor,
+    pub amber: ThemeColor,
+    pub rose: ThemeColor,
     pub background: ThemeColor,
     pub grid: ThemeColor,
     pub node: ThemeColor,
@@ -64,31 +69,41 @@ impl Theme {
     pub fn palette(self) -> ThemePalette {
         match self {
             Self::Dark => ThemePalette {
-                background: ThemeColor::new([17, 25, 35]),
-                grid: ThemeColor::new([34, 45, 58]),
-                node: ThemeColor::new([36, 49, 65]),
-                border: ThemeColor::new([114, 134, 154]),
-                accent: ThemeColor::new([103, 212, 187]),
-                edge: ThemeColor::new([115, 178, 196]),
-                port: ThemeColor::new([103, 212, 187]),
-                text: ThemeColor::new([219, 228, 237]),
-                muted: ThemeColor::new([164, 181, 198]),
-                hover: ThemeColor::new([45, 62, 81]),
-                cable_valid: ThemeColor::new([103, 212, 187]),
+                shadow: ThemeColor::new([0, 0, 0]),
+                mint: ThemeColor::new([95, 213, 184]),
+                violet: ThemeColor::new([182, 157, 249]),
+                amber: ThemeColor::new([241, 189, 104]),
+                rose: ThemeColor::new([238, 139, 160]),
+                background: ThemeColor::new([20, 22, 28]),
+                grid: ThemeColor::new([55, 61, 74]),
+                node: ThemeColor::new([33, 37, 47]),
+                border: ThemeColor::new([107, 120, 140]),
+                accent: ThemeColor::new([120, 162, 255]),
+                edge: ThemeColor::new([133, 153, 190]),
+                port: ThemeColor::new([120, 162, 255]),
+                text: ThemeColor::new([234, 238, 246]),
+                muted: ThemeColor::new([169, 181, 202]),
+                hover: ThemeColor::new([43, 49, 62]),
+                cable_valid: ThemeColor::new([120, 162, 255]),
                 cable_invalid: ThemeColor::new([244, 158, 95]),
             },
             Self::Light => ThemePalette {
-                background: ThemeColor::new([243, 246, 249]),
-                grid: ThemeColor::new([221, 228, 236]),
+                shadow: ThemeColor::new([76, 91, 117]),
+                mint: ThemeColor::new([20, 128, 107]),
+                violet: ThemeColor::new([126, 84, 192]),
+                amber: ThemeColor::new([161, 105, 23]),
+                rose: ThemeColor::new([183, 66, 103]),
+                background: ThemeColor::new([245, 247, 250]),
+                grid: ThemeColor::new([185, 196, 211]),
                 node: ThemeColor::new([255, 255, 255]),
-                border: ThemeColor::new([121, 143, 164]),
-                accent: ThemeColor::new([17, 119, 97]),
-                edge: ThemeColor::new([56, 103, 123]),
-                port: ThemeColor::new([17, 119, 97]),
+                border: ThemeColor::new([126, 141, 161]),
+                accent: ThemeColor::new([45, 99, 213]),
+                edge: ThemeColor::new([84, 112, 157]),
+                port: ThemeColor::new([45, 99, 213]),
                 text: ThemeColor::new([27, 43, 57]),
                 muted: ThemeColor::new([76, 95, 112]),
                 hover: ThemeColor::new([228, 237, 242]),
-                cable_valid: ThemeColor::new([17, 119, 97]),
+                cable_valid: ThemeColor::new([45, 99, 213]),
                 cable_invalid: ThemeColor::new([174, 69, 22]),
             },
         }
@@ -143,5 +158,29 @@ mod tests {
         let linear = c.linear();
         assert!((linear[0] - 0.21586).abs() < 0.00001);
         assert_eq!(&linear[1..], &[0., 1., 1.]);
+    }
+}
+
+/// Host-selected visual role. Presentation metadata only; no application logic in core.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum NodeTone {
+    #[default]
+    Neutral,
+    Blue,
+    Mint,
+    Violet,
+    Amber,
+    Rose,
+}
+impl ThemePalette {
+    pub fn tone(&self, tone: NodeTone) -> ThemeColor {
+        match tone {
+            NodeTone::Neutral => self.border,
+            NodeTone::Blue => self.accent,
+            NodeTone::Mint => self.mint,
+            NodeTone::Violet => self.violet,
+            NodeTone::Amber => self.amber,
+            NodeTone::Rose => self.rose,
+        }
     }
 }

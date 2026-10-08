@@ -62,3 +62,7 @@ Added keyboard node selection, coordinate movement and deletion through HTML con
 Group creation, rename, membership edits, deletion and member selection are available from the three-language UI. [GROUP_EDITING.md](GROUP_EDITING.md)。
 
 Per-definition input/output value schemas and Rust validation APIs are available. [PORT_VALUE_SCHEMAS.md](PORT_VALUE_SCHEMAS.md)。
+
+Nodes now use a dot canvas, role accents, optional symbols/captions and a clear selection ring. [NODE_APPEARANCE.md](NODE_APPEARANCE.md)。
+
+[Property inspector UI and API](PROPERTY_INSPECTOR.md)

@@ -14,6 +14,17 @@
 <form id="moveForm"><div class="coordinates"><div><label for="nodeX" id="xLabel"></label><input id="nodeX" type="number" min="-1000000000" max="1000000000" step="any" required disabled></div><div><label for="nodeY" id="yLabel"></label><input id="nodeY" type="number" min="-1000000000" max="1000000000" step="any" required disabled></div></div><button id="moveNode" type="submit" disabled></button></form>
 <div class="actions"><button id="previousNodes" type="button"></button><button id="nextNodes" type="button" disabled></button><button id="refreshNodes" type="button"></button></div><output id="graphStatus" role="status" aria-live="polite"></output>
 </section>
+<section class="property-inspector" aria-labelledby="propertiesTitle">
+<div class="property-section-heading"><span class="property-mark" aria-hidden="true">≡</span><h2 id="propertiesTitle"></h2></div>
+<button id="loadProperties" type="button"></button>
+<form id="propertyForm" novalidate>
+<article id="propertyCard" class="property-card" hidden>
+<header class="property-card-header"><span class="property-node-icon" aria-hidden="true">ƒ</span><div><h3 id="propertyNodeName"></h3><small id="propertyNodeType"></small></div></header>
+<p id="propertyNodeDescription" class="property-description"></p>
+<fieldset id="propertyFields" aria-labelledby="propertyNodeName"></fieldset>
+<button id="saveProperties" type="submit" disabled></button>
+</article></form><output id="propertiesStatus" role="status" aria-live="polite"></output>
+</section>
 <section class="graph-controls" aria-labelledby="groupsLabel">
 <h2 id="groupsLabel"></h2><p id="groupsHelp"></p>
 <label for="groupChoice" id="groupChoiceLabel"></label><select id="groupChoice" aria-describedby="groupsHelp" disabled></select>
@@ -23,4 +34,4 @@
 </section>
 <p id="help"></p>
 <output id="status" aria-live="polite"></output>
-</main><script src="execution.js"></script><script src="accessibility.js"></script><script src="groups.js"></script><script src="app.js"></script></body></html>
+</main><script src="execution.js"></script><script src="accessibility.js"></script><script src="groups.js"></script><script src="properties.js"></script><script src="app.js"></script></body></html>

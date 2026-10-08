@@ -9,6 +9,9 @@ use unge_executor::{PreparedRun, RunError, RunService, RunSummary};
 use unge_interaction::{Interaction, InteractionError, PointerEvent};
 use unge_render::{LabelCatalog, SceneIndex, SurfaceRenderer, Theme};
 
+mod properties;
+pub use properties::NodeProperties;
+
 mod groups;
 pub use groups::{GroupAction, GroupPage, GroupSummary};
 
@@ -30,6 +33,7 @@ struct State {
 pub struct Engine {
     state: Arc<Mutex<State>>,
     execution: Option<RunService>,
+    registry: Option<Arc<unge_executor::Registry>>,
     renderers: Arc<Mutex<BTreeMap<String, SurfaceRenderer>>>,
 }
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
@@ -197,6 +201,7 @@ impl Engine {
         let scene = SceneIndex::new(editor.document());
         Self {
             execution: None,
+            registry: None,
             state: Arc::new(Mutex::new(State {
                 labels: LabelCatalog::new(),
                 editor,
@@ -777,6 +782,15 @@ mod commands {
         engine.accessible_nodes(window.label(), expected_revision, after, limit)
     }
     #[tauri::command]
+    pub fn node_properties<R: tauri::Runtime>(
+        window: tauri::WebviewWindow<R>,
+        engine: tauri::State<'_, Engine>,
+        id: Id,
+        expected_revision: u64,
+    ) -> ApiResult<NodeProperties> {
+        engine.node_properties(window.label(), id, expected_revision)
+    }
+    #[tauri::command]
     pub fn inspect<R: tauri::Runtime>(
         window: tauri::WebviewWindow<R>,
         engine: tauri::State<'_, Engine>,
@@ -787,7 +801,7 @@ mod commands {
 }
 pub use commands::{
     accessible_nodes, appearance, cancel_execution, current_execution, dispatch,
-    execution_observer, execution_status, groups, inspect, start_execution,
+    execution_observer, execution_status, groups, inspect, node_properties, start_execution,
 };
 /// Combine with your host handler using generate_handler!. Include start_execution,
 /// current_execution, execution_status and cancel_execution when configuring RunService.
@@ -798,6 +812,7 @@ pub fn handler<R: tauri::Runtime>() -> impl Fn(tauri::ipc::Invoke<R>) -> bool + 
         accessible_nodes,
         groups,
         inspect,
+        node_properties,
         appearance,
         start_execution,
         current_execution,

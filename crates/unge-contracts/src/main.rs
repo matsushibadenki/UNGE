@@ -56,6 +56,7 @@ fn main() {
     add::<unge_tauri::Appearance>(&mut schemas);
     add::<unge_tauri::AccessiblePage>(&mut schemas);
     add::<unge_tauri::GroupPage>(&mut schemas);
+    add::<unge_tauri::NodeProperties>(&mut schemas);
     println!(
         "{}",
         serde_json::to_string(&schemas).expect("serialize contracts")

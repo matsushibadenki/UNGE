@@ -116,3 +116,7 @@ RegistryやPolicyは信頼済みホストが提供し、AIから変更できま�
 キーボード操作用のノード概要は登録済みViewの言語/選択からRustが生成し、1〜100件のページで返します。HTMLからの座標移動・削除もCommandと表示revisionを使用します。ネイティブSurfaceのOSアクセシビリティツリーは未実装です。[ACCESSIBILITY.md](ACCESSIBILITY.md)。
 
 Group UIはページ付き概要だけを受け取り、Rust Viewの選択から作成/所属編集します。Group Requestは同じロック内でrevisionを検査し、SetGroupで履歴とSceneIndexを更新します。所属Node選択はViewだけを更新します。[GROUP_EDITING.md](GROUP_EDITING.md)。
+
+## プロパティ設定の表示境界
+
+`Engine::from_registry` は同じRegistryをEditorの検証と設定メタデータ取得に使う。`node_properties` は登録済みViewとrevisionを確認し、一つのノードの有界な定義・値を返す。WebViewはこの下書きだけを保持し、差分を単一Batchとして共有Engineに適用する。外部更新時の自動上書きは行わない。具体的なフォーム・状態・拡張境界は [PROPERTY_INSPECTOR.md](PROPERTY_INSPECTOR.md) を参照。

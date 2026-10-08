@@ -1,5 +1,5 @@
 /* Defaults match Theme::Dark; Rust appearance metadata supplies runtime tokens. */
-:root { --background:#111923; --surface:#243141; --border:#72869a; --accent:#67d4bb; --text:#dbe4ed; --muted:#a4b5c6; --hover:#2d3e51; color-scheme:dark; font:15px/1.65 system-ui,sans-serif; color:var(--text); background:var(--background); }
+:root { --background:#14161c; --surface:#21252f; --border:#6b788c; --accent:#78a2ff; --text:#eaeef6; --muted:#a9b5ca; --hover:#2b313e; color-scheme:dark; font:15px/1.65 system-ui,sans-serif; color:var(--text); background:var(--background); }
 :root[data-theme="light"] { color-scheme:light; }
 * { box-sizing:border-box; }
 body { margin:0; padding:24px; }
@@ -37,3 +37,52 @@ button { overflow-wrap:anywhere; }
 
 #groupChoice { width:100%; min-width:0; }
 #groupName { font:inherit; color:inherit; background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:8px; }
+
+/* Property controls share palette tokens with the native GPU canvas. */
+.property-inspector { margin-block: 28px; }
+.property-section-heading { display:flex; align-items:center; gap:10px; }
+.property-mark { color:var(--accent); font-size:24px; }
+.property-section-heading h2 { margin:0; }
+.property-inspector > button { width:100%; margin:12px 0; }
+.property-card { border:1px solid color-mix(in srgb,var(--accent) 36%,var(--surface)); border-radius:14px; background:var(--surface); overflow:hidden; box-shadow:0 8px 24px #00000014; }
+.property-card-header { padding:16px; margin:0; display:flex; gap:12px; align-items:center; background:color-mix(in srgb,var(--accent) 12%,var(--surface)); border-bottom:1px solid color-mix(in srgb,var(--border) 25%,transparent); }
+.property-card-header > div { min-width:0; }
+.property-card-header h3 { margin:0; font-size:17px; line-height:1.4; overflow-wrap:anywhere; }
+.property-card-header small { display:block; color:var(--muted); font-size:11px; overflow-wrap:anywhere; }
+.property-node-icon { display:grid; place-items:center; flex:0 0 36px; height:36px; border-radius:9px; color:var(--accent); background:color-mix(in srgb,var(--accent) 15%,var(--surface)); font:600 22px Georgia,serif; }
+.property-description { margin:16px; color:var(--muted); font-size:13px; overflow-wrap:anywhere; }
+#propertyFields { border:0; padding:0; margin:0; min-width:0; }
+.property-field { padding:16px; border-top:1px solid color-mix(in srgb,var(--border) 22%,transparent); }
+.property-heading { display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:8px; }
+.property-heading label { margin:0; font-weight:600; overflow-wrap:anywhere; min-width:0; }
+.property-optional { color:var(--muted); font-size:10px; flex-shrink:0; }
+.property-value { display:flex; align-items:center; gap:12px; }
+.property-value input, .property-value select, .property-value textarea { min-width:0; width:100%; margin:0; }
+.property-value input[type=number] { font-variant-numeric:tabular-nums; }
+.property-value input[type=range] { flex:1; min-width:48px; padding:0; accent-color:var(--accent); }
+.property-value input[type=range] + input { width:88px; }
+.property-value textarea { resize:vertical; padding:10px 12px; font:inherit; line-height:1.6; color:var(--text); background:var(--background); border:1px solid var(--border); border-radius:8px; box-sizing:border-box; }
+.property-value input[type=checkbox], .property-enable input { width:18px; height:18px; accent-color:var(--accent); margin:0; }
+.property-enable { display:flex; align-items:center; gap:8px; margin:8px 0; font-size:12px; color:var(--muted); }
+.property-hint { display:block; font-size:11px; color:var(--muted); margin-top:8px; overflow-wrap:anywhere; }
+.property-error { display:block; font-size:12px; margin-top:6px; overflow-wrap:anywhere; }
+.property-error:empty { display:none; }
+.property-reset { margin-top:10px; padding:4px 8px; min-height:30px; font-size:11px; color:var(--muted); background:transparent; }
+#saveProperties { width:calc(100% - 32px); margin:4px 16px 16px; background:var(--accent); color:var(--background); border-color:var(--accent); font-weight:600; }
+#propertiesStatus { display:block; margin-top:12px; font-size:12px; color:var(--muted); overflow-wrap:anywhere; }
+#propertiesStatus[data-warning=true] { color:var(--text); border-left:2px solid var(--accent); padding-left:10px; }
+.property-value [aria-invalid=true] { border:2px solid var(--accent); }
+.property-value textarea:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
+.property-card-header { justify-content:flex-start; }
+.property-value .property-toggle { appearance:none; width:36px; height:22px; flex:none; padding:3px; border:1px solid var(--border); border-radius:12px; background:var(--background); cursor:pointer; }
+.property-value .property-toggle::before { content:''; display:block; width:14px; height:14px; border-radius:50%; background:var(--muted); }
+.property-value .property-toggle:checked { background:var(--accent); border-color:var(--accent); }
+.property-value .property-toggle:checked::before { transform:translateX(14px); background:var(--background); }
+.property-heading label { flex:1; }
+.property-heading .property-reset { margin:0; padding:0; width:26px; min-height:26px; flex:none; font-size:19px; line-height:1; border-color:transparent; }
+.property-value input[type=number] { height:36px; padding:6px 10px; border:1px solid color-mix(in srgb,var(--border) 55%,var(--surface)); border-radius:7px; background:var(--background); color:var(--text); font:inherit; text-align:right; }
+.property-value input[type=range] { appearance:none; height:4px; background:color-mix(in srgb,var(--border) 40%,var(--surface)); border:0; border-radius:4px; }
+.property-value input[type=range]::-webkit-slider-thumb { appearance:none; width:13px; height:13px; border-radius:50%; background:var(--accent); cursor:pointer; }
+.property-value input[type=range]::-moz-range-thumb { width:13px; height:13px; border-radius:50%; border:0; background:var(--accent); cursor:pointer; }
+.property-value input.property-toggle { width:36px; height:22px; }
+.property-value input:disabled, .property-value textarea:disabled { opacity:.5; }

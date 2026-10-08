@@ -10,7 +10,7 @@ let locale = navigator.language.startsWith('ja') ? 'ja' : navigator.language.sta
 let summary = { revision:0,nodes:0,edges:0 };
 let pending = Promise.resolve();
 function status() { $('status').textContent = `${summary.nodes} ${text[locale].nodes} · ${text[locale].revision} ${summary.revision}`; }
-function translate() { document.documentElement.lang=locale; for (const key of ['title','description','add','addSum','undo','redo','zoomLabel','help','themeLabel','themeDark','themeLight']) $(key).textContent=text[locale][key]; $('locale').setAttribute('aria-label',text[locale].language); status(); if (window.executionUI) window.executionUI.translate(locale); if (window.accessibleGraph) window.accessibleGraph.translate(); if (window.groupControls) window.groupControls.translate(); }
+function translate() { document.documentElement.lang=locale; for (const key of ['title','description','add','addSum','undo','redo','zoomLabel','help','themeLabel','themeDark','themeLight']) $(key).textContent=text[locale][key]; $('locale').setAttribute('aria-label',text[locale].language); status(); if (window.executionUI) window.executionUI.translate(locale); if (window.accessibleGraph) window.accessibleGraph.translate(); if (window.groupControls) window.groupControls.translate(); if (window.propertyInspector) window.propertyInspector.translate(); }
 async function send(request) { summary=await invoke('dispatch',{request}); status(); return summary; }
 function applyAppearance(appearance) {
   const root = document.documentElement;
@@ -34,9 +34,9 @@ function addNode(sum) {
 $('add').onclick=()=>enqueue(()=>addNode(false));
 $('addSum').onclick=()=>enqueue(()=>addNode(true));
 for (const kind of ['undo','redo']) $(kind).onclick=()=>enqueue(()=>send({kind,expected_revision:summary.revision}));
-$('zoom').oninput=()=>{ const zoom=Number($('zoom').value); enqueue(()=>send({kind:'set_viewport',viewport:{origin:[0,0],zoom,size:[960,640]}})); };
+$('zoom').oninput=()=>{ const zoom=Number($('zoom').value); enqueue(()=>send({kind:'set_viewport',viewport:{origin:[0,0],zoom,size:[1280,640]}})); };
 translate();
-listen('unge://changed',({payload})=>{if(payload.revision>=summary.revision){summary=payload;status();}}).catch(error=>{console.error(error); $('status').textContent=text[locale].failed;});
+listen('unge://changed',({payload})=>{if(payload.revision>=summary.revision){summary=payload;status(); if (window.propertyInspector) window.propertyInspector.observe(payload.revision);}}).catch(error=>{console.error(error); $('status').textContent=text[locale].failed;});
 enqueue(async ()=> {
   await send({kind:'set_locale',locale:locale.toLowerCase()});
   let saved;
@@ -61,3 +61,5 @@ enqueue(() => window.accessibleGraph.refresh());
 
 window.groupControls = createGroupControls({ invoke, send, enqueue, locale: () => locale });
 enqueue(() => window.groupControls.refresh());
+
+window.propertyInspector = createPropertyInspector({ invoke, send, locale: () => locale, selectedId: () => $('nodeChoice').value });

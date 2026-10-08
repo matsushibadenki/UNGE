@@ -49,8 +49,11 @@
 - [Done] Tauri 2共有Engine、呼び出し元View検査、revision競合検出、変更Summaryイベント
 - [Done] TypeScriptクライアント、3言語のエラー辞書、CLIとTauri実行例
 - [Done] GPU文字描画（Glyph Atlas）、3言語のホスト表示名、View単位の言語、HiDPI・クリップ・重なり順・容量制限
+- [Done] 参考画像に基づくドット背景・役割色・ノード記号/説明文・Portリング・選択枠・SDF影、3言語実GPU Gallery
 - [Done] ダーク/ライトのテーマAPI、Rust View単位の設定、GPU/CSS共通配色、3言語の切り替えUIと設定復元
 - [Done] Group枠・見出しのGPU描画、BVHカリング、ドラッグ追従、テーマ/LOD、編集後の整合性
+- [Done] 役割色のヘッダー、PropertySchemaから生成する3言語の設定パネル、有界な設定取得API、Batch保存・検証・競合時の下書き保持、ホスト拡張の数値調整サンプル
+- [Later] ネイティブノード内の入力コントロール、画像資産プレビュー、設定項目の表示ヒント（同一ウインドウ合成後）
 - [Done] 有界なノード概要API、3言語のHTML一覧、キーボードで選択/座標移動/削除、revision競合拒否
 - [Done] Group概要のページ取得、選択から作成/改名/所属追加・除外/削除、所属Nodeの一括選択、3言語HTML操作とUndo/Redo・競合検証
 - [Later] Group枠のHit Test・枠ドラッグ・折りたたみ
@@ -104,3 +107,10 @@
 
 - [Done] Port値マップSchema。[取り込み手順](PORT_VALUE_SCHEMAS.md)。
 - [Next] トポロジー/Undo/RedoのIndex更新費用を削減し、CPU計測で検証する。
+
+## 2026-10-07: 表示デザイン
+
+- [Done] ノードの表示を更新。[ホスト指定と見本生成](NODE_APPEARANCE.md)。
+- [Next] 既存のIndex更新費用削減と、新デザインの実GPU/Surfaceフレーム時間計測。
+
+- [Done] [ノード設定インターフェイス](PROPERTY_INSPECTOR.md)を追加。読み込んだrevisionで適用し、1回のUndoで復元する。

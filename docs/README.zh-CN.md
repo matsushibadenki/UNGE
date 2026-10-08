@@ -62,3 +62,7 @@ GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘�
 三语言UI支持创建组、改名、编辑成员、删除组和选中组成员。 [GROUP_EDITING.md](GROUP_EDITING.md)。
 
 新增每个Definition的输入/输出值Schema及Rust验证API。 [PORT_VALUE_SCHEMAS.md](PORT_VALUE_SCHEMAS.md)。
+
+节点新增点阵背景、角色颜色、可选符号/说明及清晰的选择外框。 [NODE_APPEARANCE.md](NODE_APPEARANCE.md)。
+
+[节点属性界面及API](PROPERTY_INSPECTOR.md)

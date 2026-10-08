@@ -22,6 +22,7 @@ export type GroupSummary = { "id": string; "label": string; "members": number; }
 export type Locale = "en" | "ja" | "zh-cn";
 export type LocalizedText = { "en": string; "ja": string; "zh_cn": string; };
 export type Node = { "id": string; "inputs": Array<Port>; "outputs": Array<Port>; "properties"?: Record<string, Json>; "type_id": string; };
+export type NodeProperties = { "description": LocalizedText; "id": string; "name": LocalizedText; "properties": Record<string, Json>; "revision": number; "schema": PropertySchema; "type_id": string; "version": string; };
 export type PointerButton = "primary" | "pan";
 export type PointerEvent = ({ "additive"?: boolean; "button": PointerButton; "kind": "down"; "pointer": number; "position": [number, number]; } | { "kind": "move"; "pointer": number; "position": [number, number]; } | { "kind": "up"; "pointer": number; "position": [number, number]; } | { "kind": "cancel"; });
 export type Port = { "cardinality": Cardinality; "data_type": DataType; "name": string; "required": boolean; };

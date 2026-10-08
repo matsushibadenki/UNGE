@@ -30,11 +30,11 @@ impl Quad {
             rect: [
                 (a[0] + b[0]) / 2.0,
                 (a[1] + b[1]) / 2.0,
-                dx.hypot(dy).max(0.001),
-                2.0,
+                dx.hypot(dy).max(0.001) + 3.0,
+                3.0,
             ],
             color,
-            params: [dy.atan2(dx), 0.8, 0.0, 0.0],
+            params: [dy.atan2(dx), 1.5, 0.0, 0.0],
         }
     }
 }
@@ -383,7 +383,7 @@ impl SceneIndex {
                         width: rect.width - 24.0,
                         height: 22.0,
                     },
-                    font_size: 14.0,
+                    font_size: if rect.height >= 120.0 { 15.0 } else { 14.0 },
                     right_aligned: false,
                     color: palette.text.linear(),
                     after_quad: scene.quads.len(),
@@ -430,15 +430,19 @@ impl SceneIndex {
             if !curve_bounds(points).intersects(area) {
                 continue;
             }
-            push_curve(&mut scene, points, viewport.zoom, palette.edge.linear());
+            let color = catalog
+                .get(&self.nodes[&edge.from.0].type_id)
+                .filter(|labels| labels.tone != crate::NodeTone::Neutral)
+                .map_or(palette.edge, |labels| palette.tone(labels.tone));
+            push_curve(&mut scene, points, viewport.zoom, color.linear());
             scene.visible_edges += 1;
         }
         // Include ports/selection borders protruding from the node bounds.
         let padded = Rect {
-            x: area.x - 8.0,
-            y: area.y - 8.0,
-            width: area.width + 16.0,
-            height: area.height + 16.0,
+            x: area.x - 12.0,
+            y: area.y - 12.0,
+            width: area.width + 24.0,
+            height: area.height + 24.0,
         };
         let mut nodes: BTreeSet<_> = self.node_index.query(padded).into_iter().collect();
         nodes.extend(preview.placement.keys());
@@ -449,55 +453,204 @@ impl SceneIndex {
                 continue;
             }
             let selected = selection.contains(&id);
+            let labels = catalog.get(&node.type_id);
+            let tone = palette
+                .tone(labels.map_or(crate::NodeTone::Neutral, |l| l.tone))
+                .linear();
+            // A single soft SDF instance for depth; skip ornament at overview zoom.
+            if viewport.zoom >= 0.6 {
+                let mut shadow = palette.shadow.linear();
+                shadow[3] = 0.24;
+                let mut q = Quad::rectangle(
+                    Rect {
+                        x: rect.x - 6.0,
+                        y: rect.y - 2.0,
+                        width: rect.width + 12.0,
+                        height: rect.height + 12.0,
+                    },
+                    shadow,
+                    16.0,
+                );
+                q.params[3] = 7.0;
+                scene.quads.push(q);
+            }
+            if selected {
+                let mut halo = palette.accent.linear();
+                halo[3] = 0.22;
+                scene.quads.push(Quad::rectangle(
+                    Rect {
+                        x: rect.x - 4.0,
+                        y: rect.y - 4.0,
+                        width: rect.width + 8.0,
+                        height: rect.height + 8.0,
+                    },
+                    halo,
+                    14.0,
+                ));
+            }
             let border = if selected {
                 palette.accent.linear()
             } else {
                 palette.border.linear()
             };
-            scene.quads.push(Quad::rectangle(rect, border, 8.0));
+            scene.quads.push(Quad::rectangle(rect, border, 10.0));
+            let inset = if selected { 2.0 } else { 1.0 };
             scene.quads.push(Quad::rectangle(
                 Rect {
-                    x: rect.x + 1.5,
-                    y: rect.y + 1.5,
-                    width: (rect.width - 3.0).max(0.1),
-                    height: (rect.height - 3.0).max(0.1),
+                    x: rect.x + inset,
+                    y: rect.y + inset,
+                    width: (rect.width - 2.0 * inset).max(0.1),
+                    height: (rect.height - 2.0 * inset).max(0.1),
                 },
                 palette.node.linear(),
-                7.0,
+                9.0,
             ));
+            if viewport.zoom >= 0.6 && rect.width >= 48.0 && rect.height >= 40.0 {
+                // Opaque tint in linear space: inexpensive header separation in both themes.
+                // Keep the existing port anchors and dense-node label clearance unchanged.
+                let mut header = palette.node.linear();
+                for channel in 0..3 {
+                    header[channel] = header[channel] * 0.88 + tone[channel] * 0.12;
+                }
+                let height = if rect.height >= 120.0 { 34.0 } else { 23.0 };
+                for (y, height, radius) in
+                    [(inset, height - inset, 9.0), (12.0, height - 12.0, 0.0)]
+                {
+                    scene.quads.push(Quad::rectangle(
+                        Rect {
+                            x: rect.x + inset,
+                            y: rect.y + y,
+                            width: rect.width - inset * 2.0,
+                            height,
+                        },
+                        header,
+                        radius,
+                    ));
+                }
+                scene.quads.push(Quad::rectangle(
+                    Rect {
+                        x: rect.x + 12.0,
+                        y: rect.y + 1.5,
+                        width: rect.width - 24.0,
+                        height: 2.0,
+                    },
+                    tone,
+                    1.0,
+                ));
+                if rect.height >= 120.0
+                    && labels.is_some_and(|l| !l.symbol.is_empty())
+                    && rect.width >= 96.0
+                {
+                    let mut badge = tone;
+                    badge[3] = 0.14;
+                    scene.quads.push(Quad::rectangle(
+                        Rect {
+                            x: rect.x + 10.0,
+                            y: rect.y + 8.0,
+                            width: 22.0,
+                            height: 22.0,
+                        },
+                        badge,
+                        5.0,
+                    ));
+                }
+                if rect.height >= 120.0 {
+                    let mut divider = palette.border.linear();
+                    divider[3] = 0.25;
+                    scene.quads.push(Quad::rectangle(
+                        Rect {
+                            x: rect.x + 12.0,
+                            y: rect.y + 33.0,
+                            width: rect.width - 24.0,
+                            height: 1.0,
+                        },
+                        divider,
+                        0.0,
+                    ));
+                }
+            }
             if viewport.zoom >= PORT_LOD_ZOOM {
                 for (count, output) in [(node.inputs, false), (node.outputs, true)] {
                     for i in 0..count {
                         let p = port_anchor(rect, i, count, output);
-                        scene.quads.push(Quad::rectangle(
-                            Rect {
-                                x: p[0] - 4.0,
-                                y: p[1] - 4.0,
-                                width: 8.0,
-                                height: 8.0,
-                            },
-                            palette.port.linear(),
-                            4.0,
-                        ));
+                        // Ring centres use the exact same anchor as hit testing and cables.
+                        for (radius, color) in
+                            [(6.0, tone), (4.5, palette.node.linear()), (2.5, tone)]
+                        {
+                            scene.quads.push(Quad::rectangle(
+                                Rect {
+                                    x: p[0] - radius,
+                                    y: p[1] - radius,
+                                    width: radius * 2.0,
+                                    height: radius * 2.0,
+                                },
+                                color,
+                                radius,
+                            ));
+                        }
                     }
                 }
             }
             if viewport.zoom >= 0.6 && rect.width >= 48.0 && rect.height >= 40.0 {
                 let labels = catalog.get(&node.type_id);
                 let after_quad = scene.quads.len();
+                let symbol = labels
+                    .map(|l| label_text(None, &l.symbol, locale))
+                    .unwrap_or_default();
+                let has_symbol = !symbol.is_empty() && rect.height >= 120.0 && rect.width >= 96.0;
+                if has_symbol {
+                    scene.labels.push(TextLabel {
+                        text: symbol.chars().take(2).collect(),
+                        rect: Rect {
+                            x: rect.x + 15.0,
+                            y: rect.y + 10.0,
+                            width: 16.0,
+                            height: 18.0,
+                        },
+                        font_size: 13.0,
+                        right_aligned: false,
+                        color: tone,
+                        after_quad,
+                    });
+                }
+                let title_inset = if has_symbol { 40.0 } else { 12.0 };
                 scene.labels.push(TextLabel {
                     text: label_text(labels.map(|v| &v.title), &node.type_id, locale),
                     rect: Rect {
-                        x: rect.x + 12.0,
-                        y: rect.y + 4.0,
-                        width: rect.width - 24.0,
+                        x: rect.x + title_inset,
+                        y: rect.y + if rect.height >= 120.0 { 10.0 } else { 4.0 },
+                        width: rect.width - title_inset - 12.0,
                         height: 18.0,
                     },
-                    font_size: 14.0,
+                    font_size: if rect.height >= 120.0 { 15.0 } else { 14.0 },
                     right_aligned: false,
                     color: palette.text.linear(),
                     after_quad,
                 });
+                let caption = labels
+                    .map(|l| label_text(Some(&l.caption), "", locale))
+                    .unwrap_or_default();
+                let rows = node.inputs.max(node.outputs);
+                let bottom_port = rect.height * rows as f32 / (rows + 1) as f32;
+                if viewport.zoom >= 0.75
+                    && rect.height >= 90.0
+                    && !caption.is_empty()
+                    && bottom_port + 10.0 <= rect.height - 28.0
+                {
+                    scene.labels.push(TextLabel {
+                        text: caption,
+                        rect: Rect {
+                            x: rect.x + 12.0,
+                            y: rect.y + rect.height - 26.0,
+                            width: rect.width - 24.0,
+                            height: 16.0,
+                        },
+                        font_size: 11.0,
+                        right_aligned: false,
+                        color: palette.muted.linear(),
+                        after_quad,
+                    });
+                }
                 if viewport.zoom >= 0.75 {
                     for (names, output) in [(&node.input_names, false), (&node.output_names, true)]
                     {
@@ -507,7 +660,9 @@ impl SceneIndex {
                         }
                         for (i, name) in names.iter().enumerate() {
                             let y = port_anchor(rect, i, names.len(), output)[1] - 7.0;
-                            if y < rect.y + 23.0 || y + 14.0 > rect.y + rect.height - 5.0 {
+                            let header_bottom =
+                                rect.y + if rect.height >= 120.0 { 34.0 } else { 23.0 };
+                            if y < header_bottom || y + 14.0 > rect.y + rect.height - 5.0 {
                                 continue;
                             }
                             let localized = labels.and_then(|v| {

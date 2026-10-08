@@ -85,17 +85,34 @@ fn theme_changes_all_presentation_colors_without_changing_geometry_or_labels() {
         assert_ne!(a.color, b.color);
     }
     let palette = Theme::Light.palette();
-    assert_eq!(light.quads[1].color, palette.accent.linear());
-    assert_eq!(light.quads[2].color, palette.node.linear());
-    assert_eq!(light.quads[3].color, palette.port.linear());
+    assert!(
+        light
+            .quads
+            .iter()
+            .any(|q| q.color == palette.accent.linear())
+    );
+    assert!(light.quads.iter().any(|q| q.color == palette.node.linear()));
+    assert!(
+        light
+            .quads
+            .iter()
+            .any(|q| q.color == palette.border.linear())
+    );
     assert_eq!(light.labels[0].color, palette.text.linear());
     assert_eq!(light.labels[1].color, palette.muted.linear());
-    assert_eq!(light.quads[4].color, palette.cable_invalid.linear());
+    assert!(
+        light
+            .quads
+            .iter()
+            .any(|q| q.color == palette.cable_invalid.linear())
+    );
     let mut valid = preview;
     valid.cable.as_mut().unwrap().valid = true;
-    assert_eq!(
-        scene(Theme::Light, &valid).quads[4].color,
-        palette.cable_valid.linear()
+    assert!(
+        scene(Theme::Light, &valid)
+            .quads
+            .iter()
+            .any(|q| q.color == palette.cable_valid.linear())
     );
     assert_eq!(
         SceneIndex::new(&document())
@@ -194,7 +211,7 @@ fn gpu_switches_background_grid_nodes_ports_and_text_without_stale_resources() {
             let palette = theme.palette();
             assert_color(&with_text, 230, 230, palette.background);
             // The grid is antialiased; pixel centres blend grid and background.
-            let grid_pixel = &with_text[(230 * 256 + 240) * 4..(230 * 256 + 240) * 4 + 3];
+            let grid_pixel = &with_text[(240 * 256 + 240) * 4..(240 * 256 + 240) * 4 + 3];
             let background = palette
                 .background
                 .linear()
@@ -206,7 +223,7 @@ fn gpu_switches_background_grid_nodes_ports_and_text_without_stale_resources() {
             }
             assert!(grid_pixel[2].abs_diff(background[2]) >= 2);
             assert_color(&with_text, 100, 95, palette.node);
-            assert_color(&with_text, 200, 65, palette.port);
+            assert_color(&with_text, 200, 65, palette.border);
             assert_eq!(renderer.text_stats().missing_glyphs, 0);
             if let Some(n) = entries {
                 assert_eq!(renderer.text_stats().atlas_entries, n);

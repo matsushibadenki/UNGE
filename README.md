@@ -132,3 +132,7 @@ Groupの枠と見出しをGPUで描画します。既存Command/ACXで設定で�
 Groupの作成・名前/所属編集・削除と所属ノード選択を3言語UIから操作できます。 [GROUP_EDITING.md](docs/GROUP_EDITING.md)。
 
 Definitionごとの入力/出力値マップSchemaとRust検証APIを追加しました。 [PORT_VALUE_SCHEMAS.md](docs/PORT_VALUE_SCHEMAS.md)。
+
+ノードをドット背景・役割色・記号/説明文・明瞭な選択枠のデザインへ更新しました。 [NODE_APPEARANCE.md](docs/NODE_APPEARANCE.md)。
+
+[ノード設定のUIとAPI](docs/PROPERTY_INSPECTOR.md)

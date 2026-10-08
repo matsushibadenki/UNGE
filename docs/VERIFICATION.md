@@ -267,3 +267,22 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - 契約Python6件成功。13 DataType×Single/Multiple×必須/任意の52定義、3,068件の実Rust Value入力/出力をDraft7Validatorと照合。Resourceの型一致、未知Port、空/欠損、件数、Custom不一致を確認。Schema生成差分チェック15 artifacts成功。
 - Definitionへfeatureなしのvalidate_inputs/validate_outputs、任意schema featureのinput_values_schema/output_values_schemaを追加。Valueのwire形はSchemarsから生成。math-port-values.jsonを生成対象に追加し、既存CIの差分/契約テストで検証。
 - Scheduler、IPC、ACX、UI、GPU実装の変更はない。実GPU・ネイティブ画面・ACX実stdioテストは今回再実行していない。Schemaは資源の存在/内容/権限を検証しない。任意精度JSONとRust/JavaScriptの数値表現の完全同値性も保証しない。
+
+## 2026-10-07: ノードの表示デザイン
+
+- workspace/all-features Rust123件成功、通常実行でGPU3件ignored。追加2件で役割色と接続線の一致、Portリングの中心と既存port_anchorの一致、320/375/414/768幅の低LOD、密なPort名とヘッダーの重なり回避を確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。
+- macOSの実GPU ignoredテスト3件成功。ピクセル、Group、接続プレビュー、文字クリップ/重なり、CJK/1x・2x、テーマ往復を検証。格子線テストをドット交点の検証へ更新。
+- Galleryを実GPUのsRGB textureで生成し、Dark/Light×英語/日本語/简体中文の6画像で欠損Glyphなし。英語・日本語・简体中文の画像を視認し、曲線の継ぎ目を修正後に再生成。日本語の2テーマをdocs/imagesへ保存。
+- Rust契約生成差分チェック15 artifacts、契約Python6件成功。NodeLabelsへホスト用tone/symbol/caption追加。Tauri/ACX/Document/TypeScriptのwire変更なし。
+- Tauriネイティブ画面での新しい配色/配置の実操作、他OS、新デザインのGPU/Surfaceフレーム時間は未検証。近景の影・Portリング等でQuad数が増える。Galleryの画像ノードは描画fixtureであり、画像処理Executorの実装ではない。
+
+## 2026-10-07: ノードの設定インターフェイス
+
+- workspace/all-features Rust126件成功、GPU3件は通常実行でignored。新規APIテスト2件で定義/値の同時取得、View認可、revision競合、応答容量、未設定Registry、Batch検証失敗のロールバック、ウインドウ間のUndoを確認。ホストテスト1件で倍率/加算/丸め/バイパス・範囲検証を確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check、TypeScript strict型検査成功。既存block 0.1.6のfuture compatibility警告は継続。
+- Schema生成・差分チェック16 artifacts、契約Python6件成功。追加APIはNodeProperties / node_properties。from_registryで設定取得と編集検証に同じRegistryを使用。
+- macOS実GPU ignoredテスト3件成功。色を重ねたヘッダーを含むGalleryを2テーマ×3言語で生成、日本語のLight/Dark画像を更新。Port座標とHit Testの契約は維持。
+- Browser plugin not availableのため既存Playwright/Chromiumを使用。scripts/test_properties_ui.cjsで、静的UI＋IPC mockの保存、型/範囲/JSON/null/整数精度エラー、任意値の削除、外部更新の下書き保持、言語変更時の入力保持、保存・再読込失敗、スイッチ/選択肢/整数の単一Batch、初期値ボタンを3言語で検証。2テーマ×320/380/768pxで横はみ出しなし、page errorsなし。日本語の両テーマ画像を視認し、数値欄とスイッチのスタイルを修正して再検証。
+- 既存のノード操作/Group/実行UIロジックテストも3言語で成功。CIに新しいJSの構文チェックを追加。新規ブラウザーテストは外部のPlaywright環境で実行する。
+- 新しいプロパティUIのTauri実プロセス操作、スクリーンリーダー、他OS、GPUフレーム時間は未検証。GPUノードへのHTML入力の埋め込み、画像プレビュー、パネルドッキングは未実装。サンプルは実行可能な6ノード・5接続の数値グラフ。

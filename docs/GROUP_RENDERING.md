@@ -3,7 +3,7 @@
 ## 日本語
 
 既存の `Command::SetGroup` で所属ノードと見出しを設定すると、Rust/GPUで枠と文字を描きます。
-追加のIPCやJavaScriptのグラフ複製は不要です。サンプルには `9 + 10 = 19` のGroupがあります。
+追加のIPCやJavaScriptのグラフ複製は不要です。サンプルには `20 + 22 = 42` のGroupがあります。
 
 ```rust,ignore
 let command = Command::SetGroup {

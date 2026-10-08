@@ -19,6 +19,11 @@ impl LabelText {
 }
 #[derive(Debug, Clone, Default)]
 pub struct NodeLabels {
+    /// Accent shared by the header, ports and outgoing cables.
+    pub tone: crate::NodeTone,
+    /// Optional short symbol (two characters maximum) and one-line footer.
+    pub symbol: String,
+    pub caption: LabelText,
     pub title: LabelText,
     /// Keys are stable port identifiers; translations never change connections.
     pub inputs: BTreeMap<String, LabelText>,

@@ -1,0 +1,240 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "LocalizedText": {
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "ja": {
+          "type": "string"
+        },
+        "zh_cn": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "en",
+        "ja",
+        "zh_cn"
+      ],
+      "type": "object"
+    },
+    "PropertyDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "description": "Applied only by Definition::instantiate; validation never repairs values. Null represents no default, matching SetProperty's deletion convention."
+        },
+        "description": {
+          "$ref": "#/definitions/LocalizedText"
+        },
+        "name": {
+          "$ref": "#/definitions/LocalizedText"
+        },
+        "required": {
+          "default": false,
+          "type": "boolean"
+        },
+        "value_type": {
+          "$ref": "#/definitions/PropertyType"
+        }
+      },
+      "required": [
+        "description",
+        "name",
+        "value_type"
+      ],
+      "type": "object"
+    },
+    "PropertySchema": {
+      "additionalProperties": false,
+      "properties": {
+        "additional_properties": {
+          "default": true,
+          "type": "boolean"
+        },
+        "fields": {
+          "additionalProperties": {
+            "$ref": "#/definitions/PropertyDefinition"
+          },
+          "default": {},
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "PropertyType": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "bool"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "int"
+              ],
+              "type": "string"
+            },
+            "maximum": {
+              "format": "int64",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "minimum": {
+              "format": "int64",
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "float"
+              ],
+              "type": "string"
+            },
+            "maximum": {
+              "format": "double",
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "minimum": {
+              "format": "double",
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "choices": {
+              "items": {
+                "type": "string"
+              },
+              "type": [
+                "array",
+                "null"
+              ]
+            },
+            "kind": {
+              "enum": [
+                "string"
+              ],
+              "type": "string"
+            },
+            "max_length": {
+              "format": "uint",
+              "minimum": 0.0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "min_length": {
+              "default": 0,
+              "format": "uint",
+              "minimum": 0.0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "json"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "description": {
+      "$ref": "#/definitions/LocalizedText"
+    },
+    "id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "name": {
+      "$ref": "#/definitions/LocalizedText"
+    },
+    "properties": {
+      "additionalProperties": true,
+      "type": "object"
+    },
+    "revision": {
+      "format": "uint64",
+      "minimum": 0.0,
+      "type": "integer"
+    },
+    "schema": {
+      "$ref": "#/definitions/PropertySchema"
+    },
+    "type_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "description",
+    "id",
+    "name",
+    "properties",
+    "revision",
+    "schema",
+    "type_id",
+    "version"
+  ],
+  "title": "NodeProperties",
+  "type": "object"
+}
