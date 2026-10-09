@@ -59,7 +59,7 @@ engine.dispatch("controls", Request::Pointer {
 
 `examples/tauri-host/src/input.rs` はTaoからネイティブWindowの入力を受け取ります。連続したMoveをイベントループの区切りまでまとめ、描画前に最新位置を反映します。プレビューのフレームをJavaScriptへ転送しません。確定時には既存の `unge://changed`、失敗時には `unge://interaction-error` を配信します。
 
-このブリッジはTauriの [wry_plugin（unstable API）](https://docs.rs/tauri/2.11.6/tauri/struct.App.html#method.wry_plugin) を使い、サンプルのTauriを2.11.6、`tauri-runtime-wry` を2.11.4に固定しています。ホスト部分を更新する際はイベント型とウインドウIDの対応を再検証してください。core/interaction/renderはこのAPIに依存しません。macOSで実操作を確認し、Windows/Linux実機と同一ウインドウ合成は引き続き未検証です。
+このブリッジはTauriの [wry_plugin（unstable API）](https://docs.rs/tauri/2.11.6/tauri/struct.App.html#method.wry_plugin) を使い、サンプルのTauriを2.11.6、`tauri-runtime-wry` を2.11.4に固定しています。ホスト部分を更新する際はイベント型とウインドウIDの対応を再検証してください。core/interaction/renderはこのAPIに依存しません。macOSで実操作を確認し、同一ウインドウの入力境界もmacOSで確認しました。[構成方法](WINDOW_COMPOSITION.md)。Windows/Linux実機は引き続き未検証です。
 
 TypeScriptは `createClient(invoke).pointer(event, revision)` を提供します。ホストはDown/Move/Upを順序通りに送信し、Moveはフレームごとにまとめてください。WebViewで直接受ける場合はpointer capture、lost capture時のCancelもホストで設定します。WebViewはDocumentやプレビュー座標を所有しません。
 
@@ -77,7 +77,7 @@ GPU文字は [GPU_TEXT.md](GPU_TEXT.md) に実装・取り込み手順があり�
 
 Tauri Engine owns one Interaction per view. Send `Request::Pointer` in order with the revision captured at pointer-down; do not retry a stale release with a new revision. AI/UI edits invalidate previews. Escape cancels; the native example also cancels on focus loss, resize, DPI change or cursor exit. Occupied single inputs, incompatible types, duplicates and cycles cannot be connected. Ports are hidden and non-interactive below zoom 0.3.
 
-Positions use logical surface pixels. Divide native physical coordinates by the scale factor and use `Engine::draw_scaled` for rendering. The sample's Tao bridge coalesces cursor motion before drawing, keeping frames in Rust/GPU memory. It uses Tauri's unstable Wry plugin API, pinned at the host boundary. macOS native dragging, box selection, connections and undo were tested; Windows/Linux and combined WebView/native surfaces remain unverified.
+Positions use logical surface pixels. Divide native physical coordinates by the scale factor and use `Engine::draw_scaled` for rendering. The sample's Tao bridge coalesces cursor motion before drawing, keeping frames in Rust/GPU memory. It uses Tauri's unstable Wry plugin API, pinned at the host boundary. macOS native dragging, box selection, connections and undo were tested; combined WebView/native input boundaries were also tested on macOS. Windows/Linux remain unverified. See [window composition](WINDOW_COMPOSITION.md).
 
 The renderer reuses committed BVHs and adjusts only moved nodes and incident edges for preview culling. TypeScript includes `client.pointer(event, revision)` and translated errors. A WebView host must serialize events, coalesce moves and manage pointer capture/cancel. See [GPU text](GPU_TEXT.md#english) for labels. Keyboard-only graph editing, multi-touch, rewiring and edge auto-scroll remain planned.
 
@@ -87,6 +87,6 @@ The renderer reuses committed BVHs and adjusts only moved nodes and incident edg
 
 Tauri Engine为每个视图持有Interaction。Down/Move/Up按顺序发送，并保持按下时的revision。AI或其他界面修改文档后，旧操作会被拒绝，请勿用新版本重试旧Up。Esc取消；示例在失焦、尺寸/DPI变化或指针离开窗口时也取消。拒绝类型不符、占用的单输入、重复或循环连接。缩放小于0.3时隐藏端口并停止端口命中测试。
 
-输入使用绘图区域内的逻辑像素。物理坐标除以scale factor，绘图使用 `Engine::draw_scaled`。Tao适配器合并连续移动后绘图，帧保留在Rust/GPU端。示例使用固定版本的Tauri unstable Wry API，core/interaction/render不依赖该API。已在macOS验证实际拖动、框选、连接和撤销；Windows/Linux及WebView与原生绘图的单窗口合成仍待验证。
+输入使用绘图区域内的逻辑像素。物理坐标除以scale factor，绘图使用 `Engine::draw_scaled`。Tao适配器合并连续移动后绘图，帧保留在Rust/GPU端。示例使用固定版本的Tauri unstable Wry API，core/interaction/render不依赖该API。已在macOS验证实际拖动、框选、连接和撤销；macOS单窗口的输入边界也已验证；Windows/Linux仍待验证。
 
 渲染复用已提交状态的BVH，仅调整移动节点及关联连线的预览几何。TypeScript提供pointer调用与三语错误文案。WebView宿主需自行保证事件顺序、合并移动、捕获指针并在丢失捕获时取消。GPU文字见[集成说明](GPU_TEXT.md#简体中文)。仅键盘编辑、多点触控、重新接线及自动滚动尚未实现。

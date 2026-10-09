@@ -1,0 +1,5396 @@
+{
+  "adapter": "Apple M4",
+  "arch": "aarch64",
+  "backend": "Metal",
+  "cases": [
+    {
+      "acquire": {
+        "max_ms": 5.706667,
+        "median_ms": 4.568209,
+        "min_ms": 2.3066660000000003,
+        "p95_ms": 4.657792,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 4.8062499999999995,
+        "median_ms": 3.495709,
+        "min_ms": 3.4456249999999997,
+        "p95_ms": 3.646166,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 110,
+        "labels": 108,
+        "nodes": 36,
+        "quads": 1173
+      },
+      "encode_submit": {
+        "max_ms": 0.40341699999999997,
+        "median_ms": 0.09375,
+        "min_ms": 0.0515,
+        "p95_ms": 0.379125,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 0.07116700000000001,
+        "surface": {
+          "acquire_ms": 0.754667,
+          "frame": {
+            "completed_frame_ms": 8.840167,
+            "completion_wait_ms": 7.0413749999999995,
+            "encode_submit_ms": 0.653125,
+            "gpu_pass_ms": 1.014333,
+            "prepare_ms": 1.145459
+          },
+          "present_call_ms": 0.060334,
+          "total_ms": 9.660209
+        },
+        "total_ms": 9.731750000000002
+      },
+      "gpu_pass": {
+        "max_ms": 0.94875,
+        "median_ms": 0.686791,
+        "min_ms": 0.675458,
+        "p95_ms": 0.878875,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "en",
+      "prepare": {
+        "max_ms": 0.43733299999999997,
+        "median_ms": 0.139625,
+        "min_ms": 0.077416,
+        "p95_ms": 0.414375,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.077042,
+        "median_ms": 0.019125,
+        "min_ms": 0.008709000000000001,
+        "p95_ms": 0.050041999999999996,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 4.55,
+          "frame": {
+            "completed_frame_ms": 3.653041,
+            "completion_wait_ms": 3.508292,
+            "encode_submit_ms": 0.067208,
+            "gpu_pass_ms": 0.683,
+            "prepare_ms": 0.077416
+          },
+          "present_call_ms": 0.018791,
+          "total_ms": 8.22275
+        },
+        {
+          "acquire_ms": 4.57075,
+          "frame": {
+            "completed_frame_ms": 3.68875,
+            "completion_wait_ms": 3.515625,
+            "encode_submit_ms": 0.057540999999999995,
+            "gpu_pass_ms": 0.94875,
+            "prepare_ms": 0.115375
+          },
+          "present_call_ms": 0.017374999999999998,
+          "total_ms": 8.278832999999999
+        },
+        {
+          "acquire_ms": 4.568083,
+          "frame": {
+            "completed_frame_ms": 3.6731659999999997,
+            "completion_wait_ms": 3.503292,
+            "encode_submit_ms": 0.053292,
+            "gpu_pass_ms": 0.688,
+            "prepare_ms": 0.116458
+          },
+          "present_call_ms": 0.018791,
+          "total_ms": 8.262041
+        },
+        {
+          "acquire_ms": 4.5694170000000005,
+          "frame": {
+            "completed_frame_ms": 3.612666,
+            "completion_wait_ms": 3.4456249999999997,
+            "encode_submit_ms": 0.0515,
+            "gpu_pass_ms": 0.678125,
+            "prepare_ms": 0.115375
+          },
+          "present_call_ms": 0.018542,
+          "total_ms": 8.202667
+        },
+        {
+          "acquire_ms": 5.706667,
+          "frame": {
+            "completed_frame_ms": 3.7174579999999997,
+            "completion_wait_ms": 3.533792,
+            "encode_submit_ms": 0.06525,
+            "gpu_pass_ms": 0.685083,
+            "prepare_ms": 0.11820800000000001
+          },
+          "present_call_ms": 0.030292,
+          "total_ms": 9.456292
+        },
+        {
+          "acquire_ms": 3.436792,
+          "frame": {
+            "completed_frame_ms": 3.715292,
+            "completion_wait_ms": 3.51075,
+            "encode_submit_ms": 0.078333,
+            "gpu_pass_ms": 0.777041,
+            "prepare_ms": 0.12604200000000002
+          },
+          "present_call_ms": 0.02125,
+          "total_ms": 7.1770000000000005
+        },
+        {
+          "acquire_ms": 4.555499999999999,
+          "frame": {
+            "completed_frame_ms": 3.7992920000000003,
+            "completion_wait_ms": 3.543292,
+            "encode_submit_ms": 0.11625,
+            "gpu_pass_ms": 0.704167,
+            "prepare_ms": 0.139625
+          },
+          "present_call_ms": 0.033125,
+          "total_ms": 8.390833
+        },
+        {
+          "acquire_ms": 4.5729999999999995,
+          "frame": {
+            "completed_frame_ms": 3.718125,
+            "completion_wait_ms": 3.494333,
+            "encode_submit_ms": 0.082958,
+            "gpu_pass_ms": 0.681666,
+            "prepare_ms": 0.140667
+          },
+          "present_call_ms": 0.024542,
+          "total_ms": 8.318542
+        },
+        {
+          "acquire_ms": 4.5729999999999995,
+          "frame": {
+            "completed_frame_ms": 3.709333,
+            "completion_wait_ms": 3.501417,
+            "encode_submit_ms": 0.08,
+            "gpu_pass_ms": 0.679833,
+            "prepare_ms": 0.12774999999999997
+          },
+          "present_call_ms": 0.021916,
+          "total_ms": 8.3065
+        },
+        {
+          "acquire_ms": 4.5745830000000005,
+          "frame": {
+            "completed_frame_ms": 3.712625,
+            "completion_wait_ms": 3.497875,
+            "encode_submit_ms": 0.075959,
+            "gpu_pass_ms": 0.685875,
+            "prepare_ms": 0.138625
+          },
+          "present_call_ms": 0.019208999999999997,
+          "total_ms": 8.308417
+        },
+        {
+          "acquire_ms": 4.59075,
+          "frame": {
+            "completed_frame_ms": 3.688917,
+            "completion_wait_ms": 3.4857500000000003,
+            "encode_submit_ms": 0.07675,
+            "gpu_pass_ms": 0.685958,
+            "prepare_ms": 0.12625
+          },
+          "present_call_ms": 0.019708,
+          "total_ms": 8.301167
+        },
+        {
+          "acquire_ms": 4.570875,
+          "frame": {
+            "completed_frame_ms": 3.695875,
+            "completion_wait_ms": 3.491708,
+            "encode_submit_ms": 0.081,
+            "gpu_pass_ms": 0.742667,
+            "prepare_ms": 0.122958
+          },
+          "present_call_ms": 0.016082999999999997,
+          "total_ms": 8.285083
+        },
+        {
+          "acquire_ms": 4.559417,
+          "frame": {
+            "completed_frame_ms": 3.6802089999999996,
+            "completion_wait_ms": 3.4501660000000003,
+            "encode_submit_ms": 0.085708,
+            "gpu_pass_ms": 0.686791,
+            "prepare_ms": 0.14416700000000002
+          },
+          "present_call_ms": 0.019042000000000003,
+          "total_ms": 8.260375
+        },
+        {
+          "acquire_ms": 4.56875,
+          "frame": {
+            "completed_frame_ms": 3.697959,
+            "completion_wait_ms": 3.482666,
+            "encode_submit_ms": 0.08708300000000001,
+            "gpu_pass_ms": 0.679916,
+            "prepare_ms": 0.12804200000000002
+          },
+          "present_call_ms": 0.016583,
+          "total_ms": 8.284958999999999
+        },
+        {
+          "acquire_ms": 4.568541,
+          "frame": {
+            "completed_frame_ms": 3.72125,
+            "completion_wait_ms": 3.495709,
+            "encode_submit_ms": 0.079417,
+            "gpu_pass_ms": 0.688583,
+            "prepare_ms": 0.14595799999999998
+          },
+          "present_call_ms": 0.019167,
+          "total_ms": 8.310375
+        },
+        {
+          "acquire_ms": 4.55125,
+          "frame": {
+            "completed_frame_ms": 3.724041,
+            "completion_wait_ms": 3.489542,
+            "encode_submit_ms": 0.09562499999999999,
+            "gpu_pass_ms": 0.878875,
+            "prepare_ms": 0.138708
+          },
+          "present_call_ms": 0.019041,
+          "total_ms": 8.295833
+        },
+        {
+          "acquire_ms": 4.579666,
+          "frame": {
+            "completed_frame_ms": 3.7166669999999997,
+            "completion_wait_ms": 3.486917,
+            "encode_submit_ms": 0.09375,
+            "gpu_pass_ms": 0.696875,
+            "prepare_ms": 0.135792
+          },
+          "present_call_ms": 0.019125,
+          "total_ms": 8.316958
+        },
+        {
+          "acquire_ms": 4.567958,
+          "frame": {
+            "completed_frame_ms": 3.6857499999999996,
+            "completion_wait_ms": 3.4554590000000003,
+            "encode_submit_ms": 0.09320800000000001,
+            "gpu_pass_ms": 0.723166,
+            "prepare_ms": 0.136875
+          },
+          "present_call_ms": 0.019292,
+          "total_ms": 8.274375000000001
+        },
+        {
+          "acquire_ms": 4.5645,
+          "frame": {
+            "completed_frame_ms": 3.742958,
+            "completion_wait_ms": 3.483542,
+            "encode_submit_ms": 0.107291,
+            "gpu_pass_ms": 0.678834,
+            "prepare_ms": 0.152
+          },
+          "present_call_ms": 0.008709000000000001,
+          "total_ms": 8.317708
+        },
+        {
+          "acquire_ms": 4.568041,
+          "frame": {
+            "completed_frame_ms": 3.714375,
+            "completion_wait_ms": 3.461375,
+            "encode_submit_ms": 0.1055,
+            "gpu_pass_ms": 0.682291,
+            "prepare_ms": 0.147334
+          },
+          "present_call_ms": 0.019083,
+          "total_ms": 8.302916
+        },
+        {
+          "acquire_ms": 4.554082999999999,
+          "frame": {
+            "completed_frame_ms": 3.757875,
+            "completion_wait_ms": 3.490917,
+            "encode_submit_ms": 0.117125,
+            "gpu_pass_ms": 0.700917,
+            "prepare_ms": 0.14962499999999998
+          },
+          "present_call_ms": 0.018625,
+          "total_ms": 8.331833
+        },
+        {
+          "acquire_ms": 4.568209,
+          "frame": {
+            "completed_frame_ms": 3.710042,
+            "completion_wait_ms": 3.4671670000000003,
+            "encode_submit_ms": 0.107792,
+            "gpu_pass_ms": 0.695125,
+            "prepare_ms": 0.13483399999999998
+          },
+          "present_call_ms": 0.018417,
+          "total_ms": 8.298209
+        },
+        {
+          "acquire_ms": 4.573709,
+          "frame": {
+            "completed_frame_ms": 3.7752499999999998,
+            "completion_wait_ms": 3.488416,
+            "encode_submit_ms": 0.12670800000000002,
+            "gpu_pass_ms": 0.675458,
+            "prepare_ms": 0.159916
+          },
+          "present_call_ms": 0.017334,
+          "total_ms": 8.367917
+        },
+        {
+          "acquire_ms": 4.657792,
+          "frame": {
+            "completed_frame_ms": 5.595707999999999,
+            "completion_wait_ms": 4.8062499999999995,
+            "encode_submit_ms": 0.351959,
+            "gpu_pass_ms": 0.681542,
+            "prepare_ms": 0.43733299999999997
+          },
+          "present_call_ms": 0.020916999999999998,
+          "total_ms": 10.280332999999999
+        },
+        {
+          "acquire_ms": 2.3066660000000003,
+          "frame": {
+            "completed_frame_ms": 3.904709,
+            "completion_wait_ms": 3.518916,
+            "encode_submit_ms": 0.179583,
+            "gpu_pass_ms": 0.703792,
+            "prepare_ms": 0.205959
+          },
+          "present_call_ms": 0.021083,
+          "total_ms": 6.236166
+        },
+        {
+          "acquire_ms": 4.566292,
+          "frame": {
+            "completed_frame_ms": 3.7712499999999998,
+            "completion_wait_ms": 3.472167,
+            "encode_submit_ms": 0.136667,
+            "gpu_pass_ms": 0.685375,
+            "prepare_ms": 0.162167
+          },
+          "present_call_ms": 0.019042000000000003,
+          "total_ms": 8.358875
+        },
+        {
+          "acquire_ms": 4.557167,
+          "frame": {
+            "completed_frame_ms": 4.314417,
+            "completion_wait_ms": 3.529459,
+            "encode_submit_ms": 0.40341699999999997,
+            "gpu_pass_ms": 0.682583,
+            "prepare_ms": 0.38137499999999996
+          },
+          "present_call_ms": 0.077042,
+          "total_ms": 8.95275
+        },
+        {
+          "acquire_ms": 3.4580840000000004,
+          "frame": {
+            "completed_frame_ms": 4.2299169999999995,
+            "completion_wait_ms": 3.646166,
+            "encode_submit_ms": 0.32304099999999997,
+            "gpu_pass_ms": 0.691666,
+            "prepare_ms": 0.2605
+          },
+          "present_call_ms": 0.022833,
+          "total_ms": 7.720917
+        },
+        {
+          "acquire_ms": 3.442083,
+          "frame": {
+            "completed_frame_ms": 3.902625,
+            "completion_wait_ms": 3.503375,
+            "encode_submit_ms": 0.150042,
+            "gpu_pass_ms": 0.680209,
+            "prepare_ms": 0.249084
+          },
+          "present_call_ms": 0.012458,
+          "total_ms": 7.359666
+        },
+        {
+          "acquire_ms": 4.65125,
+          "frame": {
+            "completed_frame_ms": 4.37975,
+            "completion_wait_ms": 3.586083,
+            "encode_submit_ms": 0.379125,
+            "gpu_pass_ms": 0.699458,
+            "prepare_ms": 0.414375
+          },
+          "present_call_ms": 0.050041999999999996,
+          "total_ms": 9.091708
+        }
+      ],
+      "scene": {
+        "max_ms": 0.128792,
+        "median_ms": 0.056958,
+        "min_ms": 0.031042,
+        "p95_ms": 0.12475,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "dark",
+      "total": {
+        "max_ms": 10.345292,
+        "median_ms": 8.361375,
+        "min_ms": 6.323375,
+        "p95_ms": 9.513499999999999,
+        "samples": 30
+      },
+      "view": "near",
+      "zoom": 1.0
+    },
+    {
+      "acquire": {
+        "max_ms": 0.013375,
+        "median_ms": 0.006458,
+        "min_ms": 0.00425,
+        "p95_ms": 0.013375,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 5.812208999999999,
+        "median_ms": 5.761334,
+        "min_ms": 4.56025,
+        "p95_ms": 5.802833000000001,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 30000,
+        "labels": 0,
+        "nodes": 10000,
+        "quads": 55347
+      },
+      "encode_submit": {
+        "max_ms": 0.11837500000000001,
+        "median_ms": 0.041708,
+        "min_ms": 0.031708,
+        "p95_ms": 0.08679200000000001,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 8.677333,
+        "surface": {
+          "acquire_ms": 0.015083,
+          "frame": {
+            "completed_frame_ms": 6.543875,
+            "completion_wait_ms": 5.800542,
+            "encode_submit_ms": 0.11299999999999999,
+            "gpu_pass_ms": 2.844667,
+            "prepare_ms": 0.6302089999999999
+          },
+          "present_call_ms": 0.013583,
+          "total_ms": 6.574542
+        },
+        "total_ms": 15.252
+      },
+      "gpu_pass": {
+        "max_ms": 2.584792,
+        "median_ms": 2.516042,
+        "min_ms": 2.454625,
+        "p95_ms": 2.545959,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "en",
+      "prepare": {
+        "max_ms": 0.449042,
+        "median_ms": 0.323917,
+        "min_ms": 0.284375,
+        "p95_ms": 0.383,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.026667,
+        "median_ms": 0.018167,
+        "min_ms": 0.00625,
+        "p95_ms": 0.023291000000000003,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 0.0048330000000000005,
+          "frame": {
+            "completed_frame_ms": 4.946625,
+            "completion_wait_ms": 4.585125,
+            "encode_submit_ms": 0.040417,
+            "gpu_pass_ms": 2.535292,
+            "prepare_ms": 0.320959
+          },
+          "present_call_ms": 0.022167,
+          "total_ms": 4.974667
+        },
+        {
+          "acquire_ms": 0.0052499999999999995,
+          "frame": {
+            "completed_frame_ms": 4.970375,
+            "completion_wait_ms": 4.609833,
+            "encode_submit_ms": 0.0365,
+            "gpu_pass_ms": 2.516042,
+            "prepare_ms": 0.323917
+          },
+          "present_call_ms": 0.007,
+          "total_ms": 4.983166
+        },
+        {
+          "acquire_ms": 0.004834,
+          "frame": {
+            "completed_frame_ms": 4.942791000000001,
+            "completion_wait_ms": 4.5864579999999995,
+            "encode_submit_ms": 0.034666999999999996,
+            "gpu_pass_ms": 2.521375,
+            "prepare_ms": 0.3215
+          },
+          "present_call_ms": 0.018959,
+          "total_ms": 4.967334
+        },
+        {
+          "acquire_ms": 0.006458,
+          "frame": {
+            "completed_frame_ms": 6.1337090000000005,
+            "completion_wait_ms": 5.7830829999999995,
+            "encode_submit_ms": 0.038583,
+            "gpu_pass_ms": 2.530458,
+            "prepare_ms": 0.31187499999999996
+          },
+          "present_call_ms": 0.01525,
+          "total_ms": 6.156333
+        },
+        {
+          "acquire_ms": 0.007,
+          "frame": {
+            "completed_frame_ms": 4.906667,
+            "completion_wait_ms": 4.576791999999999,
+            "encode_submit_ms": 0.033457999999999995,
+            "gpu_pass_ms": 2.506,
+            "prepare_ms": 0.296208
+          },
+          "present_call_ms": 0.018083,
+          "total_ms": 4.9327499999999995
+        },
+        {
+          "acquire_ms": 0.007084,
+          "frame": {
+            "completed_frame_ms": 6.130415999999999,
+            "completion_wait_ms": 5.778125,
+            "encode_submit_ms": 0.040542,
+            "gpu_pass_ms": 2.516541,
+            "prepare_ms": 0.31154099999999996
+          },
+          "present_call_ms": 0.01925,
+          "total_ms": 6.157667
+        },
+        {
+          "acquire_ms": 0.006208,
+          "frame": {
+            "completed_frame_ms": 6.114792,
+            "completion_wait_ms": 5.770499999999999,
+            "encode_submit_ms": 0.042208,
+            "gpu_pass_ms": 2.54425,
+            "prepare_ms": 0.30200000000000005
+          },
+          "present_call_ms": 0.007958000000000002,
+          "total_ms": 6.1298330000000005
+        },
+        {
+          "acquire_ms": 0.0053750000000000004,
+          "frame": {
+            "completed_frame_ms": 6.108334,
+            "completion_wait_ms": 5.754791,
+            "encode_submit_ms": 0.037458,
+            "gpu_pass_ms": 2.521333,
+            "prepare_ms": 0.315917
+          },
+          "present_call_ms": 0.017082999999999997,
+          "total_ms": 6.13175
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.1711659999999995,
+            "completion_wait_ms": 5.781291,
+            "encode_submit_ms": 0.035834000000000005,
+            "gpu_pass_ms": 2.53175,
+            "prepare_ms": 0.35387500000000005
+          },
+          "present_call_ms": 0.018333,
+          "total_ms": 6.194583
+        },
+        {
+          "acquire_ms": 0.00475,
+          "frame": {
+            "completed_frame_ms": 4.9577919999999995,
+            "completion_wait_ms": 4.590999999999999,
+            "encode_submit_ms": 0.032583,
+            "gpu_pass_ms": 2.527709,
+            "prepare_ms": 0.334083
+          },
+          "present_call_ms": 0.018917,
+          "total_ms": 4.982417
+        },
+        {
+          "acquire_ms": 0.0045000000000000005,
+          "frame": {
+            "completed_frame_ms": 6.118333,
+            "completion_wait_ms": 5.7637920000000005,
+            "encode_submit_ms": 0.039417,
+            "gpu_pass_ms": 2.584792,
+            "prepare_ms": 0.315
+          },
+          "present_call_ms": 0.018167,
+          "total_ms": 6.141791
+        },
+        {
+          "acquire_ms": 0.004625,
+          "frame": {
+            "completed_frame_ms": 6.089958,
+            "completion_wait_ms": 5.761334,
+            "encode_submit_ms": 0.031708,
+            "gpu_pass_ms": 2.545959,
+            "prepare_ms": 0.296791
+          },
+          "present_call_ms": 0.01875,
+          "total_ms": 6.11425
+        },
+        {
+          "acquire_ms": 0.004666,
+          "frame": {
+            "completed_frame_ms": 4.939125,
+            "completion_wait_ms": 4.578709,
+            "encode_submit_ms": 0.034041,
+            "gpu_pass_ms": 2.5065,
+            "prepare_ms": 0.326333
+          },
+          "present_call_ms": 0.006334,
+          "total_ms": 4.9505
+        },
+        {
+          "acquire_ms": 0.008875000000000001,
+          "frame": {
+            "completed_frame_ms": 6.188584,
+            "completion_wait_ms": 5.795958000000001,
+            "encode_submit_ms": 0.050665999999999996,
+            "gpu_pass_ms": 2.517542,
+            "prepare_ms": 0.341792
+          },
+          "present_call_ms": 0.018917,
+          "total_ms": 6.218209
+        },
+        {
+          "acquire_ms": 0.008083,
+          "frame": {
+            "completed_frame_ms": 6.152541,
+            "completion_wait_ms": 5.773958,
+            "encode_submit_ms": 0.051042,
+            "gpu_pass_ms": 2.50175,
+            "prepare_ms": 0.32741600000000004
+          },
+          "present_call_ms": 0.019708,
+          "total_ms": 6.182
+        },
+        {
+          "acquire_ms": 0.004875,
+          "frame": {
+            "completed_frame_ms": 6.137250000000001,
+            "completion_wait_ms": 5.812208999999999,
+            "encode_submit_ms": 0.0405,
+            "gpu_pass_ms": 2.511709,
+            "prepare_ms": 0.284375
+          },
+          "present_call_ms": 0.021584,
+          "total_ms": 6.165208
+        },
+        {
+          "acquire_ms": 0.006834,
+          "frame": {
+            "completed_frame_ms": 6.176125,
+            "completion_wait_ms": 5.789625,
+            "encode_submit_ms": 0.04575,
+            "gpu_pass_ms": 2.529083,
+            "prepare_ms": 0.34058299999999997
+          },
+          "present_call_ms": 0.026667,
+          "total_ms": 6.211334
+        },
+        {
+          "acquire_ms": 0.006333,
+          "frame": {
+            "completed_frame_ms": 6.113916,
+            "completion_wait_ms": 5.763875,
+            "encode_submit_ms": 0.042792,
+            "gpu_pass_ms": 2.524625,
+            "prepare_ms": 0.307166
+          },
+          "present_call_ms": 0.00625,
+          "total_ms": 6.127208
+        },
+        {
+          "acquire_ms": 0.005417,
+          "frame": {
+            "completed_frame_ms": 6.138625,
+            "completion_wait_ms": 5.788334,
+            "encode_submit_ms": 0.033083999999999995,
+            "gpu_pass_ms": 2.509042,
+            "prepare_ms": 0.31704200000000005
+          },
+          "present_call_ms": 0.01875,
+          "total_ms": 6.163667
+        },
+        {
+          "acquire_ms": 0.0050409999999999995,
+          "frame": {
+            "completed_frame_ms": 6.118333,
+            "completion_wait_ms": 5.785709,
+            "encode_submit_ms": 0.033667,
+            "gpu_pass_ms": 2.512167,
+            "prepare_ms": 0.29879100000000003
+          },
+          "present_call_ms": 0.0195,
+          "total_ms": 6.143875
+        },
+        {
+          "acquire_ms": 0.010750000000000001,
+          "frame": {
+            "completed_frame_ms": 4.980875,
+            "completion_wait_ms": 4.568458,
+            "encode_submit_ms": 0.065916,
+            "gpu_pass_ms": 2.475042,
+            "prepare_ms": 0.34641700000000003
+          },
+          "present_call_ms": 0.007583,
+          "total_ms": 5.000792000000001
+        },
+        {
+          "acquire_ms": 0.012583,
+          "frame": {
+            "completed_frame_ms": 5.051209,
+            "completion_wait_ms": 4.581375,
+            "encode_submit_ms": 0.08679200000000001,
+            "gpu_pass_ms": 2.466125,
+            "prepare_ms": 0.383
+          },
+          "present_call_ms": 0.008917,
+          "total_ms": 5.074040999999999
+        },
+        {
+          "acquire_ms": 0.010166999999999999,
+          "frame": {
+            "completed_frame_ms": 4.967625,
+            "completion_wait_ms": 4.5647910000000005,
+            "encode_submit_ms": 0.07104200000000001,
+            "gpu_pass_ms": 2.466334,
+            "prepare_ms": 0.331625
+          },
+          "present_call_ms": 0.008,
+          "total_ms": 4.98725
+        },
+        {
+          "acquire_ms": 0.013375,
+          "frame": {
+            "completed_frame_ms": 5.00775,
+            "completion_wait_ms": 4.564375,
+            "encode_submit_ms": 0.083417,
+            "gpu_pass_ms": 2.457208,
+            "prepare_ms": 0.359958
+          },
+          "present_call_ms": 0.007166,
+          "total_ms": 5.030291999999999
+        },
+        {
+          "acquire_ms": 0.011250000000000001,
+          "frame": {
+            "completed_frame_ms": 4.989375,
+            "completion_wait_ms": 4.56025,
+            "encode_submit_ms": 0.077,
+            "gpu_pass_ms": 2.455583,
+            "prepare_ms": 0.352042
+          },
+          "present_call_ms": 0.007125,
+          "total_ms": 5.010083
+        },
+        {
+          "acquire_ms": 0.011042,
+          "frame": {
+            "completed_frame_ms": 4.965625,
+            "completion_wait_ms": 4.561791,
+            "encode_submit_ms": 0.06887499999999999,
+            "gpu_pass_ms": 2.454625,
+            "prepare_ms": 0.334792
+          },
+          "present_call_ms": 0.009334,
+          "total_ms": 4.988083
+        },
+        {
+          "acquire_ms": 0.009708999999999999,
+          "frame": {
+            "completed_frame_ms": 6.168916,
+            "completion_wait_ms": 5.802833000000001,
+            "encode_submit_ms": 0.05775,
+            "gpu_pass_ms": 2.530167,
+            "prepare_ms": 0.308208
+          },
+          "present_call_ms": 0.023291000000000003,
+          "total_ms": 6.2045
+        },
+        {
+          "acquire_ms": 0.005542,
+          "frame": {
+            "completed_frame_ms": 6.127667,
+            "completion_wait_ms": 5.794666,
+            "encode_submit_ms": 0.041708,
+            "gpu_pass_ms": 2.509292,
+            "prepare_ms": 0.291167
+          },
+          "present_call_ms": 0.018666000000000002,
+          "total_ms": 6.152958
+        },
+        {
+          "acquire_ms": 0.013375,
+          "frame": {
+            "completed_frame_ms": 5.019792000000001,
+            "completion_wait_ms": 4.593375,
+            "encode_submit_ms": 0.079208,
+            "gpu_pass_ms": 2.455375,
+            "prepare_ms": 0.347125
+          },
+          "present_call_ms": 0.009292,
+          "total_ms": 5.044084
+        },
+        {
+          "acquire_ms": 0.010959,
+          "frame": {
+            "completed_frame_ms": 5.173875,
+            "completion_wait_ms": 4.606083000000001,
+            "encode_submit_ms": 0.11837500000000001,
+            "gpu_pass_ms": 2.457084,
+            "prepare_ms": 0.449042
+          },
+          "present_call_ms": 0.010459,
+          "total_ms": 5.197584
+        }
+      ],
+      "scene": {
+        "max_ms": 5.735666999999999,
+        "median_ms": 4.53875,
+        "min_ms": 3.732333,
+        "p95_ms": 5.255667000000001,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "dark",
+      "total": {
+        "max_ms": 11.401665999999999,
+        "median_ms": 10.441834,
+        "min_ms": 8.825833,
+        "p95_ms": 11.06275,
+        "samples": 30
+      },
+      "view": "overview",
+      "zoom": 0.019999999552965164
+    },
+    {
+      "acquire": {
+        "max_ms": 5.662584,
+        "median_ms": 4.557708,
+        "min_ms": 4.513833,
+        "p95_ms": 5.655583,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 3.538625,
+        "median_ms": 3.47375,
+        "min_ms": 3.378459,
+        "p95_ms": 3.5270420000000002,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 110,
+        "labels": 108,
+        "nodes": 36,
+        "quads": 1173
+      },
+      "encode_submit": {
+        "max_ms": 0.082625,
+        "median_ms": 0.06866599999999999,
+        "min_ms": 0.051209,
+        "p95_ms": 0.081709,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 0.056125,
+        "surface": {
+          "acquire_ms": 3.469875,
+          "frame": {
+            "completed_frame_ms": 3.983625,
+            "completion_wait_ms": 3.441958,
+            "encode_submit_ms": 0.101,
+            "gpu_pass_ms": 0.68275,
+            "prepare_ms": 0.440583
+          },
+          "present_call_ms": 0.006167000000000001,
+          "total_ms": 7.466292
+        },
+        "total_ms": 7.522417
+      },
+      "gpu_pass": {
+        "max_ms": 0.699417,
+        "median_ms": 0.6845,
+        "min_ms": 0.671875,
+        "p95_ms": 0.697125,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "ja",
+      "prepare": {
+        "max_ms": 0.13025,
+        "median_ms": 0.101333,
+        "min_ms": 0.06754099999999999,
+        "p95_ms": 0.128,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.024457999999999997,
+        "median_ms": 0.011791,
+        "min_ms": 0.004208,
+        "p95_ms": 0.021417,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 4.528125,
+          "frame": {
+            "completed_frame_ms": 3.5515,
+            "completion_wait_ms": 3.419417,
+            "encode_submit_ms": 0.060084000000000005,
+            "gpu_pass_ms": 0.673208,
+            "prepare_ms": 0.071917
+          },
+          "present_call_ms": 0.004208,
+          "total_ms": 8.084249999999999
+        },
+        {
+          "acquire_ms": 5.655583,
+          "frame": {
+            "completed_frame_ms": 3.701958,
+            "completion_wait_ms": 3.538625,
+            "encode_submit_ms": 0.0815,
+            "gpu_pass_ms": 0.692542,
+            "prepare_ms": 0.081791
+          },
+          "present_call_ms": 0.006834,
+          "total_ms": 9.365583
+        },
+        {
+          "acquire_ms": 4.549333,
+          "frame": {
+            "completed_frame_ms": 3.6666659999999998,
+            "completion_wait_ms": 3.5270420000000002,
+            "encode_submit_ms": 0.063542,
+            "gpu_pass_ms": 0.680334,
+            "prepare_ms": 0.075916
+          },
+          "present_call_ms": 0.024457999999999997,
+          "total_ms": 8.241958
+        },
+        {
+          "acquire_ms": 4.53925,
+          "frame": {
+            "completed_frame_ms": 3.6328329999999998,
+            "completion_wait_ms": 3.500459,
+            "encode_submit_ms": 0.059959,
+            "gpu_pass_ms": 0.679041,
+            "prepare_ms": 0.07229200000000001
+          },
+          "present_call_ms": 0.006208,
+          "total_ms": 8.179167
+        },
+        {
+          "acquire_ms": 4.557708,
+          "frame": {
+            "completed_frame_ms": 3.650542,
+            "completion_wait_ms": 3.493833,
+            "encode_submit_ms": 0.073208,
+            "gpu_pass_ms": 0.684459,
+            "prepare_ms": 0.083417
+          },
+          "present_call_ms": 0.006083,
+          "total_ms": 8.215125
+        },
+        {
+          "acquire_ms": 4.562667,
+          "frame": {
+            "completed_frame_ms": 3.615792,
+            "completion_wait_ms": 3.4455,
+            "encode_submit_ms": 0.06475,
+            "gpu_pass_ms": 0.671875,
+            "prepare_ms": 0.105375
+          },
+          "present_call_ms": 0.020375,
+          "total_ms": 8.199958
+        },
+        {
+          "acquire_ms": 4.540541999999999,
+          "frame": {
+            "completed_frame_ms": 3.626625,
+            "completion_wait_ms": 3.504958,
+            "encode_submit_ms": 0.054,
+            "gpu_pass_ms": 0.677166,
+            "prepare_ms": 0.06754099999999999
+          },
+          "present_call_ms": 0.0205,
+          "total_ms": 8.188708
+        },
+        {
+          "acquire_ms": 4.567042000000001,
+          "frame": {
+            "completed_frame_ms": 3.626875,
+            "completion_wait_ms": 3.454542,
+            "encode_submit_ms": 0.051209,
+            "gpu_pass_ms": 0.679458,
+            "prepare_ms": 0.121
+          },
+          "present_call_ms": 0.005208,
+          "total_ms": 8.200375
+        },
+        {
+          "acquire_ms": 4.594958,
+          "frame": {
+            "completed_frame_ms": 3.667542,
+            "completion_wait_ms": 3.4928749999999997,
+            "encode_submit_ms": 0.056875,
+            "gpu_pass_ms": 0.6965,
+            "prepare_ms": 0.117667
+          },
+          "present_call_ms": 0.021083,
+          "total_ms": 8.285333000000001
+        },
+        {
+          "acquire_ms": 4.539124999999999,
+          "frame": {
+            "completed_frame_ms": 3.650583,
+            "completion_wait_ms": 3.487458,
+            "encode_submit_ms": 0.06175,
+            "gpu_pass_ms": 0.687958,
+            "prepare_ms": 0.101333
+          },
+          "present_call_ms": 0.00475,
+          "total_ms": 8.195625
+        },
+        {
+          "acquire_ms": 4.588416,
+          "frame": {
+            "completed_frame_ms": 3.5931669999999998,
+            "completion_wait_ms": 3.4208749999999997,
+            "encode_submit_ms": 0.055833,
+            "gpu_pass_ms": 0.688,
+            "prepare_ms": 0.11637499999999999
+          },
+          "present_call_ms": 0.004958,
+          "total_ms": 8.187458
+        },
+        {
+          "acquire_ms": 4.5754589999999995,
+          "frame": {
+            "completed_frame_ms": 3.6189999999999998,
+            "completion_wait_ms": 3.442125,
+            "encode_submit_ms": 0.054709,
+            "gpu_pass_ms": 0.680208,
+            "prepare_ms": 0.12208400000000001
+          },
+          "present_call_ms": 0.005334,
+          "total_ms": 8.20075
+        },
+        {
+          "acquire_ms": 4.565458,
+          "frame": {
+            "completed_frame_ms": 3.655916,
+            "completion_wait_ms": 3.467458,
+            "encode_submit_ms": 0.060292,
+            "gpu_pass_ms": 0.697125,
+            "prepare_ms": 0.128
+          },
+          "present_call_ms": 0.017833,
+          "total_ms": 8.241041
+        },
+        {
+          "acquire_ms": 4.513833,
+          "frame": {
+            "completed_frame_ms": 3.643875,
+            "completion_wait_ms": 3.4987920000000003,
+            "encode_submit_ms": 0.072875,
+            "gpu_pass_ms": 0.672542,
+            "prepare_ms": 0.072083
+          },
+          "present_call_ms": 0.021417,
+          "total_ms": 8.180250000000001
+        },
+        {
+          "acquire_ms": 4.577958,
+          "frame": {
+            "completed_frame_ms": 3.691,
+            "completion_wait_ms": 3.494583,
+            "encode_submit_ms": 0.073791,
+            "gpu_pass_ms": 0.688583,
+            "prepare_ms": 0.12254200000000001
+          },
+          "present_call_ms": 0.005582999999999999,
+          "total_ms": 8.276792
+        },
+        {
+          "acquire_ms": 4.536541,
+          "frame": {
+            "completed_frame_ms": 3.641417,
+            "completion_wait_ms": 3.5010420000000004,
+            "encode_submit_ms": 0.06370799999999999,
+            "gpu_pass_ms": 0.683667,
+            "prepare_ms": 0.0765
+          },
+          "present_call_ms": 0.017124999999999998,
+          "total_ms": 8.196083
+        },
+        {
+          "acquire_ms": 5.662584,
+          "frame": {
+            "completed_frame_ms": 3.536791,
+            "completion_wait_ms": 3.378459,
+            "encode_submit_ms": 0.06866599999999999,
+            "gpu_pass_ms": 0.693375,
+            "prepare_ms": 0.089583
+          },
+          "present_call_ms": 0.005791999999999999,
+          "total_ms": 9.20575
+        },
+        {
+          "acquire_ms": 4.569458,
+          "frame": {
+            "completed_frame_ms": 3.6215,
+            "completion_wait_ms": 3.435834,
+            "encode_submit_ms": 0.06625,
+            "gpu_pass_ms": 0.684833,
+            "prepare_ms": 0.119292
+          },
+          "present_call_ms": 0.006542,
+          "total_ms": 8.198666000000001
+        },
+        {
+          "acquire_ms": 4.545167,
+          "frame": {
+            "completed_frame_ms": 3.639917,
+            "completion_wait_ms": 3.488083,
+            "encode_submit_ms": 0.06770799999999999,
+            "gpu_pass_ms": 0.672042,
+            "prepare_ms": 0.08399999999999999
+          },
+          "present_call_ms": 0.019666,
+          "total_ms": 8.205584
+        },
+        {
+          "acquire_ms": 4.571875,
+          "frame": {
+            "completed_frame_ms": 3.67325,
+            "completion_wait_ms": 3.483791,
+            "encode_submit_ms": 0.073375,
+            "gpu_pass_ms": 0.688584,
+            "prepare_ms": 0.11587499999999999
+          },
+          "present_call_ms": 0.016875,
+          "total_ms": 8.263833
+        },
+        {
+          "acquire_ms": 4.562708000000001,
+          "frame": {
+            "completed_frame_ms": 3.6033749999999998,
+            "completion_wait_ms": 3.449875,
+            "encode_submit_ms": 0.071875,
+            "gpu_pass_ms": 0.696625,
+            "prepare_ms": 0.08145899999999999
+          },
+          "present_call_ms": 0.019,
+          "total_ms": 8.186250000000001
+        },
+        {
+          "acquire_ms": 4.542125,
+          "frame": {
+            "completed_frame_ms": 3.5837909999999997,
+            "completion_wait_ms": 3.4242090000000003,
+            "encode_submit_ms": 0.075,
+            "gpu_pass_ms": 0.685625,
+            "prepare_ms": 0.08445799999999999
+          },
+          "present_call_ms": 0.006917,
+          "total_ms": 8.133333
+        },
+        {
+          "acquire_ms": 4.522458,
+          "frame": {
+            "completed_frame_ms": 3.6313750000000002,
+            "completion_wait_ms": 3.478709,
+            "encode_submit_ms": 0.06516699999999999,
+            "gpu_pass_ms": 0.672875,
+            "prepare_ms": 0.087375
+          },
+          "present_call_ms": 0.006375,
+          "total_ms": 8.160708
+        },
+        {
+          "acquire_ms": 4.56325,
+          "frame": {
+            "completed_frame_ms": 3.628375,
+            "completion_wait_ms": 3.4632500000000004,
+            "encode_submit_ms": 0.073209,
+            "gpu_pass_ms": 0.682625,
+            "prepare_ms": 0.091792
+          },
+          "present_call_ms": 0.006459,
+          "total_ms": 8.198749999999999
+        },
+        {
+          "acquire_ms": 4.540209,
+          "frame": {
+            "completed_frame_ms": 3.643459,
+            "completion_wait_ms": 3.47375,
+            "encode_submit_ms": 0.071584,
+            "gpu_pass_ms": 0.699417,
+            "prepare_ms": 0.097959
+          },
+          "present_call_ms": 0.017917000000000002,
+          "total_ms": 8.202459000000001
+        },
+        {
+          "acquire_ms": 4.5566249999999995,
+          "frame": {
+            "completed_frame_ms": 3.655458,
+            "completion_wait_ms": 3.455833,
+            "encode_submit_ms": 0.077917,
+            "gpu_pass_ms": 0.68175,
+            "prepare_ms": 0.121542
+          },
+          "present_call_ms": 0.018040999999999998,
+          "total_ms": 8.231584
+        },
+        {
+          "acquire_ms": 4.575,
+          "frame": {
+            "completed_frame_ms": 3.639458,
+            "completion_wait_ms": 3.443625,
+            "encode_submit_ms": 0.076542,
+            "gpu_pass_ms": 0.6895,
+            "prepare_ms": 0.119125
+          },
+          "present_call_ms": 0.018375,
+          "total_ms": 8.234417
+        },
+        {
+          "acquire_ms": 4.545708,
+          "frame": {
+            "completed_frame_ms": 3.690083,
+            "completion_wait_ms": 3.502834,
+            "encode_submit_ms": 0.081709,
+            "gpu_pass_ms": 0.6845,
+            "prepare_ms": 0.105375
+          },
+          "present_call_ms": 0.017792,
+          "total_ms": 8.254458
+        },
+        {
+          "acquire_ms": 4.547166,
+          "frame": {
+            "completed_frame_ms": 3.671042,
+            "completion_wait_ms": 3.469916,
+            "encode_submit_ms": 0.08045799999999999,
+            "gpu_pass_ms": 0.689625,
+            "prepare_ms": 0.120542
+          },
+          "present_call_ms": 0.007459,
+          "total_ms": 8.227291
+        },
+        {
+          "acquire_ms": 4.551083,
+          "frame": {
+            "completed_frame_ms": 3.662416,
+            "completion_wait_ms": 3.4494170000000004,
+            "encode_submit_ms": 0.082625,
+            "gpu_pass_ms": 0.682208,
+            "prepare_ms": 0.13025
+          },
+          "present_call_ms": 0.011791,
+          "total_ms": 8.226374999999999
+        }
+      ],
+      "scene": {
+        "max_ms": 0.082792,
+        "median_ms": 0.048541,
+        "min_ms": 0.025125,
+        "p95_ms": 0.07387500000000001,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "dark",
+      "total": {
+        "max_ms": 9.393333,
+        "median_ms": 8.253125,
+        "min_ms": 8.121708,
+        "p95_ms": 9.261875,
+        "samples": 30
+      },
+      "view": "near",
+      "zoom": 1.0
+    },
+    {
+      "acquire": {
+        "max_ms": 0.009916,
+        "median_ms": 0.005292000000000001,
+        "min_ms": 0.003625,
+        "p95_ms": 0.009583,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 5.795166,
+        "median_ms": 5.76175,
+        "min_ms": 4.5500419999999995,
+        "p95_ms": 5.786334,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 30000,
+        "labels": 0,
+        "nodes": 10000,
+        "quads": 55347
+      },
+      "encode_submit": {
+        "max_ms": 0.055416,
+        "median_ms": 0.038709,
+        "min_ms": 0.029291,
+        "p95_ms": 0.054167,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 6.983750000000001,
+        "surface": {
+          "acquire_ms": 0.008542000000000001,
+          "frame": {
+            "completed_frame_ms": 6.341084,
+            "completion_wait_ms": 5.724167,
+            "encode_submit_ms": 0.055166,
+            "gpu_pass_ms": 2.512125,
+            "prepare_ms": 0.5616669999999999
+          },
+          "present_call_ms": 0.0085,
+          "total_ms": 6.359125000000001
+        },
+        "total_ms": 13.343
+      },
+      "gpu_pass": {
+        "max_ms": 2.548833,
+        "median_ms": 2.52175,
+        "min_ms": 2.455209,
+        "p95_ms": 2.548208,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "ja",
+      "prepare": {
+        "max_ms": 0.367709,
+        "median_ms": 0.31637499999999996,
+        "min_ms": 0.275333,
+        "p95_ms": 0.3675,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.022667000000000003,
+        "median_ms": 0.016082999999999997,
+        "min_ms": 0.004792,
+        "p95_ms": 0.021542000000000002,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 0.005084,
+          "frame": {
+            "completed_frame_ms": 6.117792000000001,
+            "completion_wait_ms": 5.773417,
+            "encode_submit_ms": 0.036875000000000005,
+            "gpu_pass_ms": 2.515583,
+            "prepare_ms": 0.307334
+          },
+          "present_call_ms": 0.017708,
+          "total_ms": 6.141625
+        },
+        {
+          "acquire_ms": 0.005083000000000001,
+          "frame": {
+            "completed_frame_ms": 6.14225,
+            "completion_wait_ms": 5.771667,
+            "encode_submit_ms": 0.034292,
+            "gpu_pass_ms": 2.530542,
+            "prepare_ms": 0.336167
+          },
+          "present_call_ms": 0.019834,
+          "total_ms": 6.1681669999999995
+        },
+        {
+          "acquire_ms": 0.005834000000000001,
+          "frame": {
+            "completed_frame_ms": 6.0987919999999995,
+            "completion_wait_ms": 5.776166,
+            "encode_submit_ms": 0.033,
+            "gpu_pass_ms": 2.533542,
+            "prepare_ms": 0.28925
+          },
+          "present_call_ms": 0.018791,
+          "total_ms": 6.124375
+        },
+        {
+          "acquire_ms": 0.005292000000000001,
+          "frame": {
+            "completed_frame_ms": 6.1085,
+            "completion_wait_ms": 5.775708,
+            "encode_submit_ms": 0.032583,
+            "gpu_pass_ms": 2.535042,
+            "prepare_ms": 0.300041
+          },
+          "present_call_ms": 0.019208,
+          "total_ms": 6.133792
+        },
+        {
+          "acquire_ms": 0.006458,
+          "frame": {
+            "completed_frame_ms": 6.1496249999999995,
+            "completion_wait_ms": 5.774333,
+            "encode_submit_ms": 0.033457999999999995,
+            "gpu_pass_ms": 2.542417,
+            "prepare_ms": 0.341667
+          },
+          "present_call_ms": 0.016082999999999997,
+          "total_ms": 6.173125
+        },
+        {
+          "acquire_ms": 0.007583,
+          "frame": {
+            "completed_frame_ms": 6.076625000000001,
+            "completion_wait_ms": 5.761208,
+            "encode_submit_ms": 0.029375,
+            "gpu_pass_ms": 2.516292,
+            "prepare_ms": 0.285875
+          },
+          "present_call_ms": 0.019084,
+          "total_ms": 6.1041669999999995
+        },
+        {
+          "acquire_ms": 0.0036669999999999997,
+          "frame": {
+            "completed_frame_ms": 6.111292,
+            "completion_wait_ms": 5.76225,
+            "encode_submit_ms": 0.030834000000000004,
+            "gpu_pass_ms": 2.529791,
+            "prepare_ms": 0.318042
+          },
+          "present_call_ms": 0.018917,
+          "total_ms": 6.1347499999999995
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.066707999999999,
+            "completion_wait_ms": 5.76175,
+            "encode_submit_ms": 0.029541,
+            "gpu_pass_ms": 2.548208,
+            "prepare_ms": 0.275333
+          },
+          "present_call_ms": 0.007083,
+          "total_ms": 6.078459
+        },
+        {
+          "acquire_ms": 0.004125,
+          "frame": {
+            "completed_frame_ms": 6.096875,
+            "completion_wait_ms": 5.764082999999999,
+            "encode_submit_ms": 0.031625,
+            "gpu_pass_ms": 2.538375,
+            "prepare_ms": 0.301
+          },
+          "present_call_ms": 0.020832999999999997,
+          "total_ms": 6.122624999999999
+        },
+        {
+          "acquire_ms": 0.004583,
+          "frame": {
+            "completed_frame_ms": 6.156499999999999,
+            "completion_wait_ms": 5.772958,
+            "encode_submit_ms": 0.033708,
+            "gpu_pass_ms": 2.526875,
+            "prepare_ms": 0.349708
+          },
+          "present_call_ms": 0.020375,
+          "total_ms": 6.182208
+        },
+        {
+          "acquire_ms": 0.004,
+          "frame": {
+            "completed_frame_ms": 6.095042,
+            "completion_wait_ms": 5.768332999999999,
+            "encode_submit_ms": 0.041832999999999995,
+            "gpu_pass_ms": 2.548833,
+            "prepare_ms": 0.28475
+          },
+          "present_call_ms": 0.005458,
+          "total_ms": 6.105167
+        },
+        {
+          "acquire_ms": 0.004042,
+          "frame": {
+            "completed_frame_ms": 6.1085,
+            "completion_wait_ms": 5.708457999999999,
+            "encode_submit_ms": 0.032417,
+            "gpu_pass_ms": 2.522916,
+            "prepare_ms": 0.3675
+          },
+          "present_call_ms": 0.019083,
+          "total_ms": 6.132333
+        },
+        {
+          "acquire_ms": 0.006375,
+          "frame": {
+            "completed_frame_ms": 6.155417,
+            "completion_wait_ms": 5.778209,
+            "encode_submit_ms": 0.047959,
+            "gpu_pass_ms": 2.527084,
+            "prepare_ms": 0.329167
+          },
+          "present_call_ms": 0.007083,
+          "total_ms": 6.1701250000000005
+        },
+        {
+          "acquire_ms": 0.005791,
+          "frame": {
+            "completed_frame_ms": 4.999916,
+            "completion_wait_ms": 4.615832999999999,
+            "encode_submit_ms": 0.051583,
+            "gpu_pass_ms": 2.511208,
+            "prepare_ms": 0.332333
+          },
+          "present_call_ms": 0.022667000000000003,
+          "total_ms": 5.02925
+        },
+        {
+          "acquire_ms": 0.006875,
+          "frame": {
+            "completed_frame_ms": 6.083,
+            "completion_wait_ms": 5.689917,
+            "encode_submit_ms": 0.0425,
+            "gpu_pass_ms": 2.512958,
+            "prepare_ms": 0.350542
+          },
+          "present_call_ms": 0.007333,
+          "total_ms": 6.097792
+        },
+        {
+          "acquire_ms": 0.009583,
+          "frame": {
+            "completed_frame_ms": 6.2172089999999995,
+            "completion_wait_ms": 5.795166,
+            "encode_submit_ms": 0.054167,
+            "gpu_pass_ms": 2.524625,
+            "prepare_ms": 0.367709
+          },
+          "present_call_ms": 0.020084,
+          "total_ms": 6.248417
+        },
+        {
+          "acquire_ms": 0.005791999999999999,
+          "frame": {
+            "completed_frame_ms": 6.133667,
+            "completion_wait_ms": 5.785458,
+            "encode_submit_ms": 0.037625,
+            "gpu_pass_ms": 2.503,
+            "prepare_ms": 0.31024999999999997
+          },
+          "present_call_ms": 0.020916999999999998,
+          "total_ms": 6.1615
+        },
+        {
+          "acquire_ms": 0.006959,
+          "frame": {
+            "completed_frame_ms": 6.143125,
+            "completion_wait_ms": 5.786334,
+            "encode_submit_ms": 0.038709,
+            "gpu_pass_ms": 2.52175,
+            "prepare_ms": 0.317958
+          },
+          "present_call_ms": 0.021542000000000002,
+          "total_ms": 6.172417
+        },
+        {
+          "acquire_ms": 0.004666,
+          "frame": {
+            "completed_frame_ms": 6.123125,
+            "completion_wait_ms": 5.781750000000001,
+            "encode_submit_ms": 0.033333,
+            "gpu_pass_ms": 2.531417,
+            "prepare_ms": 0.308
+          },
+          "present_call_ms": 0.006417,
+          "total_ms": 6.1347499999999995
+        },
+        {
+          "acquire_ms": 0.003625,
+          "frame": {
+            "completed_frame_ms": 6.118708,
+            "completion_wait_ms": 5.758834,
+            "encode_submit_ms": 0.030957999999999996,
+            "gpu_pass_ms": 2.478166,
+            "prepare_ms": 0.328833
+          },
+          "present_call_ms": 0.0185,
+          "total_ms": 6.141625
+        },
+        {
+          "acquire_ms": 0.003917,
+          "frame": {
+            "completed_frame_ms": 6.054167,
+            "completion_wait_ms": 5.74025,
+            "encode_submit_ms": 0.029291,
+            "gpu_pass_ms": 2.534625,
+            "prepare_ms": 0.2845
+          },
+          "present_call_ms": 0.011083,
+          "total_ms": 6.069708
+        },
+        {
+          "acquire_ms": 0.004916,
+          "frame": {
+            "completed_frame_ms": 4.913291,
+            "completion_wait_ms": 4.568125,
+            "encode_submit_ms": 0.039167,
+            "gpu_pass_ms": 2.459917,
+            "prepare_ms": 0.305791
+          },
+          "present_call_ms": 0.008875000000000001,
+          "total_ms": 4.92775
+        },
+        {
+          "acquire_ms": 0.007458,
+          "frame": {
+            "completed_frame_ms": 4.942875,
+            "completion_wait_ms": 4.5595419999999995,
+            "encode_submit_ms": 0.045041,
+            "gpu_pass_ms": 2.464917,
+            "prepare_ms": 0.33825
+          },
+          "present_call_ms": 0.00775,
+          "total_ms": 4.958792
+        },
+        {
+          "acquire_ms": 0.0050409999999999995,
+          "frame": {
+            "completed_frame_ms": 4.920125,
+            "completion_wait_ms": 4.557333,
+            "encode_submit_ms": 0.047083,
+            "gpu_pass_ms": 2.458666,
+            "prepare_ms": 0.315583
+          },
+          "present_call_ms": 0.006417,
+          "total_ms": 4.932375
+        },
+        {
+          "acquire_ms": 0.005125,
+          "frame": {
+            "completed_frame_ms": 4.930040999999999,
+            "completion_wait_ms": 4.555791,
+            "encode_submit_ms": 0.05175,
+            "gpu_pass_ms": 2.458625,
+            "prepare_ms": 0.32241600000000004
+          },
+          "present_call_ms": 0.0077919999999999994,
+          "total_ms": 4.9437500000000005
+        },
+        {
+          "acquire_ms": 0.008916,
+          "frame": {
+            "completed_frame_ms": 4.953791,
+            "completion_wait_ms": 4.55675,
+            "encode_submit_ms": 0.04629200000000001,
+            "gpu_pass_ms": 2.470375,
+            "prepare_ms": 0.350625
+          },
+          "present_call_ms": 0.006084,
+          "total_ms": 4.9695
+        },
+        {
+          "acquire_ms": 0.006125,
+          "frame": {
+            "completed_frame_ms": 4.913875,
+            "completion_wait_ms": 4.555625,
+            "encode_submit_ms": 0.041749999999999995,
+            "gpu_pass_ms": 2.467417,
+            "prepare_ms": 0.31637499999999996
+          },
+          "present_call_ms": 0.006625,
+          "total_ms": 4.9273750000000005
+        },
+        {
+          "acquire_ms": 0.005791999999999999,
+          "frame": {
+            "completed_frame_ms": 4.892542,
+            "completion_wait_ms": 4.550791,
+            "encode_submit_ms": 0.038834,
+            "gpu_pass_ms": 2.468958,
+            "prepare_ms": 0.302834
+          },
+          "present_call_ms": 0.004792,
+          "total_ms": 4.9036669999999996
+        },
+        {
+          "acquire_ms": 0.004416,
+          "frame": {
+            "completed_frame_ms": 4.895333,
+            "completion_wait_ms": 4.5500419999999995,
+            "encode_submit_ms": 0.039708,
+            "gpu_pass_ms": 2.455209,
+            "prepare_ms": 0.3055
+          },
+          "present_call_ms": 0.00675,
+          "total_ms": 4.907125
+        },
+        {
+          "acquire_ms": 0.009916,
+          "frame": {
+            "completed_frame_ms": 4.91925,
+            "completion_wait_ms": 4.5588750000000005,
+            "encode_submit_ms": 0.055416,
+            "gpu_pass_ms": 2.455792,
+            "prepare_ms": 0.304875
+          },
+          "present_call_ms": 0.006292,
+          "total_ms": 4.9365
+        }
+      ],
+      "scene": {
+        "max_ms": 5.279167,
+        "median_ms": 4.53575,
+        "min_ms": 3.8327080000000002,
+        "p95_ms": 5.224333000000001,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "dark",
+      "total": {
+        "max_ms": 11.421000000000001,
+        "median_ms": 10.644125,
+        "min_ms": 8.769416,
+        "p95_ms": 11.392665999999998,
+        "samples": 30
+      },
+      "view": "overview",
+      "zoom": 0.019999999552965164
+    },
+    {
+      "acquire": {
+        "max_ms": 5.65175,
+        "median_ms": 4.557417,
+        "min_ms": 3.4364999999999997,
+        "p95_ms": 4.653583,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 3.646083,
+        "median_ms": 3.5374999999999996,
+        "min_ms": 3.4160000000000004,
+        "p95_ms": 3.64,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 110,
+        "labels": 108,
+        "nodes": 36,
+        "quads": 1173
+      },
+      "encode_submit": {
+        "max_ms": 0.526416,
+        "median_ms": 0.27791699999999997,
+        "min_ms": 0.045208,
+        "p95_ms": 0.476166,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 0.044167,
+        "surface": {
+          "acquire_ms": 3.396666,
+          "frame": {
+            "completed_frame_ms": 3.660792,
+            "completion_wait_ms": 3.427125,
+            "encode_submit_ms": 0.080375,
+            "gpu_pass_ms": 0.677166,
+            "prepare_ms": 0.153208
+          },
+          "present_call_ms": 0.005,
+          "total_ms": 7.063083000000001
+        },
+        "total_ms": 7.107292
+      },
+      "gpu_pass": {
+        "max_ms": 0.706917,
+        "median_ms": 0.687125,
+        "min_ms": 0.677,
+        "p95_ms": 0.699083,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "zh-cn",
+      "prepare": {
+        "max_ms": 0.46279200000000004,
+        "median_ms": 0.238834,
+        "min_ms": 0.060333,
+        "p95_ms": 0.392166,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.054708,
+        "median_ms": 0.028958,
+        "min_ms": 0.004041,
+        "p95_ms": 0.0405,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 4.515084,
+          "frame": {
+            "completed_frame_ms": 3.5344170000000004,
+            "completion_wait_ms": 3.418459,
+            "encode_submit_ms": 0.052833,
+            "gpu_pass_ms": 0.683125,
+            "prepare_ms": 0.063125
+          },
+          "present_call_ms": 0.004041,
+          "total_ms": 8.053875
+        },
+        {
+          "acquire_ms": 5.65175,
+          "frame": {
+            "completed_frame_ms": 3.5239580000000004,
+            "completion_wait_ms": 3.4182919999999997,
+            "encode_submit_ms": 0.045208,
+            "gpu_pass_ms": 0.6905,
+            "prepare_ms": 0.060333
+          },
+          "present_call_ms": 0.004542,
+          "total_ms": 9.180584
+        },
+        {
+          "acquire_ms": 4.5258329999999996,
+          "frame": {
+            "completed_frame_ms": 3.560083,
+            "completion_wait_ms": 3.4160000000000004,
+            "encode_submit_ms": 0.070958,
+            "gpu_pass_ms": 0.677,
+            "prepare_ms": 0.073042
+          },
+          "present_call_ms": 0.0049169999999999995,
+          "total_ms": 8.091332999999999
+        },
+        {
+          "acquire_ms": 4.577833,
+          "frame": {
+            "completed_frame_ms": 3.696333,
+            "completion_wait_ms": 3.487833,
+            "encode_submit_ms": 0.08645800000000001,
+            "gpu_pass_ms": 0.682542,
+            "prepare_ms": 0.121833
+          },
+          "present_call_ms": 0.01925,
+          "total_ms": 8.29475
+        },
+        {
+          "acquire_ms": 4.561084,
+          "frame": {
+            "completed_frame_ms": 3.601833,
+            "completion_wait_ms": 3.476458,
+            "encode_submit_ms": 0.059917000000000005,
+            "gpu_pass_ms": 0.689834,
+            "prepare_ms": 0.065417
+          },
+          "present_call_ms": 0.0045839999999999995,
+          "total_ms": 8.168458999999999
+        },
+        {
+          "acquire_ms": 4.571625,
+          "frame": {
+            "completed_frame_ms": 3.692542,
+            "completion_wait_ms": 3.490208,
+            "encode_submit_ms": 0.078041,
+            "gpu_pass_ms": 0.682292,
+            "prepare_ms": 0.124125
+          },
+          "present_call_ms": 0.015958,
+          "total_ms": 8.281542
+        },
+        {
+          "acquire_ms": 4.576209,
+          "frame": {
+            "completed_frame_ms": 3.717541,
+            "completion_wait_ms": 3.48675,
+            "encode_submit_ms": 0.092333,
+            "gpu_pass_ms": 0.683959,
+            "prepare_ms": 0.138291
+          },
+          "present_call_ms": 0.0165,
+          "total_ms": 8.311709
+        },
+        {
+          "acquire_ms": 4.568083,
+          "frame": {
+            "completed_frame_ms": 3.6848330000000002,
+            "completion_wait_ms": 3.463917,
+            "encode_submit_ms": 0.08679200000000001,
+            "gpu_pass_ms": 0.678916,
+            "prepare_ms": 0.133916
+          },
+          "present_call_ms": 0.016375,
+          "total_ms": 8.270542
+        },
+        {
+          "acquire_ms": 4.591209,
+          "frame": {
+            "completed_frame_ms": 3.688209,
+            "completion_wait_ms": 3.497833,
+            "encode_submit_ms": 0.07050000000000001,
+            "gpu_pass_ms": 0.688209,
+            "prepare_ms": 0.119709
+          },
+          "present_call_ms": 0.023291000000000003,
+          "total_ms": 8.305667
+        },
+        {
+          "acquire_ms": 4.585083999999999,
+          "frame": {
+            "completed_frame_ms": 3.733167,
+            "completion_wait_ms": 3.486833,
+            "encode_submit_ms": 0.10516700000000001,
+            "gpu_pass_ms": 0.69325,
+            "prepare_ms": 0.140958
+          },
+          "present_call_ms": 0.019541000000000003,
+          "total_ms": 8.339125
+        },
+        {
+          "acquire_ms": 4.5570829999999996,
+          "frame": {
+            "completed_frame_ms": 3.7177909999999996,
+            "completion_wait_ms": 3.493458,
+            "encode_submit_ms": 0.1015,
+            "gpu_pass_ms": 0.68325,
+            "prepare_ms": 0.122583
+          },
+          "present_call_ms": 0.017249999999999998,
+          "total_ms": 8.293040999999999
+        },
+        {
+          "acquire_ms": 4.569791,
+          "frame": {
+            "completed_frame_ms": 3.7135,
+            "completion_wait_ms": 3.475208,
+            "encode_submit_ms": 0.10162500000000001,
+            "gpu_pass_ms": 0.69,
+            "prepare_ms": 0.136458
+          },
+          "present_call_ms": 0.018417,
+          "total_ms": 8.302999999999999
+        },
+        {
+          "acquire_ms": 4.557417,
+          "frame": {
+            "completed_frame_ms": 3.6298329999999996,
+            "completion_wait_ms": 3.482833,
+            "encode_submit_ms": 0.07041599999999999,
+            "gpu_pass_ms": 0.683416,
+            "prepare_ms": 0.076375
+          },
+          "present_call_ms": 0.018042000000000002,
+          "total_ms": 8.206167
+        },
+        {
+          "acquire_ms": 4.653583,
+          "frame": {
+            "completed_frame_ms": 4.1926250000000005,
+            "completion_wait_ms": 3.5915410000000003,
+            "encode_submit_ms": 0.277167,
+            "gpu_pass_ms": 0.686959,
+            "prepare_ms": 0.323834
+          },
+          "present_call_ms": 0.025375,
+          "total_ms": 8.878167
+        },
+        {
+          "acquire_ms": 3.444875,
+          "frame": {
+            "completed_frame_ms": 4.1307920000000005,
+            "completion_wait_ms": 3.61375,
+            "encode_submit_ms": 0.27791699999999997,
+            "gpu_pass_ms": 0.692083,
+            "prepare_ms": 0.23895899999999998
+          },
+          "present_call_ms": 0.054708,
+          "total_ms": 7.6414159999999995
+        },
+        {
+          "acquire_ms": 4.567667,
+          "frame": {
+            "completed_frame_ms": 4.367,
+            "completion_wait_ms": 3.560958,
+            "encode_submit_ms": 0.41370799999999996,
+            "gpu_pass_ms": 0.69225,
+            "prepare_ms": 0.392166
+          },
+          "present_call_ms": 0.029292,
+          "total_ms": 8.973500000000001
+        },
+        {
+          "acquire_ms": 3.4665,
+          "frame": {
+            "completed_frame_ms": 4.0185,
+            "completion_wait_ms": 3.5364590000000002,
+            "encode_submit_ms": 0.281583,
+            "gpu_pass_ms": 0.685167,
+            "prepare_ms": 0.20024999999999998
+          },
+          "present_call_ms": 0.03625,
+          "total_ms": 7.528875
+        },
+        {
+          "acquire_ms": 4.471,
+          "frame": {
+            "completed_frame_ms": 4.064334000000001,
+            "completion_wait_ms": 3.5374999999999996,
+            "encode_submit_ms": 0.287875,
+            "gpu_pass_ms": 0.686416,
+            "prepare_ms": 0.238834
+          },
+          "present_call_ms": 0.020208999999999998,
+          "total_ms": 8.561208
+        },
+        {
+          "acquire_ms": 3.463917,
+          "frame": {
+            "completed_frame_ms": 4.1794579999999995,
+            "completion_wait_ms": 3.584042,
+            "encode_submit_ms": 0.337458,
+            "gpu_pass_ms": 0.706917,
+            "prepare_ms": 0.25775
+          },
+          "present_call_ms": 0.037042000000000005,
+          "total_ms": 7.687917
+        },
+        {
+          "acquire_ms": 4.63125,
+          "frame": {
+            "completed_frame_ms": 4.360125,
+            "completion_wait_ms": 3.572167,
+            "encode_submit_ms": 0.423416,
+            "gpu_pass_ms": 0.687125,
+            "prepare_ms": 0.364291
+          },
+          "present_call_ms": 0.028958,
+          "total_ms": 9.028209
+        },
+        {
+          "acquire_ms": 3.449541,
+          "frame": {
+            "completed_frame_ms": 4.424667,
+            "completion_wait_ms": 3.607667,
+            "encode_submit_ms": 0.4435,
+            "gpu_pass_ms": 0.685083,
+            "prepare_ms": 0.373209
+          },
+          "present_call_ms": 0.035833000000000004,
+          "total_ms": 7.915125000000001
+        },
+        {
+          "acquire_ms": 3.453583,
+          "frame": {
+            "completed_frame_ms": 4.356625,
+            "completion_wait_ms": 3.64,
+            "encode_submit_ms": 0.387916,
+            "gpu_pass_ms": 0.691208,
+            "prepare_ms": 0.328375
+          },
+          "present_call_ms": 0.037,
+          "total_ms": 7.853624999999999
+        },
+        {
+          "acquire_ms": 3.441125,
+          "frame": {
+            "completed_frame_ms": 4.347583,
+            "completion_wait_ms": 3.637667,
+            "encode_submit_ms": 0.42874999999999996,
+            "gpu_pass_ms": 0.684125,
+            "prepare_ms": 0.280875
+          },
+          "present_call_ms": 0.032625,
+          "total_ms": 7.826542000000001
+        },
+        {
+          "acquire_ms": 4.585708,
+          "frame": {
+            "completed_frame_ms": 4.367458,
+            "completion_wait_ms": 3.594208,
+            "encode_submit_ms": 0.43074999999999997,
+            "gpu_pass_ms": 0.687209,
+            "prepare_ms": 0.342208
+          },
+          "present_call_ms": 0.038583,
+          "total_ms": 8.995790999999999
+        },
+        {
+          "acquire_ms": 3.4364999999999997,
+          "frame": {
+            "completed_frame_ms": 3.98875,
+            "completion_wait_ms": 3.52875,
+            "encode_submit_ms": 0.257417,
+            "gpu_pass_ms": 0.691917,
+            "prepare_ms": 0.202375
+          },
+          "present_call_ms": 0.029915999999999998,
+          "total_ms": 7.458334
+        },
+        {
+          "acquire_ms": 3.4430419999999997,
+          "frame": {
+            "completed_frame_ms": 4.3532079999999995,
+            "completion_wait_ms": 3.6059590000000004,
+            "encode_submit_ms": 0.415833,
+            "gpu_pass_ms": 0.689833,
+            "prepare_ms": 0.33116599999999996
+          },
+          "present_call_ms": 0.033874999999999995,
+          "total_ms": 7.834125000000001
+        },
+        {
+          "acquire_ms": 4.577667,
+          "frame": {
+            "completed_frame_ms": 4.41275,
+            "completion_wait_ms": 3.599583,
+            "encode_submit_ms": 0.463375,
+            "gpu_pass_ms": 0.686584,
+            "prepare_ms": 0.349542
+          },
+          "present_call_ms": 0.038708,
+          "total_ms": 9.033084
+        },
+        {
+          "acquire_ms": 3.4860830000000003,
+          "frame": {
+            "completed_frame_ms": 4.635667000000001,
+            "completion_wait_ms": 3.646083,
+            "encode_submit_ms": 0.526416,
+            "gpu_pass_ms": 0.699083,
+            "prepare_ms": 0.46279200000000004
+          },
+          "present_call_ms": 0.036917,
+          "total_ms": 8.166
+        },
+        {
+          "acquire_ms": 3.451458,
+          "frame": {
+            "completed_frame_ms": 4.4131659999999995,
+            "completion_wait_ms": 3.587167,
+            "encode_submit_ms": 0.447792,
+            "gpu_pass_ms": 0.691166,
+            "prepare_ms": 0.37791600000000003
+          },
+          "present_call_ms": 0.033083999999999995,
+          "total_ms": 7.903208
+        },
+        {
+          "acquire_ms": 3.458,
+          "frame": {
+            "completed_frame_ms": 4.4869580000000004,
+            "completion_wait_ms": 3.619542,
+            "encode_submit_ms": 0.476166,
+            "gpu_pass_ms": 0.683625,
+            "prepare_ms": 0.390958
+          },
+          "present_call_ms": 0.0405,
+          "total_ms": 7.992000000000001
+        }
+      ],
+      "scene": {
+        "max_ms": 0.247334,
+        "median_ms": 0.134209,
+        "min_ms": 0.025209,
+        "p95_ms": 0.24275,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "dark",
+      "total": {
+        "max_ms": 9.216083999999999,
+        "median_ms": 8.326167,
+        "min_ms": 7.670332999999999,
+        "p95_ms": 9.205875,
+        "samples": 30
+      },
+      "view": "near",
+      "zoom": 1.0
+    },
+    {
+      "acquire": {
+        "max_ms": 0.009792,
+        "median_ms": 0.0050409999999999995,
+        "min_ms": 0.003542,
+        "p95_ms": 0.008917,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 5.788125,
+        "median_ms": 5.7689580000000005,
+        "min_ms": 4.573667,
+        "p95_ms": 5.785125000000001,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 30000,
+        "labels": 0,
+        "nodes": 10000,
+        "quads": 55347
+      },
+      "encode_submit": {
+        "max_ms": 0.052834000000000006,
+        "median_ms": 0.034165999999999995,
+        "min_ms": 0.0295,
+        "p95_ms": 0.049125,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 12.931084,
+        "surface": {
+          "acquire_ms": 0.075959,
+          "frame": {
+            "completed_frame_ms": 6.787708,
+            "completion_wait_ms": 5.834917,
+            "encode_submit_ms": 0.0915,
+            "gpu_pass_ms": 2.513708,
+            "prepare_ms": 0.861167
+          },
+          "present_call_ms": 0.045458,
+          "total_ms": 6.920667
+        },
+        "total_ms": 19.852792
+      },
+      "gpu_pass": {
+        "max_ms": 3.273792,
+        "median_ms": 2.524916,
+        "min_ms": 2.495958,
+        "p95_ms": 2.5455,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "zh-cn",
+      "prepare": {
+        "max_ms": 0.378708,
+        "median_ms": 0.307458,
+        "min_ms": 0.2695,
+        "p95_ms": 0.378084,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.024334,
+        "median_ms": 0.019,
+        "min_ms": 0.0055,
+        "p95_ms": 0.023917,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 0.008,
+          "frame": {
+            "completed_frame_ms": 6.165333,
+            "completion_wait_ms": 5.765208,
+            "encode_submit_ms": 0.042125,
+            "gpu_pass_ms": 2.533833,
+            "prepare_ms": 0.357792
+          },
+          "present_call_ms": 0.019,
+          "total_ms": 6.19325
+        },
+        {
+          "acquire_ms": 0.006625,
+          "frame": {
+            "completed_frame_ms": 6.131209,
+            "completion_wait_ms": 5.780958999999999,
+            "encode_submit_ms": 0.043542,
+            "gpu_pass_ms": 2.544875,
+            "prepare_ms": 0.30650000000000005
+          },
+          "present_call_ms": 0.023917,
+          "total_ms": 6.162624999999999
+        },
+        {
+          "acquire_ms": 0.007,
+          "frame": {
+            "completed_frame_ms": 6.181458,
+            "completion_wait_ms": 5.780625000000001,
+            "encode_submit_ms": 0.049125,
+            "gpu_pass_ms": 2.518709,
+            "prepare_ms": 0.351541
+          },
+          "present_call_ms": 0.020542,
+          "total_ms": 6.210125000000001
+        },
+        {
+          "acquire_ms": 0.005667,
+          "frame": {
+            "completed_frame_ms": 6.14925,
+            "completion_wait_ms": 5.78275,
+            "encode_submit_ms": 0.039833,
+            "gpu_pass_ms": 2.530958,
+            "prepare_ms": 0.3265
+          },
+          "present_call_ms": 0.019375,
+          "total_ms": 6.175459
+        },
+        {
+          "acquire_ms": 0.005208,
+          "frame": {
+            "completed_frame_ms": 6.147166,
+            "completion_wait_ms": 5.762167000000001,
+            "encode_submit_ms": 0.03975,
+            "gpu_pass_ms": 2.524791,
+            "prepare_ms": 0.345125
+          },
+          "present_call_ms": 0.007,
+          "total_ms": 6.159875
+        },
+        {
+          "acquire_ms": 0.0047079999999999995,
+          "frame": {
+            "completed_frame_ms": 6.129167,
+            "completion_wait_ms": 5.77475,
+            "encode_submit_ms": 0.034792000000000003,
+            "gpu_pass_ms": 2.529042,
+            "prepare_ms": 0.3195
+          },
+          "present_call_ms": 0.008208,
+          "total_ms": 6.142583
+        },
+        {
+          "acquire_ms": 0.004916,
+          "frame": {
+            "completed_frame_ms": 6.116292,
+            "completion_wait_ms": 5.761167,
+            "encode_submit_ms": 0.037375,
+            "gpu_pass_ms": 2.538209,
+            "prepare_ms": 0.317542
+          },
+          "present_call_ms": 0.01575,
+          "total_ms": 6.13775
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.082625,
+            "completion_wait_ms": 5.762041,
+            "encode_submit_ms": 0.033583,
+            "gpu_pass_ms": 2.530708,
+            "prepare_ms": 0.286792
+          },
+          "present_call_ms": 0.018125,
+          "total_ms": 6.105708
+        },
+        {
+          "acquire_ms": 0.005542,
+          "frame": {
+            "completed_frame_ms": 6.110125,
+            "completion_wait_ms": 5.776042,
+            "encode_submit_ms": 0.039541,
+            "gpu_pass_ms": 2.532167,
+            "prepare_ms": 0.294375
+          },
+          "present_call_ms": 0.020584,
+          "total_ms": 6.137084
+        },
+        {
+          "acquire_ms": 0.006,
+          "frame": {
+            "completed_frame_ms": 6.111583,
+            "completion_wait_ms": 5.7689580000000005,
+            "encode_submit_ms": 0.03325,
+            "gpu_pass_ms": 2.524916,
+            "prepare_ms": 0.309208
+          },
+          "present_call_ms": 0.018125,
+          "total_ms": 6.136542
+        },
+        {
+          "acquire_ms": 0.003792,
+          "frame": {
+            "completed_frame_ms": 6.089834,
+            "completion_wait_ms": 5.766125000000001,
+            "encode_submit_ms": 0.033791999999999996,
+            "gpu_pass_ms": 2.526917,
+            "prepare_ms": 0.28975
+          },
+          "present_call_ms": 0.019375,
+          "total_ms": 6.113834000000001
+        },
+        {
+          "acquire_ms": 0.003958,
+          "frame": {
+            "completed_frame_ms": 6.165625,
+            "completion_wait_ms": 5.771584,
+            "encode_submit_ms": 0.039875,
+            "gpu_pass_ms": 2.545,
+            "prepare_ms": 0.354
+          },
+          "present_call_ms": 0.017583,
+          "total_ms": 6.187833
+        },
+        {
+          "acquire_ms": 0.004208,
+          "frame": {
+            "completed_frame_ms": 6.128541,
+            "completion_wait_ms": 5.781750000000001,
+            "encode_submit_ms": 0.03225,
+            "gpu_pass_ms": 2.499916,
+            "prepare_ms": 0.31437499999999996
+          },
+          "present_call_ms": 0.017417,
+          "total_ms": 6.150958
+        },
+        {
+          "acquire_ms": 0.0053750000000000004,
+          "frame": {
+            "completed_frame_ms": 4.897916,
+            "completion_wait_ms": 4.573667,
+            "encode_submit_ms": 0.031917,
+            "gpu_pass_ms": 2.511625,
+            "prepare_ms": 0.292208
+          },
+          "present_call_ms": 0.016416999999999998,
+          "total_ms": 4.920459
+        },
+        {
+          "acquire_ms": 0.004334,
+          "frame": {
+            "completed_frame_ms": 6.128459,
+            "completion_wait_ms": 5.788125,
+            "encode_submit_ms": 0.0415,
+            "gpu_pass_ms": 2.516041,
+            "prepare_ms": 0.298667
+          },
+          "present_call_ms": 0.024334,
+          "total_ms": 6.157916999999999
+        },
+        {
+          "acquire_ms": 0.006125,
+          "frame": {
+            "completed_frame_ms": 6.140709,
+            "completion_wait_ms": 5.785125000000001,
+            "encode_submit_ms": 0.037459,
+            "gpu_pass_ms": 2.530041,
+            "prepare_ms": 0.317959
+          },
+          "present_call_ms": 0.019916,
+          "total_ms": 6.167792
+        },
+        {
+          "acquire_ms": 0.004959,
+          "frame": {
+            "completed_frame_ms": 6.129542,
+            "completion_wait_ms": 5.758667,
+            "encode_submit_ms": 0.033958999999999996,
+            "gpu_pass_ms": 2.516292,
+            "prepare_ms": 0.336792
+          },
+          "present_call_ms": 0.006084,
+          "total_ms": 6.141125
+        },
+        {
+          "acquire_ms": 0.006208,
+          "frame": {
+            "completed_frame_ms": 6.054584,
+            "completion_wait_ms": 5.721375,
+            "encode_submit_ms": 0.032708,
+            "gpu_pass_ms": 2.513375,
+            "prepare_ms": 0.300375
+          },
+          "present_call_ms": 0.006584,
+          "total_ms": 6.067792
+        },
+        {
+          "acquire_ms": 0.004667,
+          "frame": {
+            "completed_frame_ms": 6.104958,
+            "completion_wait_ms": 5.780459,
+            "encode_submit_ms": 0.029708000000000002,
+            "gpu_pass_ms": 2.51725,
+            "prepare_ms": 0.294708
+          },
+          "present_call_ms": 0.016917,
+          "total_ms": 6.127583
+        },
+        {
+          "acquire_ms": 0.0043749999999999995,
+          "frame": {
+            "completed_frame_ms": 6.13,
+            "completion_wait_ms": 5.7678329999999995,
+            "encode_submit_ms": 0.030208,
+            "gpu_pass_ms": 2.528667,
+            "prepare_ms": 0.331791
+          },
+          "present_call_ms": 0.020458999999999998,
+          "total_ms": 6.155875
+        },
+        {
+          "acquire_ms": 0.005791999999999999,
+          "frame": {
+            "completed_frame_ms": 6.1143339999999995,
+            "completion_wait_ms": 5.77525,
+            "encode_submit_ms": 0.031916,
+            "gpu_pass_ms": 2.509709,
+            "prepare_ms": 0.307084
+          },
+          "present_call_ms": 0.0055,
+          "total_ms": 6.126042
+        },
+        {
+          "acquire_ms": 0.009792,
+          "frame": {
+            "completed_frame_ms": 5.0177499999999995,
+            "completion_wait_ms": 4.586667,
+            "encode_submit_ms": 0.052834000000000006,
+            "gpu_pass_ms": 2.495958,
+            "prepare_ms": 0.378084
+          },
+          "present_call_ms": 0.021333,
+          "total_ms": 5.0501249999999995
+        },
+        {
+          "acquire_ms": 0.008917,
+          "frame": {
+            "completed_frame_ms": 6.117292,
+            "completion_wait_ms": 5.7664159999999995,
+            "encode_submit_ms": 0.043292,
+            "gpu_pass_ms": 2.502083,
+            "prepare_ms": 0.307458
+          },
+          "present_call_ms": 0.019542,
+          "total_ms": 6.1468750000000005
+        },
+        {
+          "acquire_ms": 0.00725,
+          "frame": {
+            "completed_frame_ms": 6.11725,
+            "completion_wait_ms": 5.781874999999999,
+            "encode_submit_ms": 0.03375,
+            "gpu_pass_ms": 2.5455,
+            "prepare_ms": 0.301458
+          },
+          "present_call_ms": 0.016209,
+          "total_ms": 6.141458
+        },
+        {
+          "acquire_ms": 0.0050409999999999995,
+          "frame": {
+            "completed_frame_ms": 6.126041,
+            "completion_wait_ms": 5.713,
+            "encode_submit_ms": 0.034165999999999995,
+            "gpu_pass_ms": 3.273792,
+            "prepare_ms": 0.378708
+          },
+          "present_call_ms": 0.01975,
+          "total_ms": 6.1516660000000005
+        },
+        {
+          "acquire_ms": 0.004125,
+          "frame": {
+            "completed_frame_ms": 6.109458,
+            "completion_wait_ms": 5.769417,
+            "encode_submit_ms": 0.033,
+            "gpu_pass_ms": 2.498916,
+            "prepare_ms": 0.306916
+          },
+          "present_call_ms": 0.019875,
+          "total_ms": 6.134209
+        },
+        {
+          "acquire_ms": 0.003542,
+          "frame": {
+            "completed_frame_ms": 6.058083,
+            "completion_wait_ms": 5.75875,
+            "encode_submit_ms": 0.029666,
+            "gpu_pass_ms": 2.496083,
+            "prepare_ms": 0.2695
+          },
+          "present_call_ms": 0.019417,
+          "total_ms": 6.081833
+        },
+        {
+          "acquire_ms": 0.004667,
+          "frame": {
+            "completed_frame_ms": 6.095708,
+            "completion_wait_ms": 5.759292,
+            "encode_submit_ms": 0.037166000000000005,
+            "gpu_pass_ms": 2.506875,
+            "prepare_ms": 0.299083
+          },
+          "present_call_ms": 0.018834,
+          "total_ms": 6.120083999999999
+        },
+        {
+          "acquire_ms": 0.003875,
+          "frame": {
+            "completed_frame_ms": 6.092791,
+            "completion_wait_ms": 5.770625,
+            "encode_submit_ms": 0.031625,
+            "gpu_pass_ms": 2.542209,
+            "prepare_ms": 0.290416
+          },
+          "present_call_ms": 0.018459,
+          "total_ms": 6.116084
+        },
+        {
+          "acquire_ms": 0.003583,
+          "frame": {
+            "completed_frame_ms": 4.8935,
+            "completion_wait_ms": 4.588667,
+            "encode_submit_ms": 0.0295,
+            "gpu_pass_ms": 2.507541,
+            "prepare_ms": 0.275167
+          },
+          "present_call_ms": 0.0205,
+          "total_ms": 4.918417
+        }
+      ],
+      "scene": {
+        "max_ms": 5.695666999999999,
+        "median_ms": 4.50425,
+        "min_ms": 4.073875,
+        "p95_ms": 5.628583000000001,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "dark",
+      "total": {
+        "max_ms": 11.889125,
+        "median_ms": 10.6415,
+        "min_ms": 9.113208,
+        "p95_ms": 11.791416,
+        "samples": 30
+      },
+      "view": "overview",
+      "zoom": 0.019999999552965164
+    },
+    {
+      "acquire": {
+        "max_ms": 4.6003750000000005,
+        "median_ms": 4.57025,
+        "min_ms": 3.4343749999999997,
+        "p95_ms": 4.5864590000000005,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 4.622541,
+        "median_ms": 3.49125,
+        "min_ms": 3.442375,
+        "p95_ms": 3.7585420000000003,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 110,
+        "labels": 108,
+        "nodes": 36,
+        "quads": 1173
+      },
+      "encode_submit": {
+        "max_ms": 0.337416,
+        "median_ms": 0.132917,
+        "min_ms": 0.06875,
+        "p95_ms": 0.33137500000000003,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 0.047625,
+        "surface": {
+          "acquire_ms": 3.429125,
+          "frame": {
+            "completed_frame_ms": 3.711375,
+            "completion_wait_ms": 3.511667,
+            "encode_submit_ms": 0.073,
+            "gpu_pass_ms": 0.692834,
+            "prepare_ms": 0.1265
+          },
+          "present_call_ms": 0.023709,
+          "total_ms": 7.165917
+        },
+        "total_ms": 7.21375
+      },
+      "gpu_pass": {
+        "max_ms": 0.70325,
+        "median_ms": 0.684958,
+        "min_ms": 0.675,
+        "p95_ms": 0.697667,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "en",
+      "prepare": {
+        "max_ms": 0.29862500000000003,
+        "median_ms": 0.153583,
+        "min_ms": 0.11425,
+        "p95_ms": 0.271667,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.036542,
+        "median_ms": 0.019917,
+        "min_ms": 0.009958,
+        "p95_ms": 0.027667,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 4.5705,
+          "frame": {
+            "completed_frame_ms": 3.699084,
+            "completion_wait_ms": 3.504,
+            "encode_submit_ms": 0.06875,
+            "gpu_pass_ms": 0.691417,
+            "prepare_ms": 0.126167
+          },
+          "present_call_ms": 0.019125,
+          "total_ms": 8.291082999999999
+        },
+        {
+          "acquire_ms": 4.569792,
+          "frame": {
+            "completed_frame_ms": 3.679,
+            "completion_wait_ms": 3.489666,
+            "encode_submit_ms": 0.06945799999999999,
+            "gpu_pass_ms": 0.679541,
+            "prepare_ms": 0.119709
+          },
+          "present_call_ms": 0.016666,
+          "total_ms": 8.267083999999999
+        },
+        {
+          "acquire_ms": 4.570333000000001,
+          "frame": {
+            "completed_frame_ms": 3.702042,
+            "completion_wait_ms": 3.494834,
+            "encode_submit_ms": 0.074792,
+            "gpu_pass_ms": 0.692458,
+            "prepare_ms": 0.13224999999999998
+          },
+          "present_call_ms": 0.016875,
+          "total_ms": 8.29075
+        },
+        {
+          "acquire_ms": 4.562667,
+          "frame": {
+            "completed_frame_ms": 3.689084,
+            "completion_wait_ms": 3.484042,
+            "encode_submit_ms": 0.07370800000000001,
+            "gpu_pass_ms": 0.686542,
+            "prepare_ms": 0.131125
+          },
+          "present_call_ms": 0.019,
+          "total_ms": 8.272125
+        },
+        {
+          "acquire_ms": 4.571458,
+          "frame": {
+            "completed_frame_ms": 3.7165000000000004,
+            "completion_wait_ms": 3.487416,
+            "encode_submit_ms": 0.08633300000000001,
+            "gpu_pass_ms": 0.678583,
+            "prepare_ms": 0.142583
+          },
+          "present_call_ms": 0.0165,
+          "total_ms": 8.305916999999999
+        },
+        {
+          "acquire_ms": 4.57025,
+          "frame": {
+            "completed_frame_ms": 3.6562080000000003,
+            "completion_wait_ms": 3.45575,
+            "encode_submit_ms": 0.075042,
+            "gpu_pass_ms": 0.679959,
+            "prepare_ms": 0.12520799999999999
+          },
+          "present_call_ms": 0.018875000000000003,
+          "total_ms": 8.246583
+        },
+        {
+          "acquire_ms": 4.580583,
+          "frame": {
+            "completed_frame_ms": 3.716084,
+            "completion_wait_ms": 3.5096670000000003,
+            "encode_submit_ms": 0.091958,
+            "gpu_pass_ms": 0.690625,
+            "prepare_ms": 0.11425
+          },
+          "present_call_ms": 0.016708,
+          "total_ms": 8.314416
+        },
+        {
+          "acquire_ms": 4.5777090000000005,
+          "frame": {
+            "completed_frame_ms": 3.708792,
+            "completion_wait_ms": 3.486667,
+            "encode_submit_ms": 0.087708,
+            "gpu_pass_ms": 0.682916,
+            "prepare_ms": 0.13425
+          },
+          "present_call_ms": 0.017875000000000002,
+          "total_ms": 8.30575
+        },
+        {
+          "acquire_ms": 4.567083,
+          "frame": {
+            "completed_frame_ms": 3.724583,
+            "completion_wait_ms": 3.4975840000000002,
+            "encode_submit_ms": 0.093375,
+            "gpu_pass_ms": 0.697541,
+            "prepare_ms": 0.133416
+          },
+          "present_call_ms": 0.020541,
+          "total_ms": 8.313457999999999
+        },
+        {
+          "acquire_ms": 4.575291,
+          "frame": {
+            "completed_frame_ms": 3.730834,
+            "completion_wait_ms": 3.4885829999999998,
+            "encode_submit_ms": 0.10087499999999999,
+            "gpu_pass_ms": 0.684459,
+            "prepare_ms": 0.14116700000000001
+          },
+          "present_call_ms": 0.016915999999999997,
+          "total_ms": 8.324541
+        },
+        {
+          "acquire_ms": 4.581333,
+          "frame": {
+            "completed_frame_ms": 3.7121250000000003,
+            "completion_wait_ms": 3.474375,
+            "encode_submit_ms": 0.09754199999999999,
+            "gpu_pass_ms": 0.675958,
+            "prepare_ms": 0.139959
+          },
+          "present_call_ms": 0.01975,
+          "total_ms": 8.3145
+        },
+        {
+          "acquire_ms": 4.5864590000000005,
+          "frame": {
+            "completed_frame_ms": 3.816125,
+            "completion_wait_ms": 3.500916,
+            "encode_submit_ms": 0.146375,
+            "gpu_pass_ms": 0.697667,
+            "prepare_ms": 0.16866599999999998
+          },
+          "present_call_ms": 0.026083000000000002,
+          "total_ms": 8.430709
+        },
+        {
+          "acquire_ms": 4.570582999999999,
+          "frame": {
+            "completed_frame_ms": 3.754917,
+            "completion_wait_ms": 3.472583,
+            "encode_submit_ms": 0.1285,
+            "gpu_pass_ms": 0.692875,
+            "prepare_ms": 0.153583
+          },
+          "present_call_ms": 0.022916,
+          "total_ms": 8.351
+        },
+        {
+          "acquire_ms": 4.5385,
+          "frame": {
+            "completed_frame_ms": 3.817959,
+            "completion_wait_ms": 3.477916,
+            "encode_submit_ms": 0.169292,
+            "gpu_pass_ms": 0.679917,
+            "prepare_ms": 0.17058399999999999
+          },
+          "present_call_ms": 0.023875,
+          "total_ms": 8.382334
+        },
+        {
+          "acquire_ms": 4.570792,
+          "frame": {
+            "completed_frame_ms": 4.900958,
+            "completion_wait_ms": 4.622541,
+            "encode_submit_ms": 0.127,
+            "gpu_pass_ms": 0.676125,
+            "prepare_ms": 0.151291
+          },
+          "present_call_ms": 0.011333,
+          "total_ms": 9.485541999999999
+        },
+        {
+          "acquire_ms": 3.439917,
+          "frame": {
+            "completed_frame_ms": 3.767166,
+            "completion_wait_ms": 3.483167,
+            "encode_submit_ms": 0.12245800000000001,
+            "gpu_pass_ms": 0.681583,
+            "prepare_ms": 0.16129100000000002
+          },
+          "present_call_ms": 0.021665999999999998,
+          "total_ms": 7.231125
+        },
+        {
+          "acquire_ms": 4.570333000000001,
+          "frame": {
+            "completed_frame_ms": 3.7811670000000004,
+            "completion_wait_ms": 3.489042,
+            "encode_submit_ms": 0.138917,
+            "gpu_pass_ms": 0.675,
+            "prepare_ms": 0.152959
+          },
+          "present_call_ms": 0.020292,
+          "total_ms": 8.373583
+        },
+        {
+          "acquire_ms": 4.567208,
+          "frame": {
+            "completed_frame_ms": 3.718208,
+            "completion_wait_ms": 3.455,
+            "encode_submit_ms": 0.11670799999999999,
+            "gpu_pass_ms": 0.684875,
+            "prepare_ms": 0.14633300000000002
+          },
+          "present_call_ms": 0.009958,
+          "total_ms": 8.297
+        },
+        {
+          "acquire_ms": 4.564416,
+          "frame": {
+            "completed_frame_ms": 3.835792,
+            "completion_wait_ms": 3.523625,
+            "encode_submit_ms": 0.146375,
+            "gpu_pass_ms": 0.688417,
+            "prepare_ms": 0.16558299999999998
+          },
+          "present_call_ms": 0.02275,
+          "total_ms": 8.42475
+        },
+        {
+          "acquire_ms": 3.4343749999999997,
+          "frame": {
+            "completed_frame_ms": 3.859375,
+            "completion_wait_ms": 3.499667,
+            "encode_submit_ms": 0.169292,
+            "gpu_pass_ms": 0.684958,
+            "prepare_ms": 0.190166
+          },
+          "present_call_ms": 0.020333,
+          "total_ms": 7.3169580000000005
+        },
+        {
+          "acquire_ms": 4.5632909999999995,
+          "frame": {
+            "completed_frame_ms": 3.79575,
+            "completion_wait_ms": 3.49125,
+            "encode_submit_ms": 0.132917,
+            "gpu_pass_ms": 0.684792,
+            "prepare_ms": 0.171375
+          },
+          "present_call_ms": 0.019333,
+          "total_ms": 8.380208
+        },
+        {
+          "acquire_ms": 4.572583,
+          "frame": {
+            "completed_frame_ms": 3.81575,
+            "completion_wait_ms": 3.489416,
+            "encode_submit_ms": 0.148125,
+            "gpu_pass_ms": 0.690125,
+            "prepare_ms": 0.178
+          },
+          "present_call_ms": 0.022917,
+          "total_ms": 8.414166000000002
+        },
+        {
+          "acquire_ms": 4.552874999999999,
+          "frame": {
+            "completed_frame_ms": 3.8174580000000002,
+            "completion_wait_ms": 3.499958,
+            "encode_submit_ms": 0.13345800000000002,
+            "gpu_pass_ms": 0.68525,
+            "prepare_ms": 0.183792
+          },
+          "present_call_ms": 0.023791,
+          "total_ms": 8.395375
+        },
+        {
+          "acquire_ms": 4.571124999999999,
+          "frame": {
+            "completed_frame_ms": 4.0741249999999996,
+            "completion_wait_ms": 3.7585420000000003,
+            "encode_submit_ms": 0.135375,
+            "gpu_pass_ms": 0.692875,
+            "prepare_ms": 0.180041
+          },
+          "present_call_ms": 0.036542,
+          "total_ms": 8.685875
+        },
+        {
+          "acquire_ms": 3.460916,
+          "frame": {
+            "completed_frame_ms": 4.072541,
+            "completion_wait_ms": 3.442375,
+            "encode_submit_ms": 0.33137500000000003,
+            "gpu_pass_ms": 0.69475,
+            "prepare_ms": 0.29862500000000003
+          },
+          "present_call_ms": 0.022833,
+          "total_ms": 7.563333
+        },
+        {
+          "acquire_ms": 4.6003750000000005,
+          "frame": {
+            "completed_frame_ms": 4.079709,
+            "completion_wait_ms": 3.534875,
+            "encode_submit_ms": 0.29312499999999997,
+            "gpu_pass_ms": 0.684041,
+            "prepare_ms": 0.2515
+          },
+          "present_call_ms": 0.026,
+          "total_ms": 8.714667
+        },
+        {
+          "acquire_ms": 4.569542,
+          "frame": {
+            "completed_frame_ms": 4.116792,
+            "completion_wait_ms": 3.507541,
+            "encode_submit_ms": 0.337416,
+            "gpu_pass_ms": 0.70325,
+            "prepare_ms": 0.271667
+          },
+          "present_call_ms": 0.012,
+          "total_ms": 8.705
+        },
+        {
+          "acquire_ms": 3.444416,
+          "frame": {
+            "completed_frame_ms": 3.9467909999999997,
+            "completion_wait_ms": 3.501583,
+            "encode_submit_ms": 0.219666,
+            "gpu_pass_ms": 0.678667,
+            "prepare_ms": 0.225333
+          },
+          "present_call_ms": 0.027667,
+          "total_ms": 7.423666
+        },
+        {
+          "acquire_ms": 4.549583999999999,
+          "frame": {
+            "completed_frame_ms": 3.796708,
+            "completion_wait_ms": 3.495667,
+            "encode_submit_ms": 0.1485,
+            "gpu_pass_ms": 0.687625,
+            "prepare_ms": 0.152333
+          },
+          "present_call_ms": 0.018583000000000002,
+          "total_ms": 8.367709
+        },
+        {
+          "acquire_ms": 4.562958,
+          "frame": {
+            "completed_frame_ms": 3.7884580000000003,
+            "completion_wait_ms": 3.480667,
+            "encode_submit_ms": 0.1415,
+            "gpu_pass_ms": 0.677208,
+            "prepare_ms": 0.166041
+          },
+          "present_call_ms": 0.019917,
+          "total_ms": 8.373958
+        }
+      ],
+      "scene": {
+        "max_ms": 0.14425000000000002,
+        "median_ms": 0.058332999999999996,
+        "min_ms": 0.050291999999999996,
+        "p95_ms": 0.1365,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "light",
+      "total": {
+        "max_ms": 9.565707999999999,
+        "median_ms": 8.375083,
+        "min_ms": 7.296208999999999,
+        "p95_ms": 8.84975,
+        "samples": 30
+      },
+      "view": "near",
+      "zoom": 1.0
+    },
+    {
+      "acquire": {
+        "max_ms": 0.010208,
+        "median_ms": 0.005334,
+        "min_ms": 0.003917,
+        "p95_ms": 0.008459,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 5.789417,
+        "median_ms": 5.705334000000001,
+        "min_ms": 4.545125,
+        "p95_ms": 5.7851669999999995,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 30000,
+        "labels": 0,
+        "nodes": 10000,
+        "quads": 55347
+      },
+      "encode_submit": {
+        "max_ms": 0.06129199999999999,
+        "median_ms": 0.037542,
+        "min_ms": 0.0305,
+        "p95_ms": 0.06112499999999999,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 8.983084,
+        "surface": {
+          "acquire_ms": 0.015709,
+          "frame": {
+            "completed_frame_ms": 6.5464579999999994,
+            "completion_wait_ms": 5.756417,
+            "encode_submit_ms": 0.093958,
+            "gpu_pass_ms": 2.509042,
+            "prepare_ms": 0.695875
+          },
+          "present_call_ms": 0.020916999999999998,
+          "total_ms": 6.585833999999999
+        },
+        "total_ms": 15.569084
+      },
+      "gpu_pass": {
+        "max_ms": 2.564875,
+        "median_ms": 2.517292,
+        "min_ms": 2.446,
+        "p95_ms": 2.555167,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "en",
+      "prepare": {
+        "max_ms": 0.331625,
+        "median_ms": 0.28850000000000003,
+        "min_ms": 0.267541,
+        "p95_ms": 0.326833,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.023542,
+        "median_ms": 0.006792,
+        "min_ms": 0.004666,
+        "p95_ms": 0.023417,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 0.004958,
+          "frame": {
+            "completed_frame_ms": 4.872625,
+            "completion_wait_ms": 4.557167,
+            "encode_submit_ms": 0.039333,
+            "gpu_pass_ms": 2.452417,
+            "prepare_ms": 0.27608299999999997
+          },
+          "present_call_ms": 0.005208999999999999,
+          "total_ms": 4.883375
+        },
+        {
+          "acquire_ms": 0.004542,
+          "frame": {
+            "completed_frame_ms": 4.883208,
+            "completion_wait_ms": 4.553833,
+            "encode_submit_ms": 0.037542,
+            "gpu_pass_ms": 2.46775,
+            "prepare_ms": 0.29175
+          },
+          "present_call_ms": 0.0050409999999999995,
+          "total_ms": 4.8935
+        },
+        {
+          "acquire_ms": 0.007167,
+          "frame": {
+            "completed_frame_ms": 4.862709,
+            "completion_wait_ms": 4.545125,
+            "encode_submit_ms": 0.033292,
+            "gpu_pass_ms": 2.455542,
+            "prepare_ms": 0.284209
+          },
+          "present_call_ms": 0.0048330000000000005,
+          "total_ms": 4.8753340000000005
+        },
+        {
+          "acquire_ms": 0.003917,
+          "frame": {
+            "completed_frame_ms": 4.857208,
+            "completion_wait_ms": 4.550458,
+            "encode_submit_ms": 0.034208,
+            "gpu_pass_ms": 2.446,
+            "prepare_ms": 0.272416
+          },
+          "present_call_ms": 0.007417,
+          "total_ms": 4.869
+        },
+        {
+          "acquire_ms": 0.0067079999999999996,
+          "frame": {
+            "completed_frame_ms": 4.896333,
+            "completion_wait_ms": 4.547167,
+            "encode_submit_ms": 0.050084,
+            "gpu_pass_ms": 2.456666,
+            "prepare_ms": 0.299
+          },
+          "present_call_ms": 0.005958000000000001,
+          "total_ms": 4.909875
+        },
+        {
+          "acquire_ms": 0.005875,
+          "frame": {
+            "completed_frame_ms": 4.887542,
+            "completion_wait_ms": 4.5478749999999994,
+            "encode_submit_ms": 0.047375,
+            "gpu_pass_ms": 2.452417,
+            "prepare_ms": 0.292167
+          },
+          "present_call_ms": 0.0053750000000000004,
+          "total_ms": 4.899583
+        },
+        {
+          "acquire_ms": 0.004333,
+          "frame": {
+            "completed_frame_ms": 4.854917,
+            "completion_wait_ms": 4.545999999999999,
+            "encode_submit_ms": 0.04075,
+            "gpu_pass_ms": 2.4685,
+            "prepare_ms": 0.268042
+          },
+          "present_call_ms": 0.007291,
+          "total_ms": 4.867083
+        },
+        {
+          "acquire_ms": 0.006791,
+          "frame": {
+            "completed_frame_ms": 4.8702499999999995,
+            "completion_wait_ms": 4.547416999999999,
+            "encode_submit_ms": 0.038708,
+            "gpu_pass_ms": 2.454958,
+            "prepare_ms": 0.28408300000000003
+          },
+          "present_call_ms": 0.004875,
+          "total_ms": 4.882416
+        },
+        {
+          "acquire_ms": 0.004125,
+          "frame": {
+            "completed_frame_ms": 4.8739170000000005,
+            "completion_wait_ms": 4.549917,
+            "encode_submit_ms": 0.037542,
+            "gpu_pass_ms": 2.45875,
+            "prepare_ms": 0.286375
+          },
+          "present_call_ms": 0.006792,
+          "total_ms": 4.885375
+        },
+        {
+          "acquire_ms": 0.008459,
+          "frame": {
+            "completed_frame_ms": 4.919625000000001,
+            "completion_wait_ms": 4.559209,
+            "encode_submit_ms": 0.060917,
+            "gpu_pass_ms": 2.455333,
+            "prepare_ms": 0.299416
+          },
+          "present_call_ms": 0.006084,
+          "total_ms": 4.934875
+        },
+        {
+          "acquire_ms": 0.004958,
+          "frame": {
+            "completed_frame_ms": 4.9520420000000005,
+            "completion_wait_ms": 4.565709,
+            "encode_submit_ms": 0.05466699999999999,
+            "gpu_pass_ms": 2.454834,
+            "prepare_ms": 0.331625
+          },
+          "present_call_ms": 0.006167000000000001,
+          "total_ms": 4.963792
+        },
+        {
+          "acquire_ms": 0.0065,
+          "frame": {
+            "completed_frame_ms": 4.909958,
+            "completion_wait_ms": 4.556583000000001,
+            "encode_submit_ms": 0.047333,
+            "gpu_pass_ms": 2.469084,
+            "prepare_ms": 0.30591599999999997
+          },
+          "present_call_ms": 0.006375,
+          "total_ms": 4.923916999999999
+        },
+        {
+          "acquire_ms": 0.004875,
+          "frame": {
+            "completed_frame_ms": 4.865917,
+            "completion_wait_ms": 4.551792,
+            "encode_submit_ms": 0.042209,
+            "gpu_pass_ms": 2.463917,
+            "prepare_ms": 0.271625
+          },
+          "present_call_ms": 0.0052499999999999995,
+          "total_ms": 4.876625
+        },
+        {
+          "acquire_ms": 0.010208,
+          "frame": {
+            "completed_frame_ms": 4.9287920000000005,
+            "completion_wait_ms": 4.5672500000000005,
+            "encode_submit_ms": 0.06112499999999999,
+            "gpu_pass_ms": 2.467834,
+            "prepare_ms": 0.300208
+          },
+          "present_call_ms": 0.006958,
+          "total_ms": 4.947125
+        },
+        {
+          "acquire_ms": 0.007625,
+          "frame": {
+            "completed_frame_ms": 6.160708,
+            "completion_wait_ms": 5.7771669999999995,
+            "encode_submit_ms": 0.06129199999999999,
+            "gpu_pass_ms": 2.53825,
+            "prepare_ms": 0.322167
+          },
+          "present_call_ms": 0.00925,
+          "total_ms": 6.179292
+        },
+        {
+          "acquire_ms": 0.005334,
+          "frame": {
+            "completed_frame_ms": 4.922625,
+            "completion_wait_ms": 4.593542,
+            "encode_submit_ms": 0.052791000000000005,
+            "gpu_pass_ms": 2.506666,
+            "prepare_ms": 0.276167
+          },
+          "present_call_ms": 0.023417,
+          "total_ms": 4.952709
+        },
+        {
+          "acquire_ms": 0.004958,
+          "frame": {
+            "completed_frame_ms": 6.104083,
+            "completion_wait_ms": 5.76075,
+            "encode_submit_ms": 0.044125000000000004,
+            "gpu_pass_ms": 2.54625,
+            "prepare_ms": 0.299083
+          },
+          "present_call_ms": 0.007417,
+          "total_ms": 6.117333
+        },
+        {
+          "acquire_ms": 0.004459,
+          "frame": {
+            "completed_frame_ms": 6.088083,
+            "completion_wait_ms": 5.7851669999999995,
+            "encode_submit_ms": 0.035250000000000004,
+            "gpu_pass_ms": 2.528458,
+            "prepare_ms": 0.267541
+          },
+          "present_call_ms": 0.023542,
+          "total_ms": 6.117084
+        },
+        {
+          "acquire_ms": 0.004625,
+          "frame": {
+            "completed_frame_ms": 6.130542,
+            "completion_wait_ms": 5.789417,
+            "encode_submit_ms": 0.036000000000000004,
+            "gpu_pass_ms": 2.555167,
+            "prepare_ms": 0.304792
+          },
+          "present_call_ms": 0.018375,
+          "total_ms": 6.154375
+        },
+        {
+          "acquire_ms": 0.0065,
+          "frame": {
+            "completed_frame_ms": 6.122916,
+            "completion_wait_ms": 5.780958,
+            "encode_submit_ms": 0.034,
+            "gpu_pass_ms": 2.523875,
+            "prepare_ms": 0.30779100000000004
+          },
+          "present_call_ms": 0.018416000000000002,
+          "total_ms": 6.148583
+        },
+        {
+          "acquire_ms": 0.0067079999999999996,
+          "frame": {
+            "completed_frame_ms": 6.070833,
+            "completion_wait_ms": 5.765542,
+            "encode_submit_ms": 0.033457999999999995,
+            "gpu_pass_ms": 2.544167,
+            "prepare_ms": 0.27175
+          },
+          "present_call_ms": 0.005667,
+          "total_ms": 6.083749999999999
+        },
+        {
+          "acquire_ms": 0.0065,
+          "frame": {
+            "completed_frame_ms": 6.037375,
+            "completion_wait_ms": 5.718624999999999,
+            "encode_submit_ms": 0.031917,
+            "gpu_pass_ms": 2.564875,
+            "prepare_ms": 0.286666
+          },
+          "present_call_ms": 0.019333,
+          "total_ms": 6.064291
+        },
+        {
+          "acquire_ms": 0.006625,
+          "frame": {
+            "completed_frame_ms": 6.089917,
+            "completion_wait_ms": 5.76925,
+            "encode_submit_ms": 0.032,
+            "gpu_pass_ms": 2.547709,
+            "prepare_ms": 0.28850000000000003
+          },
+          "present_call_ms": 0.019208,
+          "total_ms": 6.1165
+        },
+        {
+          "acquire_ms": 0.004,
+          "frame": {
+            "completed_frame_ms": 6.12975,
+            "completion_wait_ms": 5.768041,
+            "encode_submit_ms": 0.034708,
+            "gpu_pass_ms": 2.517292,
+            "prepare_ms": 0.326833
+          },
+          "present_call_ms": 0.019167,
+          "total_ms": 6.153958
+        },
+        {
+          "acquire_ms": 0.003917,
+          "frame": {
+            "completed_frame_ms": 6.043042,
+            "completion_wait_ms": 5.7344170000000005,
+            "encode_submit_ms": 0.032292,
+            "gpu_pass_ms": 2.542041,
+            "prepare_ms": 0.276208
+          },
+          "present_call_ms": 0.005625000000000001,
+          "total_ms": 6.053
+        },
+        {
+          "acquire_ms": 0.005582999999999999,
+          "frame": {
+            "completed_frame_ms": 6.074375,
+            "completion_wait_ms": 5.754417,
+            "encode_submit_ms": 0.031207999999999996,
+            "gpu_pass_ms": 2.523,
+            "prepare_ms": 0.288666
+          },
+          "present_call_ms": 0.006584,
+          "total_ms": 6.087040999999999
+        },
+        {
+          "acquire_ms": 0.0065,
+          "frame": {
+            "completed_frame_ms": 6.059208,
+            "completion_wait_ms": 5.754,
+            "encode_submit_ms": 0.0305,
+            "gpu_pass_ms": 2.532958,
+            "prepare_ms": 0.274625
+          },
+          "present_call_ms": 0.006625,
+          "total_ms": 6.073042
+        },
+        {
+          "acquire_ms": 0.004125,
+          "frame": {
+            "completed_frame_ms": 6.089417,
+            "completion_wait_ms": 5.7674579999999995,
+            "encode_submit_ms": 0.031875,
+            "gpu_pass_ms": 2.522541,
+            "prepare_ms": 0.289958
+          },
+          "present_call_ms": 0.006916,
+          "total_ms": 6.10125
+        },
+        {
+          "acquire_ms": 0.003958,
+          "frame": {
+            "completed_frame_ms": 6.020166000000001,
+            "completion_wait_ms": 5.705334000000001,
+            "encode_submit_ms": 0.030792,
+            "gpu_pass_ms": 2.531333,
+            "prepare_ms": 0.283958
+          },
+          "present_call_ms": 0.004666,
+          "total_ms": 6.029375
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.103834,
+            "completion_wait_ms": 5.781833,
+            "encode_submit_ms": 0.03375,
+            "gpu_pass_ms": 2.530166,
+            "prepare_ms": 0.288125
+          },
+          "present_call_ms": 0.016416,
+          "total_ms": 6.125542
+        }
+      ],
+      "scene": {
+        "max_ms": 4.768790999999999,
+        "median_ms": 4.375792,
+        "min_ms": 3.696416,
+        "p95_ms": 4.601624999999999,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "light",
+      "total": {
+        "max_ms": 10.749666,
+        "median_ms": 10.039,
+        "min_ms": 8.620375,
+        "p95_ms": 10.748000000000001,
+        "samples": 30
+      },
+      "view": "overview",
+      "zoom": 0.019999999552965164
+    },
+    {
+      "acquire": {
+        "max_ms": 5.711834,
+        "median_ms": 4.565375,
+        "min_ms": 3.423541,
+        "p95_ms": 5.710667,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 3.663042,
+        "median_ms": 3.479708,
+        "min_ms": 3.429167,
+        "p95_ms": 3.561791,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 110,
+        "labels": 108,
+        "nodes": 36,
+        "quads": 1173
+      },
+      "encode_submit": {
+        "max_ms": 0.360834,
+        "median_ms": 0.114209,
+        "min_ms": 0.073834,
+        "p95_ms": 0.31375000000000003,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 0.06208299999999999,
+        "surface": {
+          "acquire_ms": 2.278708,
+          "frame": {
+            "completed_frame_ms": 3.613416,
+            "completion_wait_ms": 3.4455,
+            "encode_submit_ms": 0.07025,
+            "gpu_pass_ms": 0.698,
+            "prepare_ms": 0.09754099999999999
+          },
+          "present_call_ms": 0.019708,
+          "total_ms": 5.913083
+        },
+        "total_ms": 5.975417
+      },
+      "gpu_pass": {
+        "max_ms": 0.708167,
+        "median_ms": 0.684333,
+        "min_ms": 0.670541,
+        "p95_ms": 0.699292,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "ja",
+      "prepare": {
+        "max_ms": 0.369417,
+        "median_ms": 0.136708,
+        "min_ms": 0.08683400000000001,
+        "p95_ms": 0.28725,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.041709,
+        "median_ms": 0.018917,
+        "min_ms": 0.006375,
+        "p95_ms": 0.039375,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 4.574375000000001,
+          "frame": {
+            "completed_frame_ms": 3.717666,
+            "completion_wait_ms": 3.511333,
+            "encode_submit_ms": 0.07775,
+            "gpu_pass_ms": 0.689,
+            "prepare_ms": 0.128333
+          },
+          "present_call_ms": 0.022583,
+          "total_ms": 8.316375
+        },
+        {
+          "acquire_ms": 4.576459,
+          "frame": {
+            "completed_frame_ms": 3.668666,
+            "completion_wait_ms": 3.4456249999999997,
+            "encode_submit_ms": 0.091291,
+            "gpu_pass_ms": 0.699292,
+            "prepare_ms": 0.131583
+          },
+          "present_call_ms": 0.019833,
+          "total_ms": 8.267083999999999
+        },
+        {
+          "acquire_ms": 4.574209,
+          "frame": {
+            "completed_frame_ms": 3.675459,
+            "completion_wait_ms": 3.478459,
+            "encode_submit_ms": 0.073834,
+            "gpu_pass_ms": 0.685125,
+            "prepare_ms": 0.12295900000000001
+          },
+          "present_call_ms": 0.018083,
+          "total_ms": 8.269125
+        },
+        {
+          "acquire_ms": 4.559417,
+          "frame": {
+            "completed_frame_ms": 3.6254999999999997,
+            "completion_wait_ms": 3.429167,
+            "encode_submit_ms": 0.075334,
+            "gpu_pass_ms": 0.691166,
+            "prepare_ms": 0.120834
+          },
+          "present_call_ms": 0.006375,
+          "total_ms": 8.192584
+        },
+        {
+          "acquire_ms": 4.554875,
+          "frame": {
+            "completed_frame_ms": 3.6426250000000002,
+            "completion_wait_ms": 3.479708,
+            "encode_submit_ms": 0.075917,
+            "gpu_pass_ms": 0.687,
+            "prepare_ms": 0.08683400000000001
+          },
+          "present_call_ms": 0.018667,
+          "total_ms": 8.216875
+        },
+        {
+          "acquire_ms": 5.711834,
+          "frame": {
+            "completed_frame_ms": 3.717167,
+            "completion_wait_ms": 3.4849590000000004,
+            "encode_submit_ms": 0.097625,
+            "gpu_pass_ms": 0.680083,
+            "prepare_ms": 0.134375
+          },
+          "present_call_ms": 0.018917,
+          "total_ms": 9.449292
+        },
+        {
+          "acquire_ms": 3.435,
+          "frame": {
+            "completed_frame_ms": 3.669375,
+            "completion_wait_ms": 3.458,
+            "encode_submit_ms": 0.081083,
+            "gpu_pass_ms": 0.698334,
+            "prepare_ms": 0.130083
+          },
+          "present_call_ms": 0.015375000000000002,
+          "total_ms": 7.121167000000001
+        },
+        {
+          "acquire_ms": 4.5774170000000005,
+          "frame": {
+            "completed_frame_ms": 3.678083,
+            "completion_wait_ms": 3.4658330000000004,
+            "encode_submit_ms": 0.08224999999999999,
+            "gpu_pass_ms": 0.680208,
+            "prepare_ms": 0.129708
+          },
+          "present_call_ms": 0.020166999999999997,
+          "total_ms": 8.276874999999999
+        },
+        {
+          "acquire_ms": 5.710667,
+          "frame": {
+            "completed_frame_ms": 3.698208,
+            "completion_wait_ms": 3.453916,
+            "encode_submit_ms": 0.108791,
+            "gpu_pass_ms": 0.687708,
+            "prepare_ms": 0.135291
+          },
+          "present_call_ms": 0.008667,
+          "total_ms": 9.4185
+        },
+        {
+          "acquire_ms": 4.568292,
+          "frame": {
+            "completed_frame_ms": 3.698,
+            "completion_wait_ms": 3.471292,
+            "encode_submit_ms": 0.096542,
+            "gpu_pass_ms": 0.680208,
+            "prepare_ms": 0.129917
+          },
+          "present_call_ms": 0.008583,
+          "total_ms": 8.275875000000001
+        },
+        {
+          "acquire_ms": 4.565375,
+          "frame": {
+            "completed_frame_ms": 3.672792,
+            "completion_wait_ms": 3.4445,
+            "encode_submit_ms": 0.098,
+            "gpu_pass_ms": 0.67675,
+            "prepare_ms": 0.13012500000000002
+          },
+          "present_call_ms": 0.009082999999999999,
+          "total_ms": 8.248208
+        },
+        {
+          "acquire_ms": 4.528916,
+          "frame": {
+            "completed_frame_ms": 3.676667,
+            "completion_wait_ms": 3.472583,
+            "encode_submit_ms": 0.09658299999999999,
+            "gpu_pass_ms": 0.696333,
+            "prepare_ms": 0.107334
+          },
+          "present_call_ms": 0.015291999999999998,
+          "total_ms": 8.221416
+        },
+        {
+          "acquire_ms": 4.548209,
+          "frame": {
+            "completed_frame_ms": 3.7459580000000003,
+            "completion_wait_ms": 3.492458,
+            "encode_submit_ms": 0.116625,
+            "gpu_pass_ms": 0.708167,
+            "prepare_ms": 0.136708
+          },
+          "present_call_ms": 0.021875,
+          "total_ms": 8.31725
+        },
+        {
+          "acquire_ms": 4.574834,
+          "frame": {
+            "completed_frame_ms": 3.730083,
+            "completion_wait_ms": 3.459542,
+            "encode_submit_ms": 0.11554099999999999,
+            "gpu_pass_ms": 0.678666,
+            "prepare_ms": 0.154833
+          },
+          "present_call_ms": 0.010042,
+          "total_ms": 8.3165
+        },
+        {
+          "acquire_ms": 3.432166,
+          "frame": {
+            "completed_frame_ms": 3.767708,
+            "completion_wait_ms": 3.509042,
+            "encode_submit_ms": 0.114209,
+            "gpu_pass_ms": 0.68175,
+            "prepare_ms": 0.144292
+          },
+          "present_call_ms": 0.012334000000000001,
+          "total_ms": 7.213791
+        },
+        {
+          "acquire_ms": 4.56375,
+          "frame": {
+            "completed_frame_ms": 3.719334,
+            "completion_wait_ms": 3.463625,
+            "encode_submit_ms": 0.11524999999999999,
+            "gpu_pass_ms": 0.676542,
+            "prepare_ms": 0.140209
+          },
+          "present_call_ms": 0.019709,
+          "total_ms": 8.304334
+        },
+        {
+          "acquire_ms": 4.559042,
+          "frame": {
+            "completed_frame_ms": 3.759208,
+            "completion_wait_ms": 3.47325,
+            "encode_submit_ms": 0.136166,
+            "gpu_pass_ms": 0.685708,
+            "prepare_ms": 0.14962499999999998
+          },
+          "present_call_ms": 0.009833,
+          "total_ms": 8.329167
+        },
+        {
+          "acquire_ms": 4.56325,
+          "frame": {
+            "completed_frame_ms": 3.742292,
+            "completion_wait_ms": 3.464,
+            "encode_submit_ms": 0.120541,
+            "gpu_pass_ms": 0.670541,
+            "prepare_ms": 0.1575
+          },
+          "present_call_ms": 0.016958,
+          "total_ms": 8.32425
+        },
+        {
+          "acquire_ms": 4.624833,
+          "frame": {
+            "completed_frame_ms": 4.393584,
+            "completion_wait_ms": 3.663042,
+            "encode_submit_ms": 0.360834,
+            "gpu_pass_ms": 0.683959,
+            "prepare_ms": 0.369417
+          },
+          "present_call_ms": 0.028625,
+          "total_ms": 9.054292
+        },
+        {
+          "acquire_ms": 3.458916,
+          "frame": {
+            "completed_frame_ms": 4.046292,
+            "completion_wait_ms": 3.473208,
+            "encode_submit_ms": 0.31375000000000003,
+            "gpu_pass_ms": 0.6965,
+            "prepare_ms": 0.25912500000000005
+          },
+          "present_call_ms": 0.021540999999999998,
+          "total_ms": 7.534958
+        },
+        {
+          "acquire_ms": 4.573958,
+          "frame": {
+            "completed_frame_ms": 4.084167,
+            "completion_wait_ms": 3.529,
+            "encode_submit_ms": 0.29883299999999996,
+            "gpu_pass_ms": 0.678458,
+            "prepare_ms": 0.256125
+          },
+          "present_call_ms": 0.039375,
+          "total_ms": 8.704125
+        },
+        {
+          "acquire_ms": 4.57225,
+          "frame": {
+            "completed_frame_ms": 3.963583,
+            "completion_wait_ms": 3.524334,
+            "encode_submit_ms": 0.243958,
+            "gpu_pass_ms": 0.693375,
+            "prepare_ms": 0.195041
+          },
+          "present_call_ms": 0.034165999999999995,
+          "total_ms": 8.574
+        },
+        {
+          "acquire_ms": 3.440334,
+          "frame": {
+            "completed_frame_ms": 4.069458,
+            "completion_wait_ms": 3.528041,
+            "encode_submit_ms": 0.28525,
+            "gpu_pass_ms": 0.688916,
+            "prepare_ms": 0.256
+          },
+          "present_call_ms": 0.041709,
+          "total_ms": 7.5590839999999995
+        },
+        {
+          "acquire_ms": 4.631041,
+          "frame": {
+            "completed_frame_ms": 4.064958,
+            "completion_wait_ms": 3.520375,
+            "encode_submit_ms": 0.257083,
+            "gpu_pass_ms": 0.682625,
+            "prepare_ms": 0.28725
+          },
+          "present_call_ms": 0.019208,
+          "total_ms": 8.726291
+        },
+        {
+          "acquire_ms": 3.423541,
+          "frame": {
+            "completed_frame_ms": 3.789584,
+            "completion_wait_ms": 3.473583,
+            "encode_submit_ms": 0.15341700000000003,
+            "gpu_pass_ms": 0.672209,
+            "prepare_ms": 0.16241699999999998
+          },
+          "present_call_ms": 0.011792,
+          "total_ms": 7.227291
+        },
+        {
+          "acquire_ms": 4.541167,
+          "frame": {
+            "completed_frame_ms": 3.7903339999999996,
+            "completion_wait_ms": 3.490666,
+            "encode_submit_ms": 0.140583,
+            "gpu_pass_ms": 0.679875,
+            "prepare_ms": 0.158917
+          },
+          "present_call_ms": 0.017750000000000002,
+          "total_ms": 8.353042
+        },
+        {
+          "acquire_ms": 4.541667,
+          "frame": {
+            "completed_frame_ms": 3.873125,
+            "completion_wait_ms": 3.560542,
+            "encode_submit_ms": 0.15062499999999998,
+            "gpu_pass_ms": 0.67475,
+            "prepare_ms": 0.16179200000000002
+          },
+          "present_call_ms": 0.03225,
+          "total_ms": 8.450542
+        },
+        {
+          "acquire_ms": 4.57275,
+          "frame": {
+            "completed_frame_ms": 3.808916,
+            "completion_wait_ms": 3.561791,
+            "encode_submit_ms": 0.113792,
+            "gpu_pass_ms": 0.698417,
+            "prepare_ms": 0.133125
+          },
+          "present_call_ms": 0.027917,
+          "total_ms": 8.414125
+        },
+        {
+          "acquire_ms": 4.5424999999999995,
+          "frame": {
+            "completed_frame_ms": 3.6925,
+            "completion_wait_ms": 3.4932090000000002,
+            "encode_submit_ms": 0.095209,
+            "gpu_pass_ms": 0.680208,
+            "prepare_ms": 0.103959
+          },
+          "present_call_ms": 0.008666,
+          "total_ms": 8.244792
+        },
+        {
+          "acquire_ms": 4.576458000000001,
+          "frame": {
+            "completed_frame_ms": 3.767333,
+            "completion_wait_ms": 3.537959,
+            "encode_submit_ms": 0.0935,
+            "gpu_pass_ms": 0.684333,
+            "prepare_ms": 0.135708
+          },
+          "present_call_ms": 0.024209,
+          "total_ms": 8.37075
+        }
+      ],
+      "scene": {
+        "max_ms": 0.15225,
+        "median_ms": 0.062792,
+        "min_ms": 0.039417,
+        "p95_ms": 0.135,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "light",
+      "total": {
+        "max_ms": 9.497459,
+        "median_ms": 8.374958,
+        "min_ms": 7.174084,
+        "p95_ms": 9.467084,
+        "samples": 30
+      },
+      "view": "near",
+      "zoom": 1.0
+    },
+    {
+      "acquire": {
+        "max_ms": 0.01175,
+        "median_ms": 0.006375,
+        "min_ms": 0.003375,
+        "p95_ms": 0.011417,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 5.808833,
+        "median_ms": 5.765791999999999,
+        "min_ms": 4.576459,
+        "p95_ms": 5.799417,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 30000,
+        "labels": 0,
+        "nodes": 10000,
+        "quads": 55347
+      },
+      "encode_submit": {
+        "max_ms": 0.073958,
+        "median_ms": 0.038125,
+        "min_ms": 0.029084000000000002,
+        "p95_ms": 0.06229200000000001,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 6.0912500000000005,
+        "surface": {
+          "acquire_ms": 0.010083,
+          "frame": {
+            "completed_frame_ms": 6.220458,
+            "completion_wait_ms": 5.779584,
+            "encode_submit_ms": 0.064834,
+            "gpu_pass_ms": 2.517583,
+            "prepare_ms": 0.375917
+          },
+          "present_call_ms": 0.008208,
+          "total_ms": 6.240500000000001
+        },
+        "total_ms": 12.331833
+      },
+      "gpu_pass": {
+        "max_ms": 2.547583,
+        "median_ms": 2.518541,
+        "min_ms": 2.4805,
+        "p95_ms": 2.535666,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "ja",
+      "prepare": {
+        "max_ms": 0.38595799999999997,
+        "median_ms": 0.323291,
+        "min_ms": 0.279166,
+        "p95_ms": 0.360291,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.025415999999999998,
+        "median_ms": 0.018625,
+        "min_ms": 0.005125,
+        "p95_ms": 0.023791999999999997,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 0.004958,
+          "frame": {
+            "completed_frame_ms": 6.132625,
+            "completion_wait_ms": 5.765791999999999,
+            "encode_submit_ms": 0.036584,
+            "gpu_pass_ms": 2.535666,
+            "prepare_ms": 0.33008400000000004
+          },
+          "present_call_ms": 0.0195,
+          "total_ms": 6.158125
+        },
+        {
+          "acquire_ms": 0.007542,
+          "frame": {
+            "completed_frame_ms": 6.108042,
+            "completion_wait_ms": 5.758709,
+            "encode_submit_ms": 0.036875000000000005,
+            "gpu_pass_ms": 2.518541,
+            "prepare_ms": 0.31233299999999997
+          },
+          "present_call_ms": 0.005667,
+          "total_ms": 6.121874999999999
+        },
+        {
+          "acquire_ms": 0.007209,
+          "frame": {
+            "completed_frame_ms": 6.154040999999999,
+            "completion_wait_ms": 5.798833,
+            "encode_submit_ms": 0.045625,
+            "gpu_pass_ms": 2.547583,
+            "prepare_ms": 0.309416
+          },
+          "present_call_ms": 0.025415999999999998,
+          "total_ms": 6.187875
+        },
+        {
+          "acquire_ms": 0.008957999999999999,
+          "frame": {
+            "completed_frame_ms": 4.9801660000000005,
+            "completion_wait_ms": 4.595917,
+            "encode_submit_ms": 0.041667,
+            "gpu_pass_ms": 2.524584,
+            "prepare_ms": 0.342416
+          },
+          "present_call_ms": 0.02075,
+          "total_ms": 5.011041
+        },
+        {
+          "acquire_ms": 0.007584,
+          "frame": {
+            "completed_frame_ms": 6.133166,
+            "completion_wait_ms": 5.7715,
+            "encode_submit_ms": 0.038166,
+            "gpu_pass_ms": 2.520541,
+            "prepare_ms": 0.323333
+          },
+          "present_call_ms": 0.018875000000000003,
+          "total_ms": 6.1605419999999995
+        },
+        {
+          "acquire_ms": 0.005833,
+          "frame": {
+            "completed_frame_ms": 6.041124999999999,
+            "completion_wait_ms": 5.700125,
+            "encode_submit_ms": 0.03675,
+            "gpu_pass_ms": 2.521792,
+            "prepare_ms": 0.30416699999999997
+          },
+          "present_call_ms": 0.006958,
+          "total_ms": 6.054458
+        },
+        {
+          "acquire_ms": 0.01175,
+          "frame": {
+            "completed_frame_ms": 5.016458,
+            "completion_wait_ms": 4.582,
+            "encode_submit_ms": 0.073958,
+            "gpu_pass_ms": 2.493167,
+            "prepare_ms": 0.360291
+          },
+          "present_call_ms": 0.018292,
+          "total_ms": 5.049042
+        },
+        {
+          "acquire_ms": 0.005708,
+          "frame": {
+            "completed_frame_ms": 6.158084000000001,
+            "completion_wait_ms": 5.784667000000001,
+            "encode_submit_ms": 0.04825,
+            "gpu_pass_ms": 2.512333,
+            "prepare_ms": 0.324959
+          },
+          "present_call_ms": 0.020707999999999997,
+          "total_ms": 6.186
+        },
+        {
+          "acquire_ms": 0.006458,
+          "frame": {
+            "completed_frame_ms": 6.187375,
+            "completion_wait_ms": 5.739,
+            "encode_submit_ms": 0.06229200000000001,
+            "gpu_pass_ms": 2.525417,
+            "prepare_ms": 0.38595799999999997
+          },
+          "present_call_ms": 0.007583,
+          "total_ms": 6.202375000000001
+        },
+        {
+          "acquire_ms": 0.007500000000000001,
+          "frame": {
+            "completed_frame_ms": 6.079125,
+            "completion_wait_ms": 5.731333,
+            "encode_submit_ms": 0.042291,
+            "gpu_pass_ms": 2.523083,
+            "prepare_ms": 0.30529100000000003
+          },
+          "present_call_ms": 0.01925,
+          "total_ms": 6.106958
+        },
+        {
+          "acquire_ms": 0.006459,
+          "frame": {
+            "completed_frame_ms": 6.098584,
+            "completion_wait_ms": 5.736792,
+            "encode_submit_ms": 0.035625,
+            "gpu_pass_ms": 2.518,
+            "prepare_ms": 0.326
+          },
+          "present_call_ms": 0.017417,
+          "total_ms": 6.1235
+        },
+        {
+          "acquire_ms": 0.005417,
+          "frame": {
+            "completed_frame_ms": 6.1315,
+            "completion_wait_ms": 5.776624999999999,
+            "encode_submit_ms": 0.034167,
+            "gpu_pass_ms": 2.508708,
+            "prepare_ms": 0.320542
+          },
+          "present_call_ms": 0.018625,
+          "total_ms": 6.156333
+        },
+        {
+          "acquire_ms": 0.004041,
+          "frame": {
+            "completed_frame_ms": 6.151959000000001,
+            "completion_wait_ms": 5.808833,
+            "encode_submit_ms": 0.042666,
+            "gpu_pass_ms": 2.5355,
+            "prepare_ms": 0.300292
+          },
+          "present_call_ms": 0.022875,
+          "total_ms": 6.179958
+        },
+        {
+          "acquire_ms": 0.011417,
+          "frame": {
+            "completed_frame_ms": 6.158459,
+            "completion_wait_ms": 5.748416,
+            "encode_submit_ms": 0.060458000000000005,
+            "gpu_pass_ms": 2.506666,
+            "prepare_ms": 0.34945899999999996
+          },
+          "present_call_ms": 0.020667,
+          "total_ms": 6.1923330000000005
+        },
+        {
+          "acquire_ms": 0.007208,
+          "frame": {
+            "completed_frame_ms": 4.96,
+            "completion_wait_ms": 4.576459,
+            "encode_submit_ms": 0.039916,
+            "gpu_pass_ms": 2.4805,
+            "prepare_ms": 0.3435
+          },
+          "present_call_ms": 0.023791999999999997,
+          "total_ms": 4.992166999999999
+        },
+        {
+          "acquire_ms": 0.00675,
+          "frame": {
+            "completed_frame_ms": 6.122,
+            "completion_wait_ms": 5.74925,
+            "encode_submit_ms": 0.040874999999999995,
+            "gpu_pass_ms": 2.515917,
+            "prepare_ms": 0.33175
+          },
+          "present_call_ms": 0.016082999999999997,
+          "total_ms": 6.146000000000001
+        },
+        {
+          "acquire_ms": 0.006625,
+          "frame": {
+            "completed_frame_ms": 6.189458,
+            "completion_wait_ms": 5.799417,
+            "encode_submit_ms": 0.053459,
+            "gpu_pass_ms": 2.5155,
+            "prepare_ms": 0.33641699999999997
+          },
+          "present_call_ms": 0.019375,
+          "total_ms": 6.216958
+        },
+        {
+          "acquire_ms": 0.006209,
+          "frame": {
+            "completed_frame_ms": 6.084041999999999,
+            "completion_wait_ms": 5.7235000000000005,
+            "encode_submit_ms": 0.039958,
+            "gpu_pass_ms": 2.513458,
+            "prepare_ms": 0.32041699999999995
+          },
+          "present_call_ms": 0.021583,
+          "total_ms": 6.112875
+        },
+        {
+          "acquire_ms": 0.006791,
+          "frame": {
+            "completed_frame_ms": 6.143375000000001,
+            "completion_wait_ms": 5.775875,
+            "encode_submit_ms": 0.038125,
+            "gpu_pass_ms": 2.525625,
+            "prepare_ms": 0.329125
+          },
+          "present_call_ms": 0.018625,
+          "total_ms": 6.169916
+        },
+        {
+          "acquire_ms": 0.00675,
+          "frame": {
+            "completed_frame_ms": 6.146917,
+            "completion_wait_ms": 5.779458,
+            "encode_submit_ms": 0.037166000000000005,
+            "gpu_pass_ms": 2.52875,
+            "prepare_ms": 0.330125
+          },
+          "present_call_ms": 0.019459,
+          "total_ms": 6.174042
+        },
+        {
+          "acquire_ms": 0.0041659999999999996,
+          "frame": {
+            "completed_frame_ms": 6.1239170000000005,
+            "completion_wait_ms": 5.7695419999999995,
+            "encode_submit_ms": 0.034625,
+            "gpu_pass_ms": 2.52525,
+            "prepare_ms": 0.319584
+          },
+          "present_call_ms": 0.016792,
+          "total_ms": 6.145541
+        },
+        {
+          "acquire_ms": 0.0049169999999999995,
+          "frame": {
+            "completed_frame_ms": 6.0734580000000005,
+            "completion_wait_ms": 5.731833000000001,
+            "encode_submit_ms": 0.039083,
+            "gpu_pass_ms": 2.504375,
+            "prepare_ms": 0.302333
+          },
+          "present_call_ms": 0.018292,
+          "total_ms": 6.0981250000000005
+        },
+        {
+          "acquire_ms": 0.0036669999999999997,
+          "frame": {
+            "completed_frame_ms": 6.097625,
+            "completion_wait_ms": 5.751958,
+            "encode_submit_ms": 0.032458,
+            "gpu_pass_ms": 2.501,
+            "prepare_ms": 0.313041
+          },
+          "present_call_ms": 0.006459,
+          "total_ms": 6.108458
+        },
+        {
+          "acquire_ms": 0.003875,
+          "frame": {
+            "completed_frame_ms": 6.09225,
+            "completion_wait_ms": 5.782292,
+            "encode_submit_ms": 0.030583000000000003,
+            "gpu_pass_ms": 2.514083,
+            "prepare_ms": 0.279166
+          },
+          "present_call_ms": 0.018417,
+          "total_ms": 6.1155
+        },
+        {
+          "acquire_ms": 0.004208,
+          "frame": {
+            "completed_frame_ms": 6.1017090000000005,
+            "completion_wait_ms": 5.733042,
+            "encode_submit_ms": 0.033416,
+            "gpu_pass_ms": 2.507375,
+            "prepare_ms": 0.335167
+          },
+          "present_call_ms": 0.005334,
+          "total_ms": 6.111625
+        },
+        {
+          "acquire_ms": 0.003625,
+          "frame": {
+            "completed_frame_ms": 6.140458,
+            "completion_wait_ms": 5.7855,
+            "encode_submit_ms": 0.031542,
+            "gpu_pass_ms": 2.535625,
+            "prepare_ms": 0.323291
+          },
+          "present_call_ms": 0.005125,
+          "total_ms": 6.149666
+        },
+        {
+          "acquire_ms": 0.003792,
+          "frame": {
+            "completed_frame_ms": 6.117166999999999,
+            "completion_wait_ms": 5.791292,
+            "encode_submit_ms": 0.030040999999999998,
+            "gpu_pass_ms": 2.515,
+            "prepare_ms": 0.295667
+          },
+          "present_call_ms": 0.022500000000000003,
+          "total_ms": 6.144292
+        },
+        {
+          "acquire_ms": 0.003375,
+          "frame": {
+            "completed_frame_ms": 6.1085,
+            "completion_wait_ms": 5.763041,
+            "encode_submit_ms": 0.031208999999999997,
+            "gpu_pass_ms": 2.530209,
+            "prepare_ms": 0.31408400000000003
+          },
+          "present_call_ms": 0.017042,
+          "total_ms": 6.129875
+        },
+        {
+          "acquire_ms": 0.006375,
+          "frame": {
+            "completed_frame_ms": 6.101541999999999,
+            "completion_wait_ms": 5.770459000000001,
+            "encode_submit_ms": 0.029084000000000002,
+            "gpu_pass_ms": 2.519667,
+            "prepare_ms": 0.301834
+          },
+          "present_call_ms": 0.019875,
+          "total_ms": 6.128709000000001
+        },
+        {
+          "acquire_ms": 0.0036669999999999997,
+          "frame": {
+            "completed_frame_ms": 6.111958,
+            "completion_wait_ms": 5.789917,
+            "encode_submit_ms": 0.030625,
+            "gpu_pass_ms": 2.51275,
+            "prepare_ms": 0.29125
+          },
+          "present_call_ms": 0.01575,
+          "total_ms": 6.132333999999999
+        }
+      ],
+      "scene": {
+        "max_ms": 5.202166,
+        "median_ms": 4.394875000000001,
+        "min_ms": 4.294833,
+        "p95_ms": 5.027542,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "light",
+      "total": {
+        "max_ms": 11.3605,
+        "median_ms": 10.511208,
+        "min_ms": 9.498083,
+        "p95_ms": 11.1495,
+        "samples": 30
+      },
+      "view": "overview",
+      "zoom": 0.019999999552965164
+    },
+    {
+      "acquire": {
+        "max_ms": 4.64275,
+        "median_ms": 4.574333,
+        "min_ms": 3.449291,
+        "p95_ms": 4.607082999999999,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 3.755375,
+        "median_ms": 3.532375,
+        "min_ms": 3.476208,
+        "p95_ms": 3.646375,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 110,
+        "labels": 108,
+        "nodes": 36,
+        "quads": 1173
+      },
+      "encode_submit": {
+        "max_ms": 0.567916,
+        "median_ms": 0.26895800000000003,
+        "min_ms": 0.073375,
+        "p95_ms": 0.487209,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 0.052083000000000004,
+        "surface": {
+          "acquire_ms": 2.296666,
+          "frame": {
+            "completed_frame_ms": 3.6830830000000003,
+            "completion_wait_ms": 3.502708,
+            "encode_submit_ms": 0.06708299999999999,
+            "gpu_pass_ms": 0.687333,
+            "prepare_ms": 0.113125
+          },
+          "present_call_ms": 0.016375,
+          "total_ms": 5.997458
+        },
+        "total_ms": 6.049708
+      },
+      "gpu_pass": {
+        "max_ms": 0.711625,
+        "median_ms": 0.685625,
+        "min_ms": 0.677541,
+        "p95_ms": 0.709917,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "zh-cn",
+      "prepare": {
+        "max_ms": 0.522166,
+        "median_ms": 0.236958,
+        "min_ms": 0.096,
+        "p95_ms": 0.422334,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.07025,
+        "median_ms": 0.025667,
+        "min_ms": 0.007500000000000001,
+        "p95_ms": 0.057457999999999995,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 4.574333,
+          "frame": {
+            "completed_frame_ms": 3.707458,
+            "completion_wait_ms": 3.525417,
+            "encode_submit_ms": 0.073375,
+            "gpu_pass_ms": 0.693958,
+            "prepare_ms": 0.1085
+          },
+          "present_call_ms": 0.026416,
+          "total_ms": 8.309791
+        },
+        {
+          "acquire_ms": 4.5947499999999994,
+          "frame": {
+            "completed_frame_ms": 3.715375,
+            "completion_wait_ms": 3.500125,
+            "encode_submit_ms": 0.08954200000000001,
+            "gpu_pass_ms": 0.684583,
+            "prepare_ms": 0.1255
+          },
+          "present_call_ms": 0.021041999999999998,
+          "total_ms": 8.334584000000001
+        },
+        {
+          "acquire_ms": 4.5847500000000005,
+          "frame": {
+            "completed_frame_ms": 3.703292,
+            "completion_wait_ms": 3.492917,
+            "encode_submit_ms": 0.088959,
+            "gpu_pass_ms": 0.677917,
+            "prepare_ms": 0.121209
+          },
+          "present_call_ms": 0.016416999999999998,
+          "total_ms": 8.3065
+        },
+        {
+          "acquire_ms": 4.563459,
+          "frame": {
+            "completed_frame_ms": 3.664625,
+            "completion_wait_ms": 3.490833,
+            "encode_submit_ms": 0.077625,
+            "gpu_pass_ms": 0.6825,
+            "prepare_ms": 0.096
+          },
+          "present_call_ms": 0.015791,
+          "total_ms": 8.244959
+        },
+        {
+          "acquire_ms": 4.582417,
+          "frame": {
+            "completed_frame_ms": 3.69,
+            "completion_wait_ms": 3.48425,
+            "encode_submit_ms": 0.082125,
+            "gpu_pass_ms": 0.683708,
+            "prepare_ms": 0.12345800000000001
+          },
+          "present_call_ms": 0.019875,
+          "total_ms": 8.293708
+        },
+        {
+          "acquire_ms": 4.584124999999999,
+          "frame": {
+            "completed_frame_ms": 3.699958,
+            "completion_wait_ms": 3.480333,
+            "encode_submit_ms": 0.090917,
+            "gpu_pass_ms": 0.679125,
+            "prepare_ms": 0.128541
+          },
+          "present_call_ms": 0.007500000000000001,
+          "total_ms": 8.292834000000001
+        },
+        {
+          "acquire_ms": 4.582917,
+          "frame": {
+            "completed_frame_ms": 3.706708,
+            "completion_wait_ms": 3.4857500000000003,
+            "encode_submit_ms": 0.08916600000000001,
+            "gpu_pass_ms": 0.693542,
+            "prepare_ms": 0.131583
+          },
+          "present_call_ms": 0.018583000000000002,
+          "total_ms": 8.310125
+        },
+        {
+          "acquire_ms": 4.5781670000000005,
+          "frame": {
+            "completed_frame_ms": 3.710584,
+            "completion_wait_ms": 3.490166,
+            "encode_submit_ms": 0.090375,
+            "gpu_pass_ms": 0.691333,
+            "prepare_ms": 0.129875
+          },
+          "present_call_ms": 0.016792,
+          "total_ms": 8.307292
+        },
+        {
+          "acquire_ms": 4.580375,
+          "frame": {
+            "completed_frame_ms": 3.716459,
+            "completion_wait_ms": 3.476208,
+            "encode_submit_ms": 0.102833,
+            "gpu_pass_ms": 0.711625,
+            "prepare_ms": 0.13725
+          },
+          "present_call_ms": 0.009459,
+          "total_ms": 8.307458
+        },
+        {
+          "acquire_ms": 4.589792,
+          "frame": {
+            "completed_frame_ms": 3.735125,
+            "completion_wait_ms": 3.492625,
+            "encode_submit_ms": 0.100833,
+            "gpu_pass_ms": 0.6935,
+            "prepare_ms": 0.14141600000000001
+          },
+          "present_call_ms": 0.018292,
+          "total_ms": 8.344792
+        },
+        {
+          "acquire_ms": 4.580583,
+          "frame": {
+            "completed_frame_ms": 3.731875,
+            "completion_wait_ms": 3.4896670000000003,
+            "encode_submit_ms": 0.108875,
+            "gpu_pass_ms": 0.681333,
+            "prepare_ms": 0.133042
+          },
+          "present_call_ms": 0.016292,
+          "total_ms": 8.330166
+        },
+        {
+          "acquire_ms": 4.580833999999999,
+          "frame": {
+            "completed_frame_ms": 3.749584,
+            "completion_wait_ms": 3.47775,
+            "encode_submit_ms": 0.12175000000000001,
+            "gpu_pass_ms": 0.695291,
+            "prepare_ms": 0.149875
+          },
+          "present_call_ms": 0.009833999999999999,
+          "total_ms": 8.3415
+        },
+        {
+          "acquire_ms": 4.5817499999999995,
+          "frame": {
+            "completed_frame_ms": 3.834,
+            "completion_wait_ms": 3.56775,
+            "encode_submit_ms": 0.11870900000000001,
+            "gpu_pass_ms": 0.690709,
+            "prepare_ms": 0.14737499999999998
+          },
+          "present_call_ms": 0.07025,
+          "total_ms": 8.489625
+        },
+        {
+          "acquire_ms": 4.64275,
+          "frame": {
+            "completed_frame_ms": 4.427333,
+            "completion_wait_ms": 3.6419170000000003,
+            "encode_submit_ms": 0.371791,
+            "gpu_pass_ms": 0.685625,
+            "prepare_ms": 0.413375
+          },
+          "present_call_ms": 0.057457999999999995,
+          "total_ms": 9.138792
+        },
+        {
+          "acquire_ms": 3.4793749999999997,
+          "frame": {
+            "completed_frame_ms": 4.205125,
+            "completion_wait_ms": 3.5279170000000004,
+            "encode_submit_ms": 0.366709,
+            "gpu_pass_ms": 0.683584,
+            "prepare_ms": 0.310334
+          },
+          "present_call_ms": 0.023375,
+          "total_ms": 7.715583
+        },
+        {
+          "acquire_ms": 3.466792,
+          "frame": {
+            "completed_frame_ms": 4.036084,
+            "completion_wait_ms": 3.548875,
+            "encode_submit_ms": 0.2705,
+            "gpu_pass_ms": 0.706959,
+            "prepare_ms": 0.2165
+          },
+          "present_call_ms": 0.021500000000000002,
+          "total_ms": 7.52975
+        },
+        {
+          "acquire_ms": 4.607082999999999,
+          "frame": {
+            "completed_frame_ms": 4.01725,
+            "completion_wait_ms": 3.509125,
+            "encode_submit_ms": 0.26895800000000003,
+            "gpu_pass_ms": 0.685792,
+            "prepare_ms": 0.23895899999999998
+          },
+          "present_call_ms": 0.035792,
+          "total_ms": 8.665792
+        },
+        {
+          "acquire_ms": 4.486000000000001,
+          "frame": {
+            "completed_frame_ms": 3.9279170000000003,
+            "completion_wait_ms": 3.488166,
+            "encode_submit_ms": 0.239625,
+            "gpu_pass_ms": 0.687458,
+            "prepare_ms": 0.199959
+          },
+          "present_call_ms": 0.019125,
+          "total_ms": 8.4375
+        },
+        {
+          "acquire_ms": 3.454792,
+          "frame": {
+            "completed_frame_ms": 4.03225,
+            "completion_wait_ms": 3.532375,
+            "encode_submit_ms": 0.262709,
+            "gpu_pass_ms": 0.677541,
+            "prepare_ms": 0.236958
+          },
+          "present_call_ms": 0.019041,
+          "total_ms": 7.512042
+        },
+        {
+          "acquire_ms": 4.583292,
+          "frame": {
+            "completed_frame_ms": 4.0785409999999995,
+            "completion_wait_ms": 3.556709,
+            "encode_submit_ms": 0.273167,
+            "gpu_pass_ms": 0.683667,
+            "prepare_ms": 0.248541
+          },
+          "present_call_ms": 0.025667,
+          "total_ms": 8.691374999999999
+        },
+        {
+          "acquire_ms": 4.466083,
+          "frame": {
+            "completed_frame_ms": 4.375541999999999,
+            "completion_wait_ms": 3.584916,
+            "encode_submit_ms": 0.40912499999999996,
+            "gpu_pass_ms": 0.682458,
+            "prepare_ms": 0.38116700000000003
+          },
+          "present_call_ms": 0.030917000000000004,
+          "total_ms": 8.877208
+        },
+        {
+          "acquire_ms": 3.452541,
+          "frame": {
+            "completed_frame_ms": 4.443541,
+            "completion_wait_ms": 3.629708,
+            "encode_submit_ms": 0.425,
+            "gpu_pass_ms": 0.690333,
+            "prepare_ms": 0.3885
+          },
+          "present_call_ms": 0.036458000000000004,
+          "total_ms": 7.937665999999999
+        },
+        {
+          "acquire_ms": 3.474542,
+          "frame": {
+            "completed_frame_ms": 4.444667,
+            "completion_wait_ms": 3.592833,
+            "encode_submit_ms": 0.453542,
+            "gpu_pass_ms": 0.709917,
+            "prepare_ms": 0.39795800000000003
+          },
+          "present_call_ms": 0.035290999999999996,
+          "total_ms": 7.960625
+        },
+        {
+          "acquire_ms": 3.469333,
+          "frame": {
+            "completed_frame_ms": 4.368125,
+            "completion_wait_ms": 3.5934589999999997,
+            "encode_submit_ms": 0.40737500000000004,
+            "gpu_pass_ms": 0.692917,
+            "prepare_ms": 0.36691700000000005
+          },
+          "present_call_ms": 0.039042,
+          "total_ms": 7.881625
+        },
+        {
+          "acquire_ms": 3.452625,
+          "frame": {
+            "completed_frame_ms": 4.297790999999999,
+            "completion_wait_ms": 3.547375,
+            "encode_submit_ms": 0.39125,
+            "gpu_pass_ms": 0.680917,
+            "prepare_ms": 0.358875
+          },
+          "present_call_ms": 0.030042000000000003,
+          "total_ms": 7.788125
+        },
+        {
+          "acquire_ms": 4.55875,
+          "frame": {
+            "completed_frame_ms": 4.3482080000000005,
+            "completion_wait_ms": 3.613125,
+            "encode_submit_ms": 0.484959,
+            "gpu_pass_ms": 0.678791,
+            "prepare_ms": 0.249917
+          },
+          "present_call_ms": 0.037458,
+          "total_ms": 8.951958
+        },
+        {
+          "acquire_ms": 3.449291,
+          "frame": {
+            "completed_frame_ms": 4.41325,
+            "completion_wait_ms": 3.6324579999999997,
+            "encode_submit_ms": 0.42054199999999997,
+            "gpu_pass_ms": 0.688125,
+            "prepare_ms": 0.359833
+          },
+          "present_call_ms": 0.036041000000000004,
+          "total_ms": 7.904125
+        },
+        {
+          "acquire_ms": 3.4853330000000002,
+          "frame": {
+            "completed_frame_ms": 4.6653340000000005,
+            "completion_wait_ms": 3.755375,
+            "encode_submit_ms": 0.487209,
+            "gpu_pass_ms": 0.685208,
+            "prepare_ms": 0.422334
+          },
+          "present_call_ms": 0.051292000000000004,
+          "total_ms": 8.209708
+        },
+        {
+          "acquire_ms": 3.489958,
+          "frame": {
+            "completed_frame_ms": 4.736708,
+            "completion_wait_ms": 3.646375,
+            "encode_submit_ms": 0.567916,
+            "gpu_pass_ms": 0.678125,
+            "prepare_ms": 0.522166
+          },
+          "present_call_ms": 0.041458,
+          "total_ms": 8.278625
+        },
+        {
+          "acquire_ms": 3.459125,
+          "frame": {
+            "completed_frame_ms": 4.4614579999999995,
+            "completion_wait_ms": 3.644583,
+            "encode_submit_ms": 0.435709,
+            "gpu_pass_ms": 0.685542,
+            "prepare_ms": 0.38095799999999996
+          },
+          "present_call_ms": 0.034999999999999996,
+          "total_ms": 7.961124999999999
+        }
+      ],
+      "scene": {
+        "max_ms": 0.275708,
+        "median_ms": 0.11670799999999999,
+        "min_ms": 0.032833999999999995,
+        "p95_ms": 0.264125,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "light",
+      "total": {
+        "max_ms": 9.272208000000001,
+        "median_ms": 8.36075,
+        "min_ms": 7.6217500000000005,
+        "p95_ms": 9.123541000000001,
+        "samples": 30
+      },
+      "view": "near",
+      "zoom": 1.0
+    },
+    {
+      "acquire": {
+        "max_ms": 0.008375,
+        "median_ms": 0.004667,
+        "min_ms": 0.003417,
+        "p95_ms": 0.007709000000000001,
+        "samples": 30
+      },
+      "completion_wait": {
+        "max_ms": 5.786916,
+        "median_ms": 5.7715,
+        "min_ms": 4.610167,
+        "p95_ms": 5.786167,
+        "samples": 30
+      },
+      "counts": {
+        "edges": 30000,
+        "labels": 0,
+        "nodes": 10000,
+        "quads": 55347
+      },
+      "encode_submit": {
+        "max_ms": 0.055042,
+        "median_ms": 0.035042000000000004,
+        "min_ms": 0.028792,
+        "p95_ms": 0.049542,
+        "samples": 30
+      },
+      "first_frame": {
+        "scene_ms": 13.122834,
+        "surface": {
+          "acquire_ms": 0.046709,
+          "frame": {
+            "completed_frame_ms": 7.101792,
+            "completion_wait_ms": 5.839625,
+            "encode_submit_ms": 0.292041,
+            "gpu_pass_ms": 2.506375,
+            "prepare_ms": 0.969875
+          },
+          "present_call_ms": 0.0285,
+          "total_ms": 7.184834
+        },
+        "total_ms": 20.308084
+      },
+      "gpu_pass": {
+        "max_ms": 2.576958,
+        "median_ms": 2.522875,
+        "min_ms": 2.489708,
+        "p95_ms": 2.559125,
+        "samples": 30
+      },
+      "gpu_pass_unavailable": 0,
+      "locale": "zh-cn",
+      "prepare": {
+        "max_ms": 0.445791,
+        "median_ms": 0.325917,
+        "min_ms": 0.281208,
+        "p95_ms": 0.361375,
+        "samples": 30
+      },
+      "present_call": {
+        "max_ms": 0.026792,
+        "median_ms": 0.018125,
+        "min_ms": 0.005625000000000001,
+        "p95_ms": 0.023833999999999998,
+        "samples": 30
+      },
+      "raw": [
+        {
+          "acquire_ms": 0.005666,
+          "frame": {
+            "completed_frame_ms": 6.25875,
+            "completion_wait_ms": 5.765416,
+            "encode_submit_ms": 0.047375,
+            "gpu_pass_ms": 2.522875,
+            "prepare_ms": 0.445791
+          },
+          "present_call_ms": 0.017499999999999998,
+          "total_ms": 6.282916
+        },
+        {
+          "acquire_ms": 0.007041,
+          "frame": {
+            "completed_frame_ms": 6.110583999999999,
+            "completion_wait_ms": 5.781,
+            "encode_submit_ms": 0.038334,
+            "gpu_pass_ms": 2.543375,
+            "prepare_ms": 0.291084
+          },
+          "present_call_ms": 0.026792,
+          "total_ms": 6.145541
+        },
+        {
+          "acquire_ms": 0.007709000000000001,
+          "frame": {
+            "completed_frame_ms": 6.190958,
+            "completion_wait_ms": 5.779917,
+            "encode_submit_ms": 0.049542,
+            "gpu_pass_ms": 2.551,
+            "prepare_ms": 0.361375
+          },
+          "present_call_ms": 0.021124999999999998,
+          "total_ms": 6.220834
+        },
+        {
+          "acquire_ms": 0.005334,
+          "frame": {
+            "completed_frame_ms": 4.979417,
+            "completion_wait_ms": 4.614,
+            "encode_submit_ms": 0.042542,
+            "gpu_pass_ms": 2.517625,
+            "prepare_ms": 0.322708
+          },
+          "present_call_ms": 0.018625,
+          "total_ms": 5.004167000000001
+        },
+        {
+          "acquire_ms": 0.004875,
+          "frame": {
+            "completed_frame_ms": 6.1165,
+            "completion_wait_ms": 5.753334,
+            "encode_submit_ms": 0.0395,
+            "gpu_pass_ms": 2.504833,
+            "prepare_ms": 0.323542
+          },
+          "present_call_ms": 0.006833,
+          "total_ms": 6.128625
+        },
+        {
+          "acquire_ms": 0.0048330000000000005,
+          "frame": {
+            "completed_frame_ms": 6.122125,
+            "completion_wait_ms": 5.7735,
+            "encode_submit_ms": 0.033917,
+            "gpu_pass_ms": 2.52575,
+            "prepare_ms": 0.314541
+          },
+          "present_call_ms": 0.021665999999999998,
+          "total_ms": 6.149666
+        },
+        {
+          "acquire_ms": 0.004208,
+          "frame": {
+            "completed_frame_ms": 6.141875,
+            "completion_wait_ms": 5.749416999999999,
+            "encode_submit_ms": 0.032875,
+            "gpu_pass_ms": 2.519083,
+            "prepare_ms": 0.359417
+          },
+          "present_call_ms": 0.018208,
+          "total_ms": 6.165165999999999
+        },
+        {
+          "acquire_ms": 0.004667,
+          "frame": {
+            "completed_frame_ms": 4.996666,
+            "completion_wait_ms": 4.610167,
+            "encode_submit_ms": 0.035125,
+            "gpu_pass_ms": 2.576958,
+            "prepare_ms": 0.35125
+          },
+          "present_call_ms": 0.008291999999999999,
+          "total_ms": 5.01025
+        },
+        {
+          "acquire_ms": 0.008375,
+          "frame": {
+            "completed_frame_ms": 6.192209,
+            "completion_wait_ms": 5.777166,
+            "encode_submit_ms": 0.055042,
+            "gpu_pass_ms": 2.522959,
+            "prepare_ms": 0.359875
+          },
+          "present_call_ms": 0.020625,
+          "total_ms": 6.223
+        },
+        {
+          "acquire_ms": 0.006375,
+          "frame": {
+            "completed_frame_ms": 6.083542,
+            "completion_wait_ms": 5.719792,
+            "encode_submit_ms": 0.043375,
+            "gpu_pass_ms": 2.51325,
+            "prepare_ms": 0.32025
+          },
+          "present_call_ms": 0.008583,
+          "total_ms": 6.0995420000000005
+        },
+        {
+          "acquire_ms": 0.006167000000000001,
+          "frame": {
+            "completed_frame_ms": 6.1657910000000005,
+            "completion_wait_ms": 5.784959,
+            "encode_submit_ms": 0.048541999999999995,
+            "gpu_pass_ms": 2.535167,
+            "prepare_ms": 0.332166
+          },
+          "present_call_ms": 0.006417,
+          "total_ms": 6.179125
+        },
+        {
+          "acquire_ms": 0.007458,
+          "frame": {
+            "completed_frame_ms": 6.097583,
+            "completion_wait_ms": 5.727709,
+            "encode_submit_ms": 0.046334,
+            "gpu_pass_ms": 2.521958,
+            "prepare_ms": 0.32337499999999997
+          },
+          "present_call_ms": 0.023833999999999998,
+          "total_ms": 6.13025
+        },
+        {
+          "acquire_ms": 0.004583,
+          "frame": {
+            "completed_frame_ms": 6.126208999999999,
+            "completion_wait_ms": 5.766958,
+            "encode_submit_ms": 0.035958,
+            "gpu_pass_ms": 2.546791,
+            "prepare_ms": 0.323125
+          },
+          "present_call_ms": 0.019625,
+          "total_ms": 6.1515830000000005
+        },
+        {
+          "acquire_ms": 0.004625,
+          "frame": {
+            "completed_frame_ms": 6.1547920000000005,
+            "completion_wait_ms": 5.781124999999999,
+            "encode_submit_ms": 0.03325,
+            "gpu_pass_ms": 2.52725,
+            "prepare_ms": 0.34025
+          },
+          "present_call_ms": 0.020665999999999997,
+          "total_ms": 6.180792
+        },
+        {
+          "acquire_ms": 0.003875,
+          "frame": {
+            "completed_frame_ms": 6.163792000000001,
+            "completion_wait_ms": 5.784083,
+            "encode_submit_ms": 0.036166,
+            "gpu_pass_ms": 2.515958,
+            "prepare_ms": 0.343375
+          },
+          "present_call_ms": 0.018375,
+          "total_ms": 6.187083
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.13975,
+            "completion_wait_ms": 5.766917,
+            "encode_submit_ms": 0.031083,
+            "gpu_pass_ms": 2.526916,
+            "prepare_ms": 0.341583
+          },
+          "present_call_ms": 0.019709,
+          "total_ms": 6.164542
+        },
+        {
+          "acquire_ms": 0.004333,
+          "frame": {
+            "completed_frame_ms": 6.134792,
+            "completion_wait_ms": 5.786167,
+            "encode_submit_ms": 0.03275,
+            "gpu_pass_ms": 2.504291,
+            "prepare_ms": 0.315667
+          },
+          "present_call_ms": 0.018000000000000002,
+          "total_ms": 6.158041000000001
+        },
+        {
+          "acquire_ms": 0.003791,
+          "frame": {
+            "completed_frame_ms": 6.115833,
+            "completion_wait_ms": 5.765707999999999,
+            "encode_submit_ms": 0.032,
+            "gpu_pass_ms": 2.542209,
+            "prepare_ms": 0.318
+          },
+          "present_call_ms": 0.005958000000000001,
+          "total_ms": 6.126
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.136709,
+            "completion_wait_ms": 5.786124999999999,
+            "encode_submit_ms": 0.030084,
+            "gpu_pass_ms": 2.517333,
+            "prepare_ms": 0.320375
+          },
+          "present_call_ms": 0.018459,
+          "total_ms": 6.160333
+        },
+        {
+          "acquire_ms": 0.0045839999999999995,
+          "frame": {
+            "completed_frame_ms": 6.111583,
+            "completion_wait_ms": 5.782958000000001,
+            "encode_submit_ms": 0.029875000000000002,
+            "gpu_pass_ms": 2.517458,
+            "prepare_ms": 0.298583
+          },
+          "present_call_ms": 0.018125,
+          "total_ms": 6.1354169999999995
+        },
+        {
+          "acquire_ms": 0.003417,
+          "frame": {
+            "completed_frame_ms": 6.155166,
+            "completion_wait_ms": 5.769167,
+            "encode_submit_ms": 0.030583000000000003,
+            "gpu_pass_ms": 2.5145,
+            "prepare_ms": 0.35529099999999997
+          },
+          "present_call_ms": 0.017792,
+          "total_ms": 6.177167
+        },
+        {
+          "acquire_ms": 0.003917,
+          "frame": {
+            "completed_frame_ms": 6.132666,
+            "completion_wait_ms": 5.76575,
+            "encode_submit_ms": 0.030333,
+            "gpu_pass_ms": 2.52375,
+            "prepare_ms": 0.336458
+          },
+          "present_call_ms": 0.017333,
+          "total_ms": 6.155
+        },
+        {
+          "acquire_ms": 0.0052499999999999995,
+          "frame": {
+            "completed_frame_ms": 6.139084,
+            "completion_wait_ms": 5.780666,
+            "encode_submit_ms": 0.032332999999999994,
+            "gpu_pass_ms": 2.489708,
+            "prepare_ms": 0.325917
+          },
+          "present_call_ms": 0.017917000000000002,
+          "total_ms": 6.163250000000001
+        },
+        {
+          "acquire_ms": 0.006583,
+          "frame": {
+            "completed_frame_ms": 6.093125,
+            "completion_wait_ms": 5.780584,
+            "encode_submit_ms": 0.031124999999999996,
+            "gpu_pass_ms": 2.51725,
+            "prepare_ms": 0.281208
+          },
+          "present_call_ms": 0.018000000000000002,
+          "total_ms": 6.118542000000001
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.135959,
+            "completion_wait_ms": 5.786916,
+            "encode_submit_ms": 0.028792,
+            "gpu_pass_ms": 2.523875,
+            "prepare_ms": 0.320084
+          },
+          "present_call_ms": 0.015917,
+          "total_ms": 6.157083
+        },
+        {
+          "acquire_ms": 0.00425,
+          "frame": {
+            "completed_frame_ms": 6.1242909999999995,
+            "completion_wait_ms": 5.774583,
+            "encode_submit_ms": 0.029875000000000002,
+            "gpu_pass_ms": 2.515458,
+            "prepare_ms": 0.31975
+          },
+          "present_call_ms": 0.00575,
+          "total_ms": 6.134709
+        },
+        {
+          "acquire_ms": 0.003583,
+          "frame": {
+            "completed_frame_ms": 6.140917,
+            "completion_wait_ms": 5.7715,
+            "encode_submit_ms": 0.035042000000000004,
+            "gpu_pass_ms": 2.50675,
+            "prepare_ms": 0.33425000000000005
+          },
+          "present_call_ms": 0.017082999999999997,
+          "total_ms": 6.162333
+        },
+        {
+          "acquire_ms": 0.0050420000000000005,
+          "frame": {
+            "completed_frame_ms": 6.145333,
+            "completion_wait_ms": 5.761958,
+            "encode_submit_ms": 0.041582999999999995,
+            "gpu_pass_ms": 2.52475,
+            "prepare_ms": 0.341667
+          },
+          "present_call_ms": 0.019083,
+          "total_ms": 6.170375
+        },
+        {
+          "acquire_ms": 0.003917,
+          "frame": {
+            "completed_frame_ms": 6.143415999999999,
+            "completion_wait_ms": 5.757583,
+            "encode_submit_ms": 0.040417,
+            "gpu_pass_ms": 2.559125,
+            "prepare_ms": 0.345291
+          },
+          "present_call_ms": 0.021583,
+          "total_ms": 6.169709
+        },
+        {
+          "acquire_ms": 0.006292,
+          "frame": {
+            "completed_frame_ms": 6.087875,
+            "completion_wait_ms": 5.751208,
+            "encode_submit_ms": 0.030750000000000003,
+            "gpu_pass_ms": 2.518125,
+            "prepare_ms": 0.305792
+          },
+          "present_call_ms": 0.005625000000000001,
+          "total_ms": 6.10025
+        }
+      ],
+      "scene": {
+        "max_ms": 5.965458,
+        "median_ms": 4.4775,
+        "min_ms": 4.293916,
+        "p95_ms": 5.541917000000001,
+        "samples": 30
+      },
+      "skipped": 0,
+      "theme": "light",
+      "total": {
+        "max_ms": 12.248625,
+        "median_ms": 10.603541,
+        "min_ms": 9.900042,
+        "p95_ms": 11.687667000000001,
+        "samples": 30
+      },
+      "view": "overview",
+      "zoom": 0.019999999552965164
+    }
+  ],
+  "edges": 30000,
+  "nodes": 10000,
+  "os": "macos",
+  "physical_size": [
+    1280,
+    720
+  ],
+  "present_mode": "Fifo",
+  "samples_per_case": 30,
+  "scale_factor": 1.0,
+  "scope": "Serialized native diagnostic; not animation FPS or display scanout latency",
+  "version": 1,
+  "warmup": 5
+}

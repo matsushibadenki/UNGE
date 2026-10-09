@@ -2,6 +2,8 @@
 use std::{collections::BTreeSet, hint::black_box, time::Instant};
 use unge_core::*;
 use unge_render::{SceneChanges, SceneIndex, SceneUpdate};
+#[path = "support/large_graph.rs"]
+mod large_graph;
 
 fn measure(mut operation: impl FnMut(), iterations: usize) -> serde_json::Value {
     operation(); // warm-up, excluded
@@ -16,6 +18,57 @@ fn measure(mut operation: impl FnMut(), iterations: usize) -> serde_json::Value 
         "p95_ms": samples[(iterations * 95).div_ceil(100).saturating_sub(1)],
         "min_ms": samples[0], "max_ms": samples[iterations - 1] })
 }
+// Every timed transition starts from the actual preceding document. Reverse
+// updates run outside the timer and keep the overlay bounded to the same IDs.
+fn transition(before: &Document, command: Command, iterations: usize) -> serde_json::Value {
+    let changes = SceneChanges::from_command(&command);
+    let mut editor = Editor::new(before.clone(), 4).unwrap();
+    editor.execute(command).unwrap();
+    let inverse = SceneChanges::from_command(editor.undo_command().unwrap());
+    let after = editor.document();
+    let measure_delta = |a: &Document,
+                         b: &Document,
+                         forward: &SceneChanges,
+                         reverse: &SceneChanges| {
+        let mut index = SceneIndex::new(a);
+        let mut times = Vec::new();
+        for i in 0..=iterations {
+            let start = Instant::now();
+            let update = index.update(b, forward);
+            let elapsed = start.elapsed().as_secs_f64() * 1000.;
+            assert_eq!(update, SceneUpdate::Incremental);
+            if i > 0 {
+                times.push(elapsed);
+            }
+            if i == 0 || i == iterations {
+                let view = Viewport {
+                    origin: [0., 0.],
+                    zoom: 0.02,
+                    size: [1400., 900.],
+                };
+                let actual = index.scene(view, &BTreeSet::new()).unwrap();
+                let expected = SceneIndex::new(b).scene(view, &BTreeSet::new()).unwrap();
+                assert_eq!(
+                    bytemuck::cast_slice::<_, u8>(&actual.quads),
+                    bytemuck::cast_slice::<_, u8>(&expected.quads)
+                );
+                assert_eq!(
+                    format!("{:?}", actual.labels),
+                    format!("{:?}", expected.labels)
+                );
+            }
+            assert_eq!(index.update(a, reverse), SceneUpdate::Incremental);
+        }
+        times.sort_by(f64::total_cmp);
+        serde_json::json!({"median_ms":times[iterations/2],"p95_ms":times[(iterations*95).div_ceil(100)-1]})
+    };
+    serde_json::json!({
+        "forward_delta": measure_delta(before,after,&changes,&inverse),
+        "undo_delta": measure_delta(after,before,&inverse,&changes),
+        "forward_full_rebuild": measure(|| { black_box(SceneIndex::new(after)); },iterations),
+        "undo_full_rebuild": measure(|| { black_box(SceneIndex::new(before)); },iterations),
+    })
+}
 fn main() {
     let iterations = std::env::args()
         .nth(1)
@@ -26,57 +79,10 @@ fn main() {
         "iterations must be 1..1000"
     );
     let ids: Vec<_> = (1..=10_000).map(Id::from_u128).collect();
-    let port = Port {
-        name: "value".into(),
-        data_type: DataType::Float,
-        cardinality: Cardinality::Multiple,
-        required: false,
-    };
-    let mut commands: Vec<_> = ids
-        .iter()
-        .enumerate()
-        .map(|(i, id)| Command::AddNode {
-            node: Node {
-                id: *id,
-                type_id: "benchmark".into(),
-                inputs: vec![port.clone()],
-                outputs: vec![port.clone()],
-                properties: Properties::new(),
-            },
-            rect: Rect {
-                x: (i % 100) as f32 * 240.0,
-                y: (i / 100) as f32 * 140.0,
-                width: 180.0,
-                height: 90.0,
-            },
-        })
-        .collect();
-    let mut edges = 0;
-    'offsets: for offset in 1..ids.len() {
-        for i in 0..ids.len() - offset {
-            commands.push(Command::Connect {
-                edge: Edge {
-                    id: Id::from_u128(100_000 + edges),
-                    from: Endpoint {
-                        node: ids[i],
-                        port: "value".into(),
-                    },
-                    to: Endpoint {
-                        node: ids[i + offset],
-                        port: "value".into(),
-                    },
-                },
-            });
-            edges += 1;
-            if edges == 30_000 {
-                break 'offsets;
-            }
-        }
-    }
-    let mut editor = Editor::new(Document::default(), 0).unwrap();
     let start = Instant::now();
-    editor.execute(Command::Batch { commands }).unwrap();
+    let document = large_graph::document();
     let fixture_ms = start.elapsed().as_secs_f64() * 1000.0;
+    let mut editor = Editor::new(document, 0).unwrap();
     let doc = editor.document();
     assert_eq!(doc.graph().nodes().len(), 10_000);
     assert_eq!(doc.graph().edges().len(), 30_000);
@@ -126,6 +132,16 @@ fn main() {
         },
         iterations,
     );
+    let mut new_node = doc.graph().nodes()[&ids[0]].clone();
+    new_node.id = Id::from_u128(10001);
+    let topology = serde_json::json!({
+        "add_node": transition(doc,Command::AddNode { node:new_node,rect:Rect::default() },iterations),
+        "remove_node": transition(doc,Command::RemoveNode { id:ids[0] },iterations),
+        "connect": transition(doc,Command::Connect { edge:Edge { id:Id::from_u128(999999),
+            from:Endpoint { node:ids[0],port:"value".into() }, to:Endpoint { node:ids[9999],port:"value".into() },
+        } },iterations),
+        "disconnect": transition(doc,Command::Disconnect { id:Id::from_u128(100000) },iterations),
+    });
     let move_command = Command::MoveNode {
         id: ids[0],
         rect: Rect {
@@ -183,7 +199,7 @@ fn main() {
         iterations,
     );
     println!("{}", serde_json::to_string_pretty(&serde_json::json!({
-        "benchmark_version": 2, "scope": "CPU geometry only; no GPU/frame-rate claim",
+        "benchmark_version": 3, "topology_index_transitions": topology, "scope": "CPU geometry only; no GPU/frame-rate claim",
         "os": std::env::consts::OS, "arch": std::env::consts::ARCH,
         "iterations": iterations, "nodes": 10000, "edges": 30000,
         "fixture_batch_ms": fixture_ms, "document_validation": validation,

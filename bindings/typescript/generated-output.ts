@@ -34,6 +34,7 @@ export type Rect = { "height": number; "width": number; "x": number; "y": number
 export type Request = ({ "action": GroupAction; "expected_revision": number; "kind": "group"; } | { "kind": "set_theme"; "theme": Theme; } | { "kind": "set_locale"; "locale": Locale; } | { "event": PointerEvent; "expected_revision": number; "kind": "pointer"; } | { "command": Command; "expected_revision": number; "kind": "apply"; } | { "expected_revision": number; "kind": "undo"; } | { "expected_revision": number; "kind": "redo"; } | { "kind": "set_viewport"; "viewport": Viewport; } | { "ids": Array<string>; "kind": "select"; } | { "kind": "summary"; });
 export type RunState = "queued" | "running" | "finished" | "failed";
 export type RunSummary = { "blocked": number; "cached": number; "cancel_requested": boolean; "cancelled": number; "completed": number; "document_id": string; "error_code": (string | null); "failed": number; "finished": number; "id": string; "reason": (StopReason | null); "revision": number; "sequence": number; "started": number; "state": RunState; "total": number; };
+export type SelectionSummary = { "count": number; "revision": number; "single": (string | null); };
 export type Status = "completed" | "cached" | "failed" | "blocked" | "cancelled";
 export type StopReason = "completed" | "cancelled" | "deadline_exceeded";
 export type Summary = { "edges": number; "nodes": number; "revision": number; };

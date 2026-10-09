@@ -51,7 +51,47 @@ struct RenderEdge {
     from: (Id, usize),
     to: (Id, usize),
 }
-/// Retained geometry. Rebuild for topology; small committed moves update bounded overlays.
+impl RenderNode {
+    fn from_document(doc: &Document, id: Id) -> Option<Self> {
+        let node = doc.graph().nodes().get(&id)?;
+        Some(Self {
+            rect: doc.placement().get(&id).copied().unwrap_or_default(),
+            inputs: node.inputs.len(),
+            outputs: node.outputs.len(),
+            type_id: node.type_id.clone(),
+            input_names: node.inputs.iter().map(|p| p.name.clone()).collect(),
+            output_names: node.outputs.iter().map(|p| p.name.clone()).collect(),
+        })
+    }
+}
+impl RenderEdge {
+    fn from_document(doc: &Document, id: Id) -> Option<Self> {
+        let edge = doc.graph().edges().get(&id)?;
+        let from = doc.graph().nodes().get(&edge.from.node)?;
+        let to = doc.graph().nodes().get(&edge.to.node)?;
+        let i = from.outputs.iter().position(|p| p.name == edge.from.port)?;
+        let j = to.inputs.iter().position(|p| p.name == edge.to.port)?;
+        Some(Self {
+            points: curve(
+                port_anchor(
+                    doc.placement().get(&from.id).copied().unwrap_or_default(),
+                    i,
+                    from.outputs.len(),
+                    true,
+                ),
+                port_anchor(
+                    doc.placement().get(&to.id).copied().unwrap_or_default(),
+                    j,
+                    to.inputs.len(),
+                    false,
+                ),
+            ),
+            from: (from.id, i),
+            to: (to.id, j),
+        })
+    }
+}
+/// Retained geometry. Small committed edits update bounded BVH overlays.
 pub struct SceneIndex {
     nodes: BTreeMap<Id, RenderNode>,
     edges: BTreeMap<Id, RenderEdge>,
@@ -63,25 +103,45 @@ pub struct SceneIndex {
 /// Capture before consuming a Command; apply only after that edit commits.
 #[derive(Debug, Default)]
 pub struct SceneChanges {
-    moved: BTreeSet<Id>,
+    nodes: BTreeSet<Id>,
+    edges: BTreeSet<Id>,
     rebuild: bool,
     groups_changed: bool,
 }
 impl SceneChanges {
     pub fn from_command(command: &Command) -> Self {
         fn collect(command: &Command, changes: &mut SceneChanges) {
+            if changes.rebuild {
+                return;
+            }
             match command {
-                Command::MoveNode { id, .. } => {
-                    changes.moved.insert(*id);
+                Command::MoveNode { id, .. } | Command::RemoveNode { id } => {
+                    changes.nodes.insert(*id);
+                }
+                Command::AddNode { node, .. } => {
+                    changes.nodes.insert(node.id);
+                }
+                Command::Connect { edge } => {
+                    changes.edges.insert(edge.id);
+                }
+                Command::Disconnect { id } => {
+                    changes.edges.insert(*id);
                 }
                 Command::SetProperty { .. } => {}
                 Command::SetGroup { .. } => changes.groups_changed = true,
                 Command::Batch { commands } => {
                     for command in commands {
                         collect(command, changes);
+                        if changes.rebuild {
+                            break;
+                        }
                     }
                 }
-                _ => changes.rebuild = true,
+            }
+            if changes.nodes.len() > 128 || changes.edges.len() > 128 {
+                changes.rebuild = true;
+                changes.nodes.clear();
+                changes.edges.clear();
             }
         }
         let mut changes = Self::default();
@@ -148,63 +208,24 @@ fn push_curve(scene: &mut Scene, points: [[f32; 2]; 4], zoom: f32, color: [f32; 
 }
 impl SceneIndex {
     pub fn new(doc: &Document) -> Self {
-        let nodes: BTreeMap<_, _> = doc
+        let nodes = doc
             .graph()
             .nodes()
-            .values()
-            .map(|node| {
-                (
-                    node.id,
-                    RenderNode {
-                        rect: doc.placement().get(&node.id).copied().unwrap_or_default(),
-                        inputs: node.inputs.len(),
-                        outputs: node.outputs.len(),
-                        type_id: node.type_id.clone(),
-                        input_names: node.inputs.iter().map(|p| p.name.clone()).collect(),
-                        output_names: node.outputs.iter().map(|p| p.name.clone()).collect(),
-                    },
-                )
-            })
+            .keys()
+            .filter_map(|id| RenderNode::from_document(doc, *id).map(|n| (*id, n)))
             .collect();
         let mut edges = BTreeMap::new();
         let mut bounds = Vec::new();
         let mut incident: BTreeMap<Id, BTreeSet<Id>> = BTreeMap::new();
-        for edge in doc.graph().edges().values() {
-            let Some(from) = nodes.get(&edge.from.node) else {
+        for id in doc.graph().edges().keys() {
+            let Some(edge) = RenderEdge::from_document(doc, *id) else {
                 continue;
             };
-            let Some(to) = nodes.get(&edge.to.node) else {
-                continue;
-            };
-            let Some(i) = doc.graph().nodes()[&edge.from.node]
-                .outputs
-                .iter()
-                .position(|p| p.name == edge.from.port)
-            else {
-                continue;
-            };
-            let Some(j) = doc.graph().nodes()[&edge.to.node]
-                .inputs
-                .iter()
-                .position(|p| p.name == edge.to.port)
-            else {
-                continue;
-            };
-            let a = port_anchor(from.rect, i, from.outputs, true);
-            let b = port_anchor(to.rect, j, to.inputs, false);
-            let points = curve(a, b);
-            bounds.push((edge.id, curve_bounds(points)));
-            edges.insert(
-                edge.id,
-                RenderEdge {
-                    points,
-                    from: (edge.from.node, i),
-                    to: (edge.to.node, j),
-                },
-            );
-            for id in [edge.from.node, edge.to.node] {
-                incident.entry(id).or_default().insert(edge.id);
+            bounds.push((*id, curve_bounds(edge.points)));
+            for node in [edge.from.0, edge.to.0] {
+                incident.entry(node).or_default().insert(*id);
             }
+            edges.insert(*id, edge);
         }
 
         Self {
@@ -219,72 +240,87 @@ impl SceneIndex {
     /// The index must correspond to the state immediately before the captured
     /// command. Document validation and revision checks remain the host's job.
     pub fn update(&mut self, doc: &Document, changes: &SceneChanges) -> SceneUpdate {
-        if changes.rebuild
-            || changes.moved.len() > 128
-            || changes
-                .moved
-                .iter()
-                .any(|id| !self.nodes.contains_key(id) || !doc.graph().nodes().contains_key(id))
-        {
+        let mut edge_ids = changes.edges.clone();
+        if !changes.rebuild {
+            for id in &changes.nodes {
+                for edge in self.incident.get(id).into_iter().flatten() {
+                    edge_ids.insert(*edge);
+                    if edge_ids.len() > 128 {
+                        break;
+                    }
+                }
+                if edge_ids.len() > 128 {
+                    break;
+                }
+            }
+        }
+        if changes.rebuild || edge_ids.len() > 128 {
             *self = Self::new(doc);
             return SceneUpdate::Rebuilt;
         }
-        if changes.moved.is_empty() {
+        if changes.nodes.is_empty() && edge_ids.is_empty() {
             if changes.groups_changed {
                 self.groups = crate::groups::GroupIndex::new(doc);
                 return SceneUpdate::Incremental;
             }
             return SceneUpdate::Unchanged;
         }
-        let rects: BTreeMap<_, _> = changes
-            .moved
+        // Read final committed geometry. This handles removal/recreation of the
+        // same ID in a Batch, including changed ports and implicit edge deletion.
+        let nodes: BTreeMap<_, _> = changes
+            .nodes
             .iter()
-            .map(|id| (*id, doc.placement().get(id).copied().unwrap_or_default()))
+            .map(|id| (*id, RenderNode::from_document(doc, *id)))
             .collect();
-        let incident: BTreeSet<_> = changes
-            .moved
+        let edges: BTreeMap<_, _> = edge_ids
             .iter()
-            .flat_map(|id| self.incident.get(id).into_iter().flatten())
-            .copied()
+            .map(|id| (*id, RenderEdge::from_document(doc, *id)))
             .collect();
-        if incident.len() > 128 {
+        let rects = nodes
+            .iter()
+            .map(|(id, node)| (*id, node.as_ref().map(|n| n.rect)))
+            .collect();
+        let bounds = edges
+            .iter()
+            .map(|(id, edge)| (*id, edge.as_ref().map(|e| curve_bounds(e.points))))
+            .collect();
+        if !self.node_index.update_entries(&rects) || !self.edge_index.update_entries(&bounds) {
             *self = Self::new(doc);
             return SceneUpdate::Rebuilt;
         }
-        let mut points = BTreeMap::new();
-        let mut bounds = BTreeMap::new();
-        for id in incident {
-            let edge = &self.edges[&id];
-            let from = &self.nodes[&edge.from.0];
-            let to = &self.nodes[&edge.to.0];
-            let curve = curve(
-                port_anchor(
-                    rects.get(&edge.from.0).copied().unwrap_or(from.rect),
-                    edge.from.1,
-                    from.outputs,
-                    true,
-                ),
-                port_anchor(
-                    rects.get(&edge.to.0).copied().unwrap_or(to.rect),
-                    edge.to.1,
-                    to.inputs,
-                    false,
-                ),
-            );
-            bounds.insert(id, curve_bounds(curve));
-            points.insert(id, curve);
+        // Remove old incidence before installing final endpoints: rewiring an ID
+        // must not leave stale references that break a later move or deletion.
+        for id in &edge_ids {
+            if let Some(old) = self.edges.remove(id) {
+                for node in [old.from.0, old.to.0] {
+                    if let Some(set) = self.incident.get_mut(&node) {
+                        set.remove(id);
+                        if set.is_empty() {
+                            self.incident.remove(&node);
+                        }
+                    }
+                }
+            }
         }
-        if !self.node_index.update_rects(&rects) || !self.edge_index.update_rects(&bounds) {
-            *self = Self::new(doc);
-            return SceneUpdate::Rebuilt;
+        for (id, node) in nodes {
+            if let Some(node) = node {
+                self.nodes.insert(id, node);
+            } else {
+                self.nodes.remove(&id);
+                self.incident.remove(&id);
+            }
         }
-        for (id, rect) in rects {
-            self.nodes.get_mut(&id).unwrap().rect = rect;
+        for (id, edge) in edges {
+            if let Some(edge) = edge {
+                for node in [edge.from.0, edge.to.0] {
+                    self.incident.entry(node).or_default().insert(id);
+                }
+                self.edges.insert(id, edge);
+            }
         }
-        for (id, points) in points {
-            self.edges.get_mut(&id).unwrap().points = points;
+        if !changes.nodes.is_empty() || changes.groups_changed {
+            self.groups = crate::groups::GroupIndex::new(doc);
         }
-        self.groups = crate::groups::GroupIndex::new(doc);
         SceneUpdate::Incremental
     }
     pub fn scene(&self, viewport: Viewport, selection: &BTreeSet<Id>) -> unge_core::Result<Scene> {

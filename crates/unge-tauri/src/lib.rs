@@ -43,6 +43,15 @@ pub struct Summary {
     pub nodes: usize,
     pub edges: usize,
 }
+/// Constant-size selection metadata for the calling view, including off-page nodes.
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SelectionSummary {
+    pub revision: u64,
+    pub count: usize,
+    /// Present only when exactly one node is selected. No arbitrary multi-selection target.
+    pub single: Option<Id>,
+}
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ApiError {
@@ -350,6 +359,23 @@ impl Engine {
         physical_size: [u32; 2],
         scale_factor: f64,
     ) -> ApiResult<bool> {
+        self.draw_scaled_region(view, physical_size, physical_size, scale_factor)
+    }
+    /// Render into a top-left region of a larger native window. Region and
+    /// Surface sizes are physical; pointer positions remain graph-local logical pixels.
+    pub fn draw_scaled_region(
+        &self,
+        view: &str,
+        physical_size: [u32; 2],
+        graph_size: [u32; 2],
+        scale_factor: f64,
+    ) -> ApiResult<bool> {
+        if graph_size[0] > physical_size[0] || graph_size[1] > physical_size[1] {
+            return Err(ApiError::new(
+                "invalid_pointer",
+                "graph region exceeds surface size",
+            ));
+        }
         if !scale_factor.is_finite() || scale_factor <= 0.0 {
             return Err(ApiError::new("invalid_pointer", "invalid scale factor"));
         }
@@ -362,7 +388,7 @@ impl Engine {
             .get_mut(view)
             .ok_or_else(|| ApiError::new("unknown_view", view))?;
         let mut viewport = view_state.viewport;
-        viewport.size = physical_size.map(|v| (f64::from(v.max(1)) / scale_factor) as f32);
+        viewport.size = graph_size.map(|v| (f64::from(v.max(1)) / scale_factor) as f32);
         viewport.validate()?;
         if view_state.viewport.size != viewport.size {
             view_state
@@ -394,7 +420,7 @@ impl Engine {
             .resize(physical_size)
             .map_err(|e| ApiError::new("gpu_error", e))?;
         renderer
-            .draw(&scene, viewport)
+            .draw_region(&scene, viewport, graph_size)
             .map_err(|e| ApiError::new("gpu_error", e))
     }
     pub fn dispatch(&self, view: &str, request: Request) -> ApiResult<Summary> {
@@ -491,9 +517,17 @@ impl Engine {
                 state.editor.execute(command)?;
             }
             Request::Undo { .. } => {
+                changes = state
+                    .editor
+                    .undo_command()
+                    .map(unge_render::SceneChanges::from_command);
                 state.editor.undo()?;
             }
             Request::Redo { .. } => {
+                changes = state
+                    .editor
+                    .redo_command()
+                    .map(unge_render::SceneChanges::from_command);
                 state.editor.redo()?;
             }
             Request::SetViewport { viewport } => {
@@ -523,6 +557,26 @@ impl Engine {
             refresh_scene(&mut state, changes.as_ref());
         }
         Ok(summary(&state))
+    }
+    /// Rust host metadata; contains no document clone or frame data.
+    pub fn selection_summary(&self, view: &str) -> ApiResult<SelectionSummary> {
+        let state = self
+            .state
+            .lock()
+            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let v = state
+            .views
+            .get(view)
+            .ok_or_else(|| ApiError::new("unknown_view", view))?;
+        Ok(SelectionSummary {
+            revision: state.editor.revision(),
+            count: v.selection.len(),
+            single: if v.selection.len() == 1 {
+                v.selection.first().copied()
+            } else {
+                None
+            },
+        })
     }
     /// Rust host metadata; contains no document clone or frame data.
     pub fn view_state(&self, view: &str) -> ApiResult<ViewSnapshot> {
@@ -667,7 +721,7 @@ mod commands {
     use super::*;
     #[tauri::command]
     pub async fn dispatch<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         request: Request,
     ) -> ApiResult<Summary> {
@@ -694,9 +748,8 @@ mod commands {
     }
     /// Aggregate counters only. Terminal notification bypasses the 100 ms rate limit.
     pub fn execution_observer<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: impl tauri::Emitter<R> + Send + Sync,
     ) -> impl Fn(RunSummary) + Send + Sync {
-        use tauri::Emitter;
         let last = Mutex::new(None::<std::time::Instant>);
         move |summary| {
             let terminal = matches!(
@@ -714,7 +767,7 @@ mod commands {
     }
     #[tauri::command]
     pub async fn start_execution<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         expected_revision: u64,
     ) -> ApiResult<RunSummary> {
@@ -733,14 +786,14 @@ mod commands {
     }
     #[tauri::command]
     pub fn current_execution<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
     ) -> ApiResult<Option<RunSummary>> {
         engine.current_execution(window.label())
     }
     #[tauri::command]
     pub fn execution_status<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         id: Id,
     ) -> ApiResult<RunSummary> {
@@ -748,7 +801,7 @@ mod commands {
     }
     #[tauri::command]
     pub fn cancel_execution<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         id: Id,
     ) -> ApiResult<RunSummary> {
@@ -756,14 +809,14 @@ mod commands {
     }
     #[tauri::command]
     pub fn appearance<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
     ) -> ApiResult<Appearance> {
         engine.appearance(window.label())
     }
     #[tauri::command]
     pub fn groups<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         expected_revision: u64,
         after: Option<Id>,
@@ -773,7 +826,7 @@ mod commands {
     }
     #[tauri::command]
     pub fn accessible_nodes<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         expected_revision: u64,
         after: Option<Id>,
@@ -782,8 +835,15 @@ mod commands {
         engine.accessible_nodes(window.label(), expected_revision, after, limit)
     }
     #[tauri::command]
+    pub fn selection_summary<R: tauri::Runtime>(
+        window: tauri::Webview<R>,
+        engine: tauri::State<'_, Engine>,
+    ) -> ApiResult<SelectionSummary> {
+        engine.selection_summary(window.label())
+    }
+    #[tauri::command]
     pub fn node_properties<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         id: Id,
         expected_revision: u64,
@@ -792,7 +852,7 @@ mod commands {
     }
     #[tauri::command]
     pub fn inspect<R: tauri::Runtime>(
-        window: tauri::WebviewWindow<R>,
+        window: tauri::Webview<R>,
         engine: tauri::State<'_, Engine>,
         id: Id,
     ) -> ApiResult<Node> {
@@ -801,7 +861,8 @@ mod commands {
 }
 pub use commands::{
     accessible_nodes, appearance, cancel_execution, current_execution, dispatch,
-    execution_observer, execution_status, groups, inspect, node_properties, start_execution,
+    execution_observer, execution_status, groups, inspect, node_properties, selection_summary,
+    start_execution,
 };
 /// Combine with your host handler using generate_handler!. Include start_execution,
 /// current_execution, execution_status and cancel_execution when configuring RunService.
@@ -813,6 +874,7 @@ pub fn handler<R: tauri::Runtime>() -> impl Fn(tauri::ipc::Invoke<R>) -> bool + 
         groups,
         inspect,
         node_properties,
+        selection_summary,
         appearance,
         start_execution,
         current_execution,
@@ -868,13 +930,17 @@ impl unge_acx::GraphHost for Engine {
             revision: state.editor.revision(),
         };
         unge_acx::check_snapshot(&before, document, expected_revision)?;
+        let changes = state
+            .editor
+            .undo_command()
+            .map(unge_render::SceneChanges::from_command);
         if !state.editor.undo()? {
             return Err(unge_acx::AcxError::new(
                 "recovery_unavailable",
                 "undo history unavailable",
             ));
         }
-        refresh_scene(&mut state, None);
+        refresh_scene(&mut state, changes.as_ref());
         Ok(unge_acx::Snapshot {
             document: state.editor.document().clone(),
             revision: state.editor.revision(),

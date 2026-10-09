@@ -34,8 +34,8 @@ BVHの各階層で全要素を並べ替える代わりに、中央値で左右�
 検索結果は独立した総当たり検索、入力順の反転、同一座標、境界、無効矩形で検証します。
 Rust標準ライブラリの [select_nth_unstable_by](https://doc.rust-lang.org/std/primitive.slice.html#method.select_nth_unstable_by) を使用します。
 
-小さな移動は [INDEX_UPDATES.md](INDEX_UPDATES.md) の差分更新に対応しました。全体検証は残り、トポロジー編集・Undo/Redo・容量超過時にはSceneIndexを再構築します。
-大規模な全体表示では曲線のCPU生成量も増えるため、次は曲線生成量の改善を検討します。
+小さな移動は [INDEX_UPDATES.md](INDEX_UPDATES.md) の差分更新に対応しました。全体検証は残り、小さなトポロジー編集・Undo/Redoも差分更新し、容量超過時にはSceneIndexを再構築します。
+曲線の適応分割、構造変更の差分更新、GPU/Surface計測の結果は以下の各節を参照してください。
 
 ## English
 
@@ -43,14 +43,14 @@ Run the release example above to measure CPU geometry with 10,000 nodes and 30,0
 Each metric excludes one warm-up and reports median/p95/min/max. IDs, geometry and DAG topology are fixed.
 Node and scene index builds include destruction; scene generation includes allocations and culling.
 GPU uploads, rendering, text shaping, presentation and IPC are excluded. This is not an FPS benchmark.
-BVH construction partitions at the median instead of sorting every subtree. Small move deltas are now supported; topology changes, undo/redo and capacity overflow still rebuild.
+BVH construction partitions at the median instead of sorting every subtree. Small moves, topology changes and undo/redo use bounded deltas; capacity overflow still rebuilds.
 
 ## 简体中文
 
 运行上述release示例可测量10,000节点、30,000连线的CPU几何处理。
 每项排除一次预热，输出中位数、p95及最小/最大值。ID、坐标和DAG拓扑固定。
 Index构建包含析构，场景生成包含分配及裁剪。GPU上传、绘制、文字整形、present和IPC不在计测范围。
-此结果不能证明60FPS目标。BVH构建改为按中位数分区，小规模移动已支持差分更新；拓扑修改、Undo/Redo和容量超限仍使用完整重建。
+此结果不能证明60FPS目标。BVH构建改为按中位数分区，小规模移动、拓扑修改及Undo/Redo已支持有界差分更新；容量超限仍使用完整重建。
 
 ## 2026-10-05 macOSでの結果
 
@@ -116,3 +116,52 @@ English: This steady-state benchmark repeats one moved node with four incident e
 English: This single grid fixture reduced overview quads from 260,001 to 55,347 and median CPU scene time from 4.181 to 2.578 ms. Visible node, edge and label counts match. Complex curves may increase geometry; GPU frame time remains unmeasured.
 
 简体中文：此单一格子数据集的全景Quad由260,001降至55,347，CPU场景生成中位数由4.181降至2.578ms。可见节点、Edge和文字数量一致。复杂曲线可能增加几何量，GPU帧时间仍未计测。
+
+## 構造変更とUndoのIndex更新（2026-10-09）
+
+macOS/aarch64、release、10,000ノード／30,000接続で各操作をウォームアップ後30回計測しました。同じIDを操作前後に往復させる定常ケースです。削除対象は接続4本のノードです。Undoの差分はEditorの実際の逆命令から取得します。
+
+| 操作 | 差分中央値 (ms) | 差分p95 (ms) | 全体再構築中央値 (ms) | Undo差分中央値 (ms) |
+|---|---:|---:|---:|---:|
+| ノード追加 | 0.000500 | 0.000750 | 29.066875 | 0.000458 |
+| ノード削除 | 0.001833 | 0.005916 | 30.000459 | 0.002709 |
+| 接続追加 | 0.000667 | 0.001000 | 35.626125 | 0.000708 |
+| 接続削除 | 0.000541 | 0.000709 | 38.297084 | 0.000584 |
+
+[生JSON](benchmarks/2026-10-09-topology.json)。`cargo run --release --locked -p unge-render --example benchmark -- 30` で再現できます。各計測は正しい直前状態から始め、逆方向の更新を計測区間外で行います。先頭・末尾の描画Quadとラベルは全体再構築と照合しています。
+
+差分時間にはCommand適用、履歴の複製、Document検証、選択解除、IPC、GPU、Surface presentを含みません。全体再構築側は生成と破棄を含みます。同じ実行内の比較であり、過去版のバイナリとの比較ではありません。計測対象にGroupはなく、多数のGroupの再集計費用は含まれません。128 IDの保持上限を越える操作、多接続ノードの削除、異なるIDへの連続操作では全体再構築も発生します。微小な差分時間は計時ノイズの影響を受けるため、アプリ全体の高速化率には換算しません。
+
+English: On a 10,000-node / 30,000-edge fixture, small topology edits and their actual history inverses update retained indexes in bounded time. The table compares delta updates with full reconstruction in one release run (30 samples). Timings exclude edit application, validation, history cloning, selection cleanup, IPC and GPU work. The fixture has no groups, and repeated IDs do not exhaust the overlay. This is not an application latency or FPS measurement.
+
+简体中文：在10,000节点／30,000连线的数据集上，测量小规模拓扑修改及实际历史逆命令的Index差分更新。表中比较同一次release运行的差分更新和完整重建（30次）。不含编辑应用、验证、历史复制、选择清理、IPC或GPU；数据集无Group，重复ID不会耗尽更新容量。不能将结果视为应用整体延迟或FPS。
+
+
+## GPU / Native Surface（2026-10-09）
+
+Apple M4、Metal、macOS/aarch64、release（thin LTO）、1280×720物理px、DPI倍率1、Fifoで計測しました。再現方法とAPIは [RENDER_PROFILING.md](RENDER_PROFILING.md)。10,000ノード／30,000接続の共通fixtureを使い、各条件で5成功フレームを除外して30フレームを計測しています。
+
+| テーマ | 言語 | 表示 | Scene CPU中央値 (ms) | GPUパス中央値 (ms) | 診断全体 中央値 / p95 (ms) |
+|---|---|---|---:|---:|---:|
+| dark | en | near | 0.057 | 0.687 | 8.361 / 9.513 |
+| dark | en | overview | 4.539 | 2.516 | 10.442 / 11.063 |
+| dark | ja | near | 0.049 | 0.684 | 8.253 / 9.262 |
+| dark | ja | overview | 4.536 | 2.522 | 10.644 / 11.393 |
+| dark | zh-cn | near | 0.134 | 0.687 | 8.326 / 9.206 |
+| dark | zh-cn | overview | 4.504 | 2.525 | 10.642 / 11.791 |
+| light | en | near | 0.058 | 0.685 | 8.375 / 8.850 |
+| light | en | overview | 4.376 | 2.517 | 10.039 / 10.748 |
+| light | ja | near | 0.063 | 0.684 | 8.375 / 9.467 |
+| light | ja | overview | 4.395 | 2.519 | 10.511 / 11.149 |
+| light | zh-cn | near | 0.117 | 0.686 | 8.361 / 9.124 |
+| light | zh-cn | overview | 4.478 | 2.523 | 10.604 / 11.688 |
+
+[生JSONと各工程の詳細](benchmarks/2026-10-09-surface.json)。12条件の計360フレームでSurfaceスキップ0、GPUタイムスタンプ欠損0、missing glyph 0、GPU Validationエラーなし。近景は36ノード／110接続／1,173 Quad／108ラベル、全体表示は10,000ノード／30,000接続／55,347 Quad／ラベルなしです。
+
+診断全体はScene生成開始からSurface取得、CPU準備、描画submit、GPU完了待ち、別submitでのクエリーresolveと16バイト読込、CPUのpresent呼び出しまでです。GPUパスの時間にはCPU準備や転送、Surface待機、presentを含みません。両者は足し合わせません。描画完了後にクエリーを別submitでresolveし、今回のMetal環境で観測した古い終了値の読込を回避しています。
+
+これは1台での単一実行であり、通常の非同期描画FPSを示しません。毎回のGPU完了待ちと追加submitに診断固有の費用があり、VSync、compositor、他アプリの負荷にも左右されます。全体表示では低LODにより文字がなく、言語ごとの差は文字描画の性能差ではありません。180×90の基本カードのfixtureなので、大きなカードのアイコン／説明文、画像プレビュー、Group、ドラッグ、WebViewと共有Engineの競合は含みません。今後は通常の非同期描画と連続操作、同一ウインドウ合成を検証します。Windows/Linuxは実行環境がないため保留です。
+
+English: The release native diagnostic completed 12 theme/language/zoom cases × 30 measured frames on Apple M4 / Metal at 1280×720, scale 1, Fifo. All 360 GPU timestamp samples were available, with no skipped Surface frames, missing glyphs or validation errors. Median GPU pass time was 0.684–0.687 ms nearby and 2.516–2.525 ms for the overview. Total diagnostic time includes scene generation, CPU work, completion waits, a separate query-resolution submission and the CPU present call. This serialized diagnostic does not establish animation FPS or display latency. The overview omits text; language differences there are measurement variation. Larger cards, previews, groups, interaction, WebView contention and other operating systems are outside this measurement.
+
+简体中文：在Apple M4／Metal、1280×720、缩放倍率1、Fifo下，release原生诊断完成12种主题／语言／缩放组合，每组30个计测帧。360个GPU时间戳均可用，Surface跳过、缺字和验证错误均为0。近景GPU Pass中位数为0.684–0.687ms，全景为2.516–2.525ms。诊断总时间包含场景生成、CPU工作、完成等待、单独提交的查询解析及CPU的present调用。该串行诊断不能证明动画FPS或屏幕显示延迟。全景省略文字，语言间的差异属于测量波动。大卡片、预览、Group、交互、WebView竞争及其他操作系统不在此次测量范围内。

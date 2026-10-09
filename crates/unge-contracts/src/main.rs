@@ -52,6 +52,7 @@ fn main() {
     add::<unge_executor::RunSummary>(&mut schemas);
     add::<unge_tauri::Request>(&mut schemas);
     add::<unge_tauri::Summary>(&mut schemas);
+    add::<unge_tauri::SelectionSummary>(&mut schemas);
     add::<unge_tauri::ApiError>(&mut schemas);
     add::<unge_tauri::Appearance>(&mut schemas);
     add::<unge_tauri::AccessiblePage>(&mut schemas);

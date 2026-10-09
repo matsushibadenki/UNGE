@@ -1,0 +1,178 @@
+{
+  "arch": "aarch64",
+  "benchmark_version": 3,
+  "delta_normal_scene": {
+    "max_ms": 0.128083,
+    "median_ms": 0.09525,
+    "min_ms": 0.052416000000000004,
+    "p95_ms": 0.125125
+  },
+  "delta_overview_scene": {
+    "max_ms": 29.556958,
+    "median_ms": 10.997083,
+    "min_ms": 8.915292,
+    "p95_ms": 26.657209
+  },
+  "document_validation": {
+    "max_ms": 30.469040999999997,
+    "median_ms": 21.948583,
+    "min_ms": 15.14425,
+    "p95_ms": 26.875792
+  },
+  "edges": 30000,
+  "fixture_batch_ms": 31.294333,
+  "iterations": 30,
+  "move_command_validation": {
+    "max_ms": 26.602708999999997,
+    "median_ms": 19.043292,
+    "min_ms": 15.398667,
+    "p95_ms": 25.983124999999998
+  },
+  "move_index_delta": {
+    "max_ms": 0.004875,
+    "median_ms": 0.0022500000000000003,
+    "min_ms": 0.002125,
+    "p95_ms": 0.00325
+  },
+  "move_index_full_rebuild": {
+    "max_ms": 73.22108300000001,
+    "median_ms": 33.57775,
+    "min_ms": 28.905541,
+    "p95_ms": 60.943667
+  },
+  "node_index_build": {
+    "max_ms": 2.974708,
+    "median_ms": 2.613542,
+    "min_ms": 1.985625,
+    "p95_ms": 2.919584
+  },
+  "node_query": {
+    "max_ms": 0.011875,
+    "median_ms": 0.0014169999999999999,
+    "min_ms": 0.001375,
+    "p95_ms": 0.004458
+  },
+  "nodes": 10000,
+  "normal_counts": {
+    "edges": 174,
+    "labels": 126,
+    "nodes": 42,
+    "quads": 1561
+  },
+  "normal_scene": {
+    "max_ms": 0.22474999999999998,
+    "median_ms": 0.08512499999999999,
+    "min_ms": 0.067666,
+    "p95_ms": 0.199375
+  },
+  "os": "macos",
+  "overview_counts": {
+    "edges": 30000,
+    "labels": 0,
+    "nodes": 10000,
+    "quads": 55347
+  },
+  "overview_scene": {
+    "max_ms": 52.267125,
+    "median_ms": 11.145875,
+    "min_ms": 10.05775,
+    "p95_ms": 16.053584
+  },
+  "scene_index_build": {
+    "max_ms": 208.67125000000001,
+    "median_ms": 38.662083,
+    "min_ms": 31.999666,
+    "p95_ms": 144.63008299999998
+  },
+  "scope": "CPU geometry only; no GPU/frame-rate claim",
+  "topology_index_transitions": {
+    "add_node": {
+      "forward_delta": {
+        "median_ms": 0.0005,
+        "p95_ms": 0.00075
+      },
+      "forward_full_rebuild": {
+        "max_ms": 32.881291,
+        "median_ms": 29.066875,
+        "min_ms": 27.620333,
+        "p95_ms": 31.903541
+      },
+      "undo_delta": {
+        "median_ms": 0.000458,
+        "p95_ms": 0.000791
+      },
+      "undo_full_rebuild": {
+        "max_ms": 34.085542000000004,
+        "median_ms": 30.395208,
+        "min_ms": 28.057916,
+        "p95_ms": 33.520375
+      }
+    },
+    "connect": {
+      "forward_delta": {
+        "median_ms": 0.0006670000000000001,
+        "p95_ms": 0.001
+      },
+      "forward_full_rebuild": {
+        "max_ms": 39.075542,
+        "median_ms": 35.626125,
+        "min_ms": 30.205917,
+        "p95_ms": 38.145790999999996
+      },
+      "undo_delta": {
+        "median_ms": 0.0007080000000000001,
+        "p95_ms": 0.003666
+      },
+      "undo_full_rebuild": {
+        "max_ms": 79.682458,
+        "median_ms": 37.6565,
+        "min_ms": 33.310917,
+        "p95_ms": 79.500875
+      }
+    },
+    "disconnect": {
+      "forward_delta": {
+        "median_ms": 0.000541,
+        "p95_ms": 0.000709
+      },
+      "forward_full_rebuild": {
+        "max_ms": 56.288333,
+        "median_ms": 38.297084000000005,
+        "min_ms": 33.942208,
+        "p95_ms": 52.221999999999994
+      },
+      "undo_delta": {
+        "median_ms": 0.000584,
+        "p95_ms": 0.000875
+      },
+      "undo_full_rebuild": {
+        "max_ms": 95.6195,
+        "median_ms": 36.392791,
+        "min_ms": 30.996416,
+        "p95_ms": 56.253625
+      }
+    },
+    "remove_node": {
+      "forward_delta": {
+        "median_ms": 0.001833,
+        "p95_ms": 0.005915999999999999
+      },
+      "forward_full_rebuild": {
+        "max_ms": 67.518083,
+        "median_ms": 30.000459,
+        "min_ms": 27.482042000000003,
+        "p95_ms": 51.089583
+      },
+      "undo_delta": {
+        "median_ms": 0.0027089999999999996,
+        "p95_ms": 0.015791
+      },
+      "undo_full_rebuild": {
+        "max_ms": 46.691917,
+        "median_ms": 35.556083,
+        "min_ms": 31.864292000000003,
+        "p95_ms": 39.302749999999996
+      }
+    }
+  }
+}

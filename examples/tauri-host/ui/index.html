@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>UNGE</title><link rel="stylesheet" href="style.css"></head>
 <body><main>
 <header><strong>UNGE</strong><select id="locale" aria-label="Language"><option value="en">English</option><option value="ja">日本語</option><option value="zh-CN">简体中文</option></select></header>
+<div class="panel-toolbar" id="panelToolbar" hidden><button id="panelToggle" type="button" disabled></button><output id="panelStatus" role="status" aria-live="polite"></output></div>
 <fieldset class="theme-picker"><legend id="themeLabel"></legend><div class="theme-options"><button id="themeDark" type="button" aria-pressed="false"></button><button id="themeLight" type="button" aria-pressed="false"></button></div></fieldset>
 <h1 id="title"></h1><p id="description"></p>
 <div class="actions"><button id="add"></button><button id="addSum"></button><button id="undo"></button><button id="redo"></button></div>
@@ -16,6 +17,7 @@
 </section>
 <section class="property-inspector" aria-labelledby="propertiesTitle">
 <div class="property-section-heading"><span class="property-mark" aria-hidden="true">≡</span><h2 id="propertiesTitle"></h2></div>
+<output id="propertySelectionStatus" role="status" aria-live="polite"></output>
 <button id="loadProperties" type="button"></button>
 <form id="propertyForm" novalidate>
 <article id="propertyCard" class="property-card" hidden>
@@ -34,4 +36,4 @@
 </section>
 <p id="help"></p>
 <output id="status" aria-live="polite"></output>
-</main><script src="execution.js"></script><script src="accessibility.js"></script><script src="groups.js"></script><script src="properties.js"></script><script src="app.js"></script></body></html>
+</main><script src="execution.js"></script><script src="accessibility.js"></script><script src="groups.js"></script><script src="properties.js"></script><script src="panels.js"></script><script src="app.js"></script></body></html>

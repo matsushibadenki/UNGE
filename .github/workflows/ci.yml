@@ -16,6 +16,8 @@ jobs:
         with:
           node-version: '22'
       - run: node --check examples/tauri-host/ui/app.js
+      - run: node --check examples/tauri-host/ui/panels.js
+      - run: node scripts/test_panels_ui.cjs
       - run: node --check examples/tauri-host/ui/accessibility.js
       - run: node --check examples/tauri-host/ui/properties.js
       - run: node --check examples/tauri-host/ui/groups.js

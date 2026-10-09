@@ -286,3 +286,61 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - Browser plugin not availableのため既存Playwright/Chromiumを使用。scripts/test_properties_ui.cjsで、静的UI＋IPC mockの保存、型/範囲/JSON/null/整数精度エラー、任意値の削除、外部更新の下書き保持、言語変更時の入力保持、保存・再読込失敗、スイッチ/選択肢/整数の単一Batch、初期値ボタンを3言語で検証。2テーマ×320/380/768pxで横はみ出しなし、page errorsなし。日本語の両テーマ画像を視認し、数値欄とスイッチのスタイルを修正して再検証。
 - 既存のノード操作/Group/実行UIロジックテストも3言語で成功。CIに新しいJSの構文チェックを追加。新規ブラウザーテストは外部のPlaywright環境で実行する。
 - 新しいプロパティUIのTauri実プロセス操作、スクリーンリーダー、他OS、GPUフレーム時間は未検証。GPUノードへのHTML入力の埋め込み、画像プレビュー、パネルドッキングは未実装。サンプルは実行可能な6ノード・5接続の数値グラフ。
+
+## 2026-10-09: 構造変更とUndo/RedoのIndex差分更新
+
+- workspace/all-features Rust130件成功、通常実行ではGPU3件ignored。追加4件で削除マーカーのHit Test、削除・再挿入・容量超過時の原子的拒否、ノード削除による接続/Group変更とUndo/Redo、同じIDの再作成によるPort/文字/形状の変更、接続先の差し替え後の移動、追加削除の繰り返し、失敗Batchを検証。既存の多接続移動・128件超の再構築も検証。
+- 保持IndexのQuad全バイト・文字・可視件数・空間検索・移動プレビューを全体再構築と照合。Tauri UIとACXの共有Editor・revision・Undo後の空間検索の既存テストも成功。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。変更はRust内のAPIのみで、Schema/TypeScript/ACX wire形式は不変。生成差分チェック16 artifacts成功。
+- macOSの実GPU ignoredテスト3件成功。GPU文字、テーマ切替、接続・Groupの描画ピクセルを確認。WGSLや見た目の指定は変更していない。
+- release benchmarkを10,000ノード／30,000接続・30回で実行。追加・削除・接続・逆命令のIndex更新を全体再構築と比較。ノード削除の中央値は差分0.001833ms、全体再構築30.000459ms。描画結果の一致もベンチマーク中に検証。条件と生データはPERFORMANCE.md参照。
+- ⭕️ [Pending] Windows/LinuxのSurface/入力実機検証は環境がないため保留。GPU/Surfaceのフレーム時間は今回未計測で、次の検証項目として維持。CPU Indexの値を編集全体の応答時間やFPSへ換算しない。
+
+
+## 2026-10-09: GPU / Surface診断計測
+
+- workspace/all-features Rust130件成功、通常実行でGPU4件ignored。macOS実GPUでignored4件を実行し成功。新規テストはTIMESTAMP_QUERYなしの完了待ち、対応Deviceで同じQuerySetを8フレーム再利用した有効な時間取得、無効Viewport拒否と次回の回復、Validationエラーなしを確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。Rust内の診断APIのみ追加し、IPC/Schema/TypeScript wire形式は不変。生成差分チェック16 artifacts成功。
+- Tauriのreleaseビルドと専用ネイティブSurface起動モードが成功。Apple M4／Metal、1280×720、DPI倍率1、Fifo、10,000ノード／30,000接続でDark/Light×3言語×近景/全体表示の12条件を実測。各条件5フレームのウォームアップ後30フレーム、計360フレームでスキップ・タイムスタンプ欠損・missing glyph・GPU Validationエラーなし。生データはdocs/benchmarks/2026-10-09-surface.json。
+- 同一submit内のquery resolveでは古い終了値が返るケースを観測。描画完了待ち後に別submitでresolveする実装に変更し、debug/releaseの両ネイティブ実行で有効な360サンプルを確認。通常draw/renderはqueryも完了待ちも追加しない。
+- 計測には毎フレームの同期と16バイト読込が含まれる。通常の非同期アニメーションFPSやcompositor完了時間は測っていない。大きなカードのアイコン・画像プレビュー、Group、連続操作、同一ウインドウ合成も今回のfixtureには含まない。
+- ⭕️ [Pending] Windows/LinuxのGPU/Surface検証は実行環境がないため保留。
+
+
+## 2026-10-09: macOSの同一ウインドウ合成
+
+- workspace/all-features Rust131件成功、通常実行でGPU4件ignored。新規ホストテストでDPI1/1.25/2と複数の幅における描画領域・入力判定の境界一致を確認。実GPU ignored4件成功。既存のピクセルテストを拡張し、左半分への領域描画が全面描画と一致し、右側が背景色のみになることを全ピクセルで確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。契約生成差分チェック16 artifacts成功。IPC JSONは変更なし。Rustのcommand引数はWebviewWindowからWebviewへ変更し、子WebViewのlabelを認可に使用。execution_observerは両方を受け付ける。
+- macOSのTauri debugアプリを実際に起動し、Computer Useで操作。1440×800の初期画面とウインドウ拡大後に、ネイティブグラフと右の設定WebViewが合成されることを視認。ノードDragでrevision 0→1、Undoで2、設定の倍率1→2の保存で3を確認。パネルにまたがるDragはrevisionを増やさず取消。パネルのスクロール中にグラフが移動しないことを確認。
+- 子WebViewから6ノードの実行が完了し、進捗6/6とrevision 3を表示。Dark/Light切替と英語・日本語・简体中文でGPU名とHTMLの表示を確認。別ウインドウモードでもノード数6→7→6とrevision 0→1→2（追加／Undo）を確認。
+- JS構文検査、既存ノード操作／Group／実行のUIロジックテストが3言語で成功。今回はネイティブ合成の検証にComputer Useを使用し、ブラウザーIPC mockによる新しい検証は行っていない。ブラウザーconsoleログの完全取得、スクリーンリーダー、最小化復帰、実モニター間のDPI移動は未検証。
+- ⭕️ [Pending] Windows/Linuxの同一ウインドウ合成は実機環境がないため保留。サンプルでは従来の別ウインドウ構成を既定に維持。ドッキング／フローティング、配置保存、インスペクターの選択自動追従は未実装。通常の非同期描画FPSは今回計測していない。
+
+## 2026-10-09: 設定パネルの切り離しと再ドッキング
+
+- workspace/all-features Rust132件成功、通常実行でGPU4件ignored。追加ホストテストで、浮動時のグラフ領域拡張と入力境界、配置変更の排他制御と解除、再ドッキング時の領域復帰、controls WebViewの認可を確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。既存block 0.1.6のfuture compatibility警告は継続。契約生成差分チェック16 artifacts、追加TypeScript宣言のstrict型検査、JS構文検査も成功。今回の変更はホスト/UIで、GPU実装は変更せず、実GPU ignoredテストは再実行していない。
+- 新しいパネルUIロジックテストが英語・日本語・简体中文で成功。二重操作の抑止、切り離し成功、ネイティブからの再ドッキング通知、移動後のエラー時の配置再取得、非対応モードの操作非表示を確認。既存ノード操作／Group／実行UIテストも3言語で成功。
+- macOSのTauri debugアプリをComputer Useで操作。revision 0で数値を22から77へ変更し、未保存のまま切り離して値と下書き表示が残ることを確認。浮動パネルから保存するとrevision 1になり、閉じるボタンによる再ドッキング後も保存値とスクロール位置を保持。再度切り離し、6ノードの実行完了（6/6）、ボタンによる再ドッキングを確認。
+- 最終ビルドで日本語の浮動ウインドウタイトル「UNGE · 設定」を確認。切り離し中はグラフが1440×800のウインドウ全幅へ拡張することを視認。メインウインドウを閉じた後、浮動パネルを含むアプリが終了することを確認。
+- 今回の完成範囲は1枚の設定パネルのボタンによる切り離し／再ドッキング。任意のドラッグ配置、複数パネルのタブ化、配置の永続保存は未実装。OS呼び出し失敗の注入テストは行っておらず、その場合の完全な復旧は保証しない。
+- ⭕️ [Pending] Windows/Linux、複数モニター間のDPI移動、スクリーンリーダーによる実機検証は環境がないため保留。
+
+## 2026-10-09: パネル配置の保存と復元
+
+- workspace/all-features Rust135件成功、通常実行でGPU4件ignored。追加3件で保存／読込／置換、初期化未完了時の保存抑止、壊れたJSON・未知version・容量超過ファイルの保全、無効な数値、負座標のモニター、DPI変更、モニター消失時のプライマリへの復帰、作業領域内へのサイズ・位置補正を確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check、Tauri debugビルド成功。既存block 0.1.6のfuture compatibility警告は継続。契約生成差分チェック16 artifacts成功。Engine／ACX／TypeScriptのIPC契約は変更なし。GPU実装は今回変更せず、実GPU ignoredテストは再実行していない。
+- パネル／ノード操作／Group／実行の既存UIロジックテストはそれぞれ3言語で成功。新規のユーザー向け文言はなく、保存形式と復元・リセット方法をPANEL_DOCKING.mdの3言語で説明。
+- macOSのTauri実アプリをComputer Useで起動。浮動パネルを操作し、通常終了後にfloating=true、メイン1440×800／浮動380×800の論理サイズとモニター相対位置をJSONで確認。最終ビルドで再起動し、浮動パネルとドッキングボタンを視認。復元したパネルから6ノードの実行（6/6、revision 0）が成功。再終了後のJSONでメインと浮動の位置・サイズが前回と完全一致。
+- 次にボタンでドッキングしてメインウインドウを閉じ、floating=falseと浮動ウインドウの保存サイズ維持を確認。再起動時に同一ウインドウの右パネルと切り離しボタンが表示されることをスクリーンショットで確認し、検証アプリを終了。
+- ⭕️ [Pending] Windows/Linux、実際の複数モニター間のDPI変更／接続解除、最小化・最大化・全画面からの復帰は今回の実機検証対象外。強制終了・電源断の耐久性、複数プロセス間の配置競合解決は提供しない。選択ノードへのインスペクター追従は次の実装項目。
+
+## 2026-10-09: 選択ノードへのインスペクター追従
+
+- workspace/all-features Rust136件成功、GPU4件は通常実行でignored。追加テストで未知Viewの拒否、View間の選択分離、一覧の最初の50件に含まれないノードの選択、105件選択時の固定サイズ応答、選択ではrevisionが変わらないこと、他Viewからの削除による選択除去、Undo後の整合性を確認。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check、ホストdebugビルド成功。既存block 0.1.6のfuture compatibility警告は継続。SelectionSummaryのSchema／TypeScriptを生成し、17 artifactsの差分検査、TypeScript strict型検査、契約Python6件成功。Python検証には既存uvキャッシュのjsonschemaをofflineで使用。ACX契約とGPU実装は変更せず、実GPU ignoredテストは再実行していない。
+- Browser plugin not availableのため、既存Playwright／Chromiumでhttp://unge.test/へ静的ソースをroute配信し、IPC mockを使用。新規ブラウザー依存の導入なし。3言語・2テーマ・幅320/380/768pxでページURL/title、内容表示、横はみ出しなし、console/page errorsなしを確認。日本語の下書き保持画面を視認し、案内を文単位の改行へ調整。
+- ブラウザーで単一選択の自動読込、ページ外の選択、空／複数選択、未保存値の保持、表示中ノードへの保存後の追従、保存失敗と取得失敗、明示的な切り替え待ち中の入力／保存抑止、保存待ち中の選択変更、古いプロパティ応答の破棄、通知欠落の定期照会による回復、同一選択の再読込抑止、外部revision更新時の下書き保持を検証。既存の型・JSON・任意値削除・Batch・言語変更テストも維持。
+- macOSネイティブアプリでGPU上の数値ノードをクリックし、値20／revision 0のプロパティが自動表示されることを確認。未保存の77を入力後、HTMLの選択操作で別の数値調整ノードを選択。元ノードのIDと77、下書き保持の案内が残り、保存するとrevision 1となって数値調整ノードへ表示が追従することを確認。検証アプリを終了。
+- 既存パネル／ノード操作／Group／実行UIロジックテストも3言語で成功。新しい選択取得は登録Viewに限定し、IPCにはrevision・選択数・単一IDだけを送る。イベントは再照会の契機とし、保存には既存revision検査を使う。
+- ⭕️ [Pending] Windows/Linux、スクリーンリーダーの実機操作、別ウインドウモードでの今回の追従操作は未検証。未保存フォームのプロセスをまたぐ永続化、複数ノードへの一括プロパティ編集は未実装。

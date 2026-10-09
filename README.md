@@ -18,7 +18,7 @@ Tauri 2・Rust・WebGPU向けの、ディレクトリごと再利用できるノ
 | `crates/unge-contracts` | Rustから型・Schemaを生成するビルド用ツール | schema feature付きの既存クレート |
 | `bindings/typescript` | 型付きIPCクライアント、英語・日本語・简体中文のメッセージ | invokeを外から注入 |
 | `examples/headless` | `20 + 22 = 42` のGUI不要な実行例 | core、executor |
-| `examples/tauri-host` | WebView操作画面＋ネイティブwgpuウインドウ | ACXを含む5クレート |
+| `examples/tauri-host` | WebView設定パネル＋ネイティブwgpu描画 | ACXを含む5クレート |
 
 Document・表示状態・RendererはRustで所有します。WebViewは命令と小さなメタデータをやり取りします。
 画像、動画、Tensor、GPUバッファをフレームごとにJavaScriptへ渡しません。
@@ -48,9 +48,9 @@ cargo fmt --all -- --check
 cargo test --locked -p unge-render --test render -- --ignored
 ```
 
-デスクトップ例は機能確認用です。別ウインドウにグラフを描画し、操作画面で数値/加算ノード追加・Undo/Redoを試せます。「ダーク」「ライト」で操作画面と描画画面を切り替え、設定を再起動後にも復元します。[テーマの取り込み](docs/THEMES.md)を参照してください。グラフ上ではノードDrag、範囲選択、Port接続、右ドラッグPan、ホイールZoomが使えます。
+デスクトップ例は機能確認用です。macOSでは同一ウインドウの左側にグラフ、右側に設定パネルを表示し、操作画面で数値/加算ノード追加・Undo/Redoを試せます。「ダーク」「ライト」で操作画面と描画画面を切り替え、設定を再起動後にも復元します。[テーマの取り込み](docs/THEMES.md)を参照してください。グラフ上ではノードDrag、範囲選択、Port接続、右ドラッグPan、ホイールZoomが使えます。
 この例のネイティブウインドウ生成にはTauriの `unstable` featureを使用します。
-ノード名・Port名をRust/GPU側で描画し、3言語の表示名をホストから登録できます。[GPU文字の取り込み](docs/GPU_TEXT.md)を参照してください。同一ウインドウ内のネイティブSurface合成は今後の実装項目です。入力の取り込み方とOS別の検証範囲は [POINTER_INPUT.md](docs/POINTER_INPUT.md) を参照してください。
+ノード名・Port名をRust/GPU側で描画し、3言語の表示名をホストから登録できます。[GPU文字の取り込み](docs/GPU_TEXT.md)を参照してください。同一ウインドウへの取り込みと別ウインドウへの切り替えは [WINDOW_COMPOSITION.md](docs/WINDOW_COMPOSITION.md) を参照してください。Windows/Linuxは実機検証待ちのため別ウインドウが既定です。入力の取り込み方とOS別の検証範囲は [POINTER_INPUT.md](docs/POINTER_INPUT.md) を参照してください。
 
 ## 別プロジェクトに取り込む
 
@@ -135,4 +135,8 @@ Definitionごとの入力/出力値マップSchemaとRust検証APIを追加し�
 
 ノードをドット背景・役割色・記号/説明文・明瞭な選択枠のデザインへ更新しました。 [NODE_APPEARANCE.md](docs/NODE_APPEARANCE.md)。
 
-[ノード設定のUIとAPI](docs/PROPERTY_INSPECTOR.md)
+[ノード設定のUIとAPI・選択への自動追従](docs/PROPERTY_INSPECTOR.md)
+
+[GPU / Surfaceの描画計測](docs/RENDER_PROFILING.md)
+
+[設定パネルのドッキング・フローティングと配置の保存／復元](docs/PANEL_DOCKING.md)

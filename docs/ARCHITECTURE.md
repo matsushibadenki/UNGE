@@ -31,12 +31,12 @@ CommandだけがEditorのDocumentを更新します。逆命令で履歴を保�
 Batchの途中や最後の検証に失敗した場合、逆順に戻してrevisionと履歴を維持します。
 Undo/Redo履歴は合算の件数とシリアライズ後ペイロード容量で制限します（既定256件・16MiB）。巨大な逆命令を保持できなければ履歴を破棄し、途中の編集を飛ばしたUndoを防ぎます。総ヒープ使用量の制限やディスク退避は未実装です。
 
-coreのDocumentValidatorをEditorへ設定すると、ロード時と編集・Undo/Redo確定時にホスト検証を適用できます。Registryがこのtraitを実装し、Port一致とPropertySchemaを検証します。Batchの最終状態だけを検証し、失敗時はDocument・revision・履歴を維持します。基本のnewコンストラクターは構造検証だけを維持し、サンプルはwith_validatorとfrom_editorで有効化しています。詳細は [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md)。
+coreのDocumentValidatorをEditorへ設定すると、ロード時と編集・Undo/Redo確定時にホスト検証を適用できます。Registryがこのtraitを実装し、Port一致とPropertySchemaを検証します。Batchの最終状態だけを検証し、失敗時はDocument・revision・履歴を維持します。基本のnewコンストラクターは構造検証だけを維持し、サンプルはwith_validatorまたはEngine::from_registryで有効化しています。詳細は [PROPERTY_VALIDATION.md](PROPERTY_VALIDATION.md)。
 
 保存順序を安定させるため主データはBTreeMapです。設計書のHashMap推奨からの意図的な差分です。
 依存探索にはHashMapのGraphIndex、表示探索にはBVHを使います。BVH構築は各階層の中央値分割を使い、部分木ごとの全件ソートを避けます。
-Document編集完了後に全体検証を行います。小さな移動ではノードと接続Edgeの描画Indexだけを更新し、プロパティ編集では現在の形状Indexを維持し、Group編集とノード移動ではGroup専用Indexを更新します。構造変更・Undo/Redo・更新保持量の超過時はSceneIndexを再構築します。unge-interactionはドラッグ中の一時座標を保持し、Upだけを確定Commandにします。描画は同じBVHと移動ノードの接続Indexを使い、一時座標で可視性を再評価します。
-変更矩形を各Index最大128件の集合で保持し、検索時に旧境界を除外して新境界を検査します。取り込み契約は [INDEX_UPDATES.md](INDEX_UPDATES.md)。トポロジーとUndo/Redoの差分更新は今後の項目です。
+Document編集完了後に全体検証を行います。小さな移動・構造変更・Undo/Redoでは対象ノードと接続Edgeの描画Indexだけを更新し、プロパティ編集では現在の形状Indexを維持し、Group編集とノード移動ではGroup専用Indexを更新します。変更件数・関連Edge数・更新保持量の超過時はSceneIndexを再構築します。unge-interactionはドラッグ中の一時座標を保持し、Upだけを確定Commandにします。描画は同じBVHと移動ノードの接続Indexを使い、一時座標で可視性を再評価します。
+変更矩形と削除マーカーを各Index最大128 IDの集合で保持し、検索時に旧境界を除外して新境界を検査します。取り込み契約は [INDEX_UPDATES.md](INDEX_UPDATES.md)。Undo/Redoの命令は履歴から読み取り、操作成功後に差分を反映します。
 
 ## 実行
 
@@ -64,18 +64,18 @@ Node BVHとEdge BVHを別々に使い、接続線が画面内を横切る場合�
 GpuRendererは容量に余裕を持ったバッファを再利用し、不足時のみ拡張します。
 表示Sceneの更新時には可視インスタンスをCPU→GPUへアップロードします。
 JavaScriptを経由するコピーやGPU→CPUの毎フレームreadbackはありません。
-テストのみ検証用にピクセルをreadbackします。
+テストのみ検証用にピクセルをreadbackします。明示的な診断APIは16バイトのGPUタイムスタンプをreadbackしますが、フレーム画像は転送しません。
 
 Dark/LightのsRGB配色はRustのThemePaletteに集約し、GPUには線形RGB、WebViewにはCSS tokensを渡します。Sceneの背景clear・グリッド・形状・文字を同時に更新します。テーマ変更でSceneIndexやGlyph Atlasを作り直しません。操作画面の小さなappearance命令とView別通知、ネイティブ枠のOS制約は [THEMES.md](THEMES.md)。
 
 SurfaceRendererはゼロサイズ、Resize、Timeout、Lost/Outdatedを扱います。
 GPU Device LostとOutOfMemoryはエラーとしてホストに返します。ホストは必要に応じてRendererを再生成します。
 サンプルのネイティブWindowBuilderはTauri 2の `unstable` featureを使います。このfeatureはサンプル側だけで有効化し、コアライブラリには要求していません。
-同一Tauriウインドウ内でWebViewとネイティブ描画面を重ねる処理はOS別の実装が必要なため、デスクトップ例では別ウインドウを使っています。
+macOSのデスクトップ例はSurfaceを親Windowへ、設定WebViewを右側の子として配置します。描画は左側の領域に制限し、入力も同じRustの配置計算で判定します。別ウインドウの互換経路も維持します。[WINDOW_COMPOSITION.md](WINDOW_COMPOSITION.md)。
 
 ## IPC
 
-Tauriのwindow引数から呼び出し元を特定し、Rustで登録済みのViewだけを受け付けます。
+TauriのWebview引数から子WebViewを含む呼び出し元をlabelで特定し、Rustで登録済みのViewだけを受け付けます。
 リクエスト上限は256KiB、Batch深さ16、命令数4096、選択数10000です。
 この上限はdeserialize後のAPI上限です。通信のストリーム段階のサイズ制限ではありません。
 Document全体の保存・読み込みと実行はRustホスト側APIを使います。
@@ -120,3 +120,13 @@ Group UIはページ付き概要だけを受け取り、Rust Viewの選択から
 ## プロパティ設定の表示境界
 
 `Engine::from_registry` は同じRegistryをEditorの検証と設定メタデータ取得に使う。`node_properties` は登録済みViewとrevisionを確認し、一つのノードの有界な定義・値を返す。WebViewはこの下書きだけを保持し、差分を単一Batchとして共有Engineに適用する。外部更新時の自動上書きは行わない。具体的なフォーム・状態・拡張境界は [PROPERTY_INSPECTOR.md](PROPERTY_INSPECTOR.md) を参照。
+
+描画Indexは小さなトポロジー変更とUndo/Redoも差分更新する。Editorの履歴命令を読み取り、成功後の最終Documentから対象Node・Edgeを更新する。削除マーカーを含む128 IDの上限を超えれば全体を再構築する。[INDEX_UPDATES.md](INDEX_UPDATES.md)。
+
+診断用のFrameProfilerは任意のTIMESTAMP_QUERYと有限のGPU完了待ちを用いる。通常render/drawにはクエリーや完了待ちを追加しない。Surface取得・CPU準備・GPUパス・CPUのpresent呼び出しを分けて記録する。[RENDER_PROFILING.md](RENDER_PROFILING.md)。
+
+設定パネルの配置はホストのCompositionがRustで所有します。ドッキング／フローティングは同じWebViewの親Windowを変更し、EngineのView認可label・Document・履歴を維持します。移動中の排他と失敗時の状態再取得、将来の複数パネルへの境界は [PANEL_DOCKING.md](PANEL_DOCKING.md) を参照してください。
+
+配置の永続化はサンプルの `panel_preferences.rs` に分離しています。DocumentやEngine IPCを変更せず、Rustでネイティブの通常配置を記録し、通常終了時にホストの設定ファイルへ保存します。復元時の画面内補正、設定のversion検証と破損ファイル保全は [PANEL_DOCKING.md](PANEL_DOCKING.md) を参照してください。
+
+`selection_summary` は呼び出し元Viewの選択数・単一選択ID・Document revisionだけを返します。選択の正本はRustに維持し、インスペクターはその通知と再照会から追従します。選択変更だけではrevisionは増えず、未保存フォームは明示的な破棄または保存成功まで表示中ノードに保持します。[PROPERTY_INSPECTOR.md](PROPERTY_INSPECTOR.md)。

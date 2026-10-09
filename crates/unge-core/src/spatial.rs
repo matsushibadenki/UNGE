@@ -71,7 +71,7 @@ impl Branch {
 #[derive(Debug, Default)]
 pub struct SpatialIndex {
     root: Option<Branch>,
-    updates: BTreeMap<Id, Rect>,
+    updates: BTreeMap<Id, Option<Rect>>,
 }
 impl SpatialIndex {
     pub fn new(doc: &Document) -> Self {
@@ -94,7 +94,21 @@ impl SpatialIndex {
     /// unchanged: rebuild from authoritative geometry when the overlay fills.
     /// Repeated updates to one ID replace its previous rectangle.
     pub fn update_rects(&mut self, changes: &BTreeMap<Id, Rect>) -> bool {
-        if changes.values().any(|rect| !rect.valid())
+        if changes.len() > 128 {
+            return false;
+        }
+        self.update_entries(
+            &changes
+                .iter()
+                .map(|(id, rect)| (*id, Some(*rect)))
+                .collect(),
+        )
+    }
+    /// Atomic bounded upserts/removals. None masks an ID in the base BVH.
+    /// Deletions consume the same 128-ID budget as upserts, including absent IDs.
+    pub fn update_entries(&mut self, changes: &BTreeMap<Id, Option<Rect>>) -> bool {
+        if changes.len() > 128
+            || changes.values().flatten().any(|rect| !rect.valid())
             || self.updates.len()
                 + changes
                     .keys()
@@ -120,7 +134,7 @@ impl SpatialIndex {
             result.extend(
                 self.updates
                     .iter()
-                    .filter(|(_, rect)| rect.intersects(area))
+                    .filter(|(_, rect)| rect.is_some_and(|r| r.intersects(area)))
                     .map(|(id, _)| *id),
             );
         }

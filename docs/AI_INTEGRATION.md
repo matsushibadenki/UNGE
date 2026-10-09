@@ -15,8 +15,8 @@
 3. `Definition` に安定したtype_id、意味を説明する3言語の文言、version、Port、PropertySchemaを定義する。
 4. `NodeExecutor` を実装し、`Registry::register` で登録する。
 5. `Scheduler::run` にDocumentのグラフを渡す。実行中の編集を許すなら、Rust内で取得したsnapshotを実行する。
-6. Tauriホストで `Engine::from_registry(document, 256, registry.clone())?` を作り、`app.manage(engine)` する。ウインドウは `register_view` で登録する。
-7. `invoke_handler(unge_tauri::handler())` を接続する。既存命令と共存するときは `generate_handler![unge_tauri::dispatch, unge_tauri::inspect, unge_tauri::node_properties, unge_tauri::appearance, unge_tauri::accessible_nodes, unge_tauri::groups, unge_tauri::start_execution, unge_tauri::current_execution, unge_tauri::execution_status, unge_tauri::cancel_execution, your_command]` を使う。
+6. Tauriホストで `Engine::from_registry(document, 256, registry.clone())?` を作り、`app.manage(engine)` する。WebViewのlabelは `register_view` で登録する。
+7. `invoke_handler(unge_tauri::handler())` を接続する。既存命令と共存するときは `generate_handler![unge_tauri::dispatch, unge_tauri::inspect, unge_tauri::node_properties, unge_tauri::selection_summary, unge_tauri::appearance, unge_tauri::accessible_nodes, unge_tauri::groups, unge_tauri::start_execution, unge_tauri::current_execution, unge_tauri::execution_status, unge_tauri::cancel_execution, your_command]` を使う。
 8. `createClient(invoke)` でWebViewから操作する。描画フレームを返す命令を追加しない。
 9. Rustネイティブウインドウから `SurfaceRenderer` を作り、Engineに登録する。HiDPIでは `draw_scaled` を使う。実装例は `examples/tauri-host/src/main.rs`。
 10. [POINTER_INPUT.md](POINTER_INPUT.md) に従い、論理座標のDown/Move/Up/Cancelを順に送る。1操作のrevisionを固定し、Rust内のプレビューと確定Commandを分ける。
@@ -99,7 +99,7 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 
 ## 大規模グラフを取り込むとき
 
-[PERFORMANCE.md](PERFORMANCE.md) のrelease計測例を使って、取り込み先でも検証・Index構築・シーン生成を確認してください。公開値は単一のmacOS環境でのCPU計測です。60FPSやOS間の性能を保証しません。編集後の全体検証は残ります。小さな移動と表示に影響しない編集は [INDEX_UPDATES.md](INDEX_UPDATES.md) の経路を使い、構造変更・Undo/Redo・容量超過ではSceneIndexを再構築します。
+[PERFORMANCE.md](PERFORMANCE.md) のrelease計測例を使って、取り込み先でも検証・Index構築・シーン生成を確認してください。公開値は単一のmacOS環境でのCPU計測とGPU/Surfaceの直列診断です。60FPSやOS間の性能を保証しません。編集後の全体検証は残ります。小さな移動・構造変更・Undo/Redoは [INDEX_UPDATES.md](INDEX_UPDATES.md) の差分更新を使い、プロパティだけの編集は形状Indexを維持します。容量超過ではSceneIndexを再構築します。履歴の差分はundo_command/redo_commandから編集前に取得し、成功後に反映してください。
 
 Group表示には既存SetGroupを使います。境界をDocumentやWebViewへ保存せず、[GROUP_RENDERING.md](GROUP_RENDERING.md) の派生描画と更新契約を使ってください。Groupの所属Node選択・名前/所属編集は [GROUP_EDITING.md](GROUP_EDITING.md) を使います。枠ドラッグは未実装です。
 
@@ -110,3 +110,13 @@ GPU表示に対応するHTML操作には [ACCESSIBILITY.md](ACCESSIBILITY.md) �
 ノードの役割色・記号・補足文は [NODE_APPEARANCE.md](NODE_APPEARANCE.md) のNodeLabelsを使い、表示メタデータとしてホストから指定してください。既存の構造体リテラルには新フィールドまたはDefaultが必要です。
 
 プロパティ編集UIを取り込むときは [PROPERTY_INSPECTOR.md](PROPERTY_INSPECTOR.md) を参照してください。定義と現在値を同じrevisionで取得し、差分を単一Batchで保存します。
+
+描画のボトルネック確認には [RENDER_PROFILING.md](RENDER_PROFILING.md) のFrameProfiler / SurfaceRenderer::new_profiledを明示的に使用します。通常描画へ完了待ちを混ぜず、GPUパス・CPU待ち・present呼び出しを区別してください。
+
+同一ウインドウへ組み込む場合は [WINDOW_COMPOSITION.md](WINDOW_COMPOSITION.md) を使用します。子WebViewのlabelを認可し、親WindowのSurfaceサイズとグラフ領域を分けます。macOSで検証済み、Windows/Linuxは保留です。
+
+設定パネルを切り離す場合は [PANEL_DOCKING.md](PANEL_DOCKING.md) のホスト専用命令とWebview::reparentを使用します。同じWebViewのlabelと下書きを維持し、DocumentやRendererを複製しないでください。
+
+配置の永続化はサンプルの `panel_preferences.rs` に分離しています。DocumentやEngine IPCを変更せず、Rustでネイティブの通常配置を記録し、通常終了時にホストの設定ファイルへ保存します。復元時の画面内補正、設定のversion検証と破損ファイル保全は [PANEL_DOCKING.md](PANEL_DOCKING.md) を参照してください。
+
+選択へのプロパティ追従には `selection_summary` を登録し、単一選択IDとrevisionから `node_properties` を取得します。選択ではrevisionが増えないため、非同期応答の順序は通知の世代でも検証します。未保存の値があれば表示中ノードへの下書きを維持し、保存成功または明示的な破棄後に切り替えてください。[詳細](PROPERTY_INSPECTOR.md)。

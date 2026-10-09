@@ -12,7 +12,7 @@ cargo run --locked -p unge-tauri-host
 ```
 
 The desktop sample needs the [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/).
-It uses a WebView for controls and a separate native window for GPU rendering.
+On macOS it combines a child WebView inspector and a native wgpu graph in one window. See [window composition](WINDOW_COMPOSITION.md); `--separate-windows` restores the previous layout. Windows/Linux keep the separate layout pending verification.
 The sample includes Dark/Light switching for controls and GPU rendering, with saved preferences; see [theme integration](THEMES.md#english). It offers node creation, undo/redo, dragging, box selection, port connections, panning and zoom. Node and port labels now use a Rust-owned glyph atlas with three-language host metadata; see [GPU text integration](GPU_TEXT.md#english). See [pointer integration](POINTER_INPUT.md#english) for logical coordinates and host setup.
 
 ## Reuse
@@ -66,3 +66,7 @@ Per-definition input/output value schemas and Rust validation APIs are available
 Nodes now use a dot canvas, role accents, optional symbols/captions and a clear selection ring. [NODE_APPEARANCE.md](NODE_APPEARANCE.md)。
 
 [Property inspector UI and API](PROPERTY_INSPECTOR.md)
+
+[GPU / Surface profiling](RENDER_PROFILING.md)
+
+[Dock and float the settings panel](PANEL_DOCKING.md)

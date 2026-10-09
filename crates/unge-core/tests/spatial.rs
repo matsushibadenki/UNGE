@@ -123,3 +123,37 @@ fn bounded_updates_replace_old_bounds_and_reject_atomically() {
     assert!(index.update_rects(&[(Id::from_u128(1), old)].into()));
     assert_eq!(index.query(old), vec![Id::from_u128(1)]);
 }
+
+#[test]
+fn removals_reinsertions_and_mixed_overlay_failures_are_atomic() {
+    use std::collections::BTreeMap;
+    let a = Id::from_u128(1);
+    let b = Id::from_u128(2);
+    let rect = Rect::default();
+    let mut index = SpatialIndex::from_rects(vec![(a, rect)]);
+    assert!(index.update_entries(&[(a, None), (b, Some(rect))].into()));
+    assert_eq!(index.query(rect), vec![b]);
+    assert_eq!(index.hit_test([10., 10.]), Some(b));
+    let invalid = [
+        (b, None),
+        (
+            a,
+            Some(Rect {
+                width: f32::NAN,
+                ..rect
+            }),
+        ),
+    ]
+    .into();
+    assert!(!index.update_entries(&invalid));
+    assert_eq!(index.query(rect), vec![b]);
+    assert!(index.update_entries(&[(a, Some(rect)), (b, None)].into()));
+    assert_eq!(index.query(rect), vec![a]);
+    let full: BTreeMap<_, _> = (1..=128).map(|n| (Id::from_u128(n), None)).collect();
+    assert!(index.update_entries(&full));
+    assert!(index.query(rect).is_empty());
+    assert!(!index.update_entries(&[(a, Some(rect)), (Id::from_u128(129), None)].into()));
+    assert!(index.query(rect).is_empty());
+    assert!(index.update_entries(&[(a, Some(rect))].into()));
+    assert_eq!(index.query(rect), vec![a]);
+}

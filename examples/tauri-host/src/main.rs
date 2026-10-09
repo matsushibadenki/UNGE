@@ -1,5 +1,8 @@
 mod input;
+mod panel_preferences;
 mod property_demo;
+mod render_benchmark;
+mod workspace;
 use std::sync::Arc;
 use tauri::{Emitter, Listener, Manager};
 use unge_core::*;
@@ -144,12 +147,16 @@ fn redraw(app: &tauri::AppHandle) {
     let Some(engine) = app.try_state::<Engine>() else {
         return;
     };
+    let composition = app.state::<workspace::Composition>();
+    if composition.is_transitioning() {
+        return;
+    }
     if let Ok(appearance) = engine.appearance("controls") {
         let native = match appearance.theme {
             unge_render::Theme::Dark => tauri::Theme::Dark,
             unge_render::Theme::Light => tauri::Theme::Light,
         };
-        if let Some(canvas) = app.get_window("canvas")
+        if let Some(canvas) = app.get_window(composition.canvas_label())
             && canvas.theme().ok() != Some(native)
             && let Err(error) = canvas.set_theme(Some(native))
         {
@@ -162,20 +169,53 @@ fn redraw(app: &tauri::AppHandle) {
             eprintln!("control theme: {error}");
         }
     }
-    if let Some(canvas) = app.get_window("canvas")
-        && let Ok(size) = canvas.inner_size()
-        && let Err(error) = engine.draw_scaled(
-            "controls",
-            [size.width, size.height],
-            canvas.scale_factor().unwrap_or(1.0),
-        )
+    if let Some(panel) = app.get_window("inspector")
+        && let Ok(view) = engine.view_state("controls")
+        && panel.title().ok().as_deref() != Some(workspace::panel_title(view.locale))
     {
-        eprintln!("{}: {}", error.code, error.message);
+        let _ = panel.set_title(workspace::panel_title(view.locale));
+    }
+    if let Some(canvas) = app.get_window(composition.canvas_label())
+        && let Ok(size) = canvas.inner_size()
+    {
+        let physical = [size.width, size.height];
+        let scale = canvas.scale_factor().unwrap_or(1.0);
+        if let Err(error) = composition.resize_panel(app, physical, scale) {
+            eprintln!("panel layout: {error}");
+        }
+        if let Err(error) = engine.draw_scaled_region(
+            "controls",
+            physical,
+            composition.layout(physical, scale).graph,
+            scale,
+        ) {
+            eprintln!("{}: {}", error.code, error.message);
+        }
     }
 }
 fn main() {
+    let mut context = tauri::generate_context!();
+    if std::env::args().any(|arg| arg == "--benchmark-surface") {
+        render_benchmark::run(context);
+        return;
+    }
+    context.config_mut().app.windows.clear();
     tauri::Builder::default()
-        .invoke_handler(unge_tauri::handler())
+        .invoke_handler(tauri::generate_handler![
+            unge_tauri::dispatch,
+            unge_tauri::inspect,
+            unge_tauri::node_properties,
+            unge_tauri::selection_summary,
+            unge_tauri::appearance,
+            unge_tauri::accessible_nodes,
+            unge_tauri::groups,
+            unge_tauri::start_execution,
+            unge_tauri::current_execution,
+            unge_tauri::execution_status,
+            unge_tauri::cancel_execution,
+            workspace::panel_layout,
+            workspace::set_panel_floating,
+        ])
         .setup(|app| {
             let registry = Arc::new(property_demo::registry());
             let execution = unge_executor::RunService::new(
@@ -198,11 +238,35 @@ fn main() {
                     },
                 )
                 .map_err(|e| e.message)?;
-            // A native window without a WebView is the portable baseline surface.
-            let canvas = tauri::WindowBuilder::new(app, "canvas")
-                .title("UNGE · Rust / wgpu")
-                .inner_size(1280., 640.)
+            let unified = cfg!(target_os = "macos")
+                && !std::env::args().any(|arg| arg == "--separate-windows");
+            let composition = workspace::Composition::new(unified);
+            let preferences_path = if unified {
+                match app.path().app_config_dir() {
+                    Ok(path) => Some(path.join("panel-layout.json")),
+                    Err(error) => {
+                        eprintln!("panel preferences path: {error}");
+                        None
+                    }
+                }
+            } else {
+                None
+            };
+            app.manage(panel_preferences::Store::load(preferences_path));
+            let canvas = tauri::WindowBuilder::new(app, composition.canvas_label())
+                .title("UNGE")
+                .inner_size(if unified { 1440. } else { 1280. }, 800.)
+                .min_inner_size(720., 400.)
+                .visible(false)
                 .build()?;
+            if unified
+                && let Err(error) = app
+                    .state::<panel_preferences::Store>()
+                    .restore(&canvas, [720., 400.])
+            {
+                eprintln!("workspace restore: {error}");
+            }
+            app.manage(composition);
             let size = canvas.inner_size()?;
             let renderer = pollster::block_on(SurfaceRenderer::new(
                 Arc::new(canvas.clone()),
@@ -211,12 +275,37 @@ fn main() {
             engine
                 .attach_renderer("controls", renderer)
                 .map_err(|e| e.message)?;
+            if unified {
+                let composition = app.state::<workspace::Composition>();
+                let layout = composition.layout([size.width, size.height], canvas.scale_factor()?);
+                canvas.add_child(
+                    tauri::webview::WebviewBuilder::new(
+                        "controls",
+                        tauri::WebviewUrl::App("index.html".into()),
+                    ),
+                    tauri::PhysicalPosition::new(layout.graph[0] as i32, 0),
+                    tauri::PhysicalSize::new(layout.panel[0], layout.panel[1]),
+                )?;
+            } else {
+                tauri::WebviewWindowBuilder::new(
+                    app,
+                    "controls",
+                    tauri::WebviewUrl::App("index.html".into()),
+                )
+                .title("UNGE")
+                .inner_size(380., 720.)
+                .min_inner_size(320., 400.)
+                .build()?;
+            }
             app.wry_plugin(input::InputBridge {
                 app: app.handle().clone(),
                 engine: engine.clone(),
             });
             app.manage(engine);
             redraw(app.handle());
+            canvas.show()?;
+            let restore = app.handle().clone();
+            tauri::async_runtime::spawn_blocking(move || panel_preferences::initialize(&restore));
             let handle = app.handle().clone();
             app.listen("unge://changed", move |_| {
                 let main = handle.clone();
@@ -226,7 +315,7 @@ fn main() {
                 let engine = app.state::<Engine>().inner().clone();
                 let handle = app.handle().clone();
                 let controls = app
-                    .get_webview_window("controls")
+                    .get_webview("controls")
                     .ok_or("controls window missing")?;
                 std::thread::spawn(move || {
                     let mut provider = unge_acx::Provider::new(
@@ -258,7 +347,35 @@ fn main() {
             Ok(())
         })
         .on_window_event(|window, event| {
-            if window.label() == "canvas"
+            let Some(composition) = window.app_handle().try_state::<workspace::Composition>()
+            else {
+                return;
+            };
+            if matches!(
+                event,
+                tauri::WindowEvent::Moved(_)
+                    | tauri::WindowEvent::Resized(_)
+                    | tauri::WindowEvent::ScaleFactorChanged { .. }
+                    | tauri::WindowEvent::CloseRequested { .. }
+            ) {
+                window.state::<panel_preferences::Store>().capture(window);
+            }
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                if window.label() == "inspector" {
+                    api.prevent_close();
+                    if !composition.is_transitioning() && composition.is_floating() {
+                        let app = window.app_handle().clone();
+                        tauri::async_runtime::spawn_blocking(move || {
+                            if let Err(error) = workspace::move_panel(&app, false) {
+                                eprintln!("{}: {}", error.code, error.message);
+                            }
+                        });
+                    }
+                } else if window.label() == "workspace" && composition.is_transitioning() {
+                    api.prevent_close();
+                }
+            }
+            if (window.label() == composition.canvas_label() || window.label() == "inspector")
                 && matches!(
                     event,
                     tauri::WindowEvent::Resized(_)
@@ -268,13 +385,26 @@ fn main() {
             {
                 redraw(window.app_handle());
             }
-            if window.label() == "controls" && matches!(event, tauri::WindowEvent::Destroyed) {
+            if (window.label() == "controls" || window.label() == "workspace")
+                && matches!(event, tauri::WindowEvent::Destroyed)
+            {
+                if let Some(inspector) = window.app_handle().get_window("inspector") {
+                    let _ = inspector.destroy();
+                }
                 let _ = window.state::<Engine>().remove_view("controls");
                 if let Some(canvas) = window.app_handle().get_window("canvas") {
                     let _ = canvas.close();
                 }
             }
         })
-        .run(tauri::generate_context!())
-        .expect("Tauri host failed");
+        .build(context)
+        .expect("Tauri host failed")
+        .run(|app, event| {
+            if matches!(event, tauri::RunEvent::Exit) {
+                // All geometry is already in Rust memory, even after window destruction.
+                if let Some(store) = app.try_state::<panel_preferences::Store>() {
+                    store.save();
+                }
+            }
+        });
 }

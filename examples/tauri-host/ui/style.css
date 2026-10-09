@@ -86,3 +86,10 @@ button { overflow-wrap:anywhere; }
 .property-value input[type=range]::-moz-range-thumb { width:13px; height:13px; border-radius:50%; border:0; background:var(--accent); cursor:pointer; }
 .property-value input.property-toggle { width:36px; height:22px; }
 .property-value input:disabled, .property-value textarea:disabled { opacity:.5; }
+
+.panel-toolbar { margin-top:16px; }
+.panel-toolbar button { width:100%; }
+.panel-toolbar output { font-size:13px; margin-top:4px; }
+
+#propertySelectionStatus { white-space:pre-line; font-size:13px; text-wrap:pretty; overflow-wrap:normal; }
+#propertySelectionStatus:not(:empty) { margin-top:10px; border-left:2px solid var(--accent); padding-left:10px; }

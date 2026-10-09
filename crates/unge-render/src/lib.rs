@@ -1,6 +1,8 @@
 //! Rust-owned instanced renderer. The host supplies a texture or native surface.
 mod curves;
 mod gpu;
+mod profile;
+pub use profile::*;
 mod groups;
 mod labels;
 mod text;

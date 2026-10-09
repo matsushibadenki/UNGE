@@ -206,6 +206,35 @@ impl GpuRenderer {
     }
     /// Geometry and glyph batches share a pass and preserve node paint order.
     pub fn render(&self, encoder: &mut wgpu::CommandEncoder, target: &wgpu::TextureView) {
+        self.render_with_timestamps(encoder, target, None);
+    }
+    /// Host-provided timestamp queries for explicit profiling. Normal rendering
+    /// uses no queries. The device must support the requested query feature.
+    pub fn render_with_timestamps(
+        &self,
+        encoder: &mut wgpu::CommandEncoder,
+        target: &wgpu::TextureView,
+        timestamp_writes: Option<wgpu::RenderPassTimestampWrites<'_>>,
+    ) {
+        self.render_pass(encoder, target, timestamp_writes, None);
+    }
+    /// Draw into a top-left physical region. The caller must keep it within the
+    /// target and prepare using this same size. The rest of the target is cleared.
+    pub fn render_in_region(
+        &self,
+        encoder: &mut wgpu::CommandEncoder,
+        target: &wgpu::TextureView,
+        size: [u32; 2],
+    ) {
+        self.render_pass(encoder, target, None, Some(size));
+    }
+    fn render_pass(
+        &self,
+        encoder: &mut wgpu::CommandEncoder,
+        target: &wgpu::TextureView,
+        timestamp_writes: Option<wgpu::RenderPassTimestampWrites<'_>>,
+        region: Option<[u32; 2]>,
+    ) {
         let mut pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             label: Some("UNGE graph pass"),
             color_attachments: &[Some(wgpu::RenderPassColorAttachment {
@@ -223,11 +252,18 @@ impl GpuRenderer {
                 },
             })],
             depth_stencil_attachment: None,
-            timestamp_writes: None,
+            timestamp_writes,
             occlusion_query_set: None,
         });
         if !self.prepared {
             return;
+        }
+        if let Some([width, height]) = region {
+            if width == 0 || height == 0 {
+                return;
+            }
+            pass.set_viewport(0., 0., width as f32, height as f32, 0., 1.);
+            pass.set_scissor_rect(0, 0, width, height);
         }
         let mut first = 0;
         for (after, range) in &self.text.batches {

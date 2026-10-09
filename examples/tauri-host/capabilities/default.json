@@ -1,1 +1,1 @@
-{ "identifier": "controls", "description": "Local example controls", "windows": ["controls"], "permissions": ["core:default"] }
+{ "identifier": "controls", "description": "Local example controls", "webviews": ["controls"], "permissions": ["core:default"] }

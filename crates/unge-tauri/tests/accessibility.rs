@@ -50,6 +50,69 @@ fn engine() -> Engine {
     engine
 }
 #[test]
+fn inspector_selection_is_scoped_constant_size_and_tracks_deletion() {
+    let engine = engine();
+    let revision = engine.selection_summary("a").unwrap().revision;
+    assert_eq!(
+        engine.selection_summary("unknown").unwrap_err().code,
+        "unknown_view"
+    );
+    assert_eq!(engine.selection_summary("a").unwrap().single, None);
+    let id = Id::from_u128(105); // Outside the first 50-node accessibility page.
+    engine
+        .dispatch("a", Request::Select { ids: [id].into() })
+        .unwrap();
+    assert_eq!(
+        engine.selection_summary("a").unwrap(),
+        SelectionSummary {
+            revision,
+            count: 1,
+            single: Some(id)
+        }
+    );
+    assert_eq!(engine.selection_summary("b").unwrap().count, 0);
+    engine
+        .dispatch(
+            "a",
+            Request::Select {
+                ids: (1..=105).map(Id::from_u128).collect(),
+            },
+        )
+        .unwrap();
+    let many = engine.selection_summary("a").unwrap();
+    assert_eq!(
+        (many.count, many.single, many.revision),
+        (105, None, revision)
+    );
+    assert!(serde_json::to_vec(&many).unwrap().len() < 100);
+    engine
+        .dispatch("a", Request::Select { ids: [id].into() })
+        .unwrap();
+    engine
+        .dispatch(
+            "b",
+            Request::Apply {
+                expected_revision: revision,
+                command: Command::RemoveNode { id },
+            },
+        )
+        .unwrap();
+    let removed = engine.selection_summary("a").unwrap();
+    assert_eq!(
+        (removed.count, removed.single, removed.revision),
+        (0, None, revision + 1)
+    );
+    engine
+        .dispatch(
+            "a",
+            Request::Undo {
+                expected_revision: revision + 1,
+            },
+        )
+        .unwrap();
+    assert_eq!(engine.selection_summary("a").unwrap().count, 0);
+}
+#[test]
 fn semantic_pages_are_bounded_localized_and_view_specific() {
     let engine = engine();
     let rev = engine.dispatch("a", Request::Summary).unwrap().revision;

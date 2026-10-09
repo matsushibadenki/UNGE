@@ -12,7 +12,7 @@ cargo run --locked -p unge-tauri-host
 ```
 
 桌面示例需要安装 [Tauri 所需依赖](https://v2.tauri.app/start/prerequisites/)。
-WebView 提供操作界面，独立原生窗口负责 GPU 绘制。
+macOS在同一窗口中组合子WebView设置面板和原生wgpu绘图。[集成方法](WINDOW_COMPOSITION.md)。`--separate-windows` 恢复双窗口；Windows/Linux在验证前仍默认使用双窗口。
 示例支持操作面板与GPU的深色/浅色切换并保存选择；见[主题集成](THEMES.md#简体中文)。还支持添加节点、撤销、重做、拖动、框选、端口连接、平移和缩放。节点与端口文字已使用Rust持有的字形图集渲染，宿主可提供三语名称；见[GPU文字集成](GPU_TEXT.md#简体中文)。逻辑坐标和宿主设置见[指针集成](POINTER_INPUT.md#简体中文)。
 
 ## 集成
@@ -66,3 +66,7 @@ GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘�
 节点新增点阵背景、角色颜色、可选符号/说明及清晰的选择外框。 [NODE_APPEARANCE.md](NODE_APPEARANCE.md)。
 
 [节点属性界面及API](PROPERTY_INSPECTOR.md)
+
+[GPU / Surface描画计测](RENDER_PROFILING.md)
+
+[设置面板停靠与浮动](PANEL_DOCKING.md)

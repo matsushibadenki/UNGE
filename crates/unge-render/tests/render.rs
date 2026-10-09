@@ -296,6 +296,69 @@ fn gpu_renders_pixels_without_validation_errors() {
             .filter(|offset| pixels[*offset] > 100)
             .count();
         assert!(title_pixels > 10, "group title pixels: {title_pixels}");
+        let baseline = pixels.to_vec();
+        drop(pixels);
+        buffer.unmap();
+        // Same world coordinates in a smaller graph region must not stretch.
+        // The inspector area is cleared and receives no grid, glyphs or geometry.
+        renderer
+            .prepare_sized(
+                &device,
+                &queue,
+                &scene,
+                Viewport {
+                    size: [128., 256.],
+                    ..viewport
+                },
+                [128, 256],
+            )
+            .unwrap();
+        let mut encoder = device.create_command_encoder(&Default::default());
+        renderer.render_in_region(
+            &mut encoder,
+            &texture.create_view(&Default::default()),
+            [128, 256],
+        );
+        encoder.copy_texture_to_buffer(
+            texture.as_image_copy(),
+            wgpu::TexelCopyBufferInfo {
+                buffer: &buffer,
+                layout: wgpu::TexelCopyBufferLayout {
+                    offset: 0,
+                    bytes_per_row: Some(1024),
+                    rows_per_image: Some(256),
+                },
+            },
+            wgpu::Extent3d {
+                width: 256,
+                height: 256,
+                depth_or_array_layers: 1,
+            },
+        );
+        queue.submit([encoder.finish()]);
+        let (tx, rx) = std::sync::mpsc::channel();
+        buffer
+            .slice(..)
+            .map_async(wgpu::MapMode::Read, move |r| tx.send(r).unwrap());
+        device.poll(wgpu::PollType::wait_indefinitely()).unwrap();
+        rx.recv().unwrap().unwrap();
+        let pixels = buffer.slice(..).get_mapped_range();
+        for y in 0..256 {
+            for x in 0..256 {
+                let offset = (y * 256 + x) * 4;
+                for channel in 0..4 {
+                    let expected = if x < 128 {
+                        baseline[offset + channel]
+                    } else {
+                        (scene.background[channel] * 255.).round() as u8
+                    };
+                    assert!(
+                        pixels[offset + channel].abs_diff(expected) <= 1,
+                        "region pixel {x},{y} channel {channel}"
+                    );
+                }
+            }
+        }
         drop(pixels);
         buffer.unmap();
         assert!(device.pop_error_scope().await.is_none());

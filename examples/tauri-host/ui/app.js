@@ -2,15 +2,15 @@ const { invoke } = window.__TAURI__.core;
 const { listen } = window.__TAURI__.event;
 const $ = id => document.getElementById(id);
 const text = {
-  en: { title:'A shared Rust document', description:'Controls live in this WebView. The second window renders the graph with wgpu.', add:'Add number', addSum:'Add sum', help:'Drag nodes to move. Shift adds to the selection. Drag empty space to select; drag ports to connect. Right-drag pans, the wheel zooms, and Esc cancels.', undo:'Undo', redo:'Redo', zoomLabel:'Zoom', nodes:'nodes', revision:'revision', failed:'Operation failed', themeLabel:'Appearance', themeDark:'Dark', themeLight:'Light', language:'Language' },
-  ja: { title:'Rustで共有するグラフ', description:'この画面から操作します。\nグラフは別画面に描画します。', add:'数値追加', addSum:'加算追加', help:'ドラッグで移動／Shiftで追加選択\n余白のドラッグで範囲選択\nポート間をドラッグして接続\n右ドラッグで画面移動\nホイールで拡大縮小／Escで中止', undo:'元に戻す', redo:'やり直す', zoomLabel:'ズーム', nodes:'ノード', revision:'リビジョン', failed:'操作に失敗しました', themeLabel:'表示モード', themeDark:'ダーク', themeLight:'ライト', language:'言語' },
-  'zh-CN': { title:'共享的 Rust 文档', description:'通过此 WebView 操作，在另一个窗口中使用 wgpu 绘制节点图。', add:'添加数值', addSum:'添加加法', help:'拖动节点移动，Shift追加选择。拖动空白处框选，拖动端口连接。右键拖动平移，滚轮缩放，Esc取消。', undo:'撤销', redo:'重做', zoomLabel:'缩放', nodes:'节点', revision:'版本', failed:'操作失败', themeLabel:'外观', themeDark:'深色', themeLight:'浅色', language:'语言' }
+  en: { title:'A shared Rust document', description:'Select a node in the graph to edit its properties.', add:'Add number', addSum:'Add sum', help:'Drag nodes to move. Shift adds to the selection. Drag empty space to select; drag ports to connect. Right-drag pans, the wheel zooms, and Esc cancels.', undo:'Undo', redo:'Redo', zoomLabel:'Zoom', nodes:'nodes', revision:'revision', failed:'Operation failed', themeLabel:'Appearance', themeDark:'Dark', themeLight:'Light', language:'Language' },
+  ja: { title:'Rustで共有するグラフ', description:'グラフのノードを選択して、プロパティを設定します。', add:'数値追加', addSum:'加算追加', help:'ドラッグで移動／Shiftで追加選択\n余白のドラッグで範囲選択\nポート間をドラッグして接続\n右ドラッグで画面移動\nホイールで拡大縮小／Escで中止', undo:'元に戻す', redo:'やり直す', zoomLabel:'ズーム', nodes:'ノード', revision:'リビジョン', failed:'操作に失敗しました', themeLabel:'表示モード', themeDark:'ダーク', themeLight:'ライト', language:'言語' },
+  'zh-CN': { title:'共享的 Rust 文档', description:'在节点图中选中节点，设置其属性。', add:'添加数值', addSum:'添加加法', help:'拖动节点移动，Shift追加选择。拖动空白处框选，拖动端口连接。右键拖动平移，滚轮缩放，Esc取消。', undo:'撤销', redo:'重做', zoomLabel:'缩放', nodes:'节点', revision:'版本', failed:'操作失败', themeLabel:'外观', themeDark:'深色', themeLight:'浅色', language:'语言' }
 };
 let locale = navigator.language.startsWith('ja') ? 'ja' : navigator.language.startsWith('zh') ? 'zh-CN' : 'en';
 let summary = { revision:0,nodes:0,edges:0 };
 let pending = Promise.resolve();
 function status() { $('status').textContent = `${summary.nodes} ${text[locale].nodes} · ${text[locale].revision} ${summary.revision}`; }
-function translate() { document.documentElement.lang=locale; for (const key of ['title','description','add','addSum','undo','redo','zoomLabel','help','themeLabel','themeDark','themeLight']) $(key).textContent=text[locale][key]; $('locale').setAttribute('aria-label',text[locale].language); status(); if (window.executionUI) window.executionUI.translate(locale); if (window.accessibleGraph) window.accessibleGraph.translate(); if (window.groupControls) window.groupControls.translate(); if (window.propertyInspector) window.propertyInspector.translate(); }
+function translate() { document.documentElement.lang=locale; for (const key of ['title','description','add','addSum','undo','redo','zoomLabel','help','themeLabel','themeDark','themeLight']) $(key).textContent=text[locale][key]; $('locale').setAttribute('aria-label',text[locale].language); status(); if (window.executionUI) window.executionUI.translate(locale); if (window.accessibleGraph) window.accessibleGraph.translate(); if (window.groupControls) window.groupControls.translate(); if (window.propertyInspector) window.propertyInspector.translate(); if (window.panelControls) window.panelControls.translate(); }
 async function send(request) { summary=await invoke('dispatch',{request}); status(); return summary; }
 function applyAppearance(appearance) {
   const root = document.documentElement;
@@ -63,3 +63,13 @@ window.groupControls = createGroupControls({ invoke, send, enqueue, locale: () =
 enqueue(() => window.groupControls.refresh());
 
 window.propertyInspector = createPropertyInspector({ invoke, send, locale: () => locale, selectedId: () => $('nodeChoice').value });
+
+window.panelControls = createPanelControls({ invoke, listen, locale: () => locale });
+
+// Native pointer selection can change without a document revision. Events invalidate
+// pending reads; focus and a low-frequency visible-page query recover missed events.
+listen('unge://selection-changed', () => window.propertyInspector.refreshSelection()).catch(console.error);
+window.addEventListener('focus', () => window.propertyInspector.refreshSelection());
+document.addEventListener('visibilitychange', () => { if (!document.hidden) window.propertyInspector.refreshSelection(); });
+setInterval(() => { if (!document.hidden) window.propertyInspector.refreshSelection({invalidate:false}); }, 2000);
+window.propertyInspector.refreshSelection();

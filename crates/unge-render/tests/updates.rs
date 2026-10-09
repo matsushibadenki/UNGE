@@ -210,7 +210,7 @@ fn batch_final_placement_properties_groups_and_topology_match_rebuild() {
         editor.execute(command).unwrap();
         assert_eq!(
             index.update(editor.document(), &changes),
-            SceneUpdate::Rebuilt
+            SceneUpdate::Incremental
         );
         compare(&index, editor.document());
     }
@@ -253,6 +253,214 @@ fn high_degree_moves_rebuild_without_truncating_incident_edges() {
     };
     let changes = SceneChanges::from_command(&command);
     editor.execute(command).unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Rebuilt
+    );
+    compare(&index, editor.document());
+}
+
+fn apply_and_compare(editor: &mut Editor, index: &mut SceneIndex, command: Command) {
+    let changes = SceneChanges::from_command(&command);
+    editor.execute(command).unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Incremental
+    );
+    compare(index, editor.document());
+    for _ in 0..2 {
+        let changes = SceneChanges::from_command(editor.undo_command().unwrap());
+        assert!(editor.undo().unwrap());
+        assert_eq!(
+            index.update(editor.document(), &changes),
+            SceneUpdate::Incremental
+        );
+        compare(index, editor.document());
+        let changes = SceneChanges::from_command(editor.redo_command().unwrap());
+        assert!(editor.redo().unwrap());
+        assert_eq!(
+            index.update(editor.document(), &changes),
+            SceneUpdate::Incremental
+        );
+        compare(index, editor.document());
+    }
+}
+#[test]
+fn topology_history_restores_implicit_edges_groups_and_updates_incidence() {
+    let mut editor = editor();
+    let mut index = SceneIndex::new(editor.document());
+    let id = Id::from_u128(1);
+    let group_id = Id::from_u128(5000);
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::SetGroup {
+            id: group_id,
+            group: Some(Group {
+                id: group_id,
+                label: "Group 日本語 组".into(),
+                nodes: [id, Id::from_u128(2)].into(),
+            }),
+        },
+    );
+    apply_and_compare(&mut editor, &mut index, Command::RemoveNode { id });
+    // Restore the removed node before rewiring its edge to different endpoints.
+    let changes = SceneChanges::from_command(editor.undo_command().unwrap());
+    editor.undo().unwrap();
+    index.update(editor.document(), &changes);
+    let edge_id = Id::from_u128(1001);
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::Batch {
+            commands: vec![
+                Command::Disconnect { id: edge_id },
+                Command::Connect {
+                    edge: Edge {
+                        id: edge_id,
+                        from: Endpoint {
+                            node: Id::from_u128(3),
+                            port: "p".into(),
+                        },
+                        to: Endpoint {
+                            node: Id::from_u128(90),
+                            port: "p".into(),
+                        },
+                    },
+                },
+            ],
+        },
+    );
+    for n in [1, 3, 90] {
+        apply_and_compare(
+            &mut editor,
+            &mut index,
+            Command::MoveNode {
+                id: Id::from_u128(n),
+                rect: Rect {
+                    x: 4500.,
+                    y: -600.,
+                    ..Rect::default()
+                },
+            },
+        );
+    }
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::RemoveNode {
+            id: Id::from_u128(3),
+        },
+    );
+}
+#[test]
+fn recreated_ids_use_final_ports_labels_and_geometry() {
+    let mut editor = editor();
+    let mut index = SceneIndex::new(editor.document());
+    let id = Id::from_u128(1);
+    let mut node = editor.document().graph().nodes()[&id].clone();
+    node.type_id = "replacement".into();
+    let mut port = node.outputs[0].clone();
+    port.name = "extra".into();
+    node.outputs.insert(0, port);
+    let edge = editor.document().graph().edges()[&Id::from_u128(1001)].clone();
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::Batch {
+            commands: vec![
+                Command::RemoveNode { id },
+                Command::AddNode {
+                    node,
+                    rect: Rect {
+                        x: 5000.,
+                        y: -700.,
+                        width: 300.,
+                        height: 180.,
+                    },
+                },
+                Command::Connect { edge },
+            ],
+        },
+    );
+    let property = Command::SetProperty {
+        id,
+        key: "value".into(),
+        value: Some(42.into()),
+    };
+    let changes = SceneChanges::from_command(&property);
+    editor.execute(property).unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Unchanged
+    );
+    let changes = SceneChanges::from_command(editor.undo_command().unwrap());
+    editor.undo().unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Unchanged
+    );
+    compare(&index, editor.document());
+}
+#[test]
+fn insert_remove_churn_and_failed_batch_preserve_final_scene() {
+    let mut editor = editor();
+    let mut index = SceneIndex::new(editor.document());
+    let template = editor.document().graph().nodes()[&Id::from_u128(1)].clone();
+    let mut rebuilds = 0;
+    for n in 300..450 {
+        let mut node = template.clone();
+        node.id = Id::from_u128(n);
+        for command in [
+            Command::AddNode {
+                node,
+                rect: Rect::default(),
+            },
+            Command::RemoveNode {
+                id: Id::from_u128(n),
+            },
+        ] {
+            let changes = SceneChanges::from_command(&command);
+            editor.execute(command).unwrap();
+            if index.update(editor.document(), &changes) == SceneUpdate::Rebuilt {
+                rebuilds += 1;
+            }
+        }
+        if n % 25 == 0 {
+            compare(&index, editor.document());
+        }
+    }
+    assert!(rebuilds > 0);
+    let revision = editor.revision();
+    let bad = Command::Batch {
+        commands: vec![
+            Command::RemoveNode {
+                id: Id::from_u128(1),
+            },
+            Command::RemoveNode {
+                id: Id::from_u128(999),
+            },
+        ],
+    };
+    assert!(editor.execute(bad).is_err());
+    assert_eq!(editor.revision(), revision);
+    compare(&index, editor.document());
+    let command = Command::Batch {
+        commands: (3..=140)
+            .map(|n| Command::RemoveNode {
+                id: Id::from_u128(n),
+            })
+            .collect(),
+    };
+    let changes = SceneChanges::from_command(&command);
+    editor.execute(command).unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Rebuilt
+    );
+    compare(&index, editor.document());
+    let changes = SceneChanges::from_command(editor.undo_command().unwrap());
+    editor.undo().unwrap();
     assert_eq!(
         index.update(editor.document(), &changes),
         SceneUpdate::Rebuilt

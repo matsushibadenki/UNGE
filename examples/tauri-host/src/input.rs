@@ -25,6 +25,7 @@ pub struct Input {
     revision: u64,
     pending_move: bool,
     dirty: bool,
+    selection: Option<unge_tauri::SelectionSummary>,
 }
 impl PluginBuilder<EventLoopMessage> for InputBridge {
     type Plugin = Input;
@@ -38,6 +39,7 @@ impl PluginBuilder<EventLoopMessage> for InputBridge {
             revision: 0,
             pending_move: false,
             dirty: false,
+            selection: None,
         }
     }
 }
@@ -99,6 +101,14 @@ impl Plugin<EventLoopMessage> for Input {
             self.flush_move();
             if std::mem::take(&mut self.dirty) {
                 super::redraw(&self.app);
+                if let Ok(selection) = self.engine.selection_summary("controls")
+                    && self.selection.as_ref() != Some(&selection)
+                {
+                    if let Some(view) = self.app.get_webview("controls") {
+                        let _ = view.emit("unge://selection-changed", &selection);
+                    }
+                    self.selection = Some(selection);
+                }
             }
             return false;
         }
@@ -108,24 +118,36 @@ impl Plugin<EventLoopMessage> for Input {
         else {
             return false;
         };
+        let composition = self.app.state::<super::workspace::Composition>();
+        let label = composition.canvas_label();
         let canvas = context.window_id_map.get(window_id).is_some_and(|id| {
             context
                 .windows
                 .0
                 .borrow()
                 .get(&id)
-                .is_some_and(|w| w.label() == "canvas")
+                .is_some_and(|w| w.label() == label)
         });
         if !canvas {
             return false;
         }
-        let Some(window) = self.app.get_window("canvas") else {
+        let Some(window) = self.app.get_window(label) else {
             return false;
         };
         let scale = window.scale_factor().unwrap_or(1.0);
+        let size = window.inner_size().unwrap_or_default();
+        // Compute hit boundaries from the same physical split used by rendering.
+        let position = if let WindowEvent::CursorMoved { position, .. } = event {
+            composition.graph_position([size.width, size.height], scale, [position.x, position.y])
+        } else {
+            self.position
+        };
         match event {
-            WindowEvent::CursorMoved { position, .. } => {
-                self.position = Some([(position.x / scale) as f32, (position.y / scale) as f32]);
+            WindowEvent::CursorMoved { .. } => {
+                if position.is_none() && self.button.is_some() {
+                    self.cancel();
+                }
+                self.position = position;
                 self.pending_move = self.button.is_some();
             }
             WindowEvent::ModifiersChanged(modifiers) => self.modifiers = *modifiers,
@@ -186,7 +208,9 @@ impl Plugin<EventLoopMessage> for Input {
             WindowEvent::KeyboardInput { event, .. }
                 if event.state == ElementState::Pressed && event.logical_key == Key::Escape =>
             {
-                self.cancel()
+                if self.position.is_some() || self.button.is_some() {
+                    self.cancel();
+                }
             }
             WindowEvent::Focused(false)
             | WindowEvent::Resized(_)

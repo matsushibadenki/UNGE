@@ -24,7 +24,7 @@ scene_index.update(editor.document(), &changes);
 - Group専用のBVHで可視範囲を検索します。所属ノードが画面外でも枠が画面内を囲めば描きます。
 - ドラッグ中は変更ノードが所属するGroupの境界を再評価し、元の場所の枠を残しません。
 - SetGroupはGroup Indexだけを再構築し、Node/Edge Indexを保持します。ノード移動時もGroup境界を更新します。
-- ノード削除とUndo/Redoは既存の全体再構築経路を使い、所属・見出し・境界を復元します。
+- ノード削除とUndo/RedoでもGroup Indexを再集計し、所属・見出し・境界を復元します。Node/Edge Indexは小さな変更なら差分更新します。
 - 空Groupと、外接矩形がエンジンの有効座標範囲を超えるGroupは描きません。ノード自体は従来どおり描きます。
 - 見出しはzoom≥0.6で描き、枠の幅でクリップします。Dark/Lightは既存ThemePaletteを使います。
 
@@ -44,7 +44,7 @@ Group IndexはGroup全体を再構築します。大きな重複所属Groupで�
 Existing SetGroup commands now draw GPU frames and titles around member node bounds.
 Frames use 16 world units of padding and a 28-unit title area. Empty/out-of-range frames are omitted.
 A group BVH handles culling; drag previews recompute affected group bounds, including off-screen moves.
-Group edits rebuild only the group index; topology edits and undo/redo use the existing full rebuild path.
+Group edits rebuild only the group index. Small topology edits and undo/redo retain node/edge indexes while recomputing affected group bounds.
 Titles preserve user text, support the existing English/Japanese/Simplified Chinese font pipeline, and are shown at zoom≥0.6.
 Member selection and HTML editing are available via [GROUP_EDITING.md](GROUP_EDITING.md). Frame dragging, collapsing and native screen-reader support remain unfinished.
 Large overlapping memberships are not performance-tested. No IPC/ACX protocol change is required.
@@ -54,6 +54,6 @@ Large overlapping memberships are not performance-tested. No IPC/ACX protocol ch
 已有SetGroup命令可通过GPU绘制成员节点的外框和标题。
 外接矩形加16 world units边距及28 units标题区域；空Group和超出有效坐标范围的外框不绘制。
 Group BVH负责裁剪，拖动预览会重新计算受影响Group的边界，包括从画面外移入的情况。
-Group编辑仅重建Group Index；拓扑修改及Undo/Redo使用已有完整重建路径。
+Group编辑仅重建Group Index。小规模拓扑修改及Undo/Redo差分更新节点／Edge Index，并重新汇总Group边界。
 标题保留用户文本，通过已有英/日/简体中文字体管线绘制，zoom≥0.6时显示。
 成员选择及HTML编辑见 [GROUP_EDITING.md](GROUP_EDITING.md)。框拖动、折叠及原生屏幕阅读器支持尚未实现。大量重叠成员的性能尚未计测，IPC/ACX协议不变。

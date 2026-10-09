@@ -4283,6 +4283,8 @@ name = "unge-tauri-host"
 version = "0.1.0"
 dependencies = [
  "pollster",
+ "serde",
+ "serde_json",
  "tauri",
  "tauri-build",
  "tauri-runtime-wry",

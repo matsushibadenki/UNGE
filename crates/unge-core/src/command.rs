@@ -341,6 +341,15 @@ impl Editor {
         self.remember(inverse, true);
         Ok(self.revision)
     }
+    /// Inspect the next inverse without cloning its property payloads. Capture
+    /// derived changes now, but apply them only after undo succeeds on this Editor.
+    pub fn undo_command(&self) -> Option<&Command> {
+        self.undo.back().map(|entry| &entry.command)
+    }
+    /// Same contract as undo_command, for the next redo operation.
+    pub fn redo_command(&self) -> Option<&Command> {
+        self.redo.back().map(|entry| &entry.command)
+    }
     pub fn undo(&mut self) -> Result<bool> {
         let Some(entry) = self.undo.back() else {
             return Ok(false);
