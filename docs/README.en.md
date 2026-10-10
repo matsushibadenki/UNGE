@@ -72,3 +72,7 @@ Nodes now use a dot canvas, role accents, optional symbols/captions and a clear 
 [Dock and float the settings panel](PANEL_DOCKING.md)
 
 [Placement validation and edit timing](PLACEMENT_EDITS.md)
+
+Registry avoids redundant edit validation. [Integration contract and benchmark](REGISTRY_VALIDATION.md).
+
+[Bulk-move BVH updates and benchmark](BULK_MOVES.md)

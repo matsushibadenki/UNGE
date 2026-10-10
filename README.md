@@ -142,3 +142,7 @@ Definitionごとの入力/出力値マップSchemaとRust検証APIを追加し�
 [設定パネルのドッキング・フローティングと配置の保存／復元](docs/PANEL_DOCKING.md)
 
 [ノード移動の検証最適化と編集時間の計測](docs/PLACEMENT_EDITS.md)
+
+Registryの重複検証を削減しました。[取り込み契約と比較例](docs/REGISTRY_VALIDATION.md)。
+
+[多数ノード移動のBVH更新と比較計測](docs/BULK_MOVES.md)

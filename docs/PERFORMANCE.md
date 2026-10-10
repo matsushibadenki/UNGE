@@ -226,13 +226,13 @@ English: Normal queued rendering completed 18 cases × 60 samples on Apple M4 / 
 
 [変更前後の工程別生JSON](benchmarks/2026-10-11-placement.json)。単一ノードの確定中央値7.878584msのうち、core全体検証が7.876333msを占めていました。移動だけのCommand／Batchは対象ノードと矩形を検査し、Graphが変わらないことを利用して全体再検証を省略します。これにより確定中央値は0.002333ms、100ノードでは8.037000msから0.016417msになりました。ホスト検証の登録はなく、その区間は分岐と計時のみです。
 
-毎回Undoで元のDocumentに戻し、Documentの一致と全体検証を測定区間外で確認しています。通常Undoも同じ最適化を使います。履歴は64ステップ／16MiBで有効。Undo後の次のexecuteにはRedo破棄も含まれます。1ノードでもポインター確定と同じBatchを使います。Index更新は別区間で、100ノードでは関連Edgeが差分更新の128件上限を超えるため、全体再構築の約14.5msが残りました。このIndex処理は今回変更していません。
+毎回Undoで元のDocumentに戻し、Documentの一致と全体検証を測定区間外で確認しています。通常Undoも同じ最適化を使います。履歴は64ステップ／16MiBで有効。Undo後の次のexecuteにはRedo破棄も含まれます。1ノードでもポインター確定と同じBatchを使います。Index更新は別区間で、100ノードでは関連Edgeが差分更新の128件上限を超えるため、全体再構築の約14.5msが残りました。この段階ではIndex処理を変更していません。後述の「一括移動後のBVH境界更新」で別に改善と比較を行いました。
 
-これは2つの順次実行を比べたCPU診断です。微小値をアプリ全体の高速化率やFPSへ換算しません。Graph全体を変更する操作、ホスト独自のDocumentValidator、RegistryのGraph／Definition照合は維持しています。Registryを使う実アプリにはその検証費用が残るため、この数値がそのまま当てはまるわけではありません。Scene生成・GPU・IPC・共有ロック待ちも確定全体の値には含みません。
+これは2つの順次実行を比べたCPU診断です。微小値をアプリ全体の高速化率やFPSへ換算しません。Graph全体を変更する操作、ホスト独自のDocumentValidator、RegistryのGraph／Definition照合は維持しています。この測定時点ではRegistryの検証費用が残っていました。後述のRegistry最適化は別の比較で計測しています。この数値が実アプリへそのまま当てはまるわけではありません。Scene生成・GPU・IPC・共有ロック待ちも確定全体の値には含みません。
 
-English: Matching release instrumentation isolated committed move costs before and after the placement-only optimization on 10,000 nodes / 30,000 edges (five warm-ups, 30 samples per case). Single-node execute median fell from 7.878584 to 0.002333 ms; the previous full core validation consumed 7.876333 ms. The 100-node median fell from 8.037000 to 0.016417 ms. Each move was undone and independently validated outside execute timing. Host validators were not installed; Registry/host validation still runs in real applications. The 100-node Index rebuild remains about 14.5 ms and was not optimized here. These sequential CPU runs do not establish application speedup or FPS.
+English: Matching release instrumentation isolated committed move costs before and after the placement-only optimization on 10,000 nodes / 30,000 edges (five warm-ups, 30 samples per case). Single-node execute median fell from 7.878584 to 0.002333 ms; the previous full core validation consumed 7.876333 ms. The 100-node median fell from 8.037000 to 0.016417 ms. Each move was undone and independently validated outside execute timing. Host validators were not installed; the subsequent Registry optimization is measured separately below. At that stage the 100-node Index rebuild remained about 14.5 ms; the subsequent bulk-refit comparison appears below. These sequential CPU runs do not establish application speedup or FPS.
 
-简体中文：对10,000节点／30,000连线使用相同release计时，比较纯移动优化前后的确定位移，每组预热5次、计测30次。单节点execute中位数从7.878584降为0.002333ms，原core全量验证占7.876333ms；100节点从8.037000降为0.016417ms。每次Undo并在execute计时外进行独立全量验证。此次未注册宿主验证器，实际应用中的Registry／宿主验证仍执行。100节点Index重建约14.5ms的成本仍然存在，本次未修改。顺序运行的CPU诊断不能换算为应用整体加速比或FPS。
+简体中文：对10,000节点／30,000连线使用相同release计时，比较纯移动优化前后的确定位移，每组预热5次、计测30次。单节点execute中位数从7.878584降为0.002333ms，原core全量验证占7.876333ms；100节点从8.037000降为0.016417ms。每次Undo并在execute计时外进行独立全量验证。此次未注册宿主验证器，后续Registry优化见下方独立比较。当时100节点Index重建约14.5ms，后续批量边界更新的比较见下文。顺序运行的CPU诊断不能换算为应用整体加速比或FPS。
 
 
 ### 通常Surfaceでの再計測
@@ -253,3 +253,57 @@ English: Matching release instrumentation isolated committed move costs before a
 English: The unchanged native animation workload completed another 1,080 samples without skips, missing glyphs or GPU validation errors. Drag input/edit/history/index p95 fell from 12.747–20.665 ms to 0.030583–0.035125 ms across the six theme/language cases, retaining five committed edits each. This dedicated fixture has no Registry, WebView or shared Engine contention, and the result is not a display FPS claim.
 
 简体中文：同一原生动画计测再次完成1,080个样本，无跳过、缺字或GPU验证错误。六组主题／语言条件的Drag输入／编辑／历史／Index更新p95从12.747–20.665ms降至0.030583–0.035125ms，每组仍提交5次。专用数据集未注册Registry，不含WebView或共享Engine竞争，结果不代表屏幕FPS。
+
+
+## Registry付きEditorの重複検証削減（2026-10-11）
+
+同一releaseバイナリー内で、従来と同じ全体検証を行うホストラッパーと、遷移検証を使うRegistryを比較しました。Apple M4／macOS/aarch64、共通の10,000ノード／30,000接続、各条件5回予熱＋30回計測。実行コードは `crates/unge-executor/examples/registry_benchmark.rs`、[契約と再現コマンド](REGISTRY_VALIDATION.md)、[生JSON](benchmarks/2026-10-11-registry.json)。
+
+| 操作 | 工程 | 全体検証 中央値 / p95 (ms) | 遷移検証 中央値 / p95 (ms) |
+|---|---|---:|---:|
+| 1ノード移動 | 確定全体 | 10.767083 / 11.340250 | 0.003625 / 0.005625 |
+| 1ノード移動 | Registry検証 | 10.763916 / 11.336542 | 0.000125 / 0.000291 |
+| 1ノード移動 | 通常Undo | 10.927958 / 11.378708 | 0.003750 / 0.006375 |
+| 100ノード移動 | 確定全体 | 12.124834 / 14.313500 | 0.029959 / 0.050792 |
+| 100ノード移動 | Registry検証 | 12.097500 / 14.285167 | 0.000166 / 0.000292 |
+| 100ノード移動 | 通常Undo | 12.251167 / 15.608333 | 0.029833 / 0.054000 |
+| 1プロパティ変更 | 確定全体 | 28.937375 / 33.804292 | 15.279250 / 18.708584 |
+| 1プロパティ変更 | Registry検証 | 14.279042 / 16.627792 | 0.289625 / 0.427042 |
+| 1プロパティ変更 | 通常Undo | 29.546500 / 32.930458 | 14.721042 / 20.818041 |
+
+移動ではGraph／プロパティが変わらないためRegistryの再走査を省きます。プロパティ変更ではcoreの全体検証とRegistryの全ノードのDefinition／Port／PropertySchema照合を維持し、Graphの構造検証だけを二重に行わなくなりました。各組は同じEditor実装を使うため、前節のcore最適化は両方に適用されています。
+
+履歴は64ステップ／16MiBで有効。毎回Undoして元Documentへの一致と完全なRegistry検証を計測外で確認します。確定は `execute_timed`、Undoは通常APIの外側で計時。各中央値／p95は独立集計なので、各工程の統計値を加算しても全体の統計値にはなりません。1台での順次計測であり、負荷変動や微小区間の計時計数を含みます。Index・Scene・GPU・IPC・共有ロック・ACXのPreflightは除外され、アプリ全体の応答時間や表示FPSを示しません。多数移動のIndex再構築とZoomのScene生成は引き続き改善対象です。
+
+English: A same-release-binary comparison on Apple M4 / macOS uses the shared 10,000-node / 30,000-edge fixture, five warm-ups and 30 samples per case. Legacy full host validation versus direct Registry transitions reduced one-node move execute median from 10.767083 to 0.003625 ms, 100-node moves from 12.124834 to 0.029959 ms, and one property change from 28.937375 to 15.279250 ms. Property edits still run core validation and scan every definition/port/property, avoiding only duplicate graph checks. Each edit is undone, compared and independently validated outside timing. Both paths already include the earlier core optimization. These sequential CPU measurements exclude Index/scene/GPU/IPC/locks/ACX preflight and do not establish application latency or display FPS. Independent phase percentiles are not additive.
+
+简体中文：同一release二进制在Apple M4／macOS上比较旧式完整宿主验证与Registry状态转换验证，使用10,000节点／30,000连线，每组预热5次、计测30次。单节点移动execute中位数从10.767083降至0.003625ms，100节点从12.124834降至0.029959ms，单属性修改从28.937375降至15.279250ms。属性修改仍执行core全量验证及全部Definition／端口／属性检查，仅避免重复图结构验证。每次Undo后在计时外比较文档并独立完整验证。两种路径均包含前文core优化。该顺序CPU比较不含Index／场景／GPU／IPC／锁／ACX预检，不代表应用整体延迟或屏幕FPS；各阶段独立统计的分位数不能相加。
+
+
+## 一括移動後のBVH境界更新（2026-10-11）
+
+Apple M4／macOS/aarch64で `bulk_move_benchmark` をrelease実行しました。共通の10,000ノード／30,000接続、1／100／1,000ノードを96×36だけ移動し、各5回予熱＋30回計測。同じ最終Documentの保持Index更新と全体再構築を比較します。[再現と契約](BULK_MOVES.md)、[生JSON](benchmarks/2026-10-11-bulk-moves.json)。
+
+| 移動ノード数 | 保持Index更新 中央値 / p95 (ms) | 全体再構築 中央値 / p95 (ms) | Undo後のIndex更新 中央値 / p95 (ms) |
+|---:|---:|---:|---:|
+| 1 | 0.013041 / 0.039500 | 16.699541 / 26.175833 | 0.006334 / 0.009958 |
+| 100 | 1.916625 / 3.100834 | 18.191417 / 23.483250 | 1.880750 / 3.000208 |
+| 1000 | 4.056542 / 4.804084 | 16.647125 / 19.745458 | 4.063667 / 4.781875 |
+
+1ノードは従来の差分、100／1,000ノードはrefitを使いました。以前は100ノードの関連Edgeが128件を超えて全体再構築していました。今回の同じバイナリーでの比較では、100ノードで18.191417msに対して1.916625ms、1,000ノードで16.647125msに対して4.056542msでした。単一ノードの比較は既存差分と全体再構築の参考値で、今回の変更による高速化ではありません。
+
+木の分割を保持するので、更新後の検索も計測しました。3つの近景Viewportの合計です。
+
+| 移動ノード数 | Node検索 保持 / 再構築 中央値 (ms) | Scene生成 保持 / 再構築 中央値 (ms) |
+|---:|---:|---:|
+| 1 | 0.009375 / 0.004541 | 0.143833 / 0.108584 |
+| 100 | 0.009917 / 0.006083 | 0.154042 / 0.122084 |
+| 1000 | 0.007959 / 0.005083 | 0.134958 / 0.108292 |
+
+毎回、全体再構築した同じ状態とQuadのバイト列・文字・可視Node／Edge数・範囲検索・先頭1,100ノードのHit Testを照合しました。Undo後の元Document一致・全体検証・描画一致も計時外で確認しています。履歴は64ステップ／16MiB。Index更新はGroupの再集計を含みますが、このfixtureにGroupはありません。Group・遠距離移動・サイズ変更・上限超過・入れ子Batch・差分との併用は回帰テストで確認しました。
+
+これは1台での順次CPU計測です。保持Index更新を先に計測し、同じ状態を全体再構築した後に、保持／再構築の順で検索・Sceneを計測するため、キャッシュと実行順序の影響があります。refit後の近景検索中央値は完全再構築より数µs長く、Sceneも約0.03ms長い結果でした。移動距離と配置を限定した短い計測で、任意の大規模並べ替えの検索性能は保証しません。Command／検証／履歴／Registry、GPU／Surface、IPC／ロック待ちは含みません。表示FPSの達成は未検証です。ZoomのScene生成と、遠距離移動後の自動的な分割品質評価は今後の対象です。
+
+English: On Apple M4 / macOS, the same release binary compared retained index updates with full reconstruction on the same 10,000-node / 30,000-edge final document (five warm-ups and 30 samples for moves of 1/100/1,000 nodes by 96×36). For 100 nodes, update median was 1.916625 ms versus 18.191417 ms reconstruction; for 1,000 nodes, 4.056542 versus 16.647125 ms. Each sample matches reconstructed quads, labels, visible counts, range queries and hit tests; undo restores the document and matching geometry. Three nearby viewport queries/scenes were measured separately. Retained queries were several microseconds slower and scenes about 0.03 ms slower in this fixture. Measurement order/cache state can affect comparisons. The single-node path is the existing overlay, not a new improvement. The fixture has no groups; group and limit correctness are tested separately. Timings exclude edit/validation/history/Registry, GPU/Surface, IPC and locks, and do not establish FPS or arbitrary rearrangement performance.
+
+简体中文：Apple M4／macOS上的同一release二进制比较相同最终10,000节点／30,000连线文档的保持Index更新与完整重建。移动1／100／1,000节点，距离96×36，每组预热5次、计测30次。100节点更新中位数1.916625ms，重建18.191417ms；1,000节点4.056542ms，重建16.647125ms。每个样本与重建结果比较Quad、文字、可见数量、范围查询及Hit Test，Undo后恢复并比较文档和形状。另测三个近景视口的查询／场景。保持Index查询在此次数据集上慢数µs，场景约慢0.03ms；顺序和缓存可能影响比较。单节点仍用旧差分，并非本次新增优化。数据集无Group，Group及超限正确性由测试覆盖。计时不含编辑／验证／历史／Registry、GPU／Surface、IPC及锁，不代表FPS或任意重排的性能。

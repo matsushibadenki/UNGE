@@ -125,3 +125,9 @@ GPU表示に対応するHTML操作には [ACCESSIBILITY.md](ACCESSIBILITY.md) �
 ## 通常描画のCPU時間を調べる
 
 `SurfaceRenderer::draw_timed` / `draw_region_timed` は既存の描画経路でCPU時間を返します。GPUの完了待ちを追加せず、Rustホストが有界に記録します。連続Pan／Zoom／Dragを含む `--benchmark-animation` と値の解釈は [RENDER_PROFILING.md](RENDER_PROFILING.md)。開始頻度を表示FPSとして扱わないでください。
+
+## Registryの検証を取り込む
+
+`Arc<Registry>` をEditorへ直接登録すると、core検証済みの遷移を利用して重複走査を省きます。独自の `DocumentValidator::validate` は従来どおり呼ばれます。最適化を独自アダプターから転送する場合は、初期検証と全遷移を同じ不変Registryへ渡す必要があります。[契約と比較例](REGISTRY_VALIDATION.md)。
+
+一括移動の取り込みには [BULK_MOVES.md](BULK_MOVES.md) を参照してください。既存のSceneChanges／SceneIndex更新で利用できます。基底にないIDや上限超過では全体再構築します。

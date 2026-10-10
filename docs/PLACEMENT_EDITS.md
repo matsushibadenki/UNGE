@@ -8,7 +8,7 @@ Editorは生成時にDocument全体を検証し、ノードの欠落したplacem
 
 - MoveNodeは位置だけでなく幅・高さも変更できます。既存の有限値・座標範囲・正のサイズの制約は維持します。
 - 移動以外の命令が1つでも含まれれば、Batchの最終状態でDocument全体を検証します。途中で変更を相殺する命令も同様です。
-- 独自の `DocumentValidator::validate` は、移動だけの場合も確定後の状態に対して従来どおり実行します。位置依存のホストルールを省略しません。Registryの検証も維持します。
+- 独自の `DocumentValidator::validate` は、移動だけの場合も確定後の状態に対して従来どおり実行します。位置依存のホストルールを省略しません。Registryは検証済みの遷移を利用します。[Registryの契約](REGISTRY_VALIDATION.md)。
 - 適用途中や最終検証で失敗した場合は逆命令で戻し、revision・Undo／Redo・履歴容量を変えません。
 - Undo／Redoも同じ判定を使います。移動だけの逆命令は対象矩形を検査し、ホスト検証を通ってから履歴を移します。
 - JSON読込／保存とEditor生成時の全体検証は維持します。UI・ポインター・ACXは同じEditorの改善を利用し、IPCの変更はありません。
@@ -41,20 +41,20 @@ cargo run --release --locked -p unge-render --example edit_benchmark
 
 10,000ノード／30,000接続で1ノードと100ノードの移動Batchを計測します。各条件5回の予熱と30回の計測。16MiB／64ステップの履歴を使用し、毎回Undoで元のDocumentに戻して照合します。全体検証を測定区間外の検証手段として使います。Index更新と通常Undoも別に測定します。ホスト検証を登録していないため、Registryを含むアプリの確定時間そのものではありません。
 
-Registryの `validate_edit` は依然としてGraphの全体検証とDefinition照合を行います。独自検証が大きな費用を持つホストでは、coreの改善後もその費用が残ります。多数ノードの移動では、関連EdgeがIndex差分の上限を超え、全体再構築の費用が残る場合もあります。[実測と制限](PERFORMANCE.md)。
+Registryの `validate_edit` の直接呼び出しはGraphの全体検証とDefinition照合を行います。Editorに直接登録したRegistryは [REGISTRY_VALIDATION.md](REGISTRY_VALIDATION.md) の遷移検証を使います。独自検証が大きな費用を持つホストでは、その費用が残ります。一括移動のIndexには [BVH境界更新](BULK_MOVES.md) を利用します。その上限を超える場合は全体再構築の費用が残ります。[実測と制限](PERFORMANCE.md)。
 
 ## English
 
 Editor fully validates and normalizes the loaded Document, retains exclusive mutation through Command, and exposes only immutable access. MoveNode and recursively move-only batches preserve graph/schema invariants. They check each target node and rectangle during application, so core skips the redundant whole-Document validation. Empty batches qualify; any other command retains full final-state validation. Loading, saving and Editor construction still perform full validation.
 
-Host DocumentValidator callbacks, including Registry validation, always run as before. Position-dependent rules, atomic rollback, revision checks and history accounting remain intact. Undo/redo use the same classification on their inverse commands. There is no public validation-disable flag or IPC change.
+Existing host DocumentValidator implementations retain their checks. Registry uses the [validated-transition contract](REGISTRY_VALIDATION.md). Position-dependent rules, atomic rollback, revision checks and history accounting remain intact. Undo/redo use the same classification on their inverse commands. There is no public validation-disable flag or IPC change.
 
-`execute_timed` returns `(revision, EditTimings)` only on success, separating application/local checks, core validation, host validation and history costs. Normal execute/undo/redo do not read the clock. `full_document_validation` describes core validation only. Index/scene/GPU work, locks and IPC are excluded. Run `cargo run --release --locked -p unge-render --example edit_benchmark` for five warm-ups and 30 samples of 1-node and 100-node move batches on 10,000 nodes / 30,000 edges. Undo restores and verifies the document outside execute timings. This fixture has no host validator; Registry's full graph/definition validation and large Index rebuild costs remain in real hosts.
+`execute_timed` returns `(revision, EditTimings)` only on success, separating application/local checks, core validation, host validation and history costs. Normal execute/undo/redo do not read the clock. `full_document_validation` describes core validation only. Index/scene/GPU work, locks and IPC are excluded. Run `cargo run --release --locked -p unge-render --example edit_benchmark` for five warm-ups and 30 samples of 1-node and 100-node move batches on 10,000 nodes / 30,000 edges. Undo restores and verifies the document outside execute timings. This fixture has no host validator; see the separate Registry benchmark for host validation. Oversized moves can still rebuild indexes; see [bulk refitting](BULK_MOVES.md).
 
 ## 简体中文
 
 Editor在创建时完整验证并规范化Document，仅通过Command修改状态，对外提供不可变访问。MoveNode及递归嵌套的纯移动Batch保持图和版本约束不变。应用命令时检查目标节点及矩形，因此省略core重复的Document全量验证。空Batch也适用；只要包含其他命令，仍在最终状态执行全量验证。加载、保存及Editor创建时的完整验证不变。
 
-宿主DocumentValidator（包括Registry）仍按原规则执行。位置相关规则、原子回滚、revision及历史容量保证保持不变。Undo／Redo对逆命令使用相同分类。不增加公开的关闭验证开关，也不改变IPC。
+已有宿主DocumentValidator仍按原规则执行。Registry使用[已验证的状态转换契约](REGISTRY_VALIDATION.md)。位置相关规则、原子回滚、revision及历史容量保证保持不变。Undo／Redo对逆命令使用相同分类。不增加公开的关闭验证开关，也不改变IPC。
 
-`execute_timed` 仅成功时返回 `(revision, EditTimings)`，分别记录应用／局部检查、core验证、宿主验证及历史成本。普通execute／Undo／Redo不读取时钟。`full_document_validation` 仅描述core是否全量验证，不代表宿主检查。Index／场景／GPU、锁等待和IPC不计入。通过 `cargo run --release --locked -p unge-render --example edit_benchmark` 可在10,000节点／30,000连线上计测1节点与100节点的移动Batch，每组预热5次后计测30次。每次Undo还原并验证文档。这一数据集未注册宿主验证器；实际宿主中Registry的完整图／Definition验证以及大范围Index重建的成本仍然存在。
+`execute_timed` 仅成功时返回 `(revision, EditTimings)`，分别记录应用／局部检查、core验证、宿主验证及历史成本。普通execute／Undo／Redo不读取时钟。`full_document_validation` 仅描述core是否全量验证，不代表宿主检查。Index／场景／GPU、锁等待和IPC不计入。通过 `cargo run --release --locked -p unge-render --example edit_benchmark` 可在10,000节点／30,000连线上计测1节点与100节点的移动Batch，每组预热5次后计测30次。每次Undo还原并验证文档。这一数据集未注册宿主验证器；Registry成本见独立基准。批量移动可用[BVH边界更新](BULK_MOVES.md)，超限时仍完整重建。

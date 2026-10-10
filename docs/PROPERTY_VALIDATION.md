@@ -72,6 +72,8 @@ ACXの `observe(query: "definitions")` でスキーマを取得できます。Ty
 途中の編集を飛ばして古いCommandだけを取り消すことはありません。新しい編集後には再び履歴を作れます。
 ACXのRecoverは履歴が残っている場合だけ成功し、破棄済みなら `recovery_unavailable` を返します。
 
+移動だけの確定は直前のRegistry検証を再利用し、それ以外はcoreの構造検証後に全Definition／Port／プロパティを照合します。独自validatorの互換性と転送条件は [REGISTRY_VALIDATION.md](REGISTRY_VALIDATION.md) を参照してください。
+
 ## English
 
 Install a shared `Arc<Registry>` with `Editor::with_validator` before the first edit, then pass that editor to `Engine::from_editor` or `MemoryHost::from_editor`. Validation runs on the loaded document and on the final state of every command, undo and redo. Invalid edits preserve the document, revision and both history stacks. Editing allows unconnected required ports; execution checks them. The basic `new` constructors retain structural validation only; all three examples now install registry validation.
@@ -80,6 +82,8 @@ Install a shared `Arc<Registry>` with `Editor::with_validator` before the first 
 
 History defaults to 256 steps / 16 MiB of serialized undo plus redo payloads. This does not bound total heap or GPU memory. Use `HistoryLimits` and `history_stats()` to configure/observe it. Oldest undo entries are evicted first, then farthest redo entries. Every inverse is measured, including on undo/redo. An oversized step succeeds but clears history to prevent skipping edits; zero limits disable retention. ACX recovery returns `recovery_unavailable` when the required undo step was discarded.
 
+Registry reuses prior validation for move-only transitions and checks all definitions/ports/properties after core validation for other edits. See [transition rules and custom-validator compatibility](REGISTRY_VALIDATION.md).
+
 ## 简体中文
 
 首次编辑前，通过 `Editor::with_validator` 安装共享 `Arc<Registry>`，再将Editor传给 `Engine::from_editor` 或 `MemoryHost::from_editor`。加载时及每次Command、Undo、Redo完成时验证；无效编辑保留文档、版本和两侧历史。编辑时允许必填端口尚未连接，执行前才要求完整连接。基础 `new` 构造函数仅验证图结构，三个示例均已启用注册表验证。
@@ -87,3 +91,5 @@ History defaults to 256 steps / 16 MiB of serialized undo plus redo payloads. Th
 `Definition.property_schema` 声明三语名称、必填值、初始值、布尔/整数/浮点/字符串/JSON类型、包含边界的数值范围、Unicode scalar长度及字符串选项。注册时拒绝矛盾约束和无效初始值。仅创建节点时应用初始值，ACX创建参数覆盖初始值，验证时不自动修复缺失属性。即使宿主未配置validator，ACX预检仍验证最终属性。`math.number`版本2要求有限数值 `value`，创建时默认为0。旧JSON定义未带schema时仍允许任意属性，Rust结构体字面量需补充该字段。这是UNGE的类型化schema，不是通用JSON Schema。包含TypeScript类型和定义查询接口。
 
 历史默认限制为256步及16MiB，容量按Undo与Redo命令的序列化字节总和计算，不代表总堆内存或GPU内存上限。通过 `HistoryLimits` 配置、`history_stats()` 查询。先移除最旧Undo，再移除距离当前位置最远的Redo。撤销/重做时也重新计量逆命令。单步超过容量时仍完成编辑，但清空历史以免跳过中间操作；上限0禁止保留历史。ACX所需历史已丢弃时，Recover返回 `recovery_unavailable`。
+
+Registry对纯移动复用上次验证，其他编辑在core验证后检查全部Definition／端口／属性。自定义验证器的兼容性及转发条件见 [REGISTRY_VALIDATION.md](REGISTRY_VALIDATION.md)。

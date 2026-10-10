@@ -72,3 +72,7 @@ GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘�
 [设置面板停靠与浮动](PANEL_DOCKING.md)
 
 [节点移动验证优化及编辑计测](PLACEMENT_EDITS.md)
+
+Registry减少编辑时的重复验证。[集成契约与基准](REGISTRY_VALIDATION.md)。
+
+[批量移动BVH更新及基准](BULK_MOVES.md)

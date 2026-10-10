@@ -170,5 +170,7 @@
 - 🟢 [Done] `execute_timed` と工程別CPU計測例。変更前後の同一条件比較、毎回のUndo／Document一致／全体検証で確認。[結果](PERFORMANCE.md)。
 - 🟢 [Done] 入れ子・同一IDの繰り返し・履歴上限・不正座標・存在しないノード・循環／Group違反を含む混在Batchの回帰テスト。ホスト検証が拒否する編集／Undo／RedoでDocument・revision・履歴を保持。
 - 🟢 [Done] macOSの通常Surfaceで18条件・1,080フレームを再計測。Registry未登録のfixtureでDrag更新p95が0.030583〜0.035125msに短縮。表示FPSの達成とは扱わない。
-- 🟠 [Next] Registryを含むホスト検証の重複費用と、多数ノード移動時のIndex再構築費用を計測して削減。
+- 🟢 [Done] Registryの重複構造検証と移動だけのDefinition走査を削減。独自validatorの互換性、混在Batch、読込、Undo／Redoを検証。[契約とCPU比較](REGISTRY_VALIDATION.md)。
+- 🟢 [Done] 一括移動のIndex再構築をBVH境界更新へ変更。最大1,024ノード／4,096関連Edge、差分との併用、Group、Undo／Redo、上限超過の再構築を検証。[契約と比較](BULK_MOVES.md)。
+- 🔴 [Later] 遠距離移動・並べ替え後のBVH分割品質の評価と自動再構築。
 - 🟠 [Next] Zoom中のScene生成費用の削減。

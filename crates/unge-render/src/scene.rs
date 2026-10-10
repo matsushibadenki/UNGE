@@ -3,6 +3,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use unge_core::{Command, Document, Id, Locale, Rect, SpatialIndex, Viewport, port_anchor};
 use unge_interaction::{MAX_SELECTION, PORT_LOD_ZOOM, Preview};
 
+const MAX_MOVED_NODES: usize = 1024;
+const MAX_REFIT_EDGES: usize = 4096;
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
 pub struct Quad {
@@ -107,6 +110,7 @@ pub struct SceneChanges {
     edges: BTreeSet<Id>,
     rebuild: bool,
     groups_changed: bool,
+    geometry_only: bool,
 }
 impl SceneChanges {
     pub fn from_command(command: &Command) -> Self {
@@ -117,14 +121,20 @@ impl SceneChanges {
             match command {
                 Command::MoveNode { id, .. } | Command::RemoveNode { id } => {
                     changes.nodes.insert(*id);
+                    if matches!(command, Command::RemoveNode { .. }) {
+                        changes.geometry_only = false;
+                    }
                 }
                 Command::AddNode { node, .. } => {
+                    changes.geometry_only = false;
                     changes.nodes.insert(node.id);
                 }
                 Command::Connect { edge } => {
+                    changes.geometry_only = false;
                     changes.edges.insert(edge.id);
                 }
                 Command::Disconnect { id } => {
+                    changes.geometry_only = false;
                     changes.edges.insert(*id);
                 }
                 Command::SetProperty { .. } => {}
@@ -138,13 +148,21 @@ impl SceneChanges {
                     }
                 }
             }
-            if changes.nodes.len() > 128 || changes.edges.len() > 128 {
+            let node_limit = if changes.geometry_only {
+                MAX_MOVED_NODES
+            } else {
+                128
+            };
+            if changes.nodes.len() > node_limit || changes.edges.len() > 128 {
                 changes.rebuild = true;
                 changes.nodes.clear();
                 changes.edges.clear();
             }
         }
-        let mut changes = Self::default();
+        let mut changes = Self {
+            geometry_only: true,
+            ..Self::default()
+        };
         collect(command, &mut changes);
         changes
     }
@@ -241,20 +259,25 @@ impl SceneIndex {
     /// command. Document validation and revision checks remain the host's job.
     pub fn update(&mut self, doc: &Document, changes: &SceneChanges) -> SceneUpdate {
         let mut edge_ids = changes.edges.clone();
+        let edge_limit = if changes.geometry_only {
+            MAX_REFIT_EDGES
+        } else {
+            128
+        };
         if !changes.rebuild {
             for id in &changes.nodes {
                 for edge in self.incident.get(id).into_iter().flatten() {
                     edge_ids.insert(*edge);
-                    if edge_ids.len() > 128 {
+                    if edge_ids.len() > edge_limit {
                         break;
                     }
                 }
-                if edge_ids.len() > 128 {
+                if edge_ids.len() > edge_limit {
                     break;
                 }
             }
         }
-        if changes.rebuild || edge_ids.len() > 128 {
+        if changes.rebuild || edge_ids.len() > edge_limit {
             *self = Self::new(doc);
             return SceneUpdate::Rebuilt;
         }
@@ -276,21 +299,44 @@ impl SceneIndex {
             .iter()
             .map(|id| (*id, RenderEdge::from_document(doc, *id)))
             .collect();
-        let rects = nodes
-            .iter()
-            .map(|(id, node)| (*id, node.as_ref().map(|n| n.rect)))
-            .collect();
-        let bounds = edges
-            .iter()
-            .map(|(id, edge)| (*id, edge.as_ref().map(|e| curve_bounds(e.points))))
-            .collect();
-        if !self.node_index.update_entries(&rects) || !self.edge_index.update_entries(&bounds) {
+        // Only existing geometry can use refitting. Keep the sparse overlay and
+        // structural-edit behavior; bulk moves update bounds in retained trees.
+        let bulk_move = changes.geometry_only && (nodes.len() > 128 || edges.len() > 128);
+        let updated = if bulk_move {
+            match (
+                nodes
+                    .iter()
+                    .map(|(id, n)| n.as_ref().map(|n| (*id, n.rect)))
+                    .collect::<Option<BTreeMap<_, _>>>(),
+                edges
+                    .iter()
+                    .map(|(id, e)| e.as_ref().map(|e| (*id, curve_bounds(e.points))))
+                    .collect::<Option<BTreeMap<_, _>>>(),
+            ) {
+                (Some(rects), Some(bounds)) => {
+                    self.node_index.refit_rects(&rects) && self.edge_index.refit_rects(&bounds)
+                }
+                _ => false,
+            }
+        } else {
+            let rects = nodes
+                .iter()
+                .map(|(id, node)| (*id, node.as_ref().map(|n| n.rect)))
+                .collect();
+            let bounds = edges
+                .iter()
+                .map(|(id, edge)| (*id, edge.as_ref().map(|e| curve_bounds(e.points))))
+                .collect();
+            self.node_index.update_entries(&rects) && self.edge_index.update_entries(&bounds)
+        };
+        if !updated {
             *self = Self::new(doc);
             return SceneUpdate::Rebuilt;
         }
         // Remove old incidence before installing final endpoints: rewiring an ID
         // must not leave stale references that break a later move or deletion.
-        for id in &edge_ids {
+        // Moves keep endpoints/port membership unchanged.
+        for id in edge_ids.iter().filter(|_| !changes.geometry_only) {
             if let Some(old) = self.edges.remove(id) {
                 for node in [old.from.0, old.to.0] {
                     if let Some(set) = self.incident.get_mut(&node) {
@@ -312,8 +358,10 @@ impl SceneIndex {
         }
         for (id, edge) in edges {
             if let Some(edge) = edge {
-                for node in [edge.from.0, edge.to.0] {
-                    self.incident.entry(node).or_default().insert(id);
+                if !changes.geometry_only {
+                    for node in [edge.from.0, edge.to.0] {
+                        self.incident.entry(node).or_default().insert(id);
+                    }
                 }
                 self.edges.insert(id, edge);
             }

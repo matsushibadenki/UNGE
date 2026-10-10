@@ -1,5 +1,7 @@
 use crate::{Document, Id, Rect};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
+
+const MAX_REFIT_IDS: usize = 4096;
 
 /// Balanced BVH with bounded rectangle updates; query during pan/zoom.
 #[derive(Debug)]
@@ -67,11 +69,58 @@ impl Branch {
             }
         }
     }
+    fn remove_known_ids(&self, remaining: &mut BTreeSet<Id>) {
+        if remaining.is_empty() {
+            return;
+        }
+        match self {
+            Self::Leaf { id, .. } => {
+                remaining.remove(id);
+            }
+            Self::Split { left, right, .. } => {
+                left.remove_known_ids(remaining);
+                right.remove_known_ids(remaining);
+            }
+        }
+    }
+    fn refit(&mut self, changes: &BTreeMap<Id, Rect>) -> bool {
+        match self {
+            Self::Leaf { bounds, id } => {
+                if let Some(rect) = changes.get(id) {
+                    *bounds = *rect;
+                    true
+                } else {
+                    false
+                }
+            }
+            Self::Split {
+                bounds,
+                left,
+                right,
+            } => {
+                let a_changed = left.refit(changes);
+                let b_changed = right.refit(changes);
+                if a_changed || b_changed {
+                    let (a, b) = (left.bounds(), right.bounds());
+                    let x = a.x.min(b.x);
+                    let y = a.y.min(b.y);
+                    *bounds = Rect {
+                        x,
+                        y,
+                        width: (a.x + a.width).max(b.x + b.width) - x,
+                        height: (a.y + a.height).max(b.y + b.height) - y,
+                    };
+                }
+                a_changed || b_changed
+            }
+        }
+    }
 }
 #[derive(Debug, Default)]
 pub struct SpatialIndex {
     root: Option<Branch>,
     updates: BTreeMap<Id, Option<Rect>>,
+    refitted: BTreeSet<Id>,
 }
 impl SpatialIndex {
     pub fn new(doc: &Document) -> Self {
@@ -88,6 +137,7 @@ impl SpatialIndex {
         Self {
             root: (!items.is_empty()).then(|| Branch::build(&mut items, 0)),
             updates: BTreeMap::new(),
+            refitted: BTreeSet::new(),
         }
     }
     /// Bounded rectangle upserts over an immutable BVH. False leaves the index
@@ -120,6 +170,42 @@ impl SpatialIndex {
         }
         self.updates
             .extend(changes.iter().map(|(id, rect)| (*id, *rect)));
+        true
+    }
+    /// Update existing base leaves and ancestor bounds without repartitioning.
+    /// At most 4096 distinct base IDs may be refitted until reconstruction.
+    /// Unknown IDs, invalid rectangles or capacity overflow return false without
+    /// mutation. A successful refit replaces any overlay entry for those IDs;
+    /// unrelated upserts/deletion markers remain. Query ordering is unchanged.
+    /// This traverses the retained tree; use the small overlay for sparse edits.
+    pub fn refit_rects(&mut self, changes: &BTreeMap<Id, Rect>) -> bool {
+        if changes.is_empty() {
+            return true;
+        }
+        if changes.len() > MAX_REFIT_IDS
+            || changes.values().any(|rect| !rect.valid())
+            || self.refitted.len()
+                + changes
+                    .keys()
+                    .filter(|id| !self.refitted.contains(id))
+                    .count()
+                > MAX_REFIT_IDS
+        {
+            return false;
+        }
+        let Some(root) = &mut self.root else {
+            return false;
+        };
+        let mut remaining = changes.keys().copied().collect();
+        root.remove_known_ids(&mut remaining);
+        if !remaining.is_empty() {
+            return false;
+        }
+        root.refit(changes);
+        for id in changes.keys() {
+            self.updates.remove(id);
+            self.refitted.insert(*id);
+        }
         true
     }
     pub fn query(&self, area: Rect) -> Vec<Id> {

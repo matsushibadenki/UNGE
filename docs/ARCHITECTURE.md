@@ -40,7 +40,7 @@ Document編集完了後に全体検証を行います。ただし移動だけの
 
 ## 実行
 
-Graphの接続・型・循環を検証した後、登録DefinitionとNodeのPortスキーマ・プロパティの型/制約を照合します。
+任意Graphでは接続・型・循環を検証した後、登録DefinitionとNodeのPortスキーマ・プロパティの型/制約を照合します。Editorからはcore検証済みの遷移を受け取り、構造の二重走査を省きます。移動のみならGraph／プロパティが不変なのでRegistryの再走査も省きます。既存の独自validatorは既定実装で従来どおり呼ばれます。[拡張契約](REGISTRY_VALIDATION.md)。
 必須入力を検査し、決定的なトポロジカル階層を生成します。
 各階層内を `buffer_unordered(concurrency)` で実行し、完了を待って次の階層へ進みます。
 後続ノードは、依存ノードが失敗・出力欠損した場合Blockedになります。無関係なノードは続行します。
@@ -122,7 +122,7 @@ Group UIはページ付き概要だけを受け取り、Rust Viewの選択から
 
 `Engine::from_registry` は同じRegistryをEditorの検証と設定メタデータ取得に使う。`node_properties` は登録済みViewとrevisionを確認し、一つのノードの有界な定義・値を返す。WebViewはこの下書きだけを保持し、差分を単一Batchとして共有Engineに適用する。外部更新時の自動上書きは行わない。具体的なフォーム・状態・拡張境界は [PROPERTY_INSPECTOR.md](PROPERTY_INSPECTOR.md) を参照。
 
-描画Indexは小さなトポロジー変更とUndo/Redoも差分更新する。Editorの履歴命令を読み取り、成功後の最終Documentから対象Node・Edgeを更新する。削除マーカーを含む128 IDの上限を超えれば全体を再構築する。[INDEX_UPDATES.md](INDEX_UPDATES.md)。
+描画Indexは小さなトポロジー変更とUndo/Redoも差分更新する。Editorの履歴命令を読み取り、成功後の最終Documentから対象Node・Edgeを更新する。構造編集の差分は削除マーカーを含む128 IDの上限を超えれば全体を再構築する。一括移動は最大1,024 Node／4,096関連EdgeのBVH境界更新も利用する。[条件と制限](BULK_MOVES.md)。[INDEX_UPDATES.md](INDEX_UPDATES.md)。
 
 診断用のFrameProfilerは任意のTIMESTAMP_QUERYと有限のGPU完了待ちを用いる。通常render/drawにはクエリーや完了待ちを追加しない。Surface取得・CPU準備・GPUパス・CPUのpresent呼び出しを分けて記録する。[RENDER_PROFILING.md](RENDER_PROFILING.md)。
 

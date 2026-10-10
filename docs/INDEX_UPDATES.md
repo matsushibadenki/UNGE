@@ -26,9 +26,9 @@ SceneIndexは編集直前の同じDocumentに対応している必要があり�
 - Batch: 中間状態ではなく最終状態を読む。同じIDの削除・再作成や、一時的な追加・削除にも対応。
 - SetProperty: 現在は描画形状に影響しないためIndexを維持。プロパティだけのUndo/Redoも同様。
 - SetGroup: Group専用Indexを再構築。Node変更時も境界を再集計。[GROUP_RENDERING.md](GROUP_RENDERING.md)。
-- 変更Node、明示的／関連Edge、または累積更新IDが上限を超える場合: 全体再構築。巨大Batchと多接続ノードは差分を切り捨てない。
+- 変更Node、明示的／関連Edge、または累積更新IDが上限を超える場合: 全体再構築。既存ノードの一括移動には [BVH境界更新](BULK_MOVES.md) の経路も使う。巨大Batchと多接続ノードの更新を切り捨てない。
 
-SpatialIndexは既存BVHと最大128個の更新を保持します。更新は矩形か削除マーカーです。検索時には更新IDの旧矩形を除外し、更新後の矩形だけを調べ、ID順で返します。削除・再追加・画面外への移動後もHit Testと重なり順を維持します。同じIDの繰り返し更新は保持量を増やしません。
+SpatialIndexの差分APIは既存BVHと最大128個の更新を保持します。更新は矩形か削除マーカーです。検索時には更新IDの旧矩形を除外し、更新後の矩形だけを調べ、ID順で返します。削除・再追加・画面外への移動後もHit Testと重なり順を維持します。同じIDの繰り返し更新は保持量を増やしません。
 
 `update_entries(&BTreeMap<Id, Option<Rect>>)` は矩形をSomeで追加／置換、Noneで削除します。削除マーカーも、元々存在しないIDの削除も128件の容量に数えます。無効矩形や容量超過ではfalseを返し、一切更新しません。既存 `update_rects()` は矩形upsertの互換APIです。falseなら現在の全矩形から再構築してください。SceneIndexはNode/Edgeどちらの更新が失敗しても両方を再構築します。
 
@@ -44,7 +44,7 @@ Capture `SceneChanges::from_command()` before committing an edit. Update the ret
 
 Use `Editor::undo_command()` / `redo_command()` to borrow the upcoming history command without cloning payloads; capture changes and apply them after a successful undo/redo without intervening edits. Tauri UI and ACX recovery use this under the shared lock. These Rust APIs do not change IPC, TypeScript wire types or receipts.
 
-`SpatialIndex::update_entries()` accepts `Some(rect)` for upserts and `None` for deletions. Both count toward a 128-ID overlay limit. Invalid rectangles or capacity overflow return false atomically; rebuild from authoritative geometry. Existing `update_rects()` remains supported. Large changes and high-degree edits rebuild completely. Validation, selection cleanup and group aggregation remain; this is not an end-to-end frame-rate claim.
+`SpatialIndex::update_entries()` accepts `Some(rect)` for upserts and `None` for deletions. Both count toward a 128-ID overlay limit. Invalid rectangles or capacity overflow return false atomically; rebuild from authoritative geometry. Existing `update_rects()` remains supported. Existing-node bulk moves can use [bounded BVH refitting](BULK_MOVES.md); oversized/structural changes rebuild completely. Validation, selection cleanup and group aggregation remain; this is not an end-to-end frame-rate claim.
 
 ## 简体中文
 
@@ -52,4 +52,4 @@ Use `Editor::undo_command()` / `redo_command()` to borrow the upcoming history c
 
 通过 `Editor::undo_command()`／`redo_command()` 只读借用下一条历史命令，不复制属性数据。获取差分后，不插入其他编辑，仅在Undo/Redo成功时应用。Tauri UI与ACX恢复在共享锁内执行此流程。IPC、TypeScript通信类型和Receipt不变。
 
-`SpatialIndex::update_entries()` 用Some(rect)新增／替换，用None删除。两者都计入128个ID的上限。无效矩形或容量超限返回false且不改变Index，应根据当前几何完整重建。原有update_rects仍可用。大批量修改和高连接度修改完整重建。Document验证、选择清理及Group汇总仍存在，不代表已经达到整体帧率目标。
+`SpatialIndex::update_entries()` 用Some(rect)新增／替换，用None删除。两者都计入128个ID的上限。无效矩形或容量超限返回false且不改变Index，应根据当前几何完整重建。原有update_rects仍可用。既有节点批量移动可使用[有界BVH边界更新](BULK_MOVES.md)；超限或结构修改完整重建。Document验证、选择清理及Group汇总仍存在，不代表已经达到整体帧率目标。

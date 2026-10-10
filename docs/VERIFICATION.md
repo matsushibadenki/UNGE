@@ -370,3 +370,26 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - 最終releaseホストで `--benchmark-animation` を再実行しexit 0で終了。Apple M4／Metal、1280×720、倍率1、Fifo、18条件×60＝1,080サンプルでスキップ・欠字・GPU Validationエラーなし。全条件の一意性、試行と成功件数、有限かつ非負の各工程、総時間との整合性、Drag各5回／Pan・Zoom各0回のCommand確定をJSONで確認。
 - 通常Surface計測のDrag更新p95は前回12.747〜20.665msから0.030583〜0.035125msへ短縮。これはRegistry未登録の専用fixtureでのInteraction・編集・履歴・Index更新の値であり、実アプリ全体の応答時間や表示FPSではない。各工程の範囲と残るRegistry／多数ノードのIndex再構築費用を3言語で文書化。
 - ⭕️ [Pending] Windows/Linux、実モニターの表示完了・入力から表示までの遅延の検証は環境がないため保留。
+
+## 2026-10-11: Registryの遷移検証
+
+- 🟢 [Done] `cargo test --workspace --all-features --locked`：144件成功、失敗0。compile-fail doctestを含む。通常実行でGPU4件ignored。今回はcore／executorの検証経路のみ変更し、GPUテストは再実行していません。
+- 🟢 [Done] 追加3件の実行テストと1件のcompile-fail doctest。Editorだけが作る `ValidatedEdit` の外部生成拒否、core検証後の通知、移動／混在Batchの分類、拒否時のexecute／Undo／RedoのDocument・revision・履歴保持を確認。
+- 🟢 [Done] 最適化Registryと全体検証ラッパーに同じ操作列を適用し、結果・Document・revision・履歴を照合。入れ子移動、不正プロパティ、Batch内での修復、未知型、Port不一致、必須値削除、空Batch、Undo／Redoを含む。直接呼び出しで循環Graphを拒否し、履歴のないEditorへのvalidator設定でも不正な読込プロパティを拒否。
+- 🟢 [Done] `cargo fmt --all -- --check`、`cargo clippy --workspace --all-features --all-targets --locked -- -D warnings`、生成契約17件の `--check` 成功。Rust内のcallback追加であり、IPC／TypeScript／ACXのwire契約変更なし。
+- 🟢 [Done] Registry付きrelease CPU比較6条件×30サンプル。各5回予熱、毎回Undoと独立全体検証。180サンプルの有限値・非負値、工程合計、core検証分類、統計の再集計を確認。[生JSON](benchmarks/2026-10-11-registry.json)。1ノード移動中央値10.767083→0.003625ms、100ノード12.124834→0.029959ms、1プロパティ28.937375→15.279250ms。Index／Scene／GPU／IPC／ロック／ACX Preflightは含まない。
+- 🟢 [Done] 3言語の統合契約とROADMAPを更新。前節のRegistry費用は今回の別計測で改善を確認。多数移動のIndex再構築、ZoomのScene生成は未対応。
+- English: 144 Rust tests including one compile-fail doctest passed; four GPU tests were ignored and were not rerun for this CPU-only change. Formatting, strict workspace Clippy and 17 generated contracts passed. Six benchmark cases retain 180 validated samples. Registry-enabled timings exclude rendering, Index, IPC, locks and ACX preflight; they are not application latency or FPS.
+- 简体中文：144项Rust测试通过（含1项编译失败验证），4项GPU测试默认忽略，本次仅修改CPU验证路径，未重跑GPU。格式、严格workspace Clippy及17项生成契约检查通过。6组基准共180个样本已校验。Registry计时不含渲染、Index、IPC、锁或ACX预检，不代表应用延迟或FPS。
+
+## 2026-10-11: 一括移動のBVH境界更新
+
+- 🟢 [Done] `cargo test --workspace --all-features --locked`：148件成功、失敗0、GPU4件は通常実行でignored。最終のSpatialIndexテスト5件も成功。`cargo fmt --all -- --check`、workspace/all-features/all-targetsのClippy `-D warnings`、生成契約17件の確認に成功。
+- 🟢 [Done] 実GPUテスト4件を明示実行して成功。ピクセル／曲線／文字のクリップ・重なり・2倍率のCJK／テーマ切り替えを確認。Surface連続操作の計測は今回は再実行していない。
+- 🟢 [Done] 追加4件のCPU回帰テスト。refitの原子的失敗、未知／差分だけのID、不正矩形、4,096累積ID上限、削除マーカーとの併用、検索とHit Testを総当たり結果と比較。Group・サイズ変更・遠距離移動・入れ子Batch・同一ID反復・Undo／Redoを全体再構築のQuad／文字／検索と照合。
+- 🟢 [Done] 1,024ノードで境界更新、1,025ノードと構造編集混在は全体再構築。4,299接続を持つノードは移動／Undoとも全体再構築し、接続を切り捨てない。既存の小変更・構造変更・容量超過・失敗Batchの回帰テストも成功。
+- 🟢 [Done] releaseのCPU比較3条件×30サンプル、各5回予熱。同じ最終Documentに対するIndex更新と全体再構築を計時し、3つの近景の検索／Sceneも別に計測。毎回Undo・Document一致・全体検証・Quad／文字／可視件数／検索／Hit Testを照合。90サンプルの有限・非負値と統計の再集計を確認。[生JSON](benchmarks/2026-10-11-bulk-moves.json)。
+- 🟢 [Done] 100ノード更新中央値1.916625ms（同状態の全体再構築18.191417ms）、1,000ノード4.056542ms（再構築16.647125ms）。近景検索は再構築より数µs、Sceneは約0.03ms長い結果も記録。性能fixtureはGroupなし、移動距離96×36。Command・検証・履歴・Registry・GPU／Surface・IPC・共有ロック待ちは計時外。全体の表示FPSと任意の並べ替え性能は未検証。
+- 🟢 [Done] 3言語の取り込み契約、既存Index更新手順、性能文書、ROADMAPを更新。Rustの派生Index内の変更であり、IPC／TypeScript／保存形式は変更なし。
+- English: 148 workspace Rust tests and four explicitly run GPU tests passed. Formatting, strict workspace Clippy and 17 generated contracts passed. Ninety CPU samples compare bounded bulk refitting with same-state reconstruction and independently check rendering/query/history correctness. Query cost after arbitrary rearrangement and display FPS remain unverified.
+- 简体中文：148项workspace Rust测试及4项显式GPU测试通过。格式、严格Clippy及17项生成契约检查通过。90个CPU样本比较有界批量边界更新与同状态重建，并独立验证渲染／查询／历史正确性。任意重排的查询成本及屏幕FPS尚未验证。

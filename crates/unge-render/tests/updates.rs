@@ -217,7 +217,7 @@ fn batch_final_placement_properties_groups_and_topology_match_rebuild() {
 }
 
 #[test]
-fn high_degree_moves_rebuild_without_truncating_incident_edges() {
+fn high_degree_moves_refit_without_truncating_incident_edges() {
     let mut editor = editor();
     let commands = (1..180)
         .flat_map(|n| {
@@ -255,7 +255,7 @@ fn high_degree_moves_rebuild_without_truncating_incident_edges() {
     editor.execute(command).unwrap();
     assert_eq!(
         index.update(editor.document(), &changes),
-        SceneUpdate::Rebuilt
+        SceneUpdate::Incremental
     );
     compare(&index, editor.document());
 }
@@ -451,6 +451,230 @@ fn insert_remove_churn_and_failed_batch_preserve_final_scene() {
                 id: Id::from_u128(n),
             })
             .collect(),
+    };
+    let changes = SceneChanges::from_command(&command);
+    editor.execute(command).unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Rebuilt
+    );
+    compare(&index, editor.document());
+    let changes = SceneChanges::from_command(editor.undo_command().unwrap());
+    editor.undo().unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Rebuilt
+    );
+    compare(&index, editor.document());
+}
+
+#[test]
+fn bulk_moves_with_overlays_groups_nested_batches_and_history_match_rebuilds() {
+    let mut editor = editor();
+    let group = Id::from_u128(9000);
+    editor
+        .execute(Command::SetGroup {
+            id: group,
+            group: Some(Group {
+                id: group,
+                label: "Bulk 日本語 组".into(),
+                nodes: (1..=160).map(Id::from_u128).collect(),
+            }),
+        })
+        .unwrap();
+    let mut index = SceneIndex::new(editor.document());
+    // Existing sparse overlays must not hide geometry after refitting.
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::MoveNode {
+            id: Id::from_u128(1),
+            rect: Rect {
+                x: -1000.,
+                ..Rect::default()
+            },
+        },
+    );
+    let commands: Vec<_> = (1..=160)
+        .map(|n| Command::MoveNode {
+            id: Id::from_u128(n),
+            rect: Rect {
+                x: if n % 2 == 0 { 5000. } else { -800. },
+                y: -500.,
+                width: 220.,
+                height: 120.,
+            },
+        })
+        .collect();
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::Batch {
+            commands: vec![
+                Command::Batch { commands },
+                Command::MoveNode {
+                    id: Id::from_u128(1),
+                    rect: Rect {
+                        x: 4500.,
+                        y: -500.,
+                        ..Rect::default()
+                    },
+                },
+                Command::SetProperty {
+                    id: Id::from_u128(1),
+                    key: "value".into(),
+                    value: Some(42.into()),
+                },
+            ],
+        },
+    );
+    let fresh = SceneIndex::new(editor.document());
+    for r in editor.document().placement().values() {
+        let point = [r.x + 1., r.y + 1.];
+        assert_eq!(
+            index.spatial_index().hit_test(point),
+            fresh.spatial_index().hit_test(point)
+        );
+    }
+    // Structural edits mixed with a large move retain the old full rebuild path.
+    let command = Command::Batch {
+        commands: vec![
+            Command::Batch {
+                commands: (1..=160)
+                    .map(|n| Command::MoveNode {
+                        id: Id::from_u128(n),
+                        rect: Rect::default(),
+                    })
+                    .collect(),
+            },
+            Command::RemoveNode {
+                id: Id::from_u128(180),
+            },
+        ],
+    };
+    let changes = SceneChanges::from_command(&command);
+    editor.execute(command).unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Rebuilt
+    );
+    compare(&index, editor.document());
+}
+
+#[test]
+fn bulk_move_limits_and_overlay_only_nodes_fall_back_to_complete_geometry() {
+    let mut editor = editor();
+    let template = editor.document().graph().nodes()[&Id::from_u128(1)].clone();
+    editor
+        .execute(Command::Batch {
+            commands: (181..=1200)
+                .map(|n| {
+                    let mut node = template.clone();
+                    node.id = Id::from_u128(n);
+                    Command::AddNode {
+                        node,
+                        rect: Rect::default(),
+                    }
+                })
+                .collect(),
+        })
+        .unwrap();
+    let mut index = SceneIndex::new(editor.document());
+    for (count, expected) in [
+        (1024, SceneUpdate::Incremental),
+        (1025, SceneUpdate::Rebuilt),
+    ] {
+        let command = Command::Batch {
+            commands: (1..=count)
+                .map(|n| Command::MoveNode {
+                    id: Id::from_u128(n),
+                    rect: Rect {
+                        x: 5000.,
+                        y: -500.,
+                        ..Rect::default()
+                    },
+                })
+                .collect(),
+        };
+        let changes = SceneChanges::from_command(&command);
+        editor.execute(command).unwrap();
+        assert_eq!(index.update(editor.document(), &changes), expected);
+        compare(&index, editor.document());
+    }
+    let mut node = template;
+    node.id = Id::from_u128(1300);
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::AddNode {
+            node,
+            rect: Rect::default(),
+        },
+    );
+    let command = Command::Batch {
+        commands: (1..=159)
+            .chain([1300])
+            .map(|n| Command::MoveNode {
+                id: Id::from_u128(n),
+                rect: Rect {
+                    x: -700.,
+                    ..Rect::default()
+                },
+            })
+            .collect(),
+    };
+    let changes = SceneChanges::from_command(&command);
+    editor.execute(command).unwrap();
+    assert_eq!(
+        index.update(editor.document(), &changes),
+        SceneUpdate::Rebuilt
+    );
+    compare(&index, editor.document());
+}
+
+#[test]
+fn incident_edge_limit_rebuilds_without_dropping_connections() {
+    let mut editor = editor();
+    let template = editor.document().graph().nodes()[&Id::from_u128(1)].clone();
+    let mut commands: Vec<_> = (181..=4300)
+        .map(|n| {
+            let mut node = template.clone();
+            node.id = Id::from_u128(n);
+            Command::AddNode {
+                node,
+                rect: Rect {
+                    x: n as f32 * 3.,
+                    y: 0.,
+                    ..Rect::default()
+                },
+            }
+        })
+        .collect();
+    commands.extend((1..180).map(|n| Command::Disconnect {
+        id: Id::from_u128(1000 + n),
+    }));
+    commands.extend((2..=4300).map(|n| Command::Connect {
+        edge: Edge {
+            id: Id::from_u128(10000 + n),
+            from: Endpoint {
+                node: Id::from_u128(1),
+                port: "p".into(),
+            },
+            to: Endpoint {
+                node: Id::from_u128(n),
+                port: "p".into(),
+            },
+        },
+    }));
+    editor.execute(Command::Batch { commands }).unwrap();
+    let mut index = SceneIndex::new(editor.document());
+    let command = Command::MoveNode {
+        id: Id::from_u128(1),
+        rect: Rect {
+            x: 5000.,
+            y: -500.,
+            ..Rect::default()
+        },
     };
     let changes = SceneChanges::from_command(&command);
     editor.execute(command).unwrap();

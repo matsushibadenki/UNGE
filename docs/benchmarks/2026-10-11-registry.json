@@ -1,0 +1,2130 @@
+{
+  "arch": "aarch64",
+  "cases": [
+    {
+      "core_validation": {
+        "median_ms": 0.0,
+        "p95_ms": 4.2e-05
+      },
+      "execute": {
+        "median_ms": 10.767083,
+        "p95_ms": 11.34025
+      },
+      "host_validation": {
+        "median_ms": 10.763916,
+        "p95_ms": 11.336542
+      },
+      "legacy_full_validation": true,
+      "nodes_changed": 1,
+      "operation": "move",
+      "raw": [
+        [
+          {
+            "apply_ms": 0.0029170000000000003,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002375,
+            "host_validation_ms": 9.016207999999999,
+            "total_ms": 9.02175
+          },
+          9.363875
+        ],
+        [
+          {
+            "apply_ms": 0.001666,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002542,
+            "host_validation_ms": 9.318792,
+            "total_ms": 9.32325
+          },
+          9.347584000000001
+        ],
+        [
+          {
+            "apply_ms": 0.0012920000000000002,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0025840000000000004,
+            "host_validation_ms": 9.21075,
+            "total_ms": 9.21475
+          },
+          9.558291
+        ],
+        [
+          {
+            "apply_ms": 0.000958,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002,
+            "host_validation_ms": 9.410207999999999,
+            "total_ms": 9.4135
+          },
+          9.349041000000001
+        ],
+        [
+          {
+            "apply_ms": 0.001458,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0025,
+            "host_validation_ms": 9.181040999999999,
+            "total_ms": 9.18525
+          },
+          9.412082999999999
+        ],
+        [
+          {
+            "apply_ms": 0.001584,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002167,
+            "host_validation_ms": 9.793875,
+            "total_ms": 9.798041
+          },
+          9.357583
+        ],
+        [
+          {
+            "apply_ms": 0.001666,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002125,
+            "host_validation_ms": 9.159042,
+            "total_ms": 9.16325
+          },
+          9.831125
+        ],
+        [
+          {
+            "apply_ms": 0.0015,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0022500000000000003,
+            "host_validation_ms": 9.507833,
+            "total_ms": 9.512
+          },
+          9.586291000000001
+        ],
+        [
+          {
+            "apply_ms": 0.0018750000000000001,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0024159999999999997,
+            "host_validation_ms": 10.399208,
+            "total_ms": 10.403625
+          },
+          10.222584
+        ],
+        [
+          {
+            "apply_ms": 0.001458,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0020829999999999998,
+            "host_validation_ms": 10.348540999999999,
+            "total_ms": 10.352375
+          },
+          10.182500000000001
+        ],
+        [
+          {
+            "apply_ms": 0.002208,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002042,
+            "host_validation_ms": 10.372167,
+            "total_ms": 10.376666
+          },
+          10.200667
+        ],
+        [
+          {
+            "apply_ms": 0.000959,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001792,
+            "host_validation_ms": 10.218625,
+            "total_ms": 10.221666
+          },
+          10.247917000000001
+        ],
+        [
+          {
+            "apply_ms": 0.00045900000000000004,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0026249999999999997,
+            "host_validation_ms": 10.136583,
+            "total_ms": 10.139834
+          },
+          10.578958
+        ],
+        [
+          {
+            "apply_ms": 0.00125,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002,
+            "host_validation_ms": 10.679417,
+            "total_ms": 10.682832999999999
+          },
+          11.093
+        ],
+        [
+          {
+            "apply_ms": 0.001166,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001958,
+            "host_validation_ms": 10.887958,
+            "total_ms": 10.891667
+          },
+          11.015333
+        ],
+        [
+          {
+            "apply_ms": 0.001667,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0015,
+            "host_validation_ms": 11.128625,
+            "total_ms": 11.132333
+          },
+          11.378708
+        ],
+        [
+          {
+            "apply_ms": 0.001542,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002084,
+            "host_validation_ms": 10.796708,
+            "total_ms": 10.800749999999999
+          },
+          11.018417000000001
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002875,
+            "host_validation_ms": 11.090917000000001,
+            "total_ms": 11.095583
+          },
+          11.051042
+        ],
+        [
+          {
+            "apply_ms": 0.00125,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.001792,
+            "host_validation_ms": 11.103250000000001,
+            "total_ms": 11.109
+          },
+          10.9685
+        ],
+        [
+          {
+            "apply_ms": 0.001083,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002334,
+            "host_validation_ms": 10.745416,
+            "total_ms": 10.749082999999999
+          },
+          10.886458
+        ],
+        [
+          {
+            "apply_ms": 0.001583,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.000833,
+            "host_validation_ms": 10.9445,
+            "total_ms": 10.947167
+          },
+          11.208375
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002209,
+            "host_validation_ms": 10.84075,
+            "total_ms": 10.844666
+          },
+          10.953417
+        ],
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002042,
+            "host_validation_ms": 10.763916,
+            "total_ms": 10.767083
+          },
+          10.8285
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002,
+            "host_validation_ms": 10.827333,
+            "total_ms": 10.831166
+          },
+          10.9785
+        ],
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002125,
+            "host_validation_ms": 10.998375,
+            "total_ms": 11.001666
+          },
+          11.434791
+        ],
+        [
+          {
+            "apply_ms": 0.0015409999999999998,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.001916,
+            "host_validation_ms": 11.336542,
+            "total_ms": 11.34025
+          },
+          11.171709
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002291,
+            "host_validation_ms": 11.364749999999999,
+            "total_ms": 11.368792000000001
+          },
+          11.260958
+        ],
+        [
+          {
+            "apply_ms": 0.001667,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.003375,
+            "host_validation_ms": 11.059541000000001,
+            "total_ms": 11.06475
+          },
+          11.051042
+        ],
+        [
+          {
+            "apply_ms": 0.0011250000000000001,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0026249999999999997,
+            "host_validation_ms": 11.085625,
+            "total_ms": 11.089791
+          },
+          10.927958
+        ],
+        [
+          {
+            "apply_ms": 0.0012920000000000002,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002541,
+            "host_validation_ms": 11.060417,
+            "total_ms": 11.064417
+          },
+          11.062666
+        ]
+      ],
+      "undo": {
+        "median_ms": 10.927958,
+        "p95_ms": 11.378708
+      }
+    },
+    {
+      "core_validation": {
+        "median_ms": 4.1e-05,
+        "p95_ms": 4.2e-05
+      },
+      "execute": {
+        "median_ms": 0.003625,
+        "p95_ms": 0.005625000000000001
+      },
+      "host_validation": {
+        "median_ms": 0.000125,
+        "p95_ms": 0.00029099999999999997
+      },
+      "legacy_full_validation": false,
+      "nodes_changed": 1,
+      "operation": "move",
+      "raw": [
+        [
+          {
+            "apply_ms": 0.002,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002458,
+            "host_validation_ms": 0.00029099999999999997,
+            "total_ms": 0.005
+          },
+          0.003458
+        ],
+        [
+          {
+            "apply_ms": 0.001708,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0022500000000000003,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.004292
+          },
+          0.004291
+        ],
+        [
+          {
+            "apply_ms": 0.001791,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0018750000000000001,
+            "host_validation_ms": 0.000167,
+            "total_ms": 0.004083
+          },
+          0.004125
+        ],
+        [
+          {
+            "apply_ms": 0.001916,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0020829999999999998,
+            "host_validation_ms": 0.00029099999999999997,
+            "total_ms": 0.0045000000000000005
+          },
+          0.004458
+        ],
+        [
+          {
+            "apply_ms": 0.00175,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0026249999999999997,
+            "host_validation_ms": 0.000166,
+            "total_ms": 0.004792
+          },
+          0.0052499999999999995
+        ],
+        [
+          {
+            "apply_ms": 0.0018750000000000001,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.001958,
+            "host_validation_ms": 0.00025,
+            "total_ms": 0.004333
+          },
+          0.003333
+        ],
+        [
+          {
+            "apply_ms": 0.0018750000000000001,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001833,
+            "host_validation_ms": 0.000167,
+            "total_ms": 0.004167
+          },
+          0.004958
+        ],
+        [
+          {
+            "apply_ms": 0.001583,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0025840000000000004,
+            "host_validation_ms": 0.000166,
+            "total_ms": 0.004666
+          },
+          0.004916
+        ],
+        [
+          {
+            "apply_ms": 0.000458,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0014169999999999999,
+            "host_validation_ms": 4.1e-05,
+            "total_ms": 0.002125
+          },
+          0.004292
+        ],
+        [
+          {
+            "apply_ms": 0.002041,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001625,
+            "host_validation_ms": 4.1e-05,
+            "total_ms": 0.003875
+          },
+          0.0036669999999999997
+        ],
+        [
+          {
+            "apply_ms": 0.00175,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002208,
+            "host_validation_ms": 4.2e-05,
+            "total_ms": 0.004334
+          },
+          0.00425
+        ],
+        [
+          {
+            "apply_ms": 0.001792,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002,
+            "host_validation_ms": 0.00020800000000000001,
+            "total_ms": 0.0043749999999999995
+          },
+          0.006375
+        ],
+        [
+          {
+            "apply_ms": 0.00075,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0015,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.002542
+          },
+          0.003417
+        ],
+        [
+          {
+            "apply_ms": 0.0015409999999999998,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.001542,
+            "host_validation_ms": 0.000166,
+            "total_ms": 0.006792
+          },
+          0.0036669999999999997
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.002125,
+            "host_validation_ms": 4.2e-05,
+            "total_ms": 0.003959
+          },
+          0.004792
+        ],
+        [
+          {
+            "apply_ms": 0.001083,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.00075,
+            "host_validation_ms": 0.0,
+            "total_ms": 0.002041
+          },
+          0.005958000000000001
+        ],
+        [
+          {
+            "apply_ms": 0.003875,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001458,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.005625000000000001
+          },
+          0.003334
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.001333,
+            "host_validation_ms": 0.00025,
+            "total_ms": 0.003167
+          },
+          0.003083
+        ],
+        [
+          {
+            "apply_ms": 0.0014169999999999999,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.001625,
+            "host_validation_ms": 0.0,
+            "total_ms": 0.00325
+          },
+          0.003834
+        ],
+        [
+          {
+            "apply_ms": 0.0007080000000000001,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.000709,
+            "host_validation_ms": 0.0,
+            "total_ms": 0.001584
+          },
+          0.003584
+        ],
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.001833,
+            "host_validation_ms": 0.000292,
+            "total_ms": 0.003375
+          },
+          0.006959
+        ],
+        [
+          {
+            "apply_ms": 0.001709,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001709,
+            "host_validation_ms": 4.2e-05,
+            "total_ms": 0.003625
+          },
+          0.0035
+        ],
+        [
+          {
+            "apply_ms": 0.000625,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001042,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.002
+          },
+          0.0026249999999999997
+        ],
+        [
+          {
+            "apply_ms": 0.0011250000000000001,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001041,
+            "host_validation_ms": 4.2e-05,
+            "total_ms": 0.002417
+          },
+          0.003375
+        ],
+        [
+          {
+            "apply_ms": 0.001166,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001041,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.002458
+          },
+          0.00325
+        ],
+        [
+          {
+            "apply_ms": 0.0012920000000000002,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.00175,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.003417
+          },
+          0.0037500000000000003
+        ],
+        [
+          {
+            "apply_ms": 0.0006670000000000001,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.001625,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.002666
+          },
+          0.0035
+        ],
+        [
+          {
+            "apply_ms": 0.001083,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.002166,
+            "host_validation_ms": 0.000167,
+            "total_ms": 0.003583
+          },
+          0.002334
+        ],
+        [
+          {
+            "apply_ms": 0.000625,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.000917,
+            "host_validation_ms": 4.1e-05,
+            "total_ms": 0.00175
+          },
+          0.0038330000000000005
+        ],
+        [
+          {
+            "apply_ms": 0.001792,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.00125,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.003334
+          },
+          0.003625
+        ]
+      ],
+      "undo": {
+        "median_ms": 0.0037500000000000003,
+        "p95_ms": 0.006375
+      }
+    },
+    {
+      "core_validation": {
+        "median_ms": 0.0,
+        "p95_ms": 4.2e-05
+      },
+      "execute": {
+        "median_ms": 12.124834,
+        "p95_ms": 14.3135
+      },
+      "host_validation": {
+        "median_ms": 12.0975,
+        "p95_ms": 14.285167
+      },
+      "legacy_full_validation": true,
+      "nodes_changed": 100,
+      "operation": "move",
+      "raw": [
+        [
+          {
+            "apply_ms": 0.012583,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.011583999999999999,
+            "host_validation_ms": 11.975334,
+            "total_ms": 11.999832999999999
+          },
+          11.7645
+        ],
+        [
+          {
+            "apply_ms": 0.012833,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.010875,
+            "host_validation_ms": 11.54875,
+            "total_ms": 11.572834
+          },
+          12.251167
+        ],
+        [
+          {
+            "apply_ms": 0.0145,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013333,
+            "host_validation_ms": 12.032208,
+            "total_ms": 12.060375
+          },
+          12.030125
+        ],
+        [
+          {
+            "apply_ms": 0.013292,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012709,
+            "host_validation_ms": 11.946917,
+            "total_ms": 11.973166
+          },
+          11.935042
+        ],
+        [
+          {
+            "apply_ms": 0.012875,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012416,
+            "host_validation_ms": 10.869458,
+            "total_ms": 10.895167
+          },
+          12.070833
+        ],
+        [
+          {
+            "apply_ms": 0.014959,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.010958,
+            "host_validation_ms": 11.915125,
+            "total_ms": 11.941333
+          },
+          12.367583
+        ],
+        [
+          {
+            "apply_ms": 0.014416,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.010750000000000001,
+            "host_validation_ms": 10.758291999999999,
+            "total_ms": 10.783833
+          },
+          12.041208
+        ],
+        [
+          {
+            "apply_ms": 0.011541000000000001,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0115,
+            "host_validation_ms": 11.743165999999999,
+            "total_ms": 11.766542
+          },
+          11.191125
+        ],
+        [
+          {
+            "apply_ms": 0.012707999999999999,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.011625,
+            "host_validation_ms": 11.343625,
+            "total_ms": 11.36825
+          },
+          12.384583
+        ],
+        [
+          {
+            "apply_ms": 0.015125,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.011958,
+            "host_validation_ms": 12.0975,
+            "total_ms": 12.124834
+          },
+          11.34775
+        ],
+        [
+          {
+            "apply_ms": 0.014166,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.011958,
+            "host_validation_ms": 11.933,
+            "total_ms": 11.959582999999999
+          },
+          11.153167
+        ],
+        [
+          {
+            "apply_ms": 0.012458,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.011083,
+            "host_validation_ms": 11.067083,
+            "total_ms": 11.091
+          },
+          11.998333
+        ],
+        [
+          {
+            "apply_ms": 0.013542,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012333,
+            "host_validation_ms": 12.064708,
+            "total_ms": 12.090874999999999
+          },
+          12.119541
+        ],
+        [
+          {
+            "apply_ms": 0.01375,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012084,
+            "host_validation_ms": 12.004417,
+            "total_ms": 12.030707999999999
+          },
+          11.85275
+        ],
+        [
+          {
+            "apply_ms": 0.013166,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012541,
+            "host_validation_ms": 11.940709,
+            "total_ms": 11.96675
+          },
+          12.578707999999999
+        ],
+        [
+          {
+            "apply_ms": 0.01375,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012125,
+            "host_validation_ms": 12.107750000000001,
+            "total_ms": 12.133875
+          },
+          11.918834
+        ],
+        [
+          {
+            "apply_ms": 0.01475,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012208,
+            "host_validation_ms": 12.083417,
+            "total_ms": 12.110667000000001
+          },
+          12.192417
+        ],
+        [
+          {
+            "apply_ms": 0.014459,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.011292,
+            "host_validation_ms": 12.132791000000001,
+            "total_ms": 12.158916000000001
+          },
+          12.18575
+        ],
+        [
+          {
+            "apply_ms": 0.0135,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012041999999999999,
+            "host_validation_ms": 12.355583999999999,
+            "total_ms": 12.381375
+          },
+          12.254332999999999
+        ],
+        [
+          {
+            "apply_ms": 0.01875,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.011791,
+            "host_validation_ms": 12.3125,
+            "total_ms": 12.343333
+          },
+          12.225166000000002
+        ],
+        [
+          {
+            "apply_ms": 0.014417,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012417,
+            "host_validation_ms": 12.216542,
+            "total_ms": 12.243625
+          },
+          13.030833000000001
+        ],
+        [
+          {
+            "apply_ms": 0.015042,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.019458,
+            "host_validation_ms": 12.471166,
+            "total_ms": 12.506083
+          },
+          13.303167
+        ],
+        [
+          {
+            "apply_ms": 0.019167,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013167,
+            "host_validation_ms": 13.693375000000001,
+            "total_ms": 13.726125
+          },
+          15.608333
+        ],
+        [
+          {
+            "apply_ms": 0.015916000000000003,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013791000000000001,
+            "host_validation_ms": 14.196667,
+            "total_ms": 14.226625
+          },
+          13.954041
+        ],
+        [
+          {
+            "apply_ms": 0.015375000000000002,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013083,
+            "host_validation_ms": 14.28475,
+            "total_ms": 14.3135
+          },
+          13.626833
+        ],
+        [
+          {
+            "apply_ms": 0.015709,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013125000000000001,
+            "host_validation_ms": 13.208875,
+            "total_ms": 13.237959
+          },
+          13.774875000000002
+        ],
+        [
+          {
+            "apply_ms": 0.0145,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0135,
+            "host_validation_ms": 12.192833,
+            "total_ms": 12.226792
+          },
+          12.530666
+        ],
+        [
+          {
+            "apply_ms": 0.014583,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013125000000000001,
+            "host_validation_ms": 14.285167,
+            "total_ms": 14.313459
+          },
+          15.706125000000002
+        ],
+        [
+          {
+            "apply_ms": 0.015667,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013667,
+            "host_validation_ms": 13.542666,
+            "total_ms": 13.572249999999999
+          },
+          14.150667
+        ],
+        [
+          {
+            "apply_ms": 0.016042,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013584,
+            "host_validation_ms": 18.450292,
+            "total_ms": 18.480333
+          },
+          14.092083
+        ]
+      ],
+      "undo": {
+        "median_ms": 12.251167,
+        "p95_ms": 15.608333
+      }
+    },
+    {
+      "core_validation": {
+        "median_ms": 4.1e-05,
+        "p95_ms": 4.2e-05
+      },
+      "execute": {
+        "median_ms": 0.029959,
+        "p95_ms": 0.050792
+      },
+      "host_validation": {
+        "median_ms": 0.000166,
+        "p95_ms": 0.000292
+      },
+      "legacy_full_validation": false,
+      "nodes_changed": 100,
+      "operation": "move",
+      "raw": [
+        [
+          {
+            "apply_ms": 0.016333,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013667,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.030458
+          },
+          0.030000000000000002
+        ],
+        [
+          {
+            "apply_ms": 0.041625,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012916,
+            "host_validation_ms": 0.00025,
+            "total_ms": 0.055125
+          },
+          0.031375
+        ],
+        [
+          {
+            "apply_ms": 0.017,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013167,
+            "host_validation_ms": 0.000167,
+            "total_ms": 0.030583999999999997
+          },
+          0.029207999999999998
+        ],
+        [
+          {
+            "apply_ms": 0.01575,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012625,
+            "host_validation_ms": 0.00029099999999999997,
+            "total_ms": 0.029042000000000002
+          },
+          0.070292
+        ],
+        [
+          {
+            "apply_ms": 0.018958,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013791999999999999,
+            "host_validation_ms": 0.000209,
+            "total_ms": 0.033459
+          },
+          0.030541
+        ],
+        [
+          {
+            "apply_ms": 0.020999999999999998,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.021832999999999998,
+            "host_validation_ms": 0.00020800000000000001,
+            "total_ms": 0.043332999999999997
+          },
+          0.033417
+        ],
+        [
+          {
+            "apply_ms": 0.014792,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.0125,
+            "host_validation_ms": 0.00020800000000000001,
+            "total_ms": 0.02775
+          },
+          0.032083
+        ],
+        [
+          {
+            "apply_ms": 0.015834,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013583,
+            "host_validation_ms": 0.00020800000000000001,
+            "total_ms": 0.029959
+          },
+          0.029833000000000002
+        ],
+        [
+          {
+            "apply_ms": 0.014,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013584,
+            "host_validation_ms": 0.000292,
+            "total_ms": 0.028208
+          },
+          0.028249999999999997
+        ],
+        [
+          {
+            "apply_ms": 0.016,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013083,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.029458
+          },
+          0.027875
+        ],
+        [
+          {
+            "apply_ms": 0.0155,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013458999999999999,
+            "host_validation_ms": 0.00025,
+            "total_ms": 0.029583
+          },
+          0.028875
+        ],
+        [
+          {
+            "apply_ms": 0.014584,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012458,
+            "host_validation_ms": 4.2e-05,
+            "total_ms": 0.027583999999999997
+          },
+          0.0295
+        ],
+        [
+          {
+            "apply_ms": 0.013334,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.011875,
+            "host_validation_ms": 4.1e-05,
+            "total_ms": 0.025584000000000003
+          },
+          0.028875
+        ],
+        [
+          {
+            "apply_ms": 0.015125,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012292,
+            "host_validation_ms": 4.2e-05,
+            "total_ms": 0.027791
+          },
+          0.028
+        ],
+        [
+          {
+            "apply_ms": 0.015583,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.028333,
+            "host_validation_ms": 0.00020800000000000001,
+            "total_ms": 0.044542
+          },
+          0.054
+        ],
+        [
+          {
+            "apply_ms": 0.015000000000000001,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012834,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.028333
+          },
+          0.029708000000000002
+        ],
+        [
+          {
+            "apply_ms": 0.014083,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.0125,
+            "host_validation_ms": 0.000167,
+            "total_ms": 0.026958
+          },
+          0.028167
+        ],
+        [
+          {
+            "apply_ms": 0.013833,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012958,
+            "host_validation_ms": 0.000167,
+            "total_ms": 0.027416999999999997
+          },
+          0.0285
+        ],
+        [
+          {
+            "apply_ms": 0.013791000000000001,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.012709,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.027
+          },
+          0.028791
+        ],
+        [
+          {
+            "apply_ms": 0.014291,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013458000000000001,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.028125
+          },
+          0.028708
+        ],
+        [
+          {
+            "apply_ms": 0.017041,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012833,
+            "host_validation_ms": 0.000292,
+            "total_ms": 0.030417
+          },
+          0.034083
+        ],
+        [
+          {
+            "apply_ms": 0.014583,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.013125000000000001,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.028041
+          },
+          0.032542
+        ],
+        [
+          {
+            "apply_ms": 0.015917,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.014,
+            "host_validation_ms": 4.2e-05,
+            "total_ms": 0.030292
+          },
+          0.032499999999999994
+        ],
+        [
+          {
+            "apply_ms": 0.01575,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013583,
+            "host_validation_ms": 0.000166,
+            "total_ms": 0.030000000000000002
+          },
+          0.031166
+        ],
+        [
+          {
+            "apply_ms": 0.017082999999999997,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.014375,
+            "host_validation_ms": 0.000125,
+            "total_ms": 0.031833
+          },
+          0.032584
+        ],
+        [
+          {
+            "apply_ms": 0.0165,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.014042,
+            "host_validation_ms": 8.4e-05,
+            "total_ms": 0.030875
+          },
+          0.029792
+        ],
+        [
+          {
+            "apply_ms": 0.01675,
+            "core_validation_ms": 4.1e-05,
+            "full_document_validation": false,
+            "history_ms": 0.033667,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.050792
+          },
+          0.0285
+        ],
+        [
+          {
+            "apply_ms": 0.017207999999999998,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.014166,
+            "host_validation_ms": 8.4e-05,
+            "total_ms": 0.031792
+          },
+          0.0305
+        ],
+        [
+          {
+            "apply_ms": 0.016084,
+            "core_validation_ms": 4.2e-05,
+            "full_document_validation": false,
+            "history_ms": 0.013666,
+            "host_validation_ms": 8.3e-05,
+            "total_ms": 0.030083
+          },
+          0.029375
+        ],
+        [
+          {
+            "apply_ms": 0.014916,
+            "core_validation_ms": 0.0,
+            "full_document_validation": false,
+            "history_ms": 0.012833,
+            "host_validation_ms": 0.00020800000000000001,
+            "total_ms": 0.028249999999999997
+          },
+          0.030583000000000003
+        ]
+      ],
+      "undo": {
+        "median_ms": 0.029833000000000002,
+        "p95_ms": 0.054
+      }
+    },
+    {
+      "core_validation": {
+        "median_ms": 14.646457999999999,
+        "p95_ms": 17.035333
+      },
+      "execute": {
+        "median_ms": 28.937375000000003,
+        "p95_ms": 33.804292
+      },
+      "host_validation": {
+        "median_ms": 14.279042,
+        "p95_ms": 16.627792
+      },
+      "legacy_full_validation": true,
+      "nodes_changed": 1,
+      "operation": "property",
+      "raw": [
+        [
+          {
+            "apply_ms": 0.0011250000000000001,
+            "core_validation_ms": 16.095374999999997,
+            "full_document_validation": true,
+            "history_ms": 0.002333,
+            "host_validation_ms": 16.621707999999998,
+            "total_ms": 32.720833
+          },
+          28.663958
+        ],
+        [
+          {
+            "apply_ms": 0.001084,
+            "core_validation_ms": 13.673291,
+            "full_document_validation": true,
+            "history_ms": 0.002458,
+            "host_validation_ms": 13.388333000000001,
+            "total_ms": 27.06575
+          },
+          27.174875
+        ],
+        [
+          {
+            "apply_ms": 0.001458,
+            "core_validation_ms": 13.864125,
+            "full_document_validation": true,
+            "history_ms": 0.002334,
+            "host_validation_ms": 14.616792,
+            "total_ms": 28.484916
+          },
+          30.650417
+        ],
+        [
+          {
+            "apply_ms": 0.001042,
+            "core_validation_ms": 14.30825,
+            "full_document_validation": true,
+            "history_ms": 0.002541,
+            "host_validation_ms": 14.143417,
+            "total_ms": 28.455458
+          },
+          32.030708
+        ],
+        [
+          {
+            "apply_ms": 0.001167,
+            "core_validation_ms": 16.066457999999997,
+            "full_document_validation": true,
+            "history_ms": 0.002333,
+            "host_validation_ms": 16.627792,
+            "total_ms": 32.698084
+          },
+          30.923458
+        ],
+        [
+          {
+            "apply_ms": 0.000917,
+            "core_validation_ms": 14.558583,
+            "full_document_validation": true,
+            "history_ms": 0.002334,
+            "host_validation_ms": 15.198625,
+            "total_ms": 29.760666
+          },
+          31.077208
+        ],
+        [
+          {
+            "apply_ms": 0.001083,
+            "core_validation_ms": 15.642416999999998,
+            "full_document_validation": true,
+            "history_ms": 0.00175,
+            "host_validation_ms": 15.373833999999999,
+            "total_ms": 31.019374999999997
+          },
+          27.56925
+        ],
+        [
+          {
+            "apply_ms": 0.000875,
+            "core_validation_ms": 14.581917,
+            "full_document_validation": true,
+            "history_ms": 0.001958,
+            "host_validation_ms": 13.834416000000001,
+            "total_ms": 28.419542
+          },
+          27.761791000000002
+        ],
+        [
+          {
+            "apply_ms": 0.0015,
+            "core_validation_ms": 14.724291000000001,
+            "full_document_validation": true,
+            "history_ms": 0.0020829999999999998,
+            "host_validation_ms": 14.798042,
+            "total_ms": 29.526208
+          },
+          30.251458
+        ],
+        [
+          {
+            "apply_ms": 0.001333,
+            "core_validation_ms": 16.014167,
+            "full_document_validation": true,
+            "history_ms": 0.0028339999999999997,
+            "host_validation_ms": 14.279042,
+            "total_ms": 30.297749999999997
+          },
+          29.249708
+        ],
+        [
+          {
+            "apply_ms": 0.000958,
+            "core_validation_ms": 14.791417,
+            "full_document_validation": true,
+            "history_ms": 0.002167,
+            "host_validation_ms": 14.132708000000001,
+            "total_ms": 28.927584
+          },
+          32.930458
+        ],
+        [
+          {
+            "apply_ms": 0.001166,
+            "core_validation_ms": 14.016125,
+            "full_document_validation": true,
+            "history_ms": 0.0024159999999999997,
+            "host_validation_ms": 13.354583,
+            "total_ms": 27.37475
+          },
+          28.458333
+        ],
+        [
+          {
+            "apply_ms": 0.001042,
+            "core_validation_ms": 13.395375,
+            "full_document_validation": true,
+            "history_ms": 0.001917,
+            "host_validation_ms": 13.732292,
+            "total_ms": 27.130917
+          },
+          30.499042
+        ],
+        [
+          {
+            "apply_ms": 0.0015,
+            "core_validation_ms": 15.01625,
+            "full_document_validation": true,
+            "history_ms": 0.001834,
+            "host_validation_ms": 14.050375,
+            "total_ms": 29.070458000000002
+          },
+          29.145459
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 16.91425,
+            "full_document_validation": true,
+            "history_ms": 0.002791,
+            "host_validation_ms": 14.77875,
+            "total_ms": 31.697416999999998
+          },
+          29.178708
+        ],
+        [
+          {
+            "apply_ms": 0.001083,
+            "core_validation_ms": 13.997709,
+            "full_document_validation": true,
+            "history_ms": 0.002291,
+            "host_validation_ms": 13.779167,
+            "total_ms": 27.780541999999997
+          },
+          29.546499999999998
+        ],
+        [
+          {
+            "apply_ms": 0.0012079999999999999,
+            "core_validation_ms": 14.646457999999999,
+            "full_document_validation": true,
+            "history_ms": 0.001792,
+            "host_validation_ms": 14.2875,
+            "total_ms": 28.937375000000003
+          },
+          26.557041
+        ],
+        [
+          {
+            "apply_ms": 0.001542,
+            "core_validation_ms": 19.559917,
+            "full_document_validation": true,
+            "history_ms": 0.001833,
+            "host_validation_ms": 14.755584,
+            "total_ms": 34.319167
+          },
+          27.938208
+        ],
+        [
+          {
+            "apply_ms": 0.001209,
+            "core_validation_ms": 13.370334,
+            "full_document_validation": true,
+            "history_ms": 0.001791,
+            "host_validation_ms": 13.830542,
+            "total_ms": 27.204083
+          },
+          27.0995
+        ],
+        [
+          {
+            "apply_ms": 0.001083,
+            "core_validation_ms": 15.031459,
+            "full_document_validation": true,
+            "history_ms": 0.0020829999999999998,
+            "host_validation_ms": 13.393291999999999,
+            "total_ms": 28.428209
+          },
+          32.646083
+        ],
+        [
+          {
+            "apply_ms": 0.001167,
+            "core_validation_ms": 13.695208000000001,
+            "full_document_validation": true,
+            "history_ms": 0.002375,
+            "host_validation_ms": 13.372290999999999,
+            "total_ms": 27.071458
+          },
+          29.726792
+        ],
+        [
+          {
+            "apply_ms": 0.001042,
+            "core_validation_ms": 13.447875,
+            "full_document_validation": true,
+            "history_ms": 0.002375,
+            "host_validation_ms": 13.401708,
+            "total_ms": 26.8535
+          },
+          30.001666999999998
+        ],
+        [
+          {
+            "apply_ms": 0.001333,
+            "core_validation_ms": 15.648958,
+            "full_document_validation": true,
+            "history_ms": 0.002333,
+            "host_validation_ms": 13.650583000000001,
+            "total_ms": 29.303583
+          },
+          28.698041
+        ],
+        [
+          {
+            "apply_ms": 0.000917,
+            "core_validation_ms": 13.951334,
+            "full_document_validation": true,
+            "history_ms": 0.002167,
+            "host_validation_ms": 14.265625,
+            "total_ms": 28.22025
+          },
+          30.436916
+        ],
+        [
+          {
+            "apply_ms": 0.000959,
+            "core_validation_ms": 14.423,
+            "full_document_validation": true,
+            "history_ms": 0.001958,
+            "host_validation_ms": 14.869584,
+            "total_ms": 29.295833000000002
+          },
+          28.338459
+        ],
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 14.994458,
+            "full_document_validation": true,
+            "history_ms": 0.002375,
+            "host_validation_ms": 14.397583000000001,
+            "total_ms": 29.395791000000003
+          },
+          27.811249999999998
+        ],
+        [
+          {
+            "apply_ms": 0.001209,
+            "core_validation_ms": 13.942542000000001,
+            "full_document_validation": true,
+            "history_ms": 0.0025,
+            "host_validation_ms": 14.581958,
+            "total_ms": 28.528542
+          },
+          30.948166
+        ],
+        [
+          {
+            "apply_ms": 0.00125,
+            "core_validation_ms": 13.826625,
+            "full_document_validation": true,
+            "history_ms": 0.001959,
+            "host_validation_ms": 13.592834,
+            "total_ms": 27.423458
+          },
+          29.010875
+        ],
+        [
+          {
+            "apply_ms": 0.0012079999999999999,
+            "core_validation_ms": 17.035333,
+            "full_document_validation": true,
+            "history_ms": 0.002458,
+            "host_validation_ms": 16.764875,
+            "total_ms": 33.804292
+          },
+          33.268958
+        ],
+        [
+          {
+            "apply_ms": 0.001333,
+            "core_validation_ms": 16.201208,
+            "full_document_validation": true,
+            "history_ms": 0.002417,
+            "host_validation_ms": 15.751291,
+            "total_ms": 31.956583
+          },
+          30.289125
+        ]
+      ],
+      "undo": {
+        "median_ms": 29.546499999999998,
+        "p95_ms": 32.930458
+      }
+    },
+    {
+      "core_validation": {
+        "median_ms": 14.9885,
+        "p95_ms": 18.277084
+      },
+      "execute": {
+        "median_ms": 15.27925,
+        "p95_ms": 18.708584000000002
+      },
+      "host_validation": {
+        "median_ms": 0.289625,
+        "p95_ms": 0.427042
+      },
+      "legacy_full_validation": false,
+      "nodes_changed": 1,
+      "operation": "property",
+      "raw": [
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 13.837125,
+            "full_document_validation": true,
+            "history_ms": 0.001792,
+            "host_validation_ms": 0.289834,
+            "total_ms": 14.130208999999999
+          },
+          20.818040999999997
+        ],
+        [
+          {
+            "apply_ms": 0.000834,
+            "core_validation_ms": 16.656667,
+            "full_document_validation": true,
+            "history_ms": 0.002167,
+            "host_validation_ms": 0.3025,
+            "total_ms": 16.962457999999998
+          },
+          13.8565
+        ],
+        [
+          {
+            "apply_ms": 0.001583,
+            "core_validation_ms": 17.039458,
+            "full_document_validation": true,
+            "history_ms": 0.002125,
+            "host_validation_ms": 0.300125,
+            "total_ms": 17.343583
+          },
+          15.862583999999998
+        ],
+        [
+          {
+            "apply_ms": 0.0011250000000000001,
+            "core_validation_ms": 15.169541,
+            "full_document_validation": true,
+            "history_ms": 0.0028339999999999997,
+            "host_validation_ms": 0.289625,
+            "total_ms": 15.463332999999999
+          },
+          15.459375
+        ],
+        [
+          {
+            "apply_ms": 0.010750000000000001,
+            "core_validation_ms": 15.146375,
+            "full_document_validation": true,
+            "history_ms": 0.001667,
+            "host_validation_ms": 0.28816600000000003,
+            "total_ms": 15.447291
+          },
+          16.82525
+        ],
+        [
+          {
+            "apply_ms": 0.0013340000000000001,
+            "core_validation_ms": 14.289792,
+            "full_document_validation": true,
+            "history_ms": 0.002,
+            "host_validation_ms": 0.293667,
+            "total_ms": 14.587041000000001
+          },
+          16.958291
+        ],
+        [
+          {
+            "apply_ms": 0.0011250000000000001,
+            "core_validation_ms": 17.463334,
+            "full_document_validation": true,
+            "history_ms": 0.002208,
+            "host_validation_ms": 0.38579199999999997,
+            "total_ms": 17.852959000000002
+          },
+          16.96525
+        ],
+        [
+          {
+            "apply_ms": 0.000958,
+            "core_validation_ms": 16.567208,
+            "full_document_validation": true,
+            "history_ms": 0.0020829999999999998,
+            "host_validation_ms": 0.306667,
+            "total_ms": 16.87725
+          },
+          15.847333
+        ],
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 13.834709,
+            "full_document_validation": true,
+            "history_ms": 0.003208,
+            "host_validation_ms": 0.41974999999999996,
+            "total_ms": 14.258958
+          },
+          14.371417
+        ],
+        [
+          {
+            "apply_ms": 0.000833,
+            "core_validation_ms": 16.979000000000003,
+            "full_document_validation": true,
+            "history_ms": 0.002334,
+            "host_validation_ms": 0.31666700000000003,
+            "total_ms": 17.299125
+          },
+          30.943790999999997
+        ],
+        [
+          {
+            "apply_ms": 0.0015,
+            "core_validation_ms": 28.85625,
+            "full_document_validation": true,
+            "history_ms": 0.003292,
+            "host_validation_ms": 0.8839170000000001,
+            "total_ms": 29.745583
+          },
+          20.466874999999998
+        ],
+        [
+          {
+            "apply_ms": 0.001333,
+            "core_validation_ms": 17.302667,
+            "full_document_validation": true,
+            "history_ms": 0.0028339999999999997,
+            "host_validation_ms": 0.319959,
+            "total_ms": 17.627582999999998
+          },
+          19.65175
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 18.277084,
+            "full_document_validation": true,
+            "history_ms": 0.0027080000000000003,
+            "host_validation_ms": 0.427042,
+            "total_ms": 18.708584000000002
+          },
+          16.639083
+        ],
+        [
+          {
+            "apply_ms": 0.000792,
+            "core_validation_ms": 16.672083,
+            "full_document_validation": true,
+            "history_ms": 0.0024590000000000002,
+            "host_validation_ms": 0.298875,
+            "total_ms": 16.974541
+          },
+          14.721042
+        ],
+        [
+          {
+            "apply_ms": 0.0013340000000000001,
+            "core_validation_ms": 14.9885,
+            "full_document_validation": true,
+            "history_ms": 0.0022500000000000003,
+            "host_validation_ms": 0.28687500000000005,
+            "total_ms": 15.27925
+          },
+          16.494875
+        ],
+        [
+          {
+            "apply_ms": 0.001375,
+            "core_validation_ms": 14.413,
+            "full_document_validation": true,
+            "history_ms": 0.002041,
+            "host_validation_ms": 0.279375,
+            "total_ms": 14.696083999999999
+          },
+          15.635458000000002
+        ],
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 15.833208,
+            "full_document_validation": true,
+            "history_ms": 0.004083,
+            "host_validation_ms": 0.276583,
+            "total_ms": 16.115125000000003
+          },
+          14.688875000000001
+        ],
+        [
+          {
+            "apply_ms": 0.000875,
+            "core_validation_ms": 15.757125,
+            "full_document_validation": true,
+            "history_ms": 0.002542,
+            "host_validation_ms": 0.271875,
+            "total_ms": 16.032666000000003
+          },
+          15.082792
+        ],
+        [
+          {
+            "apply_ms": 0.00029099999999999997,
+            "core_validation_ms": 13.856292,
+            "full_document_validation": true,
+            "history_ms": 0.001916,
+            "host_validation_ms": 0.276292,
+            "total_ms": 14.135
+          },
+          14.269209
+        ],
+        [
+          {
+            "apply_ms": 0.000375,
+            "core_validation_ms": 13.946083,
+            "full_document_validation": true,
+            "history_ms": 0.000875,
+            "host_validation_ms": 0.29016699999999995,
+            "total_ms": 14.23775
+          },
+          14.4345
+        ],
+        [
+          {
+            "apply_ms": 0.000875,
+            "core_validation_ms": 13.524625,
+            "full_document_validation": true,
+            "history_ms": 0.002167,
+            "host_validation_ms": 0.27099999999999996,
+            "total_ms": 13.799083999999999
+          },
+          13.917416
+        ],
+        [
+          {
+            "apply_ms": 0.001,
+            "core_validation_ms": 13.931042,
+            "full_document_validation": true,
+            "history_ms": 0.002208,
+            "host_validation_ms": 0.282541,
+            "total_ms": 14.21725
+          },
+          13.948209
+        ],
+        [
+          {
+            "apply_ms": 0.000958,
+            "core_validation_ms": 14.859625,
+            "full_document_validation": true,
+            "history_ms": 0.0025,
+            "host_validation_ms": 0.289459,
+            "total_ms": 15.152875
+          },
+          14.2775
+        ],
+        [
+          {
+            "apply_ms": 0.0011250000000000001,
+            "core_validation_ms": 15.144459000000001,
+            "full_document_validation": true,
+            "history_ms": 0.002208,
+            "host_validation_ms": 0.28558300000000003,
+            "total_ms": 15.433833
+          },
+          13.375708
+        ],
+        [
+          {
+            "apply_ms": 0.001209,
+            "core_validation_ms": 13.431834,
+            "full_document_validation": true,
+            "history_ms": 0.000833,
+            "host_validation_ms": 0.276458,
+            "total_ms": 13.710625
+          },
+          14.081583
+        ],
+        [
+          {
+            "apply_ms": 0.001167,
+            "core_validation_ms": 13.925082999999999,
+            "full_document_validation": true,
+            "history_ms": 0.002042,
+            "host_validation_ms": 0.267291,
+            "total_ms": 14.196041
+          },
+          13.131375
+        ],
+        [
+          {
+            "apply_ms": 0.000958,
+            "core_validation_ms": 12.500584,
+            "full_document_validation": true,
+            "history_ms": 0.001959,
+            "host_validation_ms": 0.290459,
+            "total_ms": 12.794375
+          },
+          12.816834
+        ],
+        [
+          {
+            "apply_ms": 0.003458,
+            "core_validation_ms": 12.853458,
+            "full_document_validation": true,
+            "history_ms": 0.002042,
+            "host_validation_ms": 0.253083,
+            "total_ms": 13.112542
+          },
+          13.515125
+        ],
+        [
+          {
+            "apply_ms": 0.000875,
+            "core_validation_ms": 13.009084000000001,
+            "full_document_validation": true,
+            "history_ms": 0.002208,
+            "host_validation_ms": 0.266417,
+            "total_ms": 13.278833
+          },
+          13.056750000000001
+        ],
+        [
+          {
+            "apply_ms": 0.001042,
+            "core_validation_ms": 13.022958,
+            "full_document_validation": true,
+            "history_ms": 0.002458,
+            "host_validation_ms": 0.27308299999999996,
+            "total_ms": 13.299959
+          },
+          12.668292
+        ]
+      ],
+      "undo": {
+        "median_ms": 14.721042,
+        "p95_ms": 20.818040999999997
+      }
+    }
+  ],
+  "edges": 30000,
+  "nodes": 10000,
+  "os": "macos",
+  "samples": 30,
+  "scope": "Same binary: full-validation host wrapper vs Editor-aware Registry; CPU only, no Index/GPU/IPC",
+  "version": 1,
+  "warmup": 5
+}
