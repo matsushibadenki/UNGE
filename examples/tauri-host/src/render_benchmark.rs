@@ -1,23 +1,21 @@
 //! Standalone native diagnostic. No WebView, editing, execution or IPC traffic.
 #[path = "../../../crates/unge-render/examples/support/large_graph.rs"]
-mod large_graph;
+pub(super) mod large_graph;
 use std::{collections::BTreeSet, sync::Arc, time::Instant};
 use unge_core::{Locale, Viewport};
 use unge_render::{
     LabelCatalog, LabelText, NodeLabels, NodeTone, SceneIndex, SurfaceRenderer, Theme,
 };
 
-fn stats(mut values: Vec<f64>) -> serde_json::Value {
+pub(super) fn stats(mut values: Vec<f64>) -> serde_json::Value {
     if values.is_empty() {
         return serde_json::Value::Null;
     }
     values.sort_by(f64::total_cmp);
     serde_json::json!({"samples":values.len(),"median_ms":values[values.len()/2],"p95_ms":values[(values.len()*95).div_ceil(100)-1],"min_ms":values[0],"max_ms":values[values.len()-1]})
 }
-fn measure(window: tauri::Window) -> Result<serde_json::Value, String> {
-    let document = large_graph::document();
-    let index = SceneIndex::new(&document);
-    let labels = LabelCatalog::from([(
+pub(super) fn labels() -> LabelCatalog {
+    LabelCatalog::from([(
         "benchmark".into(),
         NodeLabels {
             tone: NodeTone::Blue,
@@ -29,7 +27,12 @@ fn measure(window: tauri::Window) -> Result<serde_json::Value, String> {
             },
             ..Default::default()
         },
-    )]);
+    )])
+}
+fn measure(window: tauri::Window) -> Result<serde_json::Value, String> {
+    let document = large_graph::document();
+    let index = SceneIndex::new(&document);
+    let labels = labels();
     let size = window.inner_size().map_err(|e| e.to_string())?;
     let scale = window.scale_factor().map_err(|e| e.to_string())?;
     let physical = [size.width, size.height];

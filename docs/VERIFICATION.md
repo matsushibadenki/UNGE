@@ -344,3 +344,16 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - macOSネイティブアプリでGPU上の数値ノードをクリックし、値20／revision 0のプロパティが自動表示されることを確認。未保存の77を入力後、HTMLの選択操作で別の数値調整ノードを選択。元ノードのIDと77、下書き保持の案内が残り、保存するとrevision 1となって数値調整ノードへ表示が追従することを確認。検証アプリを終了。
 - 既存パネル／ノード操作／Group／実行UIロジックテストも3言語で成功。新しい選択取得は登録Viewに限定し、IPCにはrevision・選択数・単一IDだけを送る。イベントは再照会の契機とし、保存には既存revision検査を使う。
 - ⭕️ [Pending] Windows/Linux、スクリーンリーダーの実機操作、別ウインドウモードでの今回の追従操作は未検証。未保存フォームのプロセスをまたぐ永続化、複数ノードへの一括プロパティ編集は未実装。
+
+
+## 2026-10-11: 通常描画と連続操作のCPU計測
+
+- workspace/all-features Rust137件成功、通常実行でGPU4件ignored。新規の10,000ノード／30,000接続の連続入力テストで、Pan／ZoomがDocumentを変更しないこと、Zoom範囲、Drag途中のプレビューと13ステップごとの単一Command確定、5回の編集後の座標、各確定後の描画Indexと全体再構築のQuad一致を確認。
+- 実GPU ignored4件成功。通常サンドボックスではMetal Adapter取得不可だったため、許可されたデスクトップGPU環境で再実行。既存のピクセル・領域描画・テーマ／文字・GPU診断テストを確認。WGSL・描画形状は変更していない。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。17件の生成契約チェックで差分なし。既存block 0.1.6のfuture compatibility警告は継続。IPC／TypeScript／ACXのwire形式、UI文言は変更なし。取り込み文書には日本語・英語・简体中文の説明を追加。
+- Tauri releaseビルド（thin LTO）と `--benchmark-animation` が成功。Apple M4／Metal、macOS/aarch64、1280×720、倍率1、Fifo。Dark/Light×3言語×Pan/Zoom/Dragの18条件で、各5成功フレームの予熱後60フレーム、計1,080サンプル。Surfaceスキップ0、欠字0、GPU Validationエラーなし。専用プロセスは計測後にexit 0で終了。
+- 実Surface上でゼロサイズの通常／計測drawと空の描画領域がスキップし、範囲外領域がエラーとなり、サイズ復元後に通常経路の描画が回復することを確認。OSからLost/Outdated/Timeoutを強制発生させるテストは行っていない。
+- 生JSONの18条件の一意性、各60サンプル、非負かつ有限の全時間、工程の時間と総時間の大小関係、開始頻度の再計算、Drag各5回／他の操作0回のCommand確定を確認。Dragの更新時間上位5件はすべてUp時。CPU更新p95は12.747〜20.665ms、ZoomのScene生成p95は6.034〜10.841ms。[結果とJSON](PERFORMANCE.md)。
+- 通常APIは時計取得を省略し、計測APIもGPU完了待ち・timestamp query・readbackを追加しない。タイミングはCPUのSurface取得／準備／encode-submit／presentと、入力・編集・Index／Scene生成に分離。成功開始間隔にはイベントループとスキップした試行を含める。サンプル数・試行数・ターン間の期限を制限し、JSONは条件末尾で集計。
+- ネイティブ合成入力を直接Interactionへ送る計測で、実マウス入力やWebView／共有Engine競合は対象外。画面表示のFPS、GPU完了、OS compositor、入力から表示までの遅延、長時間安定性を確認したものではない。HTMLは未変更のためブラウザーUIテストは今回は再実行していない。
+- ⭕️ [Pending] Windows/Linux、実モニターでの表示完了・入力から表示までの遅延の検証は環境がないため保留。

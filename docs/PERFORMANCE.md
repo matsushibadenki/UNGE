@@ -165,3 +165,41 @@ Apple M4、Metal、macOS/aarch64、release（thin LTO）、1280×720物理px、D
 English: The release native diagnostic completed 12 theme/language/zoom cases × 30 measured frames on Apple M4 / Metal at 1280×720, scale 1, Fifo. All 360 GPU timestamp samples were available, with no skipped Surface frames, missing glyphs or validation errors. Median GPU pass time was 0.684–0.687 ms nearby and 2.516–2.525 ms for the overview. Total diagnostic time includes scene generation, CPU work, completion waits, a separate query-resolution submission and the CPU present call. This serialized diagnostic does not establish animation FPS or display latency. The overview omits text; language differences there are measurement variation. Larger cards, previews, groups, interaction, WebView contention and other operating systems are outside this measurement.
 
 简体中文：在Apple M4／Metal、1280×720、缩放倍率1、Fifo下，release原生诊断完成12种主题／语言／缩放组合，每组30个计测帧。360个GPU时间戳均可用，Surface跳过、缺字和验证错误均为0。近景GPU Pass中位数为0.684–0.687ms，全景为2.516–2.525ms。诊断总时间包含场景生成、CPU工作、完成等待、单独提交的查询解析及CPU的present调用。该串行诊断不能证明动画FPS或屏幕显示延迟。全景省略文字，语言间的差异属于测量波动。大卡片、预览、Group、交互、WebView竞争及其他操作系统不在此次测量范围内。
+
+
+## 通常描画と連続操作（2026-10-11）
+
+Apple M4／Metal、macOS/aarch64、release（thin LTO）、1280×720物理px、DPI倍率1、Fifoで計測。10,000ノード／30,000接続に対して、ネイティブイベントループから合成Pan／Zoom／Dragを送ります。各条件は5成功フレームの予熱後、60成功フレーム。通常描画経路を使用し、GPU完了待ちやreadbackを追加しません。[再現コマンドとAPI](RENDER_PROFILING.md)。
+
+| テーマ | 言語 | 操作 | 更新p95 (ms) | Scene p95 (ms) | 開始間隔 中央値 / p95 (ms) |
+|---|---|---|---:|---:|---:|
+| dark | en | pan | 0.002 | 0.095 | 16.674 / 17.187 |
+| dark | en | zoom | 0.001 | 6.472 | 16.680 / 16.873 |
+| dark | en | drag | 14.192 | 0.095 | 16.647 / 16.835 |
+| dark | ja | pan | 0.001 | 0.081 | 16.657 / 16.835 |
+| dark | ja | zoom | 0.001 | 6.034 | 16.684 / 16.969 |
+| dark | ja | drag | 12.747 | 0.090 | 16.671 / 16.847 |
+| dark | zh-cn | pan | 0.002 | 0.093 | 16.666 / 16.924 |
+| dark | zh-cn | zoom | 0.001 | 7.237 | 16.663 / 16.874 |
+| dark | zh-cn | drag | 15.954 | 0.099 | 16.683 / 16.797 |
+| light | en | pan | 0.002 | 0.096 | 16.671 / 16.792 |
+| light | en | zoom | 0.001 | 7.220 | 16.667 / 16.865 |
+| light | en | drag | 15.017 | 0.100 | 16.674 / 16.788 |
+| light | ja | pan | 0.002 | 0.092 | 16.667 / 16.813 |
+| light | ja | zoom | 0.001 | 7.266 | 16.679 / 16.955 |
+| light | ja | drag | 14.367 | 0.097 | 16.680 / 16.898 |
+| light | zh-cn | pan | 0.002 | 0.095 | 16.666 / 16.877 |
+| light | zh-cn | zoom | 0.001 | 10.841 | 16.690 / 17.015 |
+| light | zh-cn | drag | 20.665 | 0.142 | 16.687 / 21.377 |
+
+[全工程の統計と生JSON](benchmarks/2026-10-11-animation.json)。18条件・1,080サンプル、Surfaceスキップ0、missing glyph 0、GPU Validationエラーなし。起動時には最小化相当のゼロサイズ・空領域でのスキップ、範囲外領域の拒否、サイズ復元後の描画回復も確認しました。
+
+Panでは25〜36ノード、Zoomでは36〜10,000ノード、Dragでは36ノードが可視。Zoomは1.0〜0.02の往復により全体表示と近景を通過し、Scene生成のp95は6.034〜10.841msでした。Dragの各条件で確定5回を含み、更新処理のp95は12.747〜20.665ms。更新時間が長い上位5サンプルはすべてUp時の確定に一致しました。更新にはInteraction、Command・Documentの検証、履歴、Index更新を含むため、この計測だけで個別の処理を原因と断定しません。次は確定処理の内訳を測り、編集の正しさを保ちながら費用を削減します。
+
+成功開始頻度は各条件59.974〜60.040Hzですが、これはCPUが入力処理を開始した頻度です。取得処理の中央値は約15.1〜16.3msと大きく、Surface側の待機も総時間に含まれます。最も長い開始間隔p95は21.377msでした。取得待ち、GPUの並行動作、イベントループの影響があるため、個別工程の中央値やp95を足し合わせて総時間にしません。JSONの16.667ms超過件数も画面の欠落フレーム数ではありません。
+
+1台での単一実行・各条件約1秒の合成入力です。実マウス入力、WebViewとの合成や共有Engineの競合、画像プレビュー、Group、大きなカード、長時間の安定性は含みません。GPU完了・OS compositor・画面走査を観測していないため、表示60FPS達成や入力から表示までの遅延を示しません。Windows/Linuxは実行環境がないため保留です。
+
+English: Normal queued rendering completed 18 cases × 60 samples on Apple M4 / Metal, 1280×720, scale 1, Fifo, without explicit GPU waits or readback. All 1,080 samples succeeded without skips, missing glyphs or validation errors. Synthetic zoom traversed 36–10,000 visible nodes; scene-generation p95 was 6.034–10.841 ms. Drag included five committed edits per case; input/edit/index p95 was 12.747–20.665 ms, and the five slowest updates in each case were releases. Further profiling must separate validation, history and index costs. CPU start cadence of 59.974–60.040 Hz does not establish display FPS; maximum case interval p95 was 21.377 ms. These short, single-machine cases exclude OS input latency, shared Engine/WebView contention, previews, groups and larger cards.
+
+简体中文：Apple M4／Metal、1280×720、倍率1、Fifo下，普通提交渲染完成18组×60个样本，无显式GPU等待或回读。1,080个样本均成功，无跳过、缺字或验证错误。合成Zoom覆盖36–10,000个可见节点，场景生成p95为6.034–10.841ms。每组Drag提交5次编辑，输入／编辑／Index更新p95为12.747–20.665ms，最慢的5次更新均对应释放提交。后续需进一步区分验证、历史和Index成本。CPU开始频率59.974–60.040Hz不代表屏幕FPS，组间最高间隔p95为21.377ms。短时间单机测试不含真实OS输入延迟、共享Engine／WebView竞争、预览、Group或大卡片。

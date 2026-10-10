@@ -67,6 +67,6 @@ GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘�
 
 [节点属性界面及API](PROPERTY_INSPECTOR.md)
 
-[GPU / Surface描画计测](RENDER_PROFILING.md)
+[GPU / Surface诊断及连续操作的CPU计测](RENDER_PROFILING.md)
 
 [设置面板停靠与浮动](PANEL_DOCKING.md)

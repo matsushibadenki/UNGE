@@ -67,6 +67,6 @@ Nodes now use a dot canvas, role accents, optional symbols/captions and a clear 
 
 [Property inspector UI and API](PROPERTY_INSPECTOR.md)
 
-[GPU / Surface profiling](RENDER_PROFILING.md)
+[GPU / Surface diagnostics and continuous-input CPU timings](RENDER_PROFILING.md)
 
 [Dock and float the settings panel](PANEL_DOCKING.md)

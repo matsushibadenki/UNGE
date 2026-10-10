@@ -120,3 +120,8 @@ GPU表示に対応するHTML操作には [ACCESSIBILITY.md](ACCESSIBILITY.md) �
 配置の永続化はサンプルの `panel_preferences.rs` に分離しています。DocumentやEngine IPCを変更せず、Rustでネイティブの通常配置を記録し、通常終了時にホストの設定ファイルへ保存します。復元時の画面内補正、設定のversion検証と破損ファイル保全は [PANEL_DOCKING.md](PANEL_DOCKING.md) を参照してください。
 
 選択へのプロパティ追従には `selection_summary` を登録し、単一選択IDとrevisionから `node_properties` を取得します。選択ではrevisionが増えないため、非同期応答の順序は通知の世代でも検証します。未保存の値があれば表示中ノードへの下書きを維持し、保存成功または明示的な破棄後に切り替えてください。[詳細](PROPERTY_INSPECTOR.md)。
+
+
+## 通常描画のCPU時間を調べる
+
+`SurfaceRenderer::draw_timed` / `draw_region_timed` は既存の描画経路でCPU時間を返します。GPUの完了待ちを追加せず、Rustホストが有界に記録します。連続Pan／Zoom／Dragを含む `--benchmark-animation` と値の解釈は [RENDER_PROFILING.md](RENDER_PROFILING.md)。開始頻度を表示FPSとして扱わないでください。

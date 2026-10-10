@@ -11,6 +11,23 @@ pub struct SurfaceFrameTimings {
     pub total_ms: f64,
 }
 
+/// CPU timings for the normal queued rendering path. No GPU completion wait,
+/// timestamp query or readback is added. Acquisition/submit/present may still
+/// block internally for driver backpressure or VSync.
+#[derive(Debug, Clone, Default, serde::Serialize)]
+pub struct CpuSurfaceFrameTimings {
+    pub acquire_ms: f64,
+    pub prepare_ms: f64,
+    pub encode_submit_ms: f64,
+    /// CPU call only, not compositor/display completion.
+    pub present_call_ms: f64,
+    pub total_ms: f64,
+}
+
+fn elapsed_ms(start: Option<Instant>) -> f64 {
+    start.map_or(0., |start| start.elapsed().as_secs_f64() * 1000.)
+}
+
 /// Native surface owned by the Rust application, independent of any WebView.
 pub struct SurfaceRenderer {
     surface: wgpu::Surface<'static>,
@@ -172,30 +189,70 @@ impl SurfaceRenderer {
         viewport: Viewport,
         graph_size: [u32; 2],
     ) -> Result<bool, String> {
+        self.draw_region_impl::<false>(scene, viewport, graph_size)
+            .map(|sample| sample.is_some())
+    }
+    /// Opt-in CPU measurement of the same path as `draw`. A skipped frame is
+    /// None, never a zero-duration sample. Works with the ordinary constructor.
+    pub fn draw_timed(
+        &mut self,
+        scene: &Scene,
+        viewport: Viewport,
+    ) -> Result<Option<CpuSurfaceFrameTimings>, String> {
+        self.draw_region_timed(scene, viewport, [self.config.width, self.config.height])
+    }
+    /// Region variant for hosts with an opaque child WebView beside the graph.
+    pub fn draw_region_timed(
+        &mut self,
+        scene: &Scene,
+        viewport: Viewport,
+        graph_size: [u32; 2],
+    ) -> Result<Option<CpuSurfaceFrameTimings>, String> {
+        self.draw_region_impl::<true>(scene, viewport, graph_size)
+    }
+    fn draw_region_impl<const TIMED: bool>(
+        &mut self,
+        scene: &Scene,
+        viewport: Viewport,
+        graph_size: [u32; 2],
+    ) -> Result<Option<CpuSurfaceFrameTimings>, String> {
+        let total = TIMED.then(Instant::now);
         if graph_size[0] > self.config.width || graph_size[1] > self.config.height {
             return Err("graph region exceeds surface size".into());
         }
         if self.suspended || graph_size.contains(&0) {
-            return Ok(false);
+            return Ok(None);
         }
         let frame = match self.surface.get_current_texture() {
             Ok(frame) => frame,
             Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {
                 self.surface.configure(&self.device, &self.config);
-                return Ok(false);
+                return Ok(None);
             }
-            Err(wgpu::SurfaceError::Timeout) => return Ok(false),
+            Err(wgpu::SurfaceError::Timeout) => return Ok(None),
             Err(error) => return Err(error.to_string()),
         };
+        let acquire_ms = elapsed_ms(total);
+        let prepare = TIMED.then(Instant::now);
         self.renderer
             .prepare_sized(&self.device, &self.queue, scene, viewport, graph_size)
             .map_err(|e| e.to_string())?;
+        let prepare_ms = elapsed_ms(prepare);
+        let encode = TIMED.then(Instant::now);
         let view = frame.texture.create_view(&Default::default());
         let mut encoder = self.device.create_command_encoder(&Default::default());
         self.renderer
             .render_in_region(&mut encoder, &view, graph_size);
         self.queue.submit([encoder.finish()]);
+        let encode_submit_ms = elapsed_ms(encode);
+        let present = TIMED.then(Instant::now);
         frame.present();
-        Ok(true)
+        Ok(Some(CpuSurfaceFrameTimings {
+            acquire_ms,
+            prepare_ms,
+            encode_submit_ms,
+            present_call_ms: elapsed_ms(present),
+            total_ms: elapsed_ms(total),
+        }))
     }
 }

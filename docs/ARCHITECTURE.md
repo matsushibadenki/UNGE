@@ -69,6 +69,7 @@ JavaScriptを経由するコピーやGPU→CPUの毎フレームreadbackはあ�
 Dark/LightのsRGB配色はRustのThemePaletteに集約し、GPUには線形RGB、WebViewにはCSS tokensを渡します。Sceneの背景clear・グリッド・形状・文字を同時に更新します。テーマ変更でSceneIndexやGlyph Atlasを作り直しません。操作画面の小さなappearance命令とView別通知、ネイティブ枠のOS制約は [THEMES.md](THEMES.md)。
 
 SurfaceRendererはゼロサイズ、Resize、Timeout、Lost/Outdatedを扱います。
+`draw_timed` / `draw_region_timed` は通常と同じ描画経路のCPU時間を返し、GPU完了待ちやreadbackを追加しません。通常APIでは時計取得も省略します。[計測の契約](RENDER_PROFILING.md)。
 GPU Device LostとOutOfMemoryはエラーとしてホストに返します。ホストは必要に応じてRendererを再生成します。
 サンプルのネイティブWindowBuilderはTauri 2の `unstable` featureを使います。このfeatureはサンプル側だけで有効化し、コアライブラリには要求していません。
 macOSのデスクトップ例はSurfaceを親Windowへ、設定WebViewを右側の子として配置します。描画は左側の領域に制限し、入力も同じRustの配置計算で判定します。別ウインドウの互換経路も維持します。[WINDOW_COMPOSITION.md](WINDOW_COMPOSITION.md)。

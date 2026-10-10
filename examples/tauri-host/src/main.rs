@@ -1,3 +1,4 @@
+mod animation_benchmark;
 mod input;
 mod panel_preferences;
 mod property_demo;
@@ -197,6 +198,10 @@ fn main() {
     let mut context = tauri::generate_context!();
     if std::env::args().any(|arg| arg == "--benchmark-surface") {
         render_benchmark::run(context);
+        return;
+    }
+    if std::env::args().any(|arg| arg == "--benchmark-animation") {
+        animation_benchmark::run(context);
         return;
     }
     context.config_mut().app.windows.clear();

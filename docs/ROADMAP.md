@@ -65,7 +65,7 @@
 - 🟢 [Done] 形状/ズームに応じたBezier適応分割、誤差目標と分割上限、逆向き/端点一致の検証、実GPU曲線ピクセル検証
 - 🟢 [Done] 小さなノード/接続の追加・削除・再接続、Undo/Redo・ACX RecoverのIndex差分更新。容量超過は全体再構築
 - 🟢 [Done] 明示的なGPU/Surface診断APIと12条件のネイティブ計測。通常描画の完了待ちは追加しない
-- 🟠 [Next] 通常の非同期描画と連続操作を含むフレーム計測
+- 🟢 [Done] 通常描画のCPU計測APIとPan／Zoom／Dragの18条件計測。[結果と範囲](PERFORMANCE.md)
 - 🟢 [Done] Tauri/Taoのネイティブ入力ブリッジ、HiDPIの論理座標、ホイール拡大縮小（macOS実操作確認）
 - ⭕️ [Pending] Windows/LinuxのネイティブSurface/入力検証（現在はmacOS開発環境のみ）
 - 🟢 [Done] macOSの同一ウインドウ合成、子WebViewの呼び出し元認可、領域描画・入力境界・DPI計算。別ウインドウ互換経路を維持
@@ -78,7 +78,7 @@
 - 🔴 [Later] GPU不可時のフォールバック、ブラウザーWASMホスト
 - 🔴 [Later] Minimap、検索、Smart Connection、CRDT共同編集、Git連携
 
-設計書の「10000 Nodes / 30000 Edges / 60 FPS」のうちCPU処理とGPU/Surfaceの直列診断を計測しました。通常の非同期描画での60FPSは未検証です。詳細は [PERFORMANCE.md](PERFORMANCE.md)。
+設計書の「10000 Nodes / 30000 Edges / 60 FPS」のうちCPU処理、GPU/Surfaceの直列診断、通常描画での合成連続操作を計測しました。画面表示の60FPSは未検証です。詳細は [PERFORMANCE.md](PERFORMANCE.md)。
 
 ## ACXによるAI操作
 
@@ -133,7 +133,7 @@
 - 🟢 [Done] 10,000ノード/30,000接続で小さな構造変更とUndoのCPU Index更新を30回計測。[条件と数値](PERFORMANCE.md)。
 - 🟢 [Done] GPU/Surfaceを含む直列診断計測。[再利用APIと計測手順](RENDER_PROFILING.md)。
 - 🟢 [Done] macOSの同一ウインドウ合成。[取り込み方法](WINDOW_COMPOSITION.md)。
-- 🟠 [Next] 通常の非同期描画・連続操作を含むフレーム計測。
+- 🟢 [Done] 通常描画・連続操作のCPU計測。2026-10-11の結果を参照。
 
 ## 2026-10-09: 設定パネルの切り離し
 
@@ -152,3 +152,13 @@
 - 🟢 [Done] Viewごとの有界なSelectionSummary API、生成Schema／TypeScriptクライアント、ネイティブ選択通知。
 - 🟢 [Done] 単一選択への自動追従、下書きの保存先保持、保存後／明示的な破棄後の切り替え、古い取得結果の除外、通知欠落時の再照会。[取り込み手順](PROPERTY_INSPECTOR.md)。
 - ⭕️ [Pending] Windows/Linuxでのネイティブ選択通知と設定パネルの実機検証。
+
+
+## 2026-10-11: 通常描画と連続操作の計測
+
+- 🟢 [Done] `draw_timed` / `draw_region_timed` によるCPU計測。通常と同じ経路でGPU完了待ち・query・readbackを追加せず、スキップを成功サンプルから除外。[取り込み方法](RENDER_PROFILING.md)。
+- 🟢 [Done] イベントループでPan／Zoom／Dragを再現するTauri起動モード。Command確定とIndex更新を含み、予熱・件数・試行・時間の上限、工程別統計と生データを保持。
+- 🟢 [Done] macOS／Metalで18条件・1,080サンプルを計測。スキップ・欠字・GPU Validationエラーなし。[結果](PERFORMANCE.md)。CPU開始頻度を画面FPSとは扱わない。
+- 🟠 [Next] ドラッグ確定時の編集・検証・履歴の費用を分離して削減。今回の更新p95は12.747〜20.665ms。Zoom中のScene生成費用も継続調査。
+- 🔴 [Later] WebView合成・共有Engineの競合を含む長時間の連続操作計測。
+- ⭕️ [Pending] Windows/Linux、実モニターの表示完了・入力から表示までの遅延の実機検証。
