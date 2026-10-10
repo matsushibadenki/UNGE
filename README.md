@@ -140,3 +140,5 @@ Definitionごとの入力/出力値マップSchemaとRust検証APIを追加し�
 [GPU / Surfaceの診断・通常描画と連続操作のCPU計測](docs/RENDER_PROFILING.md)
 
 [設定パネルのドッキング・フローティングと配置の保存／復元](docs/PANEL_DOCKING.md)
+
+[ノード移動の検証最適化と編集時間の計測](docs/PLACEMENT_EDITS.md)

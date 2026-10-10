@@ -1,6 +1,6 @@
 use crate::*;
 use serde::{Deserialize, Serialize};
-use std::{collections::VecDeque, sync::Arc};
+use std::{collections::VecDeque, sync::Arc, time::Instant};
 
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -37,6 +37,15 @@ pub enum Command {
     },
 }
 impl Command {
+    // Only these commands preserve every graph/schema invariant. Apply checks
+    // node existence and rectangle bounds before mutating each placement.
+    fn placement_only(&self) -> bool {
+        match self {
+            Self::MoveNode { .. } => true,
+            Self::Batch { commands } => commands.iter().all(Self::placement_only),
+            _ => false,
+        }
+    }
     /// Apply without whole-graph cloning; return the inverse for rollback/history.
     fn apply(self, doc: &mut Document) -> Result<Command> {
         Ok(match self {
@@ -158,6 +167,37 @@ impl Command {
 /// transaction, including undo/redo. Must not perform side effects or re-enter Editor.
 pub trait DocumentValidator: Send + Sync {
     fn validate(&self, document: &Document) -> Result<()>;
+
+    /// Called after core invariants are checked. The default preserves existing
+    /// host rules, including rules that depend on placement. Overrides may reuse
+    /// earlier validation only while their own rules remain immutable.
+    fn validate_transition(&self, edit: ValidatedEdit<'_>) -> Result<()> {
+        self.validate(edit.document())
+    }
+}
+
+/// Borrowed proof supplied only by Editor after its core checks. No public
+/// constructor or deserialization: arbitrary loaded Documents are not proofs.
+/// The previous state passed this same installed validator. Host adapters must
+/// forward both initial validation and transitions to the same immutable rules.
+/// ```compile_fail
+/// use unge_core::{Document, ValidatedEdit};
+/// let document = Document::default();
+/// let forged = ValidatedEdit { document: &document, placement_only: true };
+/// ```
+pub struct ValidatedEdit<'a> {
+    document: &'a Document,
+    placement_only: bool,
+}
+impl<'a> ValidatedEdit<'a> {
+    pub fn document(&self) -> &'a Document {
+        self.document
+    }
+    /// Only MoveNode and recursively move-only (including empty) batches ran.
+    /// Graph, properties and document metadata are unchanged.
+    pub fn placement_only(&self) -> bool {
+        self.placement_only
+    }
 }
 
 /// Limits cover undo and redo together. Bytes measure serialized command payloads,
@@ -206,6 +246,21 @@ impl HistoryEntry {
         };
         Self { command, bytes }
     }
+}
+
+/// Opt-in CPU diagnostics for a successful execute. No clocks are read by the
+/// ordinary execute/undo/redo APIs. These values exclude scene/index/GPU work.
+#[derive(Debug, Clone, Default, Serialize)]
+pub struct EditTimings {
+    pub apply_ms: f64,
+    pub core_validation_ms: f64,
+    pub host_validation_ms: f64,
+    pub history_ms: f64,
+    pub total_ms: f64,
+    pub full_document_validation: bool,
+}
+fn elapsed_ms(start: Option<Instant>) -> f64 {
+    start.map_or(0., |s| s.elapsed().as_secs_f64() * 1000.)
 }
 
 /// Single source of truth. Share this from Rust app state, never from a WebView.
@@ -279,16 +334,41 @@ impl Editor {
             bytes: self.history_bytes,
         }
     }
-    fn apply_checked(&mut self, command: Command) -> Result<Command> {
+    fn apply_checked<const TIMED: bool>(
+        &mut self,
+        command: Command,
+        timings: &mut EditTimings,
+    ) -> Result<Command> {
+        let apply_start = TIMED.then(Instant::now);
         let next_revision = self
             .revision
             .checked_add(1)
             .ok_or_else(|| Error::Invalid("revision exhausted".into()))?;
+        let placement_only = command.placement_only();
         let inverse = command.apply(&mut self.document)?;
-        let validation = self.document.validate().and_then(|()| {
-            self.validator
-                .as_ref()
-                .map_or(Ok(()), |v| v.validate(&self.document))
+        timings.apply_ms = elapsed_ms(apply_start);
+        let validation_start = TIMED.then(Instant::now);
+        // Editor owns a previously validated Document and exposes no mutable
+        // access. A placement-only transaction cannot change graph/schema state;
+        // apply already validated every changed rectangle. Mixed batches retain
+        // full validation, and host validators always run on the final state.
+        timings.full_document_validation = !placement_only;
+        let validation = if placement_only {
+            Ok(())
+        } else {
+            self.document.validate()
+        };
+        timings.core_validation_ms = elapsed_ms(validation_start);
+        let validation = validation.and_then(|()| {
+            let host_start = TIMED.then(Instant::now);
+            let result = self.validator.as_ref().map_or(Ok(()), |v| {
+                v.validate_transition(ValidatedEdit {
+                    document: &self.document,
+                    placement_only,
+                })
+            });
+            timings.host_validation_ms = elapsed_ms(host_start);
+            result
         });
         if let Err(error) = validation {
             inverse
@@ -334,12 +414,26 @@ impl Editor {
         }
     }
     pub fn execute(&mut self, command: Command) -> Result<u64> {
-        let inverse = self.apply_checked(command)?;
+        self.execute_impl::<false>(command)
+            .map(|(revision, _)| revision)
+    }
+    /// Measures the same transaction as execute. Failure returns only Err and
+    /// preserves the same document, revision and history rollback guarantees.
+    pub fn execute_timed(&mut self, command: Command) -> Result<(u64, EditTimings)> {
+        self.execute_impl::<true>(command)
+    }
+    fn execute_impl<const TIMED: bool>(&mut self, command: Command) -> Result<(u64, EditTimings)> {
+        let start = TIMED.then(Instant::now);
+        let mut timings = EditTimings::default();
+        let inverse = self.apply_checked::<TIMED>(command, &mut timings)?;
+        let history_start = TIMED.then(Instant::now);
         for entry in self.redo.drain(..) {
             self.history_bytes -= entry.bytes;
         }
         self.remember(inverse, true);
-        Ok(self.revision)
+        timings.history_ms = elapsed_ms(history_start);
+        timings.total_ms = elapsed_ms(start);
+        Ok((self.revision, timings))
     }
     /// Inspect the next inverse without cloning its property payloads. Capture
     /// derived changes now, but apply them only after undo succeeds on this Editor.
@@ -355,7 +449,8 @@ impl Editor {
             return Ok(false);
         };
         // Retain history on validation failure; only remove after success.
-        let inverse = self.apply_checked(entry.command.clone())?;
+        let inverse =
+            self.apply_checked::<false>(entry.command.clone(), &mut EditTimings::default())?;
         self.history_bytes -= self.undo.pop_back().unwrap().bytes;
         self.remember(inverse, false);
         Ok(true)
@@ -364,7 +459,8 @@ impl Editor {
         let Some(entry) = self.redo.back() else {
             return Ok(false);
         };
-        let inverse = self.apply_checked(entry.command.clone())?;
+        let inverse =
+            self.apply_checked::<false>(entry.command.clone(), &mut EditTimings::default())?;
         self.history_bytes -= self.redo.pop_back().unwrap().bytes;
         self.remember(inverse, true);
         Ok(true)

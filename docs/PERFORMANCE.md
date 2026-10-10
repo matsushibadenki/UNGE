@@ -20,7 +20,7 @@ ID、座標、Port、接続は固定です。100×100の格子に隣接ノード
 | node_query | 通常表示範囲の検索と結果の整列 |
 | normal_scene | 1400×900、zoom=1でのカリング・曲線・Port・文字ラベルのCPU生成 |
 | overview_scene | 同じサイズ、zoom=0.02で全体表示。低LODで文字・Portを省略 |
-| move_command_validation | 1ノード移動のCommand適用と全体検証。SceneIndex再構築は含まない |
+| move_command_validation | 1ノード移動のCommand適用と検証。現在は移動のみの局所検査。SceneIndex再構築は含まない |
 
 通常表示と全体表示は可視件数、Quad数、文字ラベル数も記録します。
 CPU側のシーン生成・割り当て・破棄を含み、文字の整形/Glyph Atlas、GPUへのアップロード、
@@ -34,7 +34,7 @@ BVHの各階層で全要素を並べ替える代わりに、中央値で左右�
 検索結果は独立した総当たり検索、入力順の反転、同一座標、境界、無効矩形で検証します。
 Rust標準ライブラリの [select_nth_unstable_by](https://doc.rust-lang.org/std/primitive.slice.html#method.select_nth_unstable_by) を使用します。
 
-小さな移動は [INDEX_UPDATES.md](INDEX_UPDATES.md) の差分更新に対応しました。全体検証は残り、小さなトポロジー編集・Undo/Redoも差分更新し、容量超過時にはSceneIndexを再構築します。
+小さな移動は [INDEX_UPDATES.md](INDEX_UPDATES.md) の差分更新に対応しました。移動以外の全体検証とホスト検証は残り、小さなトポロジー編集・Undo/Redoも差分更新し、容量超過時にはSceneIndexを再構築します。
 曲線の適応分割、構造変更の差分更新、GPU/Surface計測の結果は以下の各節を参照してください。
 
 ## English
@@ -203,3 +203,53 @@ Panでは25〜36ノード、Zoomでは36〜10,000ノード、Dragでは36ノー�
 English: Normal queued rendering completed 18 cases × 60 samples on Apple M4 / Metal, 1280×720, scale 1, Fifo, without explicit GPU waits or readback. All 1,080 samples succeeded without skips, missing glyphs or validation errors. Synthetic zoom traversed 36–10,000 visible nodes; scene-generation p95 was 6.034–10.841 ms. Drag included five committed edits per case; input/edit/index p95 was 12.747–20.665 ms, and the five slowest updates in each case were releases. Further profiling must separate validation, history and index costs. CPU start cadence of 59.974–60.040 Hz does not establish display FPS; maximum case interval p95 was 21.377 ms. These short, single-machine cases exclude OS input latency, shared Engine/WebView contention, previews, groups and larger cards.
 
 简体中文：Apple M4／Metal、1280×720、倍率1、Fifo下，普通提交渲染完成18组×60个样本，无显式GPU等待或回读。1,080个样本均成功，无跳过、缺字或验证错误。合成Zoom覆盖36–10,000个可见节点，场景生成p95为6.034–10.841ms。每组Drag提交5次编辑，输入／编辑／Index更新p95为12.747–20.665ms，最慢的5次更新均对应释放提交。后续需进一步区分验证、历史和Index成本。CPU开始频率59.974–60.040Hz不代表屏幕FPS，组间最高间隔p95为21.377ms。短时间单机测试不含真实OS输入延迟、共享Engine／WebView竞争、预览、Group或大卡片。
+
+
+## 移動確定の工程分離と検証最適化（2026-10-11）
+
+通常描画計測で重かったDragの確定を、Command適用・core検証・ホスト検証・履歴・Index更新に分けました。`Editor::execute_timed` と同じ計測コードを使い、coreが毎回全体検証する変更前と、移動だけの検証を限定する変更後を順にrelease実行しました。Apple M4／macOS/aarch64、10,000ノード／30,000接続、各5回の予熱＋30回の計測。詳細な契約と再現方法は [PLACEMENT_EDITS.md](PLACEMENT_EDITS.md)。
+
+| 移動数 | 工程 | 変更前 中央値 / p95 (ms) | 変更後 中央値 / p95 (ms) |
+|---:|---|---:|---:|
+| 1 | 命令適用・局所検査 | 0.000708 / 0.001333 | 0.000792 / 0.001750 |
+| 1 | core全体検証／省略分岐 | 7.876333 / 8.715500 | 0.000000 / 0.000042 |
+| 1 | 履歴更新 | 0.001542 / 0.002625 | 0.001292 / 0.003084 |
+| 1 | 確定全体 | 7.878584 / 8.718792 | 0.002333 / 0.005291 |
+| 1 | 通常Undo | 7.852292 / 9.187625 | 0.000625 / 0.001833 |
+| 1 | Index更新 | 0.009250 / 0.017667 | 0.009500 / 0.021958 |
+| 100 | 命令適用・局所検査 | 0.009666 / 0.011291 | 0.008875 / 0.010667 |
+| 100 | core全体検証／省略分岐 | 8.019208 / 10.482834 | 0.000041 / 0.000083 |
+| 100 | 履歴更新 | 0.008333 / 0.009542 | 0.007459 / 0.008333 |
+| 100 | 確定全体 | 8.037000 / 10.503125 | 0.016417 / 0.019375 |
+| 100 | 通常Undo | 8.181750 / 9.049459 | 0.016417 / 0.021125 |
+| 100 | Index更新 | 14.518583 / 18.251000 | 14.466333 / 15.036792 |
+
+[変更前後の工程別生JSON](benchmarks/2026-10-11-placement.json)。単一ノードの確定中央値7.878584msのうち、core全体検証が7.876333msを占めていました。移動だけのCommand／Batchは対象ノードと矩形を検査し、Graphが変わらないことを利用して全体再検証を省略します。これにより確定中央値は0.002333ms、100ノードでは8.037000msから0.016417msになりました。ホスト検証の登録はなく、その区間は分岐と計時のみです。
+
+毎回Undoで元のDocumentに戻し、Documentの一致と全体検証を測定区間外で確認しています。通常Undoも同じ最適化を使います。履歴は64ステップ／16MiBで有効。Undo後の次のexecuteにはRedo破棄も含まれます。1ノードでもポインター確定と同じBatchを使います。Index更新は別区間で、100ノードでは関連Edgeが差分更新の128件上限を超えるため、全体再構築の約14.5msが残りました。このIndex処理は今回変更していません。
+
+これは2つの順次実行を比べたCPU診断です。微小値をアプリ全体の高速化率やFPSへ換算しません。Graph全体を変更する操作、ホスト独自のDocumentValidator、RegistryのGraph／Definition照合は維持しています。Registryを使う実アプリにはその検証費用が残るため、この数値がそのまま当てはまるわけではありません。Scene生成・GPU・IPC・共有ロック待ちも確定全体の値には含みません。
+
+English: Matching release instrumentation isolated committed move costs before and after the placement-only optimization on 10,000 nodes / 30,000 edges (five warm-ups, 30 samples per case). Single-node execute median fell from 7.878584 to 0.002333 ms; the previous full core validation consumed 7.876333 ms. The 100-node median fell from 8.037000 to 0.016417 ms. Each move was undone and independently validated outside execute timing. Host validators were not installed; Registry/host validation still runs in real applications. The 100-node Index rebuild remains about 14.5 ms and was not optimized here. These sequential CPU runs do not establish application speedup or FPS.
+
+简体中文：对10,000节点／30,000连线使用相同release计时，比较纯移动优化前后的确定位移，每组预热5次、计测30次。单节点execute中位数从7.878584降为0.002333ms，原core全量验证占7.876333ms；100节点从8.037000降为0.016417ms。每次Undo并在execute计时外进行独立全量验证。此次未注册宿主验证器，实际应用中的Registry／宿主验证仍执行。100节点Index重建约14.5ms的成本仍然存在，本次未修改。顺序运行的CPU诊断不能换算为应用整体加速比或FPS。
+
+
+### 通常Surfaceでの再計測
+
+同じApple M4／Metal、1280×720、倍率1、Fifoで `--benchmark-animation` を再実行しました。18条件×60サンプル＝1,080フレームで、Surfaceスキップ・欠字・GPU Validationエラーはありません。[最適化後の生JSON](benchmarks/2026-10-11-animation-placement.json)。
+
+| テーマ | 言語 | Drag更新 p95 変更前 (ms) | 変更後 (ms) | 変更後の開始間隔 p95 (ms) |
+|---|---|---:|---:|---:|
+| dark | en | 14.192167 | 0.030583 | 16.794542 |
+| dark | ja | 12.747458 | 0.034792 | 16.826333 |
+| dark | zh-cn | 15.953666 | 0.035125 | 16.942459 |
+| light | en | 15.017000 | 0.031750 | 16.771958 |
+| light | ja | 14.366791 | 0.031250 | 16.745667 |
+| light | zh-cn | 20.664584 | 0.033458 | 16.782583 |
+
+更新にはInteraction、Command確定、履歴、SceneIndex更新を含みます。Drag各条件の確定5回を維持し、操作と描画の計測コードは前回と同一です。開始間隔はSurface待機の影響を受けるため、更新の短縮をそのままFPS改善に換算しません。この専用セッションはRegistryを登録しておらず、WebView・共有Engineの競合や実マウス入力も含みません。
+
+English: The unchanged native animation workload completed another 1,080 samples without skips, missing glyphs or GPU validation errors. Drag input/edit/history/index p95 fell from 12.747–20.665 ms to 0.030583–0.035125 ms across the six theme/language cases, retaining five committed edits each. This dedicated fixture has no Registry, WebView or shared Engine contention, and the result is not a display FPS claim.
+
+简体中文：同一原生动画计测再次完成1,080个样本，无跳过、缺字或GPU验证错误。六组主题／语言条件的Drag输入／编辑／历史／Index更新p95从12.747–20.665ms降至0.030583–0.035125ms，每组仍提交5次。专用数据集未注册Registry，不含WebView或共享Engine竞争，结果不代表屏幕FPS。

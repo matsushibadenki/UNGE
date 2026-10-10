@@ -99,7 +99,7 @@ WorkspaceとEngineに同じDocumentの可変コピーを二重に持たせない
 
 ## 大規模グラフを取り込むとき
 
-[PERFORMANCE.md](PERFORMANCE.md) のrelease計測例を使って、取り込み先でも検証・Index構築・シーン生成を確認してください。公開値は単一のmacOS環境でのCPU計測とGPU/Surfaceの直列診断です。60FPSやOS間の性能を保証しません。編集後の全体検証は残ります。小さな移動・構造変更・Undo/Redoは [INDEX_UPDATES.md](INDEX_UPDATES.md) の差分更新を使い、プロパティだけの編集は形状Indexを維持します。容量超過ではSceneIndexを再構築します。履歴の差分はundo_command/redo_commandから編集前に取得し、成功後に反映してください。
+[PERFORMANCE.md](PERFORMANCE.md) のrelease計測例を使って、取り込み先でも検証・Index構築・シーン生成を確認してください。公開値は単一のmacOS環境でのCPU計測、GPU/Surfaceの直列診断、通常描画の合成連続操作です。60FPSやOS間の性能を保証しません。移動だけの編集は対象ノードと矩形を検査し、他の編集は全体検証します。ホスト検証は維持します。[移動の確定契約](PLACEMENT_EDITS.md)。小さな移動・構造変更・Undo/Redoは [INDEX_UPDATES.md](INDEX_UPDATES.md) の差分更新を使い、プロパティだけの編集は形状Indexを維持します。容量超過ではSceneIndexを再構築します。履歴の差分はundo_command/redo_commandから編集前に取得し、成功後に反映してください。
 
 Group表示には既存SetGroupを使います。境界をDocumentやWebViewへ保存せず、[GROUP_RENDERING.md](GROUP_RENDERING.md) の派生描画と更新契約を使ってください。Groupの所属Node選択・名前/所属編集は [GROUP_EDITING.md](GROUP_EDITING.md) を使います。枠ドラッグは未実装です。
 

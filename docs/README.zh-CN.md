@@ -70,3 +70,5 @@ GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘�
 [GPU / Surface诊断及连续操作的CPU计测](RENDER_PROFILING.md)
 
 [设置面板停靠与浮动](PANEL_DOCKING.md)
+
+[节点移动验证优化及编辑计测](PLACEMENT_EDITS.md)

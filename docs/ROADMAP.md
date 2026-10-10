@@ -159,6 +159,16 @@
 - 🟢 [Done] `draw_timed` / `draw_region_timed` によるCPU計測。通常と同じ経路でGPU完了待ち・query・readbackを追加せず、スキップを成功サンプルから除外。[取り込み方法](RENDER_PROFILING.md)。
 - 🟢 [Done] イベントループでPan／Zoom／Dragを再現するTauri起動モード。Command確定とIndex更新を含み、予熱・件数・試行・時間の上限、工程別統計と生データを保持。
 - 🟢 [Done] macOS／Metalで18条件・1,080サンプルを計測。スキップ・欠字・GPU Validationエラーなし。[結果](PERFORMANCE.md)。CPU開始頻度を画面FPSとは扱わない。
-- 🟠 [Next] ドラッグ確定時の編集・検証・履歴の費用を分離して削減。今回の更新p95は12.747〜20.665ms。Zoom中のScene生成費用も継続調査。
+- 🟢 [Done] ドラッグ確定時の編集・検証・履歴を工程別に計測し、移動だけのcore検証を最適化。[契約](PLACEMENT_EDITS.md)。
 - 🔴 [Later] WebView合成・共有Engineの競合を含む長時間の連続操作計測。
 - ⭕️ [Pending] Windows/Linux、実モニターの表示完了・入力から表示までの遅延の実機検証。
+
+
+## 2026-10-11: 移動確定時の検証費用
+
+- 🟢 [Done] MoveNode／移動のみの入れ子BatchとUndo／Redoで対象ノード・矩形を検査し、Graphの全体再検証を省略。混在Batch、読込／保存、ホスト独自検証は維持。
+- 🟢 [Done] `execute_timed` と工程別CPU計測例。変更前後の同一条件比較、毎回のUndo／Document一致／全体検証で確認。[結果](PERFORMANCE.md)。
+- 🟢 [Done] 入れ子・同一IDの繰り返し・履歴上限・不正座標・存在しないノード・循環／Group違反を含む混在Batchの回帰テスト。ホスト検証が拒否する編集／Undo／RedoでDocument・revision・履歴を保持。
+- 🟢 [Done] macOSの通常Surfaceで18条件・1,080フレームを再計測。Registry未登録のfixtureでDrag更新p95が0.030583〜0.035125msに短縮。表示FPSの達成とは扱わない。
+- 🟠 [Next] Registryを含むホスト検証の重複費用と、多数ノード移動時のIndex再構築費用を計測して削減。
+- 🟠 [Next] Zoom中のScene生成費用の削減。

@@ -146,6 +146,11 @@ impl Registry {
     /// Unknown types, forged ports and invalid properties are rejected.
     pub fn validate_edit(&self, graph: &Graph) -> unge_core::Result<()> {
         graph.validate()?;
+        self.validate_definitions(graph)
+    }
+    // Core invariants must already be established by the caller. Keep private;
+    // validate_edit/validate remain complete validators for arbitrary Graphs.
+    fn validate_definitions(&self, graph: &Graph) -> unge_core::Result<()> {
         for node in graph.nodes().values() {
             let definition = self.definition(&node.type_id).ok_or_else(|| {
                 unge_core::Error::Invalid(format!("unregistered node type: {}", node.type_id))
@@ -191,6 +196,15 @@ impl Registry {
 impl unge_core::DocumentValidator for Registry {
     fn validate(&self, document: &unge_core::Document) -> unge_core::Result<()> {
         self.validate_edit(document.graph())
+    }
+    fn validate_transition(&self, edit: unge_core::ValidatedEdit<'_>) -> unge_core::Result<()> {
+        // Registry is immutable while shared with Editor. A placement-only edit
+        // changes none of the graph/definition/property inputs validated before.
+        if edit.placement_only() {
+            Ok(())
+        } else {
+            self.validate_definitions(edit.document().graph())
+        }
     }
 }
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]

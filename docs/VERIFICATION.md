@@ -357,3 +357,16 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - 通常APIは時計取得を省略し、計測APIもGPU完了待ち・timestamp query・readbackを追加しない。タイミングはCPUのSurface取得／準備／encode-submit／presentと、入力・編集・Index／Scene生成に分離。成功開始間隔にはイベントループとスキップした試行を含める。サンプル数・試行数・ターン間の期限を制限し、JSONは条件末尾で集計。
 - ネイティブ合成入力を直接Interactionへ送る計測で、実マウス入力やWebView／共有Engine競合は対象外。画面表示のFPS、GPU完了、OS compositor、入力から表示までの遅延、長時間安定性を確認したものではない。HTMLは未変更のためブラウザーUIテストは今回は再実行していない。
 - ⭕️ [Pending] Windows/Linux、実モニターでの表示完了・入力から表示までの遅延の検証は環境がないため保留。
+
+## 2026-10-11: 移動確定時の全体検証を限定
+
+- workspace/all-features Rust140件成功、通常実行でGPU4件ignored。追加3件で、移動のみの入れ子Batch・同一IDの複数回移動・履歴上限・Undo／Redoを、毎回全体検証する参照Editorと比較。Document・revision・両履歴の件数と容量、最終状態の全体検証が一致。
+- 不正なNaN／範囲外座標、存在しないノード、循環接続、未知ノードを含むGroupを混在させたBatchが原子的に失敗し、Redoも失わないことを確認。プロパティを含むBatchは全体検証へ戻ることも確認。
+- 位置依存のホスト検証と拒否ゲートを使用し、通常／計測execute、Undo、Redoすべてで検証が実行され、拒否時にはDocument・revision・履歴を保持することを確認。任意ホスト検証とRegistry検証は省略しない。
+- `execute_timed` の工程が有限・非負で、合計が総時間を超えないことを確認。通常APIでは時計取得を省略。APIはRust内に追加し、Command／Tauri／ACXのwire形式は変更なし。
+- workspace/all-features/all-targets clippy -D warnings、fmt、diff check成功。生成契約17件に差分なし。既存block 0.1.6のfuture compatibility警告は継続。GPU実装とHTMLは未変更のため、GPU ignoredテスト・ブラウザーUIテストは今回は再実行していない。
+- 10,000ノード／30,000接続、1／100ノード移動Batchについて、同じ工程計測を追加した最適化前後のrelease CPU診断を実行。各5回予熱＋30回計測。毎回Undoして元のDocumentに一致することを確認し、全体検証を測定区間外で実行。1ノード確定中央値7.878584→0.002333ms、100ノード8.037000→0.016417ms。ホスト検証未登録のfixtureであり、Registryを使う実アプリ全体の値ではない。[全工程と生データ](PERFORMANCE.md)。
+
+- 最終releaseホストで `--benchmark-animation` を再実行しexit 0で終了。Apple M4／Metal、1280×720、倍率1、Fifo、18条件×60＝1,080サンプルでスキップ・欠字・GPU Validationエラーなし。全条件の一意性、試行と成功件数、有限かつ非負の各工程、総時間との整合性、Drag各5回／Pan・Zoom各0回のCommand確定をJSONで確認。
+- 通常Surface計測のDrag更新p95は前回12.747〜20.665msから0.030583〜0.035125msへ短縮。これはRegistry未登録の専用fixtureでのInteraction・編集・履歴・Index更新の値であり、実アプリ全体の応答時間や表示FPSではない。各工程の範囲と残るRegistry／多数ノードのIndex再構築費用を3言語で文書化。
+- ⭕️ [Pending] Windows/Linux、実モニターの表示完了・入力から表示までの遅延の検証は環境がないため保留。

@@ -70,3 +70,5 @@ Nodes now use a dot canvas, role accents, optional symbols/captions and a clear 
 [GPU / Surface diagnostics and continuous-input CPU timings](RENDER_PROFILING.md)
 
 [Dock and float the settings panel](PANEL_DOCKING.md)
+
+[Placement validation and edit timing](PLACEMENT_EDITS.md)
