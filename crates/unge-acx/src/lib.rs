@@ -54,8 +54,31 @@ impl From<serde_json::Error> for AcxError {
 pub type Result<T> = std::result::Result<T, AcxError>;
 /// The wire profile hashes these exact UTF-8 bytes, not a client reserialization.
 pub fn hash_bytes(bytes: &[u8]) -> String {
-    format!("sha256:{:x}", Sha256::digest(bytes))
+    use std::fmt::Write;
+    let mut encoded = String::with_capacity(71);
+    encoded.push_str("sha256:");
+    for byte in Sha256::digest(bytes) {
+        write!(&mut encoded, "{byte:02x}").expect("writing to String cannot fail");
+    }
+    encoded
 }
 pub fn hash_json(value: &impl Serialize) -> Result<String> {
     Ok(hash_bytes(&serde_json::to_vec(value)?))
+}
+
+#[cfg(test)]
+mod hash_tests {
+    use super::hash_bytes;
+
+    #[test]
+    fn sha256_wire_encoding_matches_known_vectors() {
+        assert_eq!(
+            hash_bytes(b""),
+            "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        );
+        assert_eq!(
+            hash_bytes(b"abc"),
+            "sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        );
+    }
 }

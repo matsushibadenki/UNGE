@@ -14,6 +14,6 @@ unge-render = { path = "../../crates/unge-render" }
 unge-tauri = { path = "../../crates/unge-tauri", features = ["acx"] }
 unge-acx = { path = "../../crates/unge-acx" }
 tauri = { version = "=2.11.6", features = ["unstable"] }
-pollster = "0.4"
+pollster = "1.0.1"
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

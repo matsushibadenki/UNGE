@@ -1,0 +1,211 @@
+   Compiling typenum v1.20.1
+   Compiling generic-array v0.14.7
+   Compiling const-oid v0.10.2
+   Compiling cpufeatures v0.3.1
+   Compiling cpufeatures v0.2.17
+   Compiling tauri-runtime v2.11.3
+   Compiling tauri v2.11.6
+   Compiling pollster v1.0.1
+   Compiling unge-tauri-host v0.1.0 (/Users/littlebuddha/Desktop/alias/UNGE/examples/tauri-host)
+   Compiling unge-render v0.1.0 (/Users/littlebuddha/Desktop/alias/UNGE/crates/unge-render)
+   Compiling tauri-runtime-wry v2.11.4
+   Compiling hybrid-array v0.4.15
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.7
+   Compiling digest v0.10.7
+   Compiling crypto-common v0.2.2
+   Compiling block-buffer v0.12.1
+   Compiling sha2 v0.10.9
+   Compiling tauri-codegen v2.7.2
+   Compiling digest v0.11.3
+   Compiling sha2 v0.11.0
+   Compiling tauri-macros v2.7.2
+   Compiling unge-acx v0.1.0 (/Users/littlebuddha/Desktop/alias/UNGE/crates/unge-acx)
+error[E0277]: the trait bound `Array<u8, UInt<UInt<UInt<UInt<_, B0>, B0>, B0>, B0>>: LowerHex` is not satisfied
+  --> crates/unge-acx/src/lib.rs:57:28
+   |
+57 |     format!("sha256:{:x}", Sha256::digest(bytes))
+   |                     ----   ^^^^^^^^^^^^^^^^^^^^^ the trait `LowerHex` is not implemented for `Array<u8, UInt<UInt<UInt<UInt<UInt<_, B0>, B0>, B0>, B0>, B0>>`
+   |                     |
+   |                     required by this formatting parameter
+   |
+   = help: the following other types implement trait `LowerHex`:
+             &T
+             &mut T
+             Saturating<T>
+             Wrapping<T>
+             compiler_builtins::math::libm_math::support::big::i256
+             compiler_builtins::math::libm_math::support::big::u256
+             compiler_builtins::math::libm_math::support::hex_float::hex_fmt::Hex<T>
+             i128
+           and 17 others
+   = note: the full name for the type has been written to '/Users/littlebuddha/Desktop/alias/UNGE/target/debug/deps/unge_acx-c04aa4706c46ec25.long-type-2331710349622250054.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+error[E0277]: the trait bound `Array<u8, UInt<UInt<UInt<UInt<_, B0>, B0>, B0>, B0>>: LowerHex` is not satisfied
+  --> crates/unge-acx/src/lib.rs:57:28
+   |
+57 |     format!("sha256:{:x}", Sha256::digest(bytes))
+   |                     ----   ^^^^^^^^^^^^^^^^^^^^^ the trait `LowerHex` is not implemented for `Array<u8, UInt<UInt<UInt<UInt<UInt<_, B0>, B0>, B0>, B0>, B0>>`
+   |                     |
+   |                     required by this formatting parameter
+   |
+   = help: the following other types implement trait `LowerHex`:
+             &T
+             &mut T
+             Saturating<T>
+             Wrapping<T>
+             compiler_builtins::math::libm_math::support::big::i256
+             compiler_builtins::math::libm_math::support::big::u256
+             compiler_builtins::math::libm_math::support::hex_float::hex_fmt::Hex<T>
+             i128
+           and 17 others
+   = note: the full name for the type has been written to '/Users/littlebuddha/Desktop/alias/UNGE/target/debug/deps/unge_acx-01b46ceb5fcdd508.long-type-16211824105961607496.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `unge-acx` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `unge-acx` (lib test) due to 1 previous error
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:335:9
+    |
+335 |         do_menu_item!(resources_table, rid, kind, |i| f(&*i))
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 | pub enum Error {
+    | -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:565:7
+    |
+565 |       do_menu_item!(resources_table, item_rid, item_kind, |i| menu.remove(&*i))?;
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 | pub enum Error {
+    | -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:569:7
+    |
+569 |         do_menu_item!(resources_table, item_rid, item_kind, |i| submenu
+    |  _______^
+570 | |         .remove(&*i))?;
+    | |_____________________^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 |   pub enum Error {
+    |   -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:751:3
+    |
+751 |   do_menu_item!(resources_table, rid, kind, |i| i.text())
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 | pub enum Error {
+    | -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:762:3
+    |
+762 |   do_menu_item!(resources_table, rid, kind, |i| i.set_text(text))
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 | pub enum Error {
+    | -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:772:3
+    |
+772 |   do_menu_item!(resources_table, rid, kind, |i| i.is_enabled(), !Predefined)
+    |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 | pub enum Error {
+    | -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:783:3
+    |
+783 |     do_menu_item!(
+    |  ___^
+784 | |     resources_table,
+785 | |     rid,
+786 | |     kind,
+787 | |     |i| i.set_enabled(enabled),
+788 | |     !Predefined
+789 | |   )
+    | |___^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 |   pub enum Error {
+    |   -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:800:3
+    |
+800 |     do_menu_item!(
+    |  ___^
+801 | |     resources_table,
+802 | |     rid,
+803 | |     kind,
+804 | |     |i| i.set_accelerator(accelerator),
+805 | |     !Predefined | !Submenu
+806 | |   )
+    | |___^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 |   pub enum Error {
+    |   -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0599]: no variant, associated function, or constant named `UnexpectedMenuKind` found for enum `error::Error` in the current scope
+   --> /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/menu/plugin.rs:870:3
+    |
+870 |     do_menu_item!(
+    |  ___^
+871 | |     resources_table,
+872 | |     rid,
+873 | |     kind,
+...   |
+885 | |     Icon | Submenu
+886 | |   )
+    | |___^ variant, associated function, or constant not found in `error::Error`
+    |
+   ::: /Users/littlebuddha/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tauri-2.11.6/src/error.rs:33:1
+    |
+ 33 |   pub enum Error {
+    |   -------------- variant, associated function, or constant `UnexpectedMenuKind` not found for this enum
+    |
+    = note: this error originates in the macro `do_menu_item` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `tauri` (lib) due to 9 previous errors

@@ -1,0 +1,11 @@
+{
+  "version": "7.0.2",
+  "repository": {
+    "url": "git+https://github.com/microsoft/TypeScript.git",
+    "type": "git"
+  },
+  "engines": {
+    "node": ">=16.20.0"
+  },
+  "dist.integrity": "sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA=="
+}

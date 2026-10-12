@@ -1,0 +1,426 @@
+[
+  {
+    "name": "block-buffer",
+    "version": "0.12.1",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/block-buffer/0.12.1",
+    "published": "2026-06-11T15:40:05.682576Z"
+  },
+  {
+    "name": "cc",
+    "version": "1.8.0",
+    "rust_version": "1.65.0",
+    "yanked": false,
+    "source": "https://crates.io/crates/cc/1.8.0",
+    "published": "2026-10-11T14:17:35.305208Z"
+  },
+  {
+    "name": "const-oid",
+    "version": "0.10.2",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/const-oid/0.10.2",
+    "published": "2026-01-07T23:11:57.242553Z"
+  },
+  {
+    "name": "cpufeatures",
+    "version": "0.3.1",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/cpufeatures/0.3.1",
+    "published": "2026-08-26T18:39:59.636708Z"
+  },
+  {
+    "name": "crypto-common",
+    "version": "0.2.2",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/crypto-common/0.2.2",
+    "published": "2026-05-19T16:01:22.304187Z"
+  },
+  {
+    "name": "digest",
+    "version": "0.11.3",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/digest/0.11.3",
+    "published": "2026-05-03T12:54:48.023505Z"
+  },
+  {
+    "name": "embed-resource",
+    "version": "3.0.12",
+    "rust_version": "1.76",
+    "yanked": false,
+    "source": "https://crates.io/crates/embed-resource/3.0.12",
+    "published": "2026-10-06T12:06:05.571834Z"
+  },
+  {
+    "name": "find-msvc-tools",
+    "version": "0.1.14",
+    "rust_version": "1.65.0",
+    "yanked": false,
+    "source": "https://crates.io/crates/find-msvc-tools/0.1.14",
+    "published": "2026-09-25T10:09:48.951244Z"
+  },
+  {
+    "name": "font-types",
+    "version": "0.12.6",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/font-types/0.12.6",
+    "published": "2026-10-03T00:32:04.087025Z"
+  },
+  {
+    "name": "hybrid-array",
+    "version": "0.4.15",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/hybrid-array/0.4.15",
+    "published": "2026-09-08T18:21:39.618460Z"
+  },
+  {
+    "name": "hyper",
+    "version": "1.12.0",
+    "rust_version": "1.63",
+    "yanked": false,
+    "source": "https://crates.io/crates/hyper/1.12.0",
+    "published": "2026-10-06T15:57:18.927904Z"
+  },
+  {
+    "name": "hyper-util",
+    "version": "0.1.21",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/hyper-util/0.1.21",
+    "published": "2026-09-24T17:47:59.783880Z"
+  },
+  {
+    "name": "jiff",
+    "version": "0.2.38",
+    "rust_version": "1.70",
+    "yanked": false,
+    "source": "https://crates.io/crates/jiff/0.2.38",
+    "published": "2026-10-06T15:01:05.919581Z"
+  },
+  {
+    "name": "jiff-static",
+    "version": "0.2.38",
+    "rust_version": "1.70",
+    "yanked": false,
+    "source": "https://crates.io/crates/jiff-static/0.2.38",
+    "published": "2026-10-06T15:01:01.847933Z"
+  },
+  {
+    "name": "jiff-tzdb",
+    "version": "0.1.9",
+    "rust_version": "1.70",
+    "yanked": false,
+    "source": "https://crates.io/crates/jiff-tzdb/0.1.9",
+    "published": "2026-10-06T15:00:54.926966Z"
+  },
+  {
+    "name": "js-sys",
+    "version": "0.3.106",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/crates/js-sys/0.3.106",
+    "published": "2026-09-25T07:13:42.260040Z"
+  },
+  {
+    "name": "libc",
+    "version": "0.2.190",
+    "rust_version": "1.65",
+    "yanked": false,
+    "source": "https://crates.io/crates/libc/0.2.190",
+    "published": "2026-10-02T19:33:19.966421Z"
+  },
+  {
+    "name": "libredox",
+    "version": "0.1.25",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/crates/libredox/0.1.25",
+    "published": "2026-09-21T13:30:01.781331Z"
+  },
+  {
+    "name": "mio",
+    "version": "1.2.4",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/crates/mio/1.2.4",
+    "published": "2026-10-03T16:33:10.183266Z"
+  },
+  {
+    "name": "objc2",
+    "version": "0.6.5",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/crates/objc2/0.6.5",
+    "published": "2026-10-05T18:26:53.790244Z"
+  },
+  {
+    "name": "pollster",
+    "version": "1.0.1",
+    "rust_version": "1.69",
+    "yanked": false,
+    "source": "https://crates.io/crates/pollster/1.0.1",
+    "published": "2026-07-10T16:05:12.778455Z"
+  },
+  {
+    "name": "powerfmt",
+    "version": "0.2.1",
+    "rust_version": "1.79.0",
+    "yanked": false,
+    "source": "https://crates.io/crates/powerfmt/0.2.1",
+    "published": "2026-10-05T09:01:10.344615Z"
+  },
+  {
+    "name": "proc-macro-crate",
+    "version": "3.5.0",
+    "rust_version": "1.82.0",
+    "yanked": false,
+    "source": "https://crates.io/crates/proc-macro-crate/3.5.0",
+    "published": "2026-03-04T11:12:33.029865Z"
+  },
+  {
+    "name": "serde_json",
+    "version": "1.0.154",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/crates/serde_json/1.0.154",
+    "published": "2026-10-11T15:31:46.076577Z"
+  },
+  {
+    "name": "serde_spanned",
+    "version": "1.1.2",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/serde_spanned/1.1.2",
+    "published": "2026-10-08T00:54:02.374642Z"
+  },
+  {
+    "name": "serde_with",
+    "version": "3.24.0",
+    "rust_version": "1.88",
+    "yanked": false,
+    "source": "https://crates.io/crates/serde_with/3.24.0",
+    "published": "2026-09-26T16:44:06.919544Z"
+  },
+  {
+    "name": "serde_with_macros",
+    "version": "3.24.0",
+    "rust_version": "1.88",
+    "yanked": false,
+    "source": "https://crates.io/crates/serde_with_macros/3.24.0",
+    "published": "2026-09-26T16:44:01.690749Z"
+  },
+  {
+    "name": "sha2",
+    "version": "0.11.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/sha2/0.11.0",
+    "published": "2026-03-25T15:05:27.949444Z"
+  },
+  {
+    "name": "siphasher",
+    "version": "1.0.4",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/crates/siphasher/1.0.4",
+    "published": "2026-09-25T08:51:05.944322Z"
+  },
+  {
+    "name": "smallvec",
+    "version": "1.16.3",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/crates/smallvec/1.16.3",
+    "published": "2026-10-10T02:25:27.052021Z"
+  },
+  {
+    "name": "swift-rs",
+    "version": "1.0.9",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/crates/swift-rs/1.0.9",
+    "published": "2026-10-10T10:41:32.956513Z"
+  },
+  {
+    "name": "syn",
+    "version": "3.0.8",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/crates/syn/3.0.8",
+    "published": "2026-10-11T16:12:28.901395Z"
+  },
+  {
+    "name": "thiserror",
+    "version": "2.0.21",
+    "rust_version": "1.77",
+    "yanked": false,
+    "source": "https://crates.io/crates/thiserror/2.0.21",
+    "published": "2026-09-23T20:24:07.771104Z"
+  },
+  {
+    "name": "thiserror-impl",
+    "version": "2.0.21",
+    "rust_version": "1.77",
+    "yanked": false,
+    "source": "https://crates.io/crates/thiserror-impl/2.0.21",
+    "published": "2026-09-23T20:24:05.038819Z"
+  },
+  {
+    "name": "tokio",
+    "version": "1.53.2",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/crates/tokio/1.53.2",
+    "published": "2026-10-03T11:18:32.487780Z"
+  },
+  {
+    "name": "tokio-util",
+    "version": "0.7.20",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/tokio-util/0.7.20",
+    "published": "2026-10-09T11:02:11.456952Z"
+  },
+  {
+    "name": "toml",
+    "version": "1.1.8+spec-1.1.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/toml/1.1.8+spec-1.1.0",
+    "published": "2026-10-09T02:46:31.816670Z"
+  },
+  {
+    "name": "toml_datetime",
+    "version": "1.1.2+spec-1.1.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/toml_datetime/1.1.2+spec-1.1.0",
+    "published": "2026-10-08T00:54:03.238939Z"
+  },
+  {
+    "name": "toml_edit",
+    "version": "0.25.17+spec-1.1.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/toml_edit/0.25.17+spec-1.1.0",
+    "published": "2026-10-09T02:46:32.456236Z"
+  },
+  {
+    "name": "toml_parser",
+    "version": "1.1.5+spec-1.1.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/toml_parser/1.1.5+spec-1.1.0",
+    "published": "2026-10-09T02:46:29.844417Z"
+  },
+  {
+    "name": "toml_writer",
+    "version": "1.1.3+spec-1.1.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/crates/toml_writer/1.1.3+spec-1.1.0",
+    "published": "2026-10-08T00:54:04.845560Z"
+  },
+  {
+    "name": "uuid",
+    "version": "1.28.0",
+    "rust_version": "1.89.0",
+    "yanked": false,
+    "source": "https://crates.io/crates/uuid/1.28.0",
+    "published": "2026-10-10T00:02:40.455859Z"
+  },
+  {
+    "name": "want",
+    "version": "0.3.2",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/crates/want/0.3.2",
+    "published": "2026-10-05T23:37:04.836245Z"
+  },
+  {
+    "name": "wasm-bindgen",
+    "version": "0.2.129",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/crates/wasm-bindgen/0.2.129",
+    "published": "2026-09-25T07:13:40.367031Z"
+  },
+  {
+    "name": "wasm-bindgen-futures",
+    "version": "0.4.79",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/crates/wasm-bindgen-futures/0.4.79",
+    "published": "2026-09-25T07:13:46.762707Z"
+  },
+  {
+    "name": "wasm-bindgen-macro",
+    "version": "0.2.129",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/crates/wasm-bindgen-macro/0.2.129",
+    "published": "2026-09-25T07:13:38.603121Z"
+  },
+  {
+    "name": "wasm-bindgen-macro-support",
+    "version": "0.2.129",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/crates/wasm-bindgen-macro-support/0.2.129",
+    "published": "2026-09-25T07:13:36.815330Z"
+  },
+  {
+    "name": "wasm-bindgen-shared",
+    "version": "0.2.129",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/crates/wasm-bindgen-shared/0.2.129",
+    "published": "2026-09-25T07:13:33.159722Z"
+  },
+  {
+    "name": "web-sys",
+    "version": "0.3.106",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/crates/web-sys/0.3.106",
+    "published": "2026-09-25T07:13:44.661972Z"
+  },
+  {
+    "name": "winreg",
+    "version": "0.56.0",
+    "rust_version": "1.60",
+    "yanked": false,
+    "source": "https://crates.io/crates/winreg/0.56.0",
+    "published": "2026-03-14T22:02:40.054127Z"
+  },
+  {
+    "name": "yoke-derive",
+    "version": "0.8.4",
+    "rust_version": "1.82",
+    "yanked": false,
+    "source": "https://crates.io/crates/yoke-derive/0.8.4",
+    "published": "2026-09-30T13:19:39.412870Z"
+  },
+  {
+    "name": "zerocopy",
+    "version": "0.8.62",
+    "rust_version": "1.56.0",
+    "yanked": false,
+    "source": "https://crates.io/crates/zerocopy/0.8.62",
+    "published": "2026-10-08T10:04:10.669172Z"
+  },
+  {
+    "name": "zerocopy-derive",
+    "version": "0.8.62",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/crates/zerocopy-derive/0.8.62",
+    "published": "2026-10-08T10:03:02.942785Z"
+  }
+]

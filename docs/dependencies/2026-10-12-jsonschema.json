@@ -1,0 +1,8 @@
+{
+  "name": "jsonschema",
+  "latest_stable": "4.26.0",
+  "requires_python": ">=3.10",
+  "source": "https://pypi.org/project/jsonschema/",
+  "ci_requirement": "jsonschema>=4.18,<5",
+  "locally_tested": "4.26.0"
+}

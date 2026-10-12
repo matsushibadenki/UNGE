@@ -76,3 +76,5 @@ Nodes now use a dot canvas, role accents, optional symbols/captions and a clear 
 Registry avoids redundant edit validation. [Integration contract and benchmark](REGISTRY_VALIDATION.md).
 
 [Bulk-move BVH updates and benchmark](BULK_MOVES.md)
+
+[Stable dependency maintenance and compatibility](DEPENDENCY_UPDATES.md)

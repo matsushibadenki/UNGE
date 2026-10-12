@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-12",
+  "toolchain": "Rust/Cargo 1.99.0",
+  "rust_tests_default": 149,
+  "rust_tests_all_features": 149,
+  "clippy_default_exit": 0,
+  "clippy_all_features_exit": 0,
+  "fmt_check_exit": 0,
+  "real_gpu_tests": 4,
+  "generated_contracts": 17,
+  "schema_tests": 6,
+  "acx_tests": 5,
+  "jsonschema_tested": "4.26.0",
+  "typescript_tested": "7.0.2",
+  "node_versions": [
+    "22.23.3",
+    "26.10.0"
+  ],
+  "ui": "Panel, Group, Accessibility, Execution, Properties; en/ja/zh-CN",
+  "surface": {
+    "adapter": "Apple M4",
+    "backend": "Metal",
+    "build": "debug",
+    "cases": 12,
+    "frames": 360,
+    "skipped": 0
+  },
+  "not_retested": [
+    "manual native input and dock/float",
+    "Windows/Linux",
+    "WASM",
+    "minimum Rust versions"
+  ],
+  "future_incompatibility": "block 0.1.6 via wgpu-hal/metal; static of uninhabited type",
+  "deferred_migrations": [
+    "Tauri 2.12.3 stack",
+    "cosmic-text 0.19.0",
+    "wgpu 30.0.1",
+    "schemars 1.2.2"
+  ]
+}

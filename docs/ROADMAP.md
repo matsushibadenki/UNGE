@@ -174,3 +174,10 @@
 - 🟢 [Done] 一括移動のIndex再構築をBVH境界更新へ変更。最大1,024ノード／4,096関連Edge、差分との併用、Group、Undo／Redo、上限超過の再構築を検証。[契約と比較](BULK_MOVES.md)。
 - 🔴 [Later] 遠距離移動・並べ替え後のBVH分割品質の評価と自動再構築。
 - 🟠 [Next] Zoom中のScene生成費用の削減。
+
+## 2026-10-12: stable依存の定期更新
+
+- 🟢 [Done] sha2 0.11／pollster 1.0／互換な推移依存とCIのTypeScript 7へ更新。Rust149件（標準／all-featuresの各構成）、Clippy、実GPU4件、Surface360フレーム、Schema／ACX／3言語UIを検証。[採用版・互換性記録](DEPENDENCY_UPDATES.md)。
+- 🟠 [Next] Tauri本体／Wry／runtime／build／codegenをまとめて更新。固定版と新しい内部依存のtrait・生成API不整合を先に解消し、macOSの入力・合成・dock/floatを再検証する。
+- 🟠 [Next] cosmic-text 0.19、wgpu 30、schemars 1.2のAPI／描画／Schema移行と回帰検証。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告も確認する。現行pinを無条件に解除しない。
+- ⭕️ [Pending] Windows/LinuxのSurface・入力・dock/float、WASM、最低Rust版での依存更新検証。

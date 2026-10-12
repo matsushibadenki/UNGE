@@ -24,7 +24,7 @@ jobs:
       - run: node scripts/test_groups_ui.cjs
       - run: node scripts/test_accessibility_ui.cjs
       - run: node scripts/test_execution_ui.cjs
-      - run: npx --yes --package typescript@5.9.3 tsc -p bindings/typescript
+      - run: npx --yes --package typescript@7.0.2 tsc -p bindings/typescript
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

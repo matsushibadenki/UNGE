@@ -26,7 +26,7 @@ Document・表示状態・RendererはRustで所有します。WebViewは命令�
 ## 実行
 
 Rust stableと、デスクトップ例には[TauriのOS別前提条件](https://v2.tauri.app/start/prerequisites/)が必要です。
-検証に使ったRustは1.98.1です。依存バージョンは `Cargo.lock` に固定しています。
+今回の依存更新の検証にはRust 1.99.0を使用しました。依存バージョンは `Cargo.lock` に固定しています。
 
 ```sh
 # GUI不要のテストとサンプル
@@ -146,3 +146,5 @@ Definitionごとの入力/出力値マップSchemaとRust検証APIを追加し�
 Registryの重複検証を削減しました。[取り込み契約と比較例](docs/REGISTRY_VALIDATION.md)。
 
 [多数ノード移動のBVH更新と比較計測](docs/BULK_MOVES.md)
+
+[依存ライブラリのstable更新・互換性と保留事項](docs/DEPENDENCY_UPDATES.md)
