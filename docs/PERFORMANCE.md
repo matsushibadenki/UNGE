@@ -307,3 +307,23 @@ Apple M4／macOS/aarch64で `bulk_move_benchmark` をrelease実行しました�
 English: On Apple M4 / macOS, the same release binary compared retained index updates with full reconstruction on the same 10,000-node / 30,000-edge final document (five warm-ups and 30 samples for moves of 1/100/1,000 nodes by 96×36). For 100 nodes, update median was 1.916625 ms versus 18.191417 ms reconstruction; for 1,000 nodes, 4.056542 versus 16.647125 ms. Each sample matches reconstructed quads, labels, visible counts, range queries and hit tests; undo restores the document and matching geometry. Three nearby viewport queries/scenes were measured separately. Retained queries were several microseconds slower and scenes about 0.03 ms slower in this fixture. Measurement order/cache state can affect comparisons. The single-node path is the existing overlay, not a new improvement. The fixture has no groups; group and limit correctness are tested separately. Timings exclude edit/validation/history/Registry, GPU/Surface, IPC and locks, and do not establish FPS or arbitrary rearrangement performance.
 
 简体中文：Apple M4／macOS上的同一release二进制比较相同最终10,000节点／30,000连线文档的保持Index更新与完整重建。移动1／100／1,000节点，距离96×36，每组预热5次、计测30次。100节点更新中位数1.916625ms，重建18.191417ms；1,000节点4.056542ms，重建16.647125ms。每个样本与重建结果比较Quad、文字、可见数量、范围查询及Hit Test，Undo后恢复并比较文档和形状。另测三个近景视口的查询／场景。保持Index查询在此次数据集上慢数µs，场景约慢0.03ms；顺序和缓存可能影响比较。单节点仍用旧差分，并非本次新增优化。数据集无Group，Group及超限正确性由测试覆盖。计时不含编辑／验证／历史／Registry、GPU／Surface、IPC及锁，不代表FPS或任意重排的性能。
+
+
+## 可視ID処理の削減（2026-10-13）
+
+Apple M4／macOSで同じrelease計測例を変更前後に順次実行しました。10,000ノード／30,000接続、各5回予熱＋30回計測。[再現方法](SCENE_VISIBILITY.md)、[生JSON](benchmarks/2026-10-13-zoom.json)。
+
+| Zoom | 中央値 変更前 → 後 (ms) | p95 変更前 → 後 (ms) | 可視Node数 |
+|---:|---:|---:|---:|
+| 1.00 | 0.023292 → 0.022375 | 0.029583 → 0.024875 | 36 |
+| 0.50 | 0.044834 → 0.041958 | 0.050458 → 0.042958 | 121 |
+| 0.20 | 0.235042 → 0.226833 | 0.293792 → 0.271417 | 702 |
+| 0.10 | 0.974833 → 0.924500 | 1.015667 → 0.984291 | 2808 |
+| 0.05 | 3.494375 → 3.312125 | 3.623583 → 3.422291 | 10000 |
+| 0.02 | 3.527250 → 3.275500 | 3.838542 → 3.361542 | 10000 |
+
+6条件ともQuad／文字の指紋、Quad数、可視Node／Edge数が一致しました。全体表示の中央値は3.527250→3.275500ms（約7%短縮）。これは静的ZoomのCPU Scene生成で、連続Surface操作・表示FPS・GPU・IPC・共有Engine競合を測りません。順次実行の負荷変動も含みます。Group／選択／プレビューは性能fixtureの範囲外です。
+
+English: All six static-zoom cases retain matching quad/text fingerprints and visible counts. Overview scene median decreased from 3.527250 to 3.275500 ms (about 7%). Sequential CPU-only runs exclude GPU/Surface, IPC, shared Engine contention, groups, selection and previews; they do not establish display FPS.
+
+简体中文：六档静态Zoom的Quad／文字指纹及可见数量均一致。全景Scene中位数从3.527250降至3.275500ms，约减少7%。顺序CPU计测不含GPU／Surface、IPC、共享Engine竞争、Group、选择或预览，不代表屏幕FPS。

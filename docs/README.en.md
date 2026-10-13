@@ -78,3 +78,5 @@ Registry avoids redundant edit validation. [Integration contract and benchmark](
 [Bulk-move BVH updates and benchmark](BULK_MOVES.md)
 
 [Stable dependency maintenance and compatibility](DEPENDENCY_UPDATES.md)
+
+[Scene visibility and zoom measurement](SCENE_VISIBILITY.md)

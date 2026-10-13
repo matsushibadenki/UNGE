@@ -6,6 +6,18 @@ use unge_interaction::{MAX_SELECTION, PORT_LOD_ZOOM, Preview};
 const MAX_MOVED_NODES: usize = 1024;
 const MAX_REFIT_EDGES: usize = 4096;
 
+// Spatial queries already return ID order. Retain that order without rebuilding
+// a tree of individual allocations; preview IDs may overlap or arrive unsorted.
+fn visible_ids(mut ids: Vec<Id>, extra: impl Iterator<Item = Id>) -> Vec<Id> {
+    let count = ids.len();
+    ids.extend(extra);
+    if ids.len() != count {
+        ids.sort_unstable();
+    }
+    ids.dedup();
+    ids
+}
+
 #[repr(C)]
 #[derive(Debug, Clone, Copy, bytemuck::Pod, bytemuck::Zeroable)]
 pub struct Quad {
@@ -475,10 +487,13 @@ impl SceneIndex {
             }
             scene.visible_groups += 1;
         }
-        let mut edges: BTreeSet<_> = self.edge_index.query(area).into_iter().collect();
-        for id in preview.placement.keys() {
-            edges.extend(self.incident.get(id).into_iter().flatten());
-        }
+        let edges = visible_ids(
+            self.edge_index.query(area),
+            preview
+                .placement
+                .keys()
+                .flat_map(|id| self.incident.get(id).into_iter().flatten().copied()),
+        );
         for id in edges {
             let edge = &self.edges[&id];
             let points = if preview.placement.contains_key(&edge.from.0)
@@ -528,8 +543,10 @@ impl SceneIndex {
             width: area.width + 24.0,
             height: area.height + 24.0,
         };
-        let mut nodes: BTreeSet<_> = self.node_index.query(padded).into_iter().collect();
-        nodes.extend(preview.placement.keys());
+        let nodes = visible_ids(
+            self.node_index.query(padded),
+            preview.placement.keys().copied(),
+        );
         for id in nodes {
             let node = &self.nodes[&id];
             let rect = preview.placement.get(&id).copied().unwrap_or(node.rect);
@@ -815,5 +832,28 @@ impl SceneIndex {
             }
         }
         Ok(scene)
+    }
+}
+
+#[cfg(test)]
+mod visibility_tests {
+    use super::*;
+    #[test]
+    fn preview_union_matches_ordered_set_without_duplicates() {
+        for base in [vec![], vec![1, 1, 3, 5, 8], (1..=10000).collect()] {
+            for extra in [
+                vec![],
+                vec![8, 3, 3, 2, 11, 1],
+                (9000..=11000).rev().collect(),
+            ] {
+                let base: Vec<_> = base.iter().copied().map(Id::from_u128).collect();
+                let extra: Vec<_> = extra.iter().copied().map(Id::from_u128).collect();
+                let expected: BTreeSet<_> = base.iter().chain(&extra).copied().collect();
+                assert_eq!(
+                    visible_ids(base, extra.into_iter()),
+                    expected.into_iter().collect::<Vec<_>>()
+                );
+            }
+        }
     }
 }

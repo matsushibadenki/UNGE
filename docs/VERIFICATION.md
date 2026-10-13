@@ -393,3 +393,12 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - 🟢 [Done] 3言語の取り込み契約、既存Index更新手順、性能文書、ROADMAPを更新。Rustの派生Index内の変更であり、IPC／TypeScript／保存形式は変更なし。
 - English: 148 workspace Rust tests and four explicitly run GPU tests passed. Formatting, strict workspace Clippy and 17 generated contracts passed. Ninety CPU samples compare bounded bulk refitting with same-state reconstruction and independently check rendering/query/history correctness. Query cost after arbitrary rearrangement and display FPS remain unverified.
 - 简体中文：148项workspace Rust测试及4项显式GPU测试通过。格式、严格Clippy及17项生成契约检查通过。90个CPU样本比较有界批量边界更新与同状态重建，并独立验证渲染／查询／历史正确性。任意重排的查询成本及屏幕FPS尚未验证。
+
+## 2026-10-13: Sceneの可視ID処理
+
+- 🟢 [Done] workspace/all-features Rust150件、明示実行した実GPU4件が成功。fmt、workspace/all-features/all-targets Clippy `-D warnings`、生成契約17件の確認に成功。
+- 🟢 [Done] 可視IDとプレビュー候補の和集合を従来のBTreeSetと比較し、空・重複・逆順・10,000 IDで描画順と重複除去を確認。既存の移動・構造変更・Group・プレビュー・Undo／Redoの描画比較も成功。
+- 🟢 [Done] 6段階Zoom、変更前後それぞれ5回予熱＋30回計測。Quad／文字のFNV指紋・Quad数・可視Node／Edge数が一致。360サンプルの有限値・非負値と中央値／p95の再集計を確認。[生データ](benchmarks/2026-10-13-zoom.json)。全体表示中央値3.527250→3.275500ms。静的ZoomのCPU Scene生成のみで、連続Surface／GPU／IPC／共有ロックは含まない。
+- 🟢 [Done] 3言語の取り込み文書、性能記録、ROADMAPを更新。IPC／TypeScript／GPUの形式変更なし。連続Zoomと残る曲線・形状参照の工程計測はNext。
+- English: 150 Rust tests, four explicit GPU tests, formatting, strict Clippy and 17 contracts passed. Six zoom cases preserve output fingerprints and visible counts; 360 before/after CPU samples were checked. These static scenes do not establish continuous Surface performance or FPS.
+- 简体中文：150项Rust测试、4项显式GPU测试、格式、严格Clippy及17项契约检查通过。六档Zoom输出指纹及可见数量一致，已检查修改前后360个CPU样本。静态Scene不代表连续Surface性能或FPS。

@@ -136,3 +136,5 @@ GPU表示に対応するHTML操作には [ACCESSIBILITY.md](ACCESSIBILITY.md) �
 
 [依存更新記録](DEPENDENCY_UPDATES.md)の候補版・固定理由・失敗した組み合わせを確認してください。Tauriの内部依存を単独で最新へ更新せず、Cargo.lockの検証済み組み合わせを維持します。ReceiptのSHA-256 wire形式と生成Schemaの契約を変えないよう、Rust/Pythonの照合と生成差分を検証してください。
 CIのTypeScript固定版とjsonschemaの許容範囲も確認してください。ACX自身はsha2 0.11を使いますが、固定Tauriのcodegenは0.10を要求するため両版がCargo.lockに共存します。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告は依存更新記録に残しています。
+
+可視ID処理の改善は既存SceneIndex APIで有効になります。[範囲と計測](SCENE_VISIBILITY.md)。

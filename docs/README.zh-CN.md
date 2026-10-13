@@ -78,3 +78,5 @@ Registry减少编辑时的重复验证。[集成契约与基准](REGISTRY_VALIDA
 [批量移动BVH更新及基准](BULK_MOVES.md)
 
 [stable依赖维护与兼容性](DEPENDENCY_UPDATES.md)
+
+[Scene可见ID与Zoom计测](SCENE_VISIBILITY.md)

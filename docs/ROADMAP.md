@@ -173,7 +173,8 @@
 - 🟢 [Done] Registryの重複構造検証と移動だけのDefinition走査を削減。独自validatorの互換性、混在Batch、読込、Undo／Redoを検証。[契約とCPU比較](REGISTRY_VALIDATION.md)。
 - 🟢 [Done] 一括移動のIndex再構築をBVH境界更新へ変更。最大1,024ノード／4,096関連Edge、差分との併用、Group、Undo／Redo、上限超過の再構築を検証。[契約と比較](BULK_MOVES.md)。
 - 🔴 [Later] 遠距離移動・並べ替え後のBVH分割品質の評価と自動再構築。
-- 🟠 [Next] Zoom中のScene生成費用の削減。
+- 🟢 [Done] Scene生成の可視ID再変換を省略し、6段階のZoomで出力一致とCPU費用を確認。[計測と範囲](SCENE_VISIBILITY.md)。
+- 🟠 [Next] 全体表示時に残る曲線生成・形状参照の費用を工程別に計測し、連続Zoomで検証。
 
 ## 2026-10-12: stable依存の定期更新
 

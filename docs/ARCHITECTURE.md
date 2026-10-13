@@ -131,3 +131,5 @@ Group UIはページ付き概要だけを受け取り、Rust Viewの選択から
 配置の永続化はサンプルの `panel_preferences.rs` に分離しています。DocumentやEngine IPCを変更せず、Rustでネイティブの通常配置を記録し、通常終了時にホストの設定ファイルへ保存します。復元時の画面内補正、設定のversion検証と破損ファイル保全は [PANEL_DOCKING.md](PANEL_DOCKING.md) を参照してください。
 
 `selection_summary` は呼び出し元Viewの選択数・単一選択ID・Document revisionだけを返します。選択の正本はRustに維持し、インスペクターはその通知と再照会から追従します。選択変更だけではrevisionは増えず、未保存フォームは明示的な破棄または保存成功まで表示中ノードに保持します。[PROPERTY_INSPECTOR.md](PROPERTY_INSPECTOR.md)。
+
+Scene生成はSpatialIndexのID順のVecを保持し、プレビュー候補を追加した場合に並べ替えと重複除去を行う。[契約](SCENE_VISIBILITY.md)。
