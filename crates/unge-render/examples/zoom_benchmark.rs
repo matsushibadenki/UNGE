@@ -15,16 +15,37 @@ fn main() {
             size: [1280., 720.],
         };
         let mut raw = Vec::new();
+        let mut phase_raw = Vec::new();
         for i in 0..35 {
             let start = Instant::now();
             let scene = index.scene(view, &BTreeSet::new()).unwrap();
             let ms = start.elapsed().as_secs_f64() * 1000.;
             black_box(scene);
+            let (_, timing) = index
+                .scene_with_theme_timed(
+                    view,
+                    &BTreeSet::new(),
+                    &unge_interaction::Preview::default(),
+                    &LabelCatalog::new(),
+                    Locale::En,
+                    Theme::Dark,
+                )
+                .unwrap();
             if i >= 5 {
                 raw.push(ms);
+                phase_raw.push(timing);
             }
         }
-        let scene = index.scene(view, &BTreeSet::new()).unwrap();
+        let (scene, phases) = index
+            .scene_with_theme_timed(
+                view,
+                &BTreeSet::new(),
+                &unge_interaction::Preview::default(),
+                &LabelCatalog::new(),
+                Locale::En,
+                Theme::Dark,
+            )
+            .unwrap();
         let mut fingerprint = 0xcbf29ce484222325u64;
         for b in bytemuck::cast_slice::<_, u8>(&scene.quads)
             .iter()
@@ -37,7 +58,7 @@ fn main() {
         sorted.sort_by(f64::total_cmp);
         cases.push(serde_json::json!({"zoom":zoom,"median_ms":sorted[15],"p95_ms":sorted[28],
             "visible_nodes":scene.visible_nodes,"visible_edges":scene.visible_edges,"quads":scene.quads.len(),
-            "fingerprint":format!("{fingerprint:016x}"),"raw_ms":raw}));
+            "diagnostic_sample":phases,"phase_raw":phase_raw,"fingerprint":format!("{fingerprint:016x}"),"raw_ms":raw}));
     }
     println!(
         "{}",

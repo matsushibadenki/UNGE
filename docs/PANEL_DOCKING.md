@@ -56,3 +56,11 @@ macOS集成示例支持用按钮将设置WebView移到浮动窗口，再停靠�
 宿主命令panel_layout和set_panel_floating返回 `{ supported, floating }`，unge://panel-layout事件使用相同状态。类型见示例panels.d.ts，不属于Engine或ACX契约。原生迁移失败时尝试返回原父窗口，但不保证OS/runtime故障后的恢复。UI在错误后重新读取实际布局。拖拽到任意位置停靠、多面板标签及其他操作系统仍待实现或验证。双窗口兼容模式不提供停靠操作。
 
 正常退出时将停靠状态、主窗口和浮动窗口的普通位置及大小保存到 `app.path().app_config_dir()/panel-layout.json`（version 1，读取上限16 KiB）。Rust在内存中记录移动和缩放事件，退出时写入临时文件、sync并rename。重启时按当前DPI和窗口边框恢复逻辑尺寸及相对显示器工作区的位置。原显示器不可用时回到主显示器，并限制在当前工作区内。不恢复最小化、最大化或全屏状态。损坏、较新版本、未知字段或无法读取的文件会保留，使用默认布局并输出技术日志。重置时请先退出，再移走该文件。双窗口模式不读写此文件。此处不保存Document、草稿或选择。强制退出、断电及多进程冲突协调不在范围内；以最后正常退出的进程为准。
+
+## 検証用の保存先指定
+
+サンプルホストの `UNGE_PANEL_PREFERENCES` 環境変数で、パネル配置ファイルを一時領域などへ分離できます。未指定時は従来のapp_config_dirを使用します。別ウインドウモードは保存しません。DocumentやWindowの所有権は変わりません。
+
+English: Set UNGE_PANEL_PREFERENCES to isolate the sample host's panel-layout file during QA. Default storage and separate-window behavior remain unchanged.
+
+简体中文：通过UNGE_PANEL_PREFERENCES可将示例宿主的面板配置文件隔离到测试目录。默认存储及独立窗口模式不变。

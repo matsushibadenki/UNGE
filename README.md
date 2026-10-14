@@ -150,3 +150,7 @@ Registryの重複検証を削減しました。[取り込み契約と比較例](
 [依存ライブラリのstable更新・互換性と保留事項](docs/DEPENDENCY_UPDATES.md)
 
 [Sceneの可視ID処理とZoom計測](docs/SCENE_VISIBILITY.md)
+
+[Scene工程計測とEdge情報の保持](docs/SCENE_TIMINGS.md)
+
+[アイコン中心のコンパクトな設定パネル](docs/COMPACT_PANEL.md)

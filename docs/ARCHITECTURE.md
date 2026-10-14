@@ -133,3 +133,7 @@ Group UIはページ付き概要だけを受け取り、Rust Viewの選択から
 `selection_summary` は呼び出し元Viewの選択数・単一選択ID・Document revisionだけを返します。選択の正本はRustに維持し、インスペクターはその通知と再照会から追従します。選択変更だけではrevisionは増えず、未保存フォームは明示的な破棄または保存成功まで表示中ノードに保持します。[PROPERTY_INSPECTOR.md](PROPERTY_INSPECTOR.md)。
 
 Scene生成はSpatialIndexのID順のVecを保持し、プレビュー候補を追加した場合に並べ替えと重複除去を行う。[契約](SCENE_VISIBILITY.md)。
+
+RenderEdgeは確定境界と接続元のtype_idを保持する。色はViewのCatalog／Themeで解決し、Previewは一時形状を使う。編集・履歴で関連Edgeを更新する。[Scene計測と費用](SCENE_TIMINGS.md)。
+
+compact.jsはWebViewの表示だけを装飾する。SVG、aria-label、情報表示を既存コントローラーのテキストから更新し、編集・下書きの制御を置き換えない。[UIの取り込み](COMPACT_PANEL.md)。

@@ -1,0 +1,3884 @@
+{
+  "before": {
+    "cases": [
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 0.019459,
+          "edge_query_ms": 0.002375,
+          "groups_ms": 4.2e-05,
+          "node_geometry_ms": 0.008708,
+          "node_query_ms": 0.000875,
+          "overlays_ms": 0.0,
+          "total_ms": 0.031792
+        },
+        "fingerprint": "25f6261acb15b927",
+        "median_ms": 0.029542,
+        "p95_ms": 0.038542,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 0.021958,
+            "edge_query_ms": 0.002667,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.008667,
+            "node_query_ms": 0.000875,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.034708
+          },
+          {
+            "edge_geometry_ms": 0.020166,
+            "edge_query_ms": 0.002417,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.008459,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.03225
+          },
+          {
+            "edge_geometry_ms": 0.019458,
+            "edge_query_ms": 0.0022919999999999998,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.008166,
+            "node_query_ms": 0.000833,
+            "overlays_ms": 0.0,
+            "total_ms": 0.031207999999999996
+          },
+          {
+            "edge_geometry_ms": 0.019,
+            "edge_query_ms": 0.0022919999999999998,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.008,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.030583999999999997
+          },
+          {
+            "edge_geometry_ms": 0.018667,
+            "edge_query_ms": 0.0022500000000000003,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.007875,
+            "node_query_ms": 0.000834,
+            "overlays_ms": 0.0,
+            "total_ms": 0.030042000000000003
+          },
+          {
+            "edge_geometry_ms": 0.018541000000000002,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.008,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 0.0,
+            "total_ms": 0.029917
+          },
+          {
+            "edge_geometry_ms": 0.018542,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.007833,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.029833000000000002
+          },
+          {
+            "edge_geometry_ms": 0.018625,
+            "edge_query_ms": 0.0022919999999999998,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.007958999999999999,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 0.0,
+            "total_ms": 0.030083
+          },
+          {
+            "edge_geometry_ms": 0.018458,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.0077919999999999994,
+            "node_query_ms": 0.000791,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.029750000000000002
+          },
+          {
+            "edge_geometry_ms": 0.018542,
+            "edge_query_ms": 0.002209,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.007833,
+            "node_query_ms": 0.0007080000000000001,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.029750000000000002
+          },
+          {
+            "edge_geometry_ms": 0.018333,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.007916,
+            "node_query_ms": 0.000875,
+            "overlays_ms": 0.0,
+            "total_ms": 0.029750000000000002
+          },
+          {
+            "edge_geometry_ms": 0.018583000000000002,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.008,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.030000000000000002
+          },
+          {
+            "edge_geometry_ms": 0.018583000000000002,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.008042,
+            "node_query_ms": 0.000791,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.030042000000000003
+          },
+          {
+            "edge_geometry_ms": 0.018542,
+            "edge_query_ms": 0.002334,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.007875,
+            "node_query_ms": 0.000791,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.030000000000000002
+          },
+          {
+            "edge_geometry_ms": 0.018583000000000002,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.007917,
+            "node_query_ms": 0.000833,
+            "overlays_ms": 0.0,
+            "total_ms": 0.029917
+          },
+          {
+            "edge_geometry_ms": 0.018334,
+            "edge_query_ms": 0.002209,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.007833,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.029625
+          },
+          {
+            "edge_geometry_ms": 0.018375,
+            "edge_query_ms": 0.002166,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.007958999999999999,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 0.0,
+            "total_ms": 0.029667
+          },
+          {
+            "edge_geometry_ms": 0.018333,
+            "edge_query_ms": 0.002208,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.007917,
+            "node_query_ms": 0.000792,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.029625
+          },
+          {
+            "edge_geometry_ms": 0.026042,
+            "edge_query_ms": 0.002167,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.008083,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 0.0,
+            "total_ms": 0.0375
+          },
+          {
+            "edge_geometry_ms": 0.018459,
+            "edge_query_ms": 0.002084,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.0077919999999999994,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 0.000125,
+            "total_ms": 0.029667
+          },
+          {
+            "edge_geometry_ms": 0.018416000000000002,
+            "edge_query_ms": 0.0020829999999999998,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.007916,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 0.0,
+            "total_ms": 0.029584
+          },
+          {
+            "edge_geometry_ms": 0.018292,
+            "edge_query_ms": 0.002084,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.008,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.029583
+          },
+          {
+            "edge_geometry_ms": 0.018541000000000002,
+            "edge_query_ms": 0.0020829999999999998,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.007916,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.029750000000000002
+          },
+          {
+            "edge_geometry_ms": 0.018334,
+            "edge_query_ms": 0.002125,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.007875,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.029542
+          },
+          {
+            "edge_geometry_ms": 0.019958,
+            "edge_query_ms": 0.002167,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.007833,
+            "node_query_ms": 0.000791,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.031207999999999996
+          },
+          {
+            "edge_geometry_ms": 0.018459,
+            "edge_query_ms": 0.002042,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.007875,
+            "node_query_ms": 0.00075,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.029625
+          },
+          {
+            "edge_geometry_ms": 0.047375,
+            "edge_query_ms": 0.017875000000000002,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.010541,
+            "node_query_ms": 0.002333,
+            "overlays_ms": 0.0,
+            "total_ms": 0.078542
+          },
+          {
+            "edge_geometry_ms": 0.056791,
+            "edge_query_ms": 0.0025830000000000002,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.043583,
+            "node_query_ms": 0.005833,
+            "overlays_ms": 8.4e-05,
+            "total_ms": 0.109458
+          },
+          {
+            "edge_geometry_ms": 0.0575,
+            "edge_query_ms": 0.002375,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.008791,
+            "node_query_ms": 0.001083,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.070208
+          },
+          {
+            "edge_geometry_ms": 0.02025,
+            "edge_query_ms": 0.0024590000000000002,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.029291,
+            "node_query_ms": 0.000833,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.053333
+          }
+        ],
+        "quads": 1173,
+        "raw_ms": [
+          0.043415999999999996,
+          0.038542,
+          0.032125,
+          0.031167,
+          0.030542,
+          0.030167,
+          0.029875000000000002,
+          0.029792,
+          0.029708000000000002,
+          0.0295,
+          0.029584,
+          0.029458,
+          0.029708000000000002,
+          0.029542,
+          0.0295,
+          0.029292,
+          0.029417,
+          0.029291,
+          0.029249999999999998,
+          0.029332999999999998,
+          0.029124999999999998,
+          0.029249999999999998,
+          0.029417,
+          0.028959,
+          0.029166,
+          0.029292,
+          0.028958,
+          0.037417,
+          0.036125,
+          0.032625
+        ],
+        "visible_edges": 110,
+        "visible_nodes": 36,
+        "zoom": 1.0
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 0.070334,
+          "edge_query_ms": 0.007917,
+          "groups_ms": 4.1e-05,
+          "node_geometry_ms": 0.004834,
+          "node_query_ms": 0.002959,
+          "overlays_ms": 0.0,
+          "total_ms": 0.08645800000000001
+        },
+        "fingerprint": "ea61741a381eb4a4",
+        "median_ms": 0.056958,
+        "p95_ms": 0.079584,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 0.044,
+            "edge_query_ms": 0.007875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005875,
+            "node_query_ms": 0.002541,
+            "overlays_ms": 0.0,
+            "total_ms": 0.060708000000000005
+          },
+          {
+            "edge_geometry_ms": 0.043042,
+            "edge_query_ms": 0.007834,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005708,
+            "node_query_ms": 0.002541,
+            "overlays_ms": 0.0,
+            "total_ms": 0.059583000000000004
+          },
+          {
+            "edge_geometry_ms": 0.042790999999999996,
+            "edge_query_ms": 0.0077919999999999994,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.0053750000000000004,
+            "node_query_ms": 0.002458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.058917
+          },
+          {
+            "edge_geometry_ms": 0.042707999999999996,
+            "edge_query_ms": 0.00775,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005167,
+            "node_query_ms": 0.002458,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.058542000000000004
+          },
+          {
+            "edge_geometry_ms": 0.041875,
+            "edge_query_ms": 0.0077919999999999994,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.0050420000000000005,
+            "node_query_ms": 0.002458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.057624999999999996
+          },
+          {
+            "edge_geometry_ms": 0.041959,
+            "edge_query_ms": 0.007666999999999999,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.005,
+            "node_query_ms": 0.002417,
+            "overlays_ms": 0.0,
+            "total_ms": 0.0575
+          },
+          {
+            "edge_geometry_ms": 0.041625,
+            "edge_query_ms": 0.00775,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005,
+            "node_query_ms": 0.0025,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.057333999999999996
+          },
+          {
+            "edge_geometry_ms": 0.0415,
+            "edge_query_ms": 0.007666999999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005,
+            "node_query_ms": 0.002542,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.057166999999999996
+          },
+          {
+            "edge_geometry_ms": 0.041665999999999995,
+            "edge_query_ms": 0.007708,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004959,
+            "node_query_ms": 0.002417,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.057209
+          },
+          {
+            "edge_geometry_ms": 0.041709,
+            "edge_query_ms": 0.007625,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005,
+            "node_query_ms": 0.002417,
+            "overlays_ms": 0.0,
+            "total_ms": 0.057166999999999996
+          },
+          {
+            "edge_geometry_ms": 0.041458,
+            "edge_query_ms": 0.007791,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004958,
+            "node_query_ms": 0.002458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.057083999999999996
+          },
+          {
+            "edge_geometry_ms": 0.041167,
+            "edge_query_ms": 0.007584,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004916,
+            "node_query_ms": 0.002458,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.056582999999999994
+          },
+          {
+            "edge_geometry_ms": 0.040958999999999995,
+            "edge_query_ms": 0.007709000000000001,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004834,
+            "node_query_ms": 0.0024590000000000002,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.056417
+          },
+          {
+            "edge_geometry_ms": 0.040625,
+            "edge_query_ms": 0.007666000000000001,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004791,
+            "node_query_ms": 0.002458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.055958999999999995
+          },
+          {
+            "edge_geometry_ms": 0.060959,
+            "edge_query_ms": 0.013417,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.008208,
+            "node_query_ms": 0.003542,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.08675
+          },
+          {
+            "edge_geometry_ms": 0.052625,
+            "edge_query_ms": 0.00825,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.007459,
+            "node_query_ms": 0.0025,
+            "overlays_ms": 0.0,
+            "total_ms": 0.07125
+          },
+          {
+            "edge_geometry_ms": 0.04675,
+            "edge_query_ms": 0.0077919999999999994,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.006334,
+            "node_query_ms": 0.0025840000000000004,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.06387499999999999
+          },
+          {
+            "edge_geometry_ms": 0.044208000000000004,
+            "edge_query_ms": 0.007708,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.0055,
+            "node_query_ms": 0.0025,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.060375
+          },
+          {
+            "edge_geometry_ms": 0.042542,
+            "edge_query_ms": 0.007791,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005084,
+            "node_query_ms": 0.0024590000000000002,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.058334000000000004
+          },
+          {
+            "edge_geometry_ms": 0.042208,
+            "edge_query_ms": 0.007666000000000001,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.0050420000000000005,
+            "node_query_ms": 0.002417,
+            "overlays_ms": 0.0,
+            "total_ms": 0.05775
+          },
+          {
+            "edge_geometry_ms": 0.041833999999999996,
+            "edge_query_ms": 0.007625,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004834,
+            "node_query_ms": 0.0024590000000000002,
+            "overlays_ms": 0.0,
+            "total_ms": 0.057166999999999996
+          },
+          {
+            "edge_geometry_ms": 0.041667,
+            "edge_query_ms": 0.007666999999999999,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.00475,
+            "node_query_ms": 0.002375,
+            "overlays_ms": 0.0,
+            "total_ms": 0.056916
+          },
+          {
+            "edge_geometry_ms": 0.041208,
+            "edge_query_ms": 0.007625,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004667,
+            "node_query_ms": 0.002417,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.056332999999999994
+          },
+          {
+            "edge_geometry_ms": 0.040834,
+            "edge_query_ms": 0.007625,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004667,
+            "node_query_ms": 0.002334,
+            "overlays_ms": 0.0,
+            "total_ms": 0.055875
+          },
+          {
+            "edge_geometry_ms": 0.040791,
+            "edge_query_ms": 0.007625,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.004667,
+            "node_query_ms": 0.002417,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.056
+          },
+          {
+            "edge_geometry_ms": 0.040667,
+            "edge_query_ms": 0.007666000000000001,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.004667,
+            "node_query_ms": 0.002334,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.055791999999999994
+          },
+          {
+            "edge_geometry_ms": 0.040666,
+            "edge_query_ms": 0.007708,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.004667,
+            "node_query_ms": 0.002417,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.055917
+          },
+          {
+            "edge_geometry_ms": 0.076333,
+            "edge_query_ms": 0.01275,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.008124999999999999,
+            "node_query_ms": 0.003792,
+            "overlays_ms": 0.0,
+            "total_ms": 0.1015
+          },
+          {
+            "edge_geometry_ms": 0.052958,
+            "edge_query_ms": 0.008417,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.007292,
+            "node_query_ms": 0.0027080000000000003,
+            "overlays_ms": 0.0,
+            "total_ms": 0.07183300000000001
+          },
+          {
+            "edge_geometry_ms": 0.047041,
+            "edge_query_ms": 0.007875,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.006291000000000001,
+            "node_query_ms": 0.0025,
+            "overlays_ms": 0.0,
+            "total_ms": 0.064167
+          }
+        ],
+        "quads": 2355,
+        "raw_ms": [
+          0.059209000000000005,
+          0.057959,
+          0.057707999999999995,
+          0.057624999999999996,
+          0.056958,
+          0.056666,
+          0.056833,
+          0.056417,
+          0.056625,
+          0.056833,
+          0.057,
+          0.056375,
+          0.05575,
+          0.055708,
+          0.115833,
+          0.07566700000000001,
+          0.065042,
+          0.060917,
+          0.057958,
+          0.056875,
+          0.056167,
+          0.055958,
+          0.055875,
+          0.055542,
+          0.055375,
+          0.055083,
+          0.075625,
+          0.078625,
+          0.079584,
+          0.069917
+        ],
+        "visible_edges": 366,
+        "visible_nodes": 121,
+        "zoom": 0.5
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 0.2625,
+          "edge_query_ms": 0.054375,
+          "groups_ms": 4.1e-05,
+          "node_geometry_ms": 0.038125,
+          "node_query_ms": 0.016625,
+          "overlays_ms": 4.1e-05,
+          "total_ms": 0.372125
+        },
+        "fingerprint": "e945248856cca9ec",
+        "median_ms": 0.36225,
+        "p95_ms": 0.407875,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 0.26087499999999997,
+            "edge_query_ms": 0.051625000000000004,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.036916,
+            "node_query_ms": 0.0155,
+            "overlays_ms": 0.0,
+            "total_ms": 0.36537499999999995
+          },
+          {
+            "edge_geometry_ms": 0.256959,
+            "edge_query_ms": 0.05025,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.035583000000000004,
+            "node_query_ms": 0.0155,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.35875
+          },
+          {
+            "edge_geometry_ms": 0.33825,
+            "edge_query_ms": 0.083791,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.033624999999999995,
+            "node_query_ms": 0.016041,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.47225
+          },
+          {
+            "edge_geometry_ms": 0.23458299999999999,
+            "edge_query_ms": 0.050457999999999996,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.032791,
+            "node_query_ms": 0.015375000000000002,
+            "overlays_ms": 0.0,
+            "total_ms": 0.333708
+          },
+          {
+            "edge_geometry_ms": 0.284916,
+            "edge_query_ms": 0.06325,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.038625,
+            "node_query_ms": 0.021458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.40900000000000003
+          },
+          {
+            "edge_geometry_ms": 0.28391700000000003,
+            "edge_query_ms": 0.053,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.038375,
+            "node_query_ms": 0.016249999999999997,
+            "overlays_ms": 0.0,
+            "total_ms": 0.391959
+          },
+          {
+            "edge_geometry_ms": 0.265166,
+            "edge_query_ms": 0.051042,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.037708,
+            "node_query_ms": 0.015416,
+            "overlays_ms": 0.0,
+            "total_ms": 0.369792
+          },
+          {
+            "edge_geometry_ms": 0.251166,
+            "edge_query_ms": 0.050417000000000003,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.036583,
+            "node_query_ms": 0.015333000000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 0.353917
+          },
+          {
+            "edge_geometry_ms": 0.263833,
+            "edge_query_ms": 0.050541,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.032167,
+            "node_query_ms": 0.016416999999999998,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.363417
+          },
+          {
+            "edge_geometry_ms": 0.21745799999999998,
+            "edge_query_ms": 0.05025,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.03225,
+            "node_query_ms": 0.013833,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.31429199999999996
+          },
+          {
+            "edge_geometry_ms": 0.20550000000000002,
+            "edge_query_ms": 0.045459,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.031583,
+            "node_query_ms": 0.013833,
+            "overlays_ms": 0.0,
+            "total_ms": 0.296792
+          },
+          {
+            "edge_geometry_ms": 0.202542,
+            "edge_query_ms": 0.045834,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.03625,
+            "node_query_ms": 0.013791000000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 0.29883299999999996
+          },
+          {
+            "edge_geometry_ms": 0.2105,
+            "edge_query_ms": 0.048958,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.030000000000000002,
+            "node_query_ms": 0.014083,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.30395900000000003
+          },
+          {
+            "edge_geometry_ms": 0.223375,
+            "edge_query_ms": 0.048124999999999994,
+            "groups_ms": 0.000125,
+            "node_geometry_ms": 0.028791,
+            "node_query_ms": 0.014292,
+            "overlays_ms": 0.0,
+            "total_ms": 0.315208
+          },
+          {
+            "edge_geometry_ms": 0.254416,
+            "edge_query_ms": 0.055,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.033374999999999995,
+            "node_query_ms": 0.0165,
+            "overlays_ms": 0.0,
+            "total_ms": 0.35975
+          },
+          {
+            "edge_geometry_ms": 0.26425,
+            "edge_query_ms": 0.050875000000000004,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.036792000000000005,
+            "node_query_ms": 0.015083,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.3675
+          },
+          {
+            "edge_geometry_ms": 0.29362499999999997,
+            "edge_query_ms": 0.067791,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.036458000000000004,
+            "node_query_ms": 0.015041,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.413541
+          },
+          {
+            "edge_geometry_ms": 0.226958,
+            "edge_query_ms": 0.055,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.0385,
+            "node_query_ms": 0.030916,
+            "overlays_ms": 0.0,
+            "total_ms": 0.351958
+          },
+          {
+            "edge_geometry_ms": 0.21187499999999998,
+            "edge_query_ms": 0.05025,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.026792,
+            "node_query_ms": 0.014084,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.303417
+          },
+          {
+            "edge_geometry_ms": 0.227875,
+            "edge_query_ms": 0.07070800000000001,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.026167,
+            "node_query_ms": 0.014209000000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 0.339375
+          },
+          {
+            "edge_geometry_ms": 0.205916,
+            "edge_query_ms": 0.045958000000000006,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.032208,
+            "node_query_ms": 0.013875,
+            "overlays_ms": 0.0,
+            "total_ms": 0.298333
+          },
+          {
+            "edge_geometry_ms": 0.206292,
+            "edge_query_ms": 0.045583,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.025292000000000002,
+            "node_query_ms": 0.013875,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.2915
+          },
+          {
+            "edge_geometry_ms": 0.25791699999999995,
+            "edge_query_ms": 0.055125,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.034208999999999996,
+            "node_query_ms": 0.015709,
+            "overlays_ms": 0.0,
+            "total_ms": 0.363375
+          },
+          {
+            "edge_geometry_ms": 0.24987499999999999,
+            "edge_query_ms": 0.049166999999999995,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.035125,
+            "node_query_ms": 0.0145,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.34912499999999996
+          },
+          {
+            "edge_geometry_ms": 0.237958,
+            "edge_query_ms": 0.047416999999999994,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.034542,
+            "node_query_ms": 0.014666,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.335
+          },
+          {
+            "edge_geometry_ms": 0.253375,
+            "edge_query_ms": 0.053208000000000005,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.033333,
+            "node_query_ms": 0.015042,
+            "overlays_ms": 0.0,
+            "total_ms": 0.355541
+          },
+          {
+            "edge_geometry_ms": 0.21845799999999999,
+            "edge_query_ms": 0.047,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.032625,
+            "node_query_ms": 0.014291,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.31275
+          },
+          {
+            "edge_geometry_ms": 0.233667,
+            "edge_query_ms": 0.051709000000000005,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.034792000000000003,
+            "node_query_ms": 0.01575,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.336375
+          },
+          {
+            "edge_geometry_ms": 0.23075,
+            "edge_query_ms": 0.051125000000000004,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.034083,
+            "node_query_ms": 0.015625,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.332042
+          },
+          {
+            "edge_geometry_ms": 0.273167,
+            "edge_query_ms": 0.056334,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.038833,
+            "node_query_ms": 0.017333,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.386167
+          }
+        ],
+        "quads": 5623,
+        "raw_ms": [
+          0.380292,
+          0.362291,
+          0.37512500000000004,
+          0.341958,
+          0.36225,
+          0.386167,
+          0.396542,
+          0.376417,
+          0.36725,
+          0.407875,
+          0.305083,
+          0.3,
+          0.2965,
+          0.302125,
+          0.429917,
+          0.40770900000000004,
+          0.371333,
+          0.38745799999999997,
+          0.319334,
+          0.2935,
+          0.28625,
+          0.28350000000000003,
+          0.358166,
+          0.3565,
+          0.351084,
+          0.40287500000000004,
+          0.339208,
+          0.337583,
+          0.347708,
+          0.39649999999999996
+        ],
+        "visible_edges": 2190,
+        "visible_nodes": 702,
+        "zoom": 0.20000000298023224
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 1.0161250000000002,
+          "edge_query_ms": 0.250958,
+          "groups_ms": 8.3e-05,
+          "node_geometry_ms": 0.135458,
+          "node_query_ms": 0.066291,
+          "overlays_ms": 4.2e-05,
+          "total_ms": 1.4693749999999999
+        },
+        "fingerprint": "81d92951ee434e4e",
+        "median_ms": 1.459625,
+        "p95_ms": 1.612917,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 1.0324589999999998,
+            "edge_query_ms": 0.222167,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.150292,
+            "node_query_ms": 0.071125,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.476542
+          },
+          {
+            "edge_geometry_ms": 1.1956250000000002,
+            "edge_query_ms": 0.221167,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.150333,
+            "node_query_ms": 0.078333,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.646
+          },
+          {
+            "edge_geometry_ms": 1.0037909999999999,
+            "edge_query_ms": 0.227583,
+            "groups_ms": 0.0025,
+            "node_geometry_ms": 0.15175,
+            "node_query_ms": 0.07100000000000001,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.457125
+          },
+          {
+            "edge_geometry_ms": 1.098916,
+            "edge_query_ms": 0.220875,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.196625,
+            "node_query_ms": 0.071541,
+            "overlays_ms": 0.0,
+            "total_ms": 1.5884580000000001
+          },
+          {
+            "edge_geometry_ms": 1.0212080000000001,
+            "edge_query_ms": 0.218667,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.148959,
+            "node_query_ms": 0.07012499999999999,
+            "overlays_ms": 0.0,
+            "total_ms": 1.4595
+          },
+          {
+            "edge_geometry_ms": 1.034334,
+            "edge_query_ms": 0.226042,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.151959,
+            "node_query_ms": 0.06808399999999999,
+            "overlays_ms": 0.0,
+            "total_ms": 1.480917
+          },
+          {
+            "edge_geometry_ms": 0.9316669999999999,
+            "edge_query_ms": 0.212334,
+            "groups_ms": 0.000375,
+            "node_geometry_ms": 0.13729200000000003,
+            "node_query_ms": 0.06691599999999999,
+            "overlays_ms": 0.0,
+            "total_ms": 1.3491250000000001
+          },
+          {
+            "edge_geometry_ms": 0.9285829999999999,
+            "edge_query_ms": 0.207333,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.133958,
+            "node_query_ms": 0.063541,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.3342079999999998
+          },
+          {
+            "edge_geometry_ms": 0.933791,
+            "edge_query_ms": 0.19924999999999998,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.138542,
+            "node_query_ms": 0.061208,
+            "overlays_ms": 0.0,
+            "total_ms": 1.333167
+          },
+          {
+            "edge_geometry_ms": 0.938667,
+            "edge_query_ms": 0.208334,
+            "groups_ms": 0.000209,
+            "node_geometry_ms": 0.135542,
+            "node_query_ms": 0.063833,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.347167
+          },
+          {
+            "edge_geometry_ms": 1.019458,
+            "edge_query_ms": 0.199791,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.151917,
+            "node_query_ms": 0.072417,
+            "overlays_ms": 0.0,
+            "total_ms": 1.444042
+          },
+          {
+            "edge_geometry_ms": 1.015542,
+            "edge_query_ms": 0.21537499999999998,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.14875000000000002,
+            "node_query_ms": 0.08141599999999999,
+            "overlays_ms": 0.0,
+            "total_ms": 1.4614999999999998
+          },
+          {
+            "edge_geometry_ms": 1.018833,
+            "edge_query_ms": 0.21429199999999998,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.148875,
+            "node_query_ms": 0.067333,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.449834
+          },
+          {
+            "edge_geometry_ms": 1.017167,
+            "edge_query_ms": 0.221083,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.148292,
+            "node_query_ms": 0.06837499999999999,
+            "overlays_ms": 0.0,
+            "total_ms": 1.455375
+          },
+          {
+            "edge_geometry_ms": 0.947708,
+            "edge_query_ms": 0.21520799999999998,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.137542,
+            "node_query_ms": 0.07216700000000001,
+            "overlays_ms": 0.00025,
+            "total_ms": 1.373291
+          },
+          {
+            "edge_geometry_ms": 0.9744579999999999,
+            "edge_query_ms": 0.207083,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.138875,
+            "node_query_ms": 0.068,
+            "overlays_ms": 0.000167,
+            "total_ms": 1.389042
+          },
+          {
+            "edge_geometry_ms": 0.942042,
+            "edge_query_ms": 0.20316700000000001,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.139458,
+            "node_query_ms": 0.064333,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 1.349458
+          },
+          {
+            "edge_geometry_ms": 0.9520000000000001,
+            "edge_query_ms": 0.203084,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.135875,
+            "node_query_ms": 0.06525,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.356917
+          },
+          {
+            "edge_geometry_ms": 0.938209,
+            "edge_query_ms": 0.201,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.13999999999999999,
+            "node_query_ms": 0.062666,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 1.3425
+          },
+          {
+            "edge_geometry_ms": 1.024208,
+            "edge_query_ms": 0.199125,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.15329199999999998,
+            "node_query_ms": 0.067458,
+            "overlays_ms": 0.0,
+            "total_ms": 1.4445000000000001
+          },
+          {
+            "edge_geometry_ms": 1.0996249999999999,
+            "edge_query_ms": 0.218083,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.152625,
+            "node_query_ms": 0.070959,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.5417910000000001
+          },
+          {
+            "edge_geometry_ms": 1.030375,
+            "edge_query_ms": 0.21804199999999999,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.15087499999999998,
+            "node_query_ms": 0.072666,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.47275
+          },
+          {
+            "edge_geometry_ms": 1.033666,
+            "edge_query_ms": 0.219417,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.161917,
+            "node_query_ms": 0.06866699999999999,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 1.4842080000000002
+          },
+          {
+            "edge_geometry_ms": 1.07675,
+            "edge_query_ms": 0.218917,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.154875,
+            "node_query_ms": 0.077709,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.528791
+          },
+          {
+            "edge_geometry_ms": 1.0172919999999999,
+            "edge_query_ms": 0.22841699999999998,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.151458,
+            "node_query_ms": 0.07229100000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 1.470042
+          },
+          {
+            "edge_geometry_ms": 1.139167,
+            "edge_query_ms": 0.217709,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.15275,
+            "node_query_ms": 0.0665,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.576625
+          },
+          {
+            "edge_geometry_ms": 1.0785,
+            "edge_query_ms": 0.213417,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.152834,
+            "node_query_ms": 0.072209,
+            "overlays_ms": 0.0,
+            "total_ms": 1.517417
+          },
+          {
+            "edge_geometry_ms": 0.9544170000000001,
+            "edge_query_ms": 0.200167,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.13825,
+            "node_query_ms": 0.065375,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 1.358666
+          },
+          {
+            "edge_geometry_ms": 1.05975,
+            "edge_query_ms": 0.33837500000000004,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.140292,
+            "node_query_ms": 0.06774999999999999,
+            "overlays_ms": 0.0,
+            "total_ms": 1.606791
+          },
+          {
+            "edge_geometry_ms": 0.969875,
+            "edge_query_ms": 0.2095,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.188583,
+            "node_query_ms": 0.070333,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 1.438833
+          }
+        ],
+        "quads": 17635,
+        "raw_ms": [
+          1.455458,
+          1.456708,
+          1.445209,
+          1.442708,
+          1.46425,
+          1.50675,
+          1.634333,
+          1.449333,
+          1.31575,
+          1.476041,
+          1.3274579999999998,
+          1.4606249999999998,
+          1.543125,
+          1.459625,
+          1.4587910000000002,
+          1.3918750000000002,
+          1.354625,
+          1.488875,
+          1.374,
+          1.35075,
+          1.481458,
+          1.532334,
+          1.47275,
+          1.612917,
+          1.4742920000000002,
+          1.542666,
+          1.457792,
+          1.450792,
+          1.5842079999999998,
+          1.3832090000000001
+        ],
+        "visible_edges": 8586,
+        "visible_nodes": 2808,
+        "zoom": 0.10000000149011612
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 3.670042,
+          "edge_query_ms": 0.917375,
+          "groups_ms": 0.000625,
+          "node_geometry_ms": 0.59975,
+          "node_query_ms": 0.289625,
+          "overlays_ms": 4.2e-05,
+          "total_ms": 5.478709
+        },
+        "fingerprint": "8eb17fa0a6cb75fb",
+        "median_ms": 5.2836669999999994,
+        "p95_ms": 6.022417000000001,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 3.644584,
+            "edge_query_ms": 0.9065,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.508167,
+            "node_query_ms": 0.2895,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.3502089999999995
+          },
+          {
+            "edge_geometry_ms": 3.571041,
+            "edge_query_ms": 0.94025,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.51975,
+            "node_query_ms": 0.298292,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.331207999999999
+          },
+          {
+            "edge_geometry_ms": 3.419833,
+            "edge_query_ms": 0.869208,
+            "groups_ms": 0.00020800000000000001,
+            "node_geometry_ms": 0.637709,
+            "node_query_ms": 0.340167,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.26825
+          },
+          {
+            "edge_geometry_ms": 3.059709,
+            "edge_query_ms": 0.81725,
+            "groups_ms": 0.000292,
+            "node_geometry_ms": 0.482875,
+            "node_query_ms": 0.257834,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.6195
+          },
+          {
+            "edge_geometry_ms": 3.749375,
+            "edge_query_ms": 1.081958,
+            "groups_ms": 0.0005,
+            "node_geometry_ms": 0.522708,
+            "node_query_ms": 0.291708,
+            "overlays_ms": 0.0,
+            "total_ms": 5.647459
+          },
+          {
+            "edge_geometry_ms": 3.442958,
+            "edge_query_ms": 0.9101250000000001,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.514958,
+            "node_query_ms": 0.285708,
+            "overlays_ms": 0.0,
+            "total_ms": 5.154709
+          },
+          {
+            "edge_geometry_ms": 3.226667,
+            "edge_query_ms": 0.901084,
+            "groups_ms": 0.000209,
+            "node_geometry_ms": 0.581125,
+            "node_query_ms": 0.251958,
+            "overlays_ms": 0.0,
+            "total_ms": 4.962542
+          },
+          {
+            "edge_geometry_ms": 3.495583,
+            "edge_query_ms": 0.809125,
+            "groups_ms": 0.000541,
+            "node_geometry_ms": 0.5594169999999999,
+            "node_query_ms": 0.322375,
+            "overlays_ms": 0.0,
+            "total_ms": 5.188042
+          },
+          {
+            "edge_geometry_ms": 3.3962499999999998,
+            "edge_query_ms": 0.9015,
+            "groups_ms": 0.00033299999999999996,
+            "node_geometry_ms": 0.536834,
+            "node_query_ms": 0.279709,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.115334
+          },
+          {
+            "edge_geometry_ms": 3.420416,
+            "edge_query_ms": 0.9995419999999999,
+            "groups_ms": 0.000375,
+            "node_geometry_ms": 0.5297919999999999,
+            "node_query_ms": 0.280875,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 5.232042
+          },
+          {
+            "edge_geometry_ms": 3.3287500000000003,
+            "edge_query_ms": 0.828333,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.57275,
+            "node_query_ms": 0.324875,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.056041
+          },
+          {
+            "edge_geometry_ms": 3.540416,
+            "edge_query_ms": 0.902042,
+            "groups_ms": 0.000375,
+            "node_geometry_ms": 0.523709,
+            "node_query_ms": 0.28475,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.252834
+          },
+          {
+            "edge_geometry_ms": 3.757792,
+            "edge_query_ms": 0.958791,
+            "groups_ms": 0.000417,
+            "node_geometry_ms": 0.540625,
+            "node_query_ms": 0.284583,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.543209
+          },
+          {
+            "edge_geometry_ms": 3.466292,
+            "edge_query_ms": 1.184083,
+            "groups_ms": 0.0005,
+            "node_geometry_ms": 0.687709,
+            "node_query_ms": 0.336042,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 5.67575
+          },
+          {
+            "edge_geometry_ms": 3.157,
+            "edge_query_ms": 0.969459,
+            "groups_ms": 0.000375,
+            "node_geometry_ms": 0.479958,
+            "node_query_ms": 0.252583,
+            "overlays_ms": 0.0,
+            "total_ms": 4.8604590000000005
+          },
+          {
+            "edge_geometry_ms": 3.5170000000000003,
+            "edge_query_ms": 0.8420409999999999,
+            "groups_ms": 0.000417,
+            "node_geometry_ms": 0.5198750000000001,
+            "node_query_ms": 0.293541,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 5.1739999999999995
+          },
+          {
+            "edge_geometry_ms": 3.685291,
+            "edge_query_ms": 0.903,
+            "groups_ms": 0.00020800000000000001,
+            "node_geometry_ms": 0.524584,
+            "node_query_ms": 0.290542,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.404584
+          },
+          {
+            "edge_geometry_ms": 3.4303749999999997,
+            "edge_query_ms": 0.9844579999999999,
+            "groups_ms": 0.000417,
+            "node_geometry_ms": 0.527958,
+            "node_query_ms": 0.282541,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 5.22725
+          },
+          {
+            "edge_geometry_ms": 3.3405,
+            "edge_query_ms": 0.769375,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.5135,
+            "node_query_ms": 0.292625,
+            "overlays_ms": 0.0,
+            "total_ms": 4.916958
+          },
+          {
+            "edge_geometry_ms": 3.4082079999999997,
+            "edge_query_ms": 0.8861249999999999,
+            "groups_ms": 0.004,
+            "node_geometry_ms": 0.7010000000000001,
+            "node_query_ms": 0.287125,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 5.287584
+          },
+          {
+            "edge_geometry_ms": 3.163,
+            "edge_query_ms": 0.872584,
+            "groups_ms": 0.000375,
+            "node_geometry_ms": 0.472875,
+            "node_query_ms": 0.26275000000000004,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.77225
+          },
+          {
+            "edge_geometry_ms": 3.125792,
+            "edge_query_ms": 0.7795000000000001,
+            "groups_ms": 0.000292,
+            "node_geometry_ms": 0.531,
+            "node_query_ms": 0.262709,
+            "overlays_ms": 0.0,
+            "total_ms": 4.700166
+          },
+          {
+            "edge_geometry_ms": 3.441209,
+            "edge_query_ms": 1.066292,
+            "groups_ms": 0.0005,
+            "node_geometry_ms": 0.5173340000000001,
+            "node_query_ms": 0.278959,
+            "overlays_ms": 0.0,
+            "total_ms": 5.305167
+          },
+          {
+            "edge_geometry_ms": 3.3405,
+            "edge_query_ms": 0.870583,
+            "groups_ms": 0.00033299999999999996,
+            "node_geometry_ms": 0.517166,
+            "node_query_ms": 0.27116599999999996,
+            "overlays_ms": 0.0,
+            "total_ms": 5.000584
+          },
+          {
+            "edge_geometry_ms": 3.051917,
+            "edge_query_ms": 0.8015840000000001,
+            "groups_ms": 0.000292,
+            "node_geometry_ms": 0.477875,
+            "node_query_ms": 0.246458,
+            "overlays_ms": 0.0,
+            "total_ms": 4.578958
+          },
+          {
+            "edge_geometry_ms": 3.735875,
+            "edge_query_ms": 0.9886249999999999,
+            "groups_ms": 0.000292,
+            "node_geometry_ms": 0.588875,
+            "node_query_ms": 0.3075,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 5.622083
+          },
+          {
+            "edge_geometry_ms": 3.783125,
+            "edge_query_ms": 1.26075,
+            "groups_ms": 0.001209,
+            "node_geometry_ms": 0.55875,
+            "node_query_ms": 0.306917,
+            "overlays_ms": 0.000167,
+            "total_ms": 5.924584
+          },
+          {
+            "edge_geometry_ms": 3.706,
+            "edge_query_ms": 1.0881669999999999,
+            "groups_ms": 0.000125,
+            "node_geometry_ms": 0.728625,
+            "node_query_ms": 0.31275,
+            "overlays_ms": 0.0,
+            "total_ms": 5.838334
+          },
+          {
+            "edge_geometry_ms": 3.897834,
+            "edge_query_ms": 0.969375,
+            "groups_ms": 0.000417,
+            "node_geometry_ms": 0.6455000000000001,
+            "node_query_ms": 0.314417,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.8289159999999995
+          },
+          {
+            "edge_geometry_ms": 3.505416,
+            "edge_query_ms": 1.152917,
+            "groups_ms": 0.001167,
+            "node_geometry_ms": 0.5544169999999999,
+            "node_query_ms": 0.310917,
+            "overlays_ms": 0.0,
+            "total_ms": 5.526792
+          }
+        ],
+        "quads": 56535,
+        "raw_ms": [
+          5.521084,
+          5.505416,
+          5.044708999999999,
+          5.225542,
+          5.236249999999999,
+          5.117708,
+          5.752041999999999,
+          4.875042,
+          5.2836669999999994,
+          5.569834,
+          5.217791999999999,
+          5.410459,
+          5.402917,
+          5.295541,
+          5.390708,
+          4.652042000000001,
+          5.1255,
+          5.533708,
+          4.772667,
+          5.175667,
+          5.305166,
+          4.578291,
+          5.213749999999999,
+          5.06175,
+          5.039291,
+          4.644209,
+          6.022417000000001,
+          5.848917,
+          5.5209589999999995,
+          6.352875
+        ],
+        "visible_edges": 30000,
+        "visible_nodes": 10000,
+        "zoom": 0.05000000074505806
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 3.895708,
+          "edge_query_ms": 0.947459,
+          "groups_ms": 0.001042,
+          "node_geometry_ms": 0.545792,
+          "node_query_ms": 0.326208,
+          "overlays_ms": 0.0,
+          "total_ms": 5.71775
+        },
+        "fingerprint": "085310555054ae23",
+        "median_ms": 4.830667,
+        "p95_ms": 5.299541,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 3.325375,
+            "edge_query_ms": 0.8595,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.518709,
+            "node_query_ms": 0.270208,
+            "overlays_ms": 0.0,
+            "total_ms": 4.974875
+          },
+          {
+            "edge_geometry_ms": 3.300792,
+            "edge_query_ms": 0.8679589999999999,
+            "groups_ms": 0.000125,
+            "node_geometry_ms": 0.517083,
+            "node_query_ms": 0.271125,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.958041
+          },
+          {
+            "edge_geometry_ms": 3.4746249999999996,
+            "edge_query_ms": 0.9241250000000001,
+            "groups_ms": 0.00020800000000000001,
+            "node_geometry_ms": 0.468292,
+            "node_query_ms": 0.251709,
+            "overlays_ms": 0.0,
+            "total_ms": 5.1195829999999996
+          },
+          {
+            "edge_geometry_ms": 3.037792,
+            "edge_query_ms": 0.780125,
+            "groups_ms": 0.00020800000000000001,
+            "node_geometry_ms": 0.481917,
+            "node_query_ms": 0.24816600000000003,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.548917
+          },
+          {
+            "edge_geometry_ms": 3.149042,
+            "edge_query_ms": 0.782875,
+            "groups_ms": 0.000125,
+            "node_geometry_ms": 0.46758299999999997,
+            "node_query_ms": 0.250958,
+            "overlays_ms": 0.0,
+            "total_ms": 4.651458
+          },
+          {
+            "edge_geometry_ms": 3.064167,
+            "edge_query_ms": 0.8094169999999999,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.469292,
+            "node_query_ms": 0.2475,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 4.591208
+          },
+          {
+            "edge_geometry_ms": 3.112334,
+            "edge_query_ms": 0.801875,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.519,
+            "node_query_ms": 0.271167,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.705375
+          },
+          {
+            "edge_geometry_ms": 3.3075829999999997,
+            "edge_query_ms": 0.869916,
+            "groups_ms": 0.00020800000000000001,
+            "node_geometry_ms": 0.521,
+            "node_query_ms": 0.272625,
+            "overlays_ms": 0.0,
+            "total_ms": 4.972542
+          },
+          {
+            "edge_geometry_ms": 3.040625,
+            "edge_query_ms": 0.779208,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.47300000000000003,
+            "node_query_ms": 0.24675,
+            "overlays_ms": 0.0,
+            "total_ms": 4.5403329999999995
+          },
+          {
+            "edge_geometry_ms": 3.58275,
+            "edge_query_ms": 0.954,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.528833,
+            "node_query_ms": 0.299666,
+            "overlays_ms": 0.0,
+            "total_ms": 5.366125
+          },
+          {
+            "edge_geometry_ms": 3.023541,
+            "edge_query_ms": 0.795875,
+            "groups_ms": 0.00033299999999999996,
+            "node_geometry_ms": 0.47800000000000004,
+            "node_query_ms": 0.259042,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.5573749999999995
+          },
+          {
+            "edge_geometry_ms": 3.1494169999999997,
+            "edge_query_ms": 0.7869160000000001,
+            "groups_ms": 0.00033299999999999996,
+            "node_geometry_ms": 0.516167,
+            "node_query_ms": 0.27087500000000003,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.724542
+          },
+          {
+            "edge_geometry_ms": 3.36075,
+            "edge_query_ms": 0.882208,
+            "groups_ms": 0.00029099999999999997,
+            "node_geometry_ms": 0.5263340000000001,
+            "node_query_ms": 0.272125,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.0515
+          },
+          {
+            "edge_geometry_ms": 3.0462089999999997,
+            "edge_query_ms": 0.831417,
+            "groups_ms": 0.000875,
+            "node_geometry_ms": 0.4785,
+            "node_query_ms": 0.2455,
+            "overlays_ms": 0.0,
+            "total_ms": 4.603708
+          },
+          {
+            "edge_geometry_ms": 3.307042,
+            "edge_query_ms": 0.871917,
+            "groups_ms": 0.000292,
+            "node_geometry_ms": 0.5439579999999999,
+            "node_query_ms": 0.270083,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 4.994167
+          },
+          {
+            "edge_geometry_ms": 3.045,
+            "edge_query_ms": 0.843459,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.46783399999999997,
+            "node_query_ms": 0.250292,
+            "overlays_ms": 0.0,
+            "total_ms": 4.6075420000000005
+          },
+          {
+            "edge_geometry_ms": 3.04325,
+            "edge_query_ms": 0.767167,
+            "groups_ms": 0.000125,
+            "node_geometry_ms": 0.513208,
+            "node_query_ms": 0.263917,
+            "overlays_ms": 0.0,
+            "total_ms": 4.58825
+          },
+          {
+            "edge_geometry_ms": 3.349417,
+            "edge_query_ms": 0.838209,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.514,
+            "node_query_ms": 0.273333,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 4.9755
+          },
+          {
+            "edge_geometry_ms": 3.082042,
+            "edge_query_ms": 0.8161660000000001,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.46749999999999997,
+            "node_query_ms": 0.252459,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 4.618958
+          },
+          {
+            "edge_geometry_ms": 3.340875,
+            "edge_query_ms": 0.8538330000000001,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.509166,
+            "node_query_ms": 0.270167,
+            "overlays_ms": 0.0,
+            "total_ms": 4.975042
+          },
+          {
+            "edge_geometry_ms": 3.053292,
+            "edge_query_ms": 0.848791,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.473833,
+            "node_query_ms": 0.248042,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.624708
+          },
+          {
+            "edge_geometry_ms": 3.0420830000000003,
+            "edge_query_ms": 0.7748330000000001,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.47570799999999996,
+            "node_query_ms": 0.242416,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 4.535833
+          },
+          {
+            "edge_geometry_ms": 3.300959,
+            "edge_query_ms": 0.864334,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.520333,
+            "node_query_ms": 0.279125,
+            "overlays_ms": 0.0,
+            "total_ms": 4.965292
+          },
+          {
+            "edge_geometry_ms": 3.066292,
+            "edge_query_ms": 0.785042,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.4645,
+            "node_query_ms": 0.26095799999999997,
+            "overlays_ms": 0.0,
+            "total_ms": 4.577292
+          },
+          {
+            "edge_geometry_ms": 3.468333,
+            "edge_query_ms": 0.821125,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.51975,
+            "node_query_ms": 0.290542,
+            "overlays_ms": 0.0,
+            "total_ms": 5.1005840000000005
+          },
+          {
+            "edge_geometry_ms": 3.2905,
+            "edge_query_ms": 0.877875,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.51875,
+            "node_query_ms": 0.277291,
+            "overlays_ms": 0.0,
+            "total_ms": 4.965458
+          },
+          {
+            "edge_geometry_ms": 3.309125,
+            "edge_query_ms": 0.888916,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.472125,
+            "node_query_ms": 0.24895899999999999,
+            "overlays_ms": 0.0,
+            "total_ms": 4.920375
+          },
+          {
+            "edge_geometry_ms": 3.055542,
+            "edge_query_ms": 0.7785,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.471917,
+            "node_query_ms": 0.24575,
+            "overlays_ms": 0.0,
+            "total_ms": 4.552124999999999
+          },
+          {
+            "edge_geometry_ms": 3.716333,
+            "edge_query_ms": 0.8999579999999999,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.519917,
+            "node_query_ms": 0.295666,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 5.433000000000001
+          },
+          {
+            "edge_geometry_ms": 3.4511659999999997,
+            "edge_query_ms": 1.089708,
+            "groups_ms": 0.000458,
+            "node_geometry_ms": 0.564333,
+            "node_query_ms": 0.326458,
+            "overlays_ms": 8.4e-05,
+            "total_ms": 5.433458000000001
+          }
+        ],
+        "quads": 55347,
+        "raw_ms": [
+          5.023416999999999,
+          5.005417,
+          5.059708,
+          4.632207999999999,
+          4.655708,
+          4.580291,
+          4.830667,
+          5.299541,
+          4.644,
+          4.796834,
+          5.003708,
+          4.534833,
+          4.944833,
+          4.760875,
+          4.667707999999999,
+          4.980041,
+          4.578292,
+          4.943959,
+          4.639125,
+          4.7063749999999995,
+          4.9745,
+          4.578208,
+          5.006625,
+          4.8111250000000005,
+          4.695,
+          5.110416,
+          5.101125,
+          4.597291,
+          4.890083,
+          5.382209
+        ],
+        "visible_edges": 30000,
+        "visible_nodes": 10000,
+        "zoom": 0.019999999552965164
+      }
+    ],
+    "edges": 30000,
+    "nodes": 10000,
+    "samples": 30,
+    "scope": "CPU scene only; no GPU/IPC/Registry; static zoom levels",
+    "warmup": 5
+  },
+  "after": {
+    "cases": [
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 0.011083,
+          "edge_query_ms": 0.001458,
+          "groups_ms": 0.0,
+          "node_geometry_ms": 0.0051660000000000005,
+          "node_query_ms": 0.0005,
+          "overlays_ms": 4.2e-05,
+          "total_ms": 0.0185
+        },
+        "fingerprint": "25f6261acb15b927",
+        "median_ms": 0.0185,
+        "p95_ms": 0.020292,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 0.011334,
+            "edge_query_ms": 0.001584,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.006416,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.020208999999999998
+          },
+          {
+            "edge_geometry_ms": 0.011292,
+            "edge_query_ms": 0.0015,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.0053750000000000004,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.019
+          },
+          {
+            "edge_geometry_ms": 0.020458,
+            "edge_query_ms": 0.0015409999999999998,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.010209,
+            "node_query_ms": 0.003166,
+            "overlays_ms": 0.0,
+            "total_ms": 0.035708
+          },
+          {
+            "edge_geometry_ms": 0.011625,
+            "edge_query_ms": 0.002417,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.005458,
+            "node_query_ms": 0.0006670000000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 0.02075
+          },
+          {
+            "edge_geometry_ms": 0.011334,
+            "edge_query_ms": 0.0015409999999999998,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005332999999999999,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.019
+          },
+          {
+            "edge_geometry_ms": 0.011292,
+            "edge_query_ms": 0.0015409999999999998,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005292000000000001,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018958
+          },
+          {
+            "edge_geometry_ms": 0.011208000000000001,
+            "edge_query_ms": 0.0015,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.0052499999999999995,
+            "node_query_ms": 0.000541,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.018834
+          },
+          {
+            "edge_geometry_ms": 0.011250000000000001,
+            "edge_query_ms": 0.001458,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005291,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018834
+          },
+          {
+            "edge_geometry_ms": 0.011165999999999999,
+            "edge_query_ms": 0.0015,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.0052499999999999995,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.018792
+          },
+          {
+            "edge_geometry_ms": 0.011167,
+            "edge_query_ms": 0.0015,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005332999999999999,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.018834
+          },
+          {
+            "edge_geometry_ms": 0.011458,
+            "edge_query_ms": 0.0015,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005208999999999999,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.019
+          },
+          {
+            "edge_geometry_ms": 0.011167,
+            "edge_query_ms": 0.0015,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005292000000000001,
+            "node_query_ms": 0.000541,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018791
+          },
+          {
+            "edge_geometry_ms": 0.011375,
+            "edge_query_ms": 0.001458,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005334,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.019
+          },
+          {
+            "edge_geometry_ms": 0.011334,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005332999999999999,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018959
+          },
+          {
+            "edge_geometry_ms": 0.011375,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005332999999999999,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018917
+          },
+          {
+            "edge_geometry_ms": 0.011334,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.0052499999999999995,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018833000000000003
+          },
+          {
+            "edge_geometry_ms": 0.011292,
+            "edge_query_ms": 0.0014160000000000002,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005167,
+            "node_query_ms": 0.000542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018666000000000002
+          },
+          {
+            "edge_geometry_ms": 0.011833,
+            "edge_query_ms": 0.0014160000000000002,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005291,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.019333
+          },
+          {
+            "edge_geometry_ms": 0.011292,
+            "edge_query_ms": 0.0014160000000000002,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005332999999999999,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.018833000000000003
+          },
+          {
+            "edge_geometry_ms": 0.011209,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005334,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.01875
+          },
+          {
+            "edge_geometry_ms": 0.011125,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.0051660000000000005,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.0185
+          },
+          {
+            "edge_geometry_ms": 0.011125,
+            "edge_query_ms": 0.0014160000000000002,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.0052499999999999995,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018625
+          },
+          {
+            "edge_geometry_ms": 0.011165999999999999,
+            "edge_query_ms": 0.001458,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005332999999999999,
+            "node_query_ms": 0.000458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.01875
+          },
+          {
+            "edge_geometry_ms": 0.011209,
+            "edge_query_ms": 0.001458,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005208999999999999,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018625
+          },
+          {
+            "edge_geometry_ms": 0.011125,
+            "edge_query_ms": 0.001458,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.0053750000000000004,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.01875
+          },
+          {
+            "edge_geometry_ms": 0.011165999999999999,
+            "edge_query_ms": 0.001459,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005292000000000001,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018667
+          },
+          {
+            "edge_geometry_ms": 0.011042,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.0052499999999999995,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018542
+          },
+          {
+            "edge_geometry_ms": 0.011333,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.005167,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 0.0,
+            "total_ms": 0.01875
+          },
+          {
+            "edge_geometry_ms": 0.011209,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.005208,
+            "node_query_ms": 0.000541,
+            "overlays_ms": 0.0,
+            "total_ms": 0.018667
+          },
+          {
+            "edge_geometry_ms": 0.011,
+            "edge_query_ms": 0.0014169999999999999,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.005292000000000001,
+            "node_query_ms": 0.0005,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.0185
+          }
+        ],
+        "quads": 1173,
+        "raw_ms": [
+          0.020292,
+          0.018959,
+          0.0185,
+          0.030750000000000003,
+          0.018875000000000003,
+          0.0185,
+          0.018375,
+          0.018333,
+          0.018417,
+          0.0185,
+          0.018833000000000003,
+          0.0185,
+          0.018542,
+          0.018709,
+          0.018958,
+          0.018625,
+          0.018333,
+          0.01875,
+          0.018417,
+          0.018416000000000002,
+          0.018416000000000002,
+          0.018416000000000002,
+          0.018209000000000003,
+          0.018375,
+          0.018208,
+          0.018417,
+          0.018666000000000002,
+          0.018167,
+          0.018333,
+          0.018084000000000003
+        ],
+        "visible_edges": 110,
+        "visible_nodes": 36,
+        "zoom": 1.0
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 0.025417000000000002,
+          "edge_query_ms": 0.005458,
+          "groups_ms": 4.1e-05,
+          "node_geometry_ms": 0.0036669999999999997,
+          "node_query_ms": 0.001709,
+          "overlays_ms": 4.1e-05,
+          "total_ms": 0.036625000000000005
+        },
+        "fingerprint": "ea61741a381eb4a4",
+        "median_ms": 0.03225,
+        "p95_ms": 0.036333,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 0.023083,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003458,
+            "node_query_ms": 0.001583,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.033207999999999994
+          },
+          {
+            "edge_geometry_ms": 0.023083,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.001542,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.032958
+          },
+          {
+            "edge_geometry_ms": 0.022958,
+            "edge_query_ms": 0.004958,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003416,
+            "node_query_ms": 0.001542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.033125
+          },
+          {
+            "edge_geometry_ms": 0.022667000000000003,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.003417,
+            "node_query_ms": 0.001542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.03275
+          },
+          {
+            "edge_geometry_ms": 0.022625000000000003,
+            "edge_query_ms": 0.0048330000000000005,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.001625,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.032583
+          },
+          {
+            "edge_geometry_ms": 0.022667000000000003,
+            "edge_query_ms": 0.0049169999999999995,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.003291,
+            "node_query_ms": 0.001583,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032792
+          },
+          {
+            "edge_geometry_ms": 0.023084,
+            "edge_query_ms": 0.0050409999999999995,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.001542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.033166
+          },
+          {
+            "edge_geometry_ms": 0.022708,
+            "edge_query_ms": 0.004791,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003292,
+            "node_query_ms": 0.001458,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.032583
+          },
+          {
+            "edge_geometry_ms": 0.022583,
+            "edge_query_ms": 0.0048330000000000005,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003334,
+            "node_query_ms": 0.0015,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.032583
+          },
+          {
+            "edge_geometry_ms": 0.022833,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.003375,
+            "node_query_ms": 0.0015,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032875
+          },
+          {
+            "edge_geometry_ms": 0.023292,
+            "edge_query_ms": 0.01875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003375,
+            "node_query_ms": 0.001625,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.047291
+          },
+          {
+            "edge_geometry_ms": 0.022666,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.001583,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.032666999999999995
+          },
+          {
+            "edge_geometry_ms": 0.022708,
+            "edge_query_ms": 0.004792,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.003291,
+            "node_query_ms": 0.001458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032542
+          },
+          {
+            "edge_geometry_ms": 0.02275,
+            "edge_query_ms": 0.004792,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.001458,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.032499999999999994
+          },
+          {
+            "edge_geometry_ms": 0.022709,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003292,
+            "node_query_ms": 0.001459,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.032666
+          },
+          {
+            "edge_geometry_ms": 0.022625000000000003,
+            "edge_query_ms": 0.004834,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.0015409999999999998,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032499999999999994
+          },
+          {
+            "edge_geometry_ms": 0.022583,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.001458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032499999999999994
+          },
+          {
+            "edge_geometry_ms": 0.022625000000000003,
+            "edge_query_ms": 0.0048330000000000005,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.003167,
+            "node_query_ms": 0.0015,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.032416
+          },
+          {
+            "edge_geometry_ms": 0.022500000000000003,
+            "edge_query_ms": 0.004834,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.003292,
+            "node_query_ms": 0.0015,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.032375
+          },
+          {
+            "edge_geometry_ms": 0.022542,
+            "edge_query_ms": 0.004834,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.0015,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032459
+          },
+          {
+            "edge_geometry_ms": 0.022584,
+            "edge_query_ms": 0.004834,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.003292,
+            "node_query_ms": 0.0015409999999999998,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.032459
+          },
+          {
+            "edge_geometry_ms": 0.022625000000000003,
+            "edge_query_ms": 0.004834,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003333,
+            "node_query_ms": 0.001542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032666
+          },
+          {
+            "edge_geometry_ms": 0.022666,
+            "edge_query_ms": 0.004875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.00325,
+            "node_query_ms": 0.0015,
+            "overlays_ms": 0.0,
+            "total_ms": 0.032625
+          },
+          {
+            "edge_geometry_ms": 0.022667000000000003,
+            "edge_query_ms": 0.004792,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.003625,
+            "node_query_ms": 0.001458,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.032875
+          },
+          {
+            "edge_geometry_ms": 0.02575,
+            "edge_query_ms": 0.0054589999999999994,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003625,
+            "node_query_ms": 0.001709,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.036875000000000005
+          },
+          {
+            "edge_geometry_ms": 0.025666,
+            "edge_query_ms": 0.0055,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.003625,
+            "node_query_ms": 0.001708,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.036875000000000005
+          },
+          {
+            "edge_geometry_ms": 0.025667,
+            "edge_query_ms": 0.0055,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.003583,
+            "node_query_ms": 0.001709,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.03675
+          },
+          {
+            "edge_geometry_ms": 0.025667,
+            "edge_query_ms": 0.0055,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.003666,
+            "node_query_ms": 0.001708,
+            "overlays_ms": 0.0,
+            "total_ms": 0.036917
+          },
+          {
+            "edge_geometry_ms": 0.025625,
+            "edge_query_ms": 0.005458,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.003792,
+            "node_query_ms": 0.001666,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.036875000000000005
+          },
+          {
+            "edge_geometry_ms": 0.025707999999999998,
+            "edge_query_ms": 0.005458,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.0036669999999999997,
+            "node_query_ms": 0.001708,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.036833
+          }
+        ],
+        "quads": 2355,
+        "raw_ms": [
+          0.03275,
+          0.032708,
+          0.032666999999999995,
+          0.032334,
+          0.032332999999999994,
+          0.032499999999999994,
+          0.03225,
+          0.03216599999999999,
+          0.032208,
+          0.032042,
+          0.03275,
+          0.03225,
+          0.031792,
+          0.032,
+          0.032208,
+          0.031875,
+          0.031833,
+          0.031792,
+          0.032042,
+          0.031875,
+          0.031917,
+          0.031875,
+          0.032041,
+          0.03175,
+          0.036333,
+          0.036417,
+          0.036084000000000005,
+          0.036166,
+          0.036292,
+          0.036208000000000004
+        ],
+        "visible_edges": 366,
+        "visible_nodes": 121,
+        "zoom": 0.5
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 0.118583,
+          "edge_query_ms": 0.036583,
+          "groups_ms": 4.2e-05,
+          "node_geometry_ms": 0.024292,
+          "node_query_ms": 0.011292,
+          "overlays_ms": 4.1e-05,
+          "total_ms": 0.191083
+        },
+        "fingerprint": "e945248856cca9ec",
+        "median_ms": 0.177584,
+        "p95_ms": 0.278625,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 0.129542,
+            "edge_query_ms": 0.038333,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.026250000000000002,
+            "node_query_ms": 0.011959000000000001,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.206459
+          },
+          {
+            "edge_geometry_ms": 0.126125,
+            "edge_query_ms": 0.038,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.024,
+            "node_query_ms": 0.011875,
+            "overlays_ms": 0.0,
+            "total_ms": 0.200334
+          },
+          {
+            "edge_geometry_ms": 0.13591699999999998,
+            "edge_query_ms": 0.047416,
+            "groups_ms": 0.0005,
+            "node_geometry_ms": 0.029542,
+            "node_query_ms": 0.014041,
+            "overlays_ms": 0.0,
+            "total_ms": 0.228625
+          },
+          {
+            "edge_geometry_ms": 0.134916,
+            "edge_query_ms": 0.039375,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.02675,
+            "node_query_ms": 0.012083,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.21350000000000002
+          },
+          {
+            "edge_geometry_ms": 0.113541,
+            "edge_query_ms": 0.034708,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.021792000000000002,
+            "node_query_ms": 0.010499999999999999,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.18083300000000002
+          },
+          {
+            "edge_geometry_ms": 0.108959,
+            "edge_query_ms": 0.033917,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.019333,
+            "node_query_ms": 0.010417000000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 0.17300000000000001
+          },
+          {
+            "edge_geometry_ms": 0.106833,
+            "edge_query_ms": 0.033541999999999995,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.017834,
+            "node_query_ms": 0.010417000000000001,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.168958
+          },
+          {
+            "edge_geometry_ms": 0.107333,
+            "edge_query_ms": 0.033541999999999995,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.017709,
+            "node_query_ms": 0.010542,
+            "overlays_ms": 0.0,
+            "total_ms": 0.16941699999999998
+          },
+          {
+            "edge_geometry_ms": 0.107333,
+            "edge_query_ms": 0.034165999999999995,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.018958,
+            "node_query_ms": 0.011083,
+            "overlays_ms": 0.0,
+            "total_ms": 0.171875
+          },
+          {
+            "edge_geometry_ms": 0.106417,
+            "edge_query_ms": 0.03375,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.017333,
+            "node_query_ms": 0.010458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.168291
+          },
+          {
+            "edge_geometry_ms": 0.102875,
+            "edge_query_ms": 0.033708,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.016208,
+            "node_query_ms": 0.010291,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.163417
+          },
+          {
+            "edge_geometry_ms": 0.102333,
+            "edge_query_ms": 0.0335,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.016416999999999998,
+            "node_query_ms": 0.010332999999999998,
+            "overlays_ms": 0.0,
+            "total_ms": 0.162917
+          },
+          {
+            "edge_geometry_ms": 0.102042,
+            "edge_query_ms": 0.033584,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.015875,
+            "node_query_ms": 0.010458,
+            "overlays_ms": 0.0,
+            "total_ms": 0.162333
+          },
+          {
+            "edge_geometry_ms": 0.15375,
+            "edge_query_ms": 0.062708,
+            "groups_ms": 0.000417,
+            "node_geometry_ms": 0.027708,
+            "node_query_ms": 0.012833,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 0.25845799999999997
+          },
+          {
+            "edge_geometry_ms": 0.121334,
+            "edge_query_ms": 0.035959,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.027167,
+            "node_query_ms": 0.011042,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.19579100000000002
+          },
+          {
+            "edge_geometry_ms": 0.11649999999999999,
+            "edge_query_ms": 0.034459000000000004,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.024666,
+            "node_query_ms": 0.010375,
+            "overlays_ms": 0.0,
+            "total_ms": 0.186334
+          },
+          {
+            "edge_geometry_ms": 0.11299999999999999,
+            "edge_query_ms": 0.034167,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.023542,
+            "node_query_ms": 0.010583,
+            "overlays_ms": 0.0,
+            "total_ms": 0.181625
+          },
+          {
+            "edge_geometry_ms": 0.112292,
+            "edge_query_ms": 0.034125,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.022209,
+            "node_query_ms": 0.010541,
+            "overlays_ms": 0.0,
+            "total_ms": 0.179417
+          },
+          {
+            "edge_geometry_ms": 0.115625,
+            "edge_query_ms": 0.035292,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.022709,
+            "node_query_ms": 0.010875,
+            "overlays_ms": 0.0,
+            "total_ms": 0.184792
+          },
+          {
+            "edge_geometry_ms": 0.114375,
+            "edge_query_ms": 0.035375,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.02225,
+            "node_query_ms": 0.011,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.183291
+          },
+          {
+            "edge_geometry_ms": 0.119125,
+            "edge_query_ms": 0.035333,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.021792000000000002,
+            "node_query_ms": 0.010916,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.1875
+          },
+          {
+            "edge_geometry_ms": 0.114083,
+            "edge_query_ms": 0.035457999999999996,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.021459,
+            "node_query_ms": 0.010832999999999999,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.18208300000000002
+          },
+          {
+            "edge_geometry_ms": 0.113625,
+            "edge_query_ms": 0.035290999999999996,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.021208,
+            "node_query_ms": 0.010791,
+            "overlays_ms": 0.0,
+            "total_ms": 0.181292
+          },
+          {
+            "edge_geometry_ms": 0.11349999999999999,
+            "edge_query_ms": 0.035333,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.020916999999999998,
+            "node_query_ms": 0.010875,
+            "overlays_ms": 0.0,
+            "total_ms": 0.180958
+          },
+          {
+            "edge_geometry_ms": 0.112917,
+            "edge_query_ms": 0.035416,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.021167,
+            "node_query_ms": 0.011,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.18087499999999998
+          },
+          {
+            "edge_geometry_ms": 0.113125,
+            "edge_query_ms": 0.035334,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.020834000000000002,
+            "node_query_ms": 0.010834,
+            "overlays_ms": 0.0,
+            "total_ms": 0.180417
+          },
+          {
+            "edge_geometry_ms": 0.1725,
+            "edge_query_ms": 0.113708,
+            "groups_ms": 0.0006670000000000001,
+            "node_geometry_ms": 0.02575,
+            "node_query_ms": 0.018000000000000002,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.332334
+          },
+          {
+            "edge_geometry_ms": 0.2105,
+            "edge_query_ms": 0.0395,
+            "groups_ms": 0.000125,
+            "node_geometry_ms": 0.025833000000000002,
+            "node_query_ms": 0.017041,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.294042
+          },
+          {
+            "edge_geometry_ms": 0.126666,
+            "edge_query_ms": 0.043250000000000004,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.027583,
+            "node_query_ms": 0.013333,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 0.21225000000000002
+          },
+          {
+            "edge_geometry_ms": 0.13016699999999998,
+            "edge_query_ms": 0.037041,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.026959,
+            "node_query_ms": 0.01175,
+            "overlays_ms": 0.0,
+            "total_ms": 0.20620799999999997
+          }
+        ],
+        "quads": 5623,
+        "raw_ms": [
+          0.20316700000000001,
+          0.195667,
+          0.278625,
+          0.213208,
+          0.205167,
+          0.173583,
+          0.167291,
+          0.164375,
+          0.162375,
+          0.164625,
+          0.160583,
+          0.1585,
+          0.1575,
+          0.214584,
+          0.19441599999999998,
+          0.188167,
+          0.181667,
+          0.175208,
+          0.173667,
+          0.17875000000000002,
+          0.177584,
+          0.177417,
+          0.176917,
+          0.176542,
+          0.17658300000000002,
+          0.176625,
+          0.292084,
+          0.202125,
+          0.227792,
+          0.204167
+        ],
+        "visible_edges": 2190,
+        "visible_nodes": 702,
+        "zoom": 0.20000000298023224
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 0.530125,
+          "edge_query_ms": 0.18575,
+          "groups_ms": 0.000458,
+          "node_geometry_ms": 0.11666699999999999,
+          "node_query_ms": 0.063,
+          "overlays_ms": 4.2e-05,
+          "total_ms": 0.8969159999999999
+        },
+        "fingerprint": "81d92951ee434e4e",
+        "median_ms": 0.747375,
+        "p95_ms": 0.961584,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 0.42125,
+            "edge_query_ms": 0.15066600000000002,
+            "groups_ms": 0.000125,
+            "node_geometry_ms": 0.097958,
+            "node_query_ms": 0.049166999999999995,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.719958
+          },
+          {
+            "edge_geometry_ms": 0.4525,
+            "edge_query_ms": 0.165584,
+            "groups_ms": 0.000209,
+            "node_geometry_ms": 0.11458299999999999,
+            "node_query_ms": 0.052875,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.786334
+          },
+          {
+            "edge_geometry_ms": 0.455334,
+            "edge_query_ms": 0.167834,
+            "groups_ms": 0.000209,
+            "node_geometry_ms": 0.117709,
+            "node_query_ms": 0.052834000000000006,
+            "overlays_ms": 0.0,
+            "total_ms": 0.7944169999999999
+          },
+          {
+            "edge_geometry_ms": 0.504125,
+            "edge_query_ms": 0.209667,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.20049999999999998,
+            "node_query_ms": 0.138041,
+            "overlays_ms": 0.000125,
+            "total_ms": 1.0527920000000002
+          },
+          {
+            "edge_geometry_ms": 0.47791700000000004,
+            "edge_query_ms": 0.171875,
+            "groups_ms": 0.000541,
+            "node_geometry_ms": 0.104917,
+            "node_query_ms": 0.062375,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.818542
+          },
+          {
+            "edge_geometry_ms": 0.44579199999999997,
+            "edge_query_ms": 0.162834,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.110208,
+            "node_query_ms": 0.056749999999999995,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.776625
+          },
+          {
+            "edge_geometry_ms": 0.450209,
+            "edge_query_ms": 0.185042,
+            "groups_ms": 0.000791,
+            "node_geometry_ms": 0.1075,
+            "node_query_ms": 0.051625000000000004,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.7960419999999999
+          },
+          {
+            "edge_geometry_ms": 0.399917,
+            "edge_query_ms": 0.142708,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.103459,
+            "node_query_ms": 0.046125000000000006,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.6925
+          },
+          {
+            "edge_geometry_ms": 0.3995,
+            "edge_query_ms": 0.142459,
+            "groups_ms": 0.000166,
+            "node_geometry_ms": 0.10175000000000001,
+            "node_query_ms": 0.04575,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.690041
+          },
+          {
+            "edge_geometry_ms": 0.399,
+            "edge_query_ms": 0.140458,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.099417,
+            "node_query_ms": 0.044708,
+            "overlays_ms": 0.0,
+            "total_ms": 0.683875
+          },
+          {
+            "edge_geometry_ms": 0.41225,
+            "edge_query_ms": 0.139959,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.12675,
+            "node_query_ms": 0.047292,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.726584
+          },
+          {
+            "edge_geometry_ms": 0.5788749999999999,
+            "edge_query_ms": 0.18845900000000002,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.134833,
+            "node_query_ms": 0.062708,
+            "overlays_ms": 0.0,
+            "total_ms": 0.965417
+          },
+          {
+            "edge_geometry_ms": 0.552833,
+            "edge_query_ms": 0.241583,
+            "groups_ms": 0.000917,
+            "node_geometry_ms": 0.13075,
+            "node_query_ms": 0.07241600000000001,
+            "overlays_ms": 0.000166,
+            "total_ms": 0.9998330000000001
+          },
+          {
+            "edge_geometry_ms": 0.398625,
+            "edge_query_ms": 0.19841699999999998,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.095791,
+            "node_query_ms": 0.047292,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.740917
+          },
+          {
+            "edge_geometry_ms": 0.40125,
+            "edge_query_ms": 0.15920800000000002,
+            "groups_ms": 0.000583,
+            "node_geometry_ms": 0.09820899999999999,
+            "node_query_ms": 0.052166000000000004,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.712542
+          },
+          {
+            "edge_geometry_ms": 0.39554199999999995,
+            "edge_query_ms": 0.14966600000000002,
+            "groups_ms": 0.00025,
+            "node_geometry_ms": 0.099542,
+            "node_query_ms": 0.046,
+            "overlays_ms": 0.0,
+            "total_ms": 0.6915
+          },
+          {
+            "edge_geometry_ms": 0.393625,
+            "edge_query_ms": 0.13937500000000003,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.100458,
+            "node_query_ms": 0.046042,
+            "overlays_ms": 0.0,
+            "total_ms": 0.6797920000000001
+          },
+          {
+            "edge_geometry_ms": 0.49945800000000007,
+            "edge_query_ms": 0.177666,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.137375,
+            "node_query_ms": 0.056582999999999994,
+            "overlays_ms": 0.0,
+            "total_ms": 0.871542
+          },
+          {
+            "edge_geometry_ms": 0.501292,
+            "edge_query_ms": 0.1905,
+            "groups_ms": 0.000167,
+            "node_geometry_ms": 0.12525,
+            "node_query_ms": 0.060583,
+            "overlays_ms": 0.0,
+            "total_ms": 0.8785000000000001
+          },
+          {
+            "edge_geometry_ms": 0.51,
+            "edge_query_ms": 0.182625,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.12770800000000002,
+            "node_query_ms": 0.058458,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 0.879208
+          },
+          {
+            "edge_geometry_ms": 0.403375,
+            "edge_query_ms": 0.142042,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.104958,
+            "node_query_ms": 0.048875,
+            "overlays_ms": 0.0,
+            "total_ms": 0.699625
+          },
+          {
+            "edge_geometry_ms": 0.3945,
+            "edge_query_ms": 0.141667,
+            "groups_ms": 0.000791,
+            "node_geometry_ms": 0.09975,
+            "node_query_ms": 0.044792,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.682208
+          },
+          {
+            "edge_geometry_ms": 0.39975,
+            "edge_query_ms": 0.140458,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.09962499999999999,
+            "node_query_ms": 0.0455,
+            "overlays_ms": 0.0,
+            "total_ms": 0.6857089999999999
+          },
+          {
+            "edge_geometry_ms": 0.517666,
+            "edge_query_ms": 0.14858300000000002,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.162292,
+            "node_query_ms": 0.074667,
+            "overlays_ms": 0.0,
+            "total_ms": 0.903583
+          },
+          {
+            "edge_geometry_ms": 0.534375,
+            "edge_query_ms": 0.19124999999999998,
+            "groups_ms": 8.3e-05,
+            "node_geometry_ms": 0.134917,
+            "node_query_ms": 0.060917,
+            "overlays_ms": 0.0,
+            "total_ms": 0.921916
+          },
+          {
+            "edge_geometry_ms": 0.5419999999999999,
+            "edge_query_ms": 0.217084,
+            "groups_ms": 0.00045900000000000004,
+            "node_geometry_ms": 0.14525000000000002,
+            "node_query_ms": 0.068959,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.975
+          },
+          {
+            "edge_geometry_ms": 0.407833,
+            "edge_query_ms": 0.15116700000000002,
+            "groups_ms": 0.000417,
+            "node_geometry_ms": 0.098041,
+            "node_query_ms": 0.048917,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.706959
+          },
+          {
+            "edge_geometry_ms": 0.401833,
+            "edge_query_ms": 0.144625,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.10041699999999999,
+            "node_query_ms": 0.046417,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 0.693667
+          },
+          {
+            "edge_geometry_ms": 0.404125,
+            "edge_query_ms": 0.141333,
+            "groups_ms": 0.00075,
+            "node_geometry_ms": 0.103291,
+            "node_query_ms": 0.045167000000000006,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 0.6955
+          },
+          {
+            "edge_geometry_ms": 0.40775,
+            "edge_query_ms": 0.13758299999999998,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.11541699999999999,
+            "node_query_ms": 0.08612500000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 0.747333
+          }
+        ],
+        "quads": 17635,
+        "raw_ms": [
+          0.747375,
+          0.7421660000000001,
+          0.772,
+          0.7571249999999999,
+          0.791833,
+          0.764041,
+          1.098459,
+          0.71075,
+          0.681167,
+          0.669834,
+          0.659667,
+          0.9235,
+          0.912625,
+          0.944333,
+          0.738167,
+          0.6807500000000001,
+          0.664375,
+          0.765708,
+          0.883208,
+          0.864709,
+          0.707667,
+          0.7075,
+          0.655292,
+          0.657458,
+          0.9145829999999999,
+          0.961584,
+          0.924875,
+          0.682958,
+          0.7407079999999999,
+          0.6715840000000001
+        ],
+        "visible_edges": 8586,
+        "visible_nodes": 2808,
+        "zoom": 0.10000000149011612
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 1.53475,
+          "edge_query_ms": 0.653417,
+          "groups_ms": 0.000625,
+          "node_geometry_ms": 0.396167,
+          "node_query_ms": 0.213458,
+          "overlays_ms": 0.0,
+          "total_ms": 2.799667
+        },
+        "fingerprint": "8eb17fa0a6cb75fb",
+        "median_ms": 2.694125,
+        "p95_ms": 3.157209,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 1.891042,
+            "edge_query_ms": 0.883333,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.337084,
+            "node_query_ms": 0.196875,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 3.309209
+          },
+          {
+            "edge_geometry_ms": 1.436625,
+            "edge_query_ms": 0.56725,
+            "groups_ms": 0.000209,
+            "node_geometry_ms": 0.435375,
+            "node_query_ms": 0.228208,
+            "overlays_ms": 0.0,
+            "total_ms": 2.6685
+          },
+          {
+            "edge_geometry_ms": 1.354917,
+            "edge_query_ms": 0.74325,
+            "groups_ms": 0.000917,
+            "node_geometry_ms": 0.33762499999999995,
+            "node_query_ms": 0.19558299999999998,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.6340410000000003
+          },
+          {
+            "edge_geometry_ms": 2.0626249999999997,
+            "edge_query_ms": 0.754875,
+            "groups_ms": 0.0007080000000000001,
+            "node_geometry_ms": 0.512292,
+            "node_query_ms": 0.28375,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 3.6160419999999998
+          },
+          {
+            "edge_geometry_ms": 1.328041,
+            "edge_query_ms": 0.5945,
+            "groups_ms": 0.000541,
+            "node_geometry_ms": 0.341375,
+            "node_query_ms": 0.18320899999999998,
+            "overlays_ms": 0.000125,
+            "total_ms": 2.449042
+          },
+          {
+            "edge_geometry_ms": 1.55975,
+            "edge_query_ms": 0.69525,
+            "groups_ms": 0.000792,
+            "node_geometry_ms": 0.408042,
+            "node_query_ms": 0.21645799999999998,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 2.881542
+          },
+          {
+            "edge_geometry_ms": 1.3404999999999998,
+            "edge_query_ms": 0.5664999999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.346125,
+            "node_query_ms": 0.18325,
+            "overlays_ms": 0.0,
+            "total_ms": 2.4369579999999997
+          },
+          {
+            "edge_geometry_ms": 1.798916,
+            "edge_query_ms": 0.76725,
+            "groups_ms": 0.00020800000000000001,
+            "node_geometry_ms": 0.38745799999999997,
+            "node_query_ms": 0.241208,
+            "overlays_ms": 0.0,
+            "total_ms": 3.1955
+          },
+          {
+            "edge_geometry_ms": 1.326833,
+            "edge_query_ms": 0.584084,
+            "groups_ms": 0.0006659999999999999,
+            "node_geometry_ms": 0.37474999999999997,
+            "node_query_ms": 0.183875,
+            "overlays_ms": 0.0,
+            "total_ms": 2.471208
+          },
+          {
+            "edge_geometry_ms": 1.557666,
+            "edge_query_ms": 0.671459,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.373125,
+            "node_query_ms": 0.198458,
+            "overlays_ms": 0.0,
+            "total_ms": 2.80125
+          },
+          {
+            "edge_geometry_ms": 1.5007499999999998,
+            "edge_query_ms": 0.609458,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.438792,
+            "node_query_ms": 0.224708,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.774292
+          },
+          {
+            "edge_geometry_ms": 1.460542,
+            "edge_query_ms": 0.73,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.376583,
+            "node_query_ms": 0.196416,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.764
+          },
+          {
+            "edge_geometry_ms": 1.5891250000000001,
+            "edge_query_ms": 0.624916,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.41425,
+            "node_query_ms": 0.212666,
+            "overlays_ms": 0.0,
+            "total_ms": 2.841375
+          },
+          {
+            "edge_geometry_ms": 1.504667,
+            "edge_query_ms": 0.6385409999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.395292,
+            "node_query_ms": 0.203125,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.741959
+          },
+          {
+            "edge_geometry_ms": 1.5825,
+            "edge_query_ms": 0.664125,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.413875,
+            "node_query_ms": 0.214625,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 2.8755
+          },
+          {
+            "edge_geometry_ms": 1.514708,
+            "edge_query_ms": 0.6287499999999999,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.38087499999999996,
+            "node_query_ms": 0.21675,
+            "overlays_ms": 0.0,
+            "total_ms": 2.741458
+          },
+          {
+            "edge_geometry_ms": 1.42175,
+            "edge_query_ms": 0.618625,
+            "groups_ms": 0.0005,
+            "node_geometry_ms": 0.37324999999999997,
+            "node_query_ms": 0.19558299999999998,
+            "overlays_ms": 0.0,
+            "total_ms": 2.610916
+          },
+          {
+            "edge_geometry_ms": 1.514458,
+            "edge_query_ms": 0.644583,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.39375,
+            "node_query_ms": 0.200291,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 2.753625
+          },
+          {
+            "edge_geometry_ms": 1.5117500000000001,
+            "edge_query_ms": 0.630167,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.398208,
+            "node_query_ms": 0.201125,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.741625
+          },
+          {
+            "edge_geometry_ms": 1.499291,
+            "edge_query_ms": 0.62475,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.418666,
+            "node_query_ms": 0.2085,
+            "overlays_ms": 0.0,
+            "total_ms": 2.751542
+          },
+          {
+            "edge_geometry_ms": 1.522792,
+            "edge_query_ms": 0.65675,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.38075000000000003,
+            "node_query_ms": 0.190334,
+            "overlays_ms": 0.0,
+            "total_ms": 2.751125
+          },
+          {
+            "edge_geometry_ms": 1.5119580000000001,
+            "edge_query_ms": 0.596,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.418333,
+            "node_query_ms": 0.20900000000000002,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 2.7356659999999997
+          },
+          {
+            "edge_geometry_ms": 1.45225,
+            "edge_query_ms": 0.65125,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.38075000000000003,
+            "node_query_ms": 0.18975,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.674375
+          },
+          {
+            "edge_geometry_ms": 1.574541,
+            "edge_query_ms": 0.6088330000000001,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.419584,
+            "node_query_ms": 0.209792,
+            "overlays_ms": 0.0,
+            "total_ms": 2.81325
+          },
+          {
+            "edge_geometry_ms": 1.446375,
+            "edge_query_ms": 0.59775,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.380167,
+            "node_query_ms": 0.190583,
+            "overlays_ms": 0.0,
+            "total_ms": 2.615208
+          },
+          {
+            "edge_geometry_ms": 1.493916,
+            "edge_query_ms": 0.6249170000000001,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.397417,
+            "node_query_ms": 0.197083,
+            "overlays_ms": 0.0,
+            "total_ms": 2.713708
+          },
+          {
+            "edge_geometry_ms": 1.5261660000000001,
+            "edge_query_ms": 0.6229169999999999,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.39795899999999995,
+            "node_query_ms": 0.199833,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.7472920000000003
+          },
+          {
+            "edge_geometry_ms": 1.5205410000000001,
+            "edge_query_ms": 0.6205419999999999,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.396291,
+            "node_query_ms": 0.19816699999999998,
+            "overlays_ms": 0.0,
+            "total_ms": 2.7359590000000003
+          },
+          {
+            "edge_geometry_ms": 1.572875,
+            "edge_query_ms": 0.655125,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.416875,
+            "node_query_ms": 0.206084,
+            "overlays_ms": 0.0,
+            "total_ms": 2.851334
+          },
+          {
+            "edge_geometry_ms": 1.436959,
+            "edge_query_ms": 0.596334,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.365125,
+            "node_query_ms": 0.211959,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.610792
+          }
+        ],
+        "quads": 56535,
+        "raw_ms": [
+          3.397042,
+          2.414459,
+          3.157209,
+          2.4915,
+          3.09775,
+          2.623583,
+          2.534708,
+          2.9755409999999998,
+          2.4402500000000003,
+          2.839209,
+          2.589792,
+          3.025875,
+          2.6360419999999998,
+          2.828458,
+          2.718333,
+          2.762708,
+          2.66375,
+          2.664541,
+          2.6947910000000004,
+          2.694125,
+          2.804833,
+          2.55775,
+          2.796791,
+          2.553375,
+          2.791834,
+          2.56175,
+          2.660791,
+          2.6676249999999997,
+          2.74325,
+          2.6102090000000002
+        ],
+        "visible_edges": 30000,
+        "visible_nodes": 10000,
+        "zoom": 0.05000000074505806
+      },
+      {
+        "diagnostic_sample": {
+          "edge_geometry_ms": 1.3125,
+          "edge_query_ms": 0.5675,
+          "groups_ms": 8.3e-05,
+          "node_geometry_ms": 0.38370899999999997,
+          "node_query_ms": 0.183834,
+          "overlays_ms": 0.0,
+          "total_ms": 2.448125
+        },
+        "fingerprint": "085310555054ae23",
+        "median_ms": 2.717875,
+        "p95_ms": 2.970667,
+        "phase_raw": [
+          {
+            "edge_geometry_ms": 1.4962499999999999,
+            "edge_query_ms": 0.623333,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.396917,
+            "node_query_ms": 0.197958,
+            "overlays_ms": 0.0,
+            "total_ms": 2.714917
+          },
+          {
+            "edge_geometry_ms": 1.671042,
+            "edge_query_ms": 0.699875,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.440667,
+            "node_query_ms": 0.22075,
+            "overlays_ms": 0.0,
+            "total_ms": 3.032708
+          },
+          {
+            "edge_geometry_ms": 1.433125,
+            "edge_query_ms": 0.591959,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.37825000000000003,
+            "node_query_ms": 0.190083,
+            "overlays_ms": 0.0,
+            "total_ms": 2.59375
+          },
+          {
+            "edge_geometry_ms": 1.669833,
+            "edge_query_ms": 0.6937920000000001,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.407875,
+            "node_query_ms": 0.22,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.9919170000000004
+          },
+          {
+            "edge_geometry_ms": 1.431917,
+            "edge_query_ms": 0.596833,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.43237499999999995,
+            "node_query_ms": 0.187709,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.6492500000000003
+          },
+          {
+            "edge_geometry_ms": 1.576834,
+            "edge_query_ms": 0.691542,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.378209,
+            "node_query_ms": 0.188959,
+            "overlays_ms": 0.0,
+            "total_ms": 2.8359579999999998
+          },
+          {
+            "edge_geometry_ms": 1.550417,
+            "edge_query_ms": 0.59325,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.442541,
+            "node_query_ms": 0.21979200000000002,
+            "overlays_ms": 0.0,
+            "total_ms": 2.806375
+          },
+          {
+            "edge_geometry_ms": 1.44525,
+            "edge_query_ms": 0.68275,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.378167,
+            "node_query_ms": 0.1875,
+            "overlays_ms": 0.0,
+            "total_ms": 2.694083
+          },
+          {
+            "edge_geometry_ms": 1.6719160000000002,
+            "edge_query_ms": 0.632583,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.44225,
+            "node_query_ms": 0.21862499999999999,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.96575
+          },
+          {
+            "edge_geometry_ms": 1.430417,
+            "edge_query_ms": 0.589416,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.37879199999999996,
+            "node_query_ms": 0.1875,
+            "overlays_ms": 0.0,
+            "total_ms": 2.5865
+          },
+          {
+            "edge_geometry_ms": 1.671208,
+            "edge_query_ms": 0.692917,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.444542,
+            "node_query_ms": 0.218792,
+            "overlays_ms": 0.0,
+            "total_ms": 3.027791
+          },
+          {
+            "edge_geometry_ms": 1.440416,
+            "edge_query_ms": 0.589375,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.376208,
+            "node_query_ms": 0.188625,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 2.595
+          },
+          {
+            "edge_geometry_ms": 1.798458,
+            "edge_query_ms": 0.7445419999999999,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.434459,
+            "node_query_ms": 0.23550000000000001,
+            "overlays_ms": 0.0,
+            "total_ms": 3.213458
+          },
+          {
+            "edge_geometry_ms": 1.385375,
+            "edge_query_ms": 0.573458,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.401084,
+            "node_query_ms": 0.182084,
+            "overlays_ms": 0.0,
+            "total_ms": 2.5422919999999998
+          },
+          {
+            "edge_geometry_ms": 1.6233339999999998,
+            "edge_query_ms": 0.744625,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.378084,
+            "node_query_ms": 0.189834,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.936292
+          },
+          {
+            "edge_geometry_ms": 1.560292,
+            "edge_query_ms": 0.597375,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.44316700000000003,
+            "node_query_ms": 0.2185,
+            "overlays_ms": 4.1e-05,
+            "total_ms": 2.8197080000000003
+          },
+          {
+            "edge_geometry_ms": 1.4315,
+            "edge_query_ms": 0.666416,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.38,
+            "node_query_ms": 0.18795800000000001,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.666292
+          },
+          {
+            "edge_geometry_ms": 1.667291,
+            "edge_query_ms": 0.6435,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.444292,
+            "node_query_ms": 0.220167,
+            "overlays_ms": 0.0,
+            "total_ms": 2.975625
+          },
+          {
+            "edge_geometry_ms": 1.436167,
+            "edge_query_ms": 0.592958,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.378291,
+            "node_query_ms": 0.189917,
+            "overlays_ms": 0.0,
+            "total_ms": 2.5977919999999997
+          },
+          {
+            "edge_geometry_ms": 1.668584,
+            "edge_query_ms": 0.693584,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.44333300000000003,
+            "node_query_ms": 0.218125,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 3.0241249999999997
+          },
+          {
+            "edge_geometry_ms": 1.433125,
+            "edge_query_ms": 0.602458,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.378291,
+            "node_query_ms": 0.194333,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.6085420000000004
+          },
+          {
+            "edge_geometry_ms": 1.6665409999999998,
+            "edge_query_ms": 0.698625,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.44,
+            "node_query_ms": 0.22262500000000002,
+            "overlays_ms": 0.0,
+            "total_ms": 3.0282080000000002
+          },
+          {
+            "edge_geometry_ms": 1.42625,
+            "edge_query_ms": 0.600042,
+            "groups_ms": 8.4e-05,
+            "node_geometry_ms": 0.38808400000000004,
+            "node_query_ms": 0.18945900000000002,
+            "overlays_ms": 0.0,
+            "total_ms": 2.6042919999999996
+          },
+          {
+            "edge_geometry_ms": 1.563125,
+            "edge_query_ms": 0.652208,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.396583,
+            "node_query_ms": 0.20075,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.813
+          },
+          {
+            "edge_geometry_ms": 1.549541,
+            "edge_query_ms": 0.623042,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.446792,
+            "node_query_ms": 0.22279200000000002,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 2.842667
+          },
+          {
+            "edge_geometry_ms": 1.474417,
+            "edge_query_ms": 0.698166,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.379041,
+            "node_query_ms": 0.19404200000000002,
+            "overlays_ms": 0.0,
+            "total_ms": 2.746042
+          },
+          {
+            "edge_geometry_ms": 1.669708,
+            "edge_query_ms": 0.6005,
+            "groups_ms": 4.1e-05,
+            "node_geometry_ms": 0.433041,
+            "node_query_ms": 0.30570800000000004,
+            "overlays_ms": 8.3e-05,
+            "total_ms": 3.009417
+          },
+          {
+            "edge_geometry_ms": 1.295791,
+            "edge_query_ms": 0.577209,
+            "groups_ms": 0.000334,
+            "node_geometry_ms": 0.342791,
+            "node_query_ms": 0.18425,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.40125
+          },
+          {
+            "edge_geometry_ms": 1.4207079999999999,
+            "edge_query_ms": 0.613333,
+            "groups_ms": 4.2e-05,
+            "node_geometry_ms": 0.376834,
+            "node_query_ms": 0.196667,
+            "overlays_ms": 4.2e-05,
+            "total_ms": 2.607917
+          },
+          {
+            "edge_geometry_ms": 1.3055,
+            "edge_query_ms": 0.56375,
+            "groups_ms": 0.0,
+            "node_geometry_ms": 0.34900000000000003,
+            "node_query_ms": 0.18100000000000002,
+            "overlays_ms": 0.0,
+            "total_ms": 2.39975
+          }
+        ],
+        "quads": 55347,
+        "raw_ms": [
+          2.7855000000000003,
+          2.7647079999999997,
+          2.6744160000000003,
+          2.852542,
+          2.5393339999999998,
+          2.950625,
+          2.534291,
+          2.956292,
+          2.527292,
+          2.871541,
+          2.632916,
+          2.717875,
+          2.933041,
+          2.4430419999999997,
+          3.1752920000000002,
+          2.5244590000000002,
+          2.946083,
+          2.5248340000000002,
+          2.860166,
+          2.64575,
+          2.694083,
+          2.8171250000000003,
+          2.55825,
+          2.768958,
+          2.656667,
+          2.9611669999999997,
+          2.5500000000000003,
+          2.970667,
+          2.387667,
+          2.534459
+        ],
+        "visible_edges": 30000,
+        "visible_nodes": 10000,
+        "zoom": 0.019999999552965164
+      }
+    ],
+    "edges": 30000,
+    "nodes": 10000,
+    "samples": 30,
+    "scope": "CPU scene only; no GPU/IPC/Registry; static zoom levels",
+    "warmup": 5
+  }
+}

@@ -691,3 +691,188 @@ fn incident_edge_limit_rebuilds_without_dropping_connections() {
     );
     compare(&index, editor.document());
 }
+
+#[test]
+fn timed_scene_matches_normal_output_and_rejects_invalid_views() {
+    let editor = editor();
+    let index = SceneIndex::new(editor.document());
+    let selection = [Id::from_u128(1)].into();
+    let preview = unge_interaction::Preview {
+        placement: [
+            (
+                Id::from_u128(1),
+                Rect {
+                    x: 4500.,
+                    y: -500.,
+                    ..Rect::default()
+                },
+            ),
+            (
+                Id::from_u128(2),
+                Rect {
+                    x: 4400.,
+                    y: -500.,
+                    ..Rect::default()
+                },
+            ),
+        ]
+        .into(),
+        marquee: Some(Rect {
+            x: 4000.,
+            y: -700.,
+            width: 800.,
+            height: 400.,
+        }),
+        ..Default::default()
+    };
+    let mut catalog = LabelCatalog::new();
+    catalog.insert(
+        "test".into(),
+        NodeLabels {
+            tone: NodeTone::Rose,
+            ..Default::default()
+        },
+    );
+    for theme in [Theme::Dark, Theme::Light] {
+        for locale in [Locale::En, Locale::Ja, Locale::ZhCn] {
+            for zoom in [0.02, 1., 16.] {
+                let view = Viewport {
+                    origin: [4000., -700.],
+                    zoom,
+                    size: [800., 600.],
+                };
+                let normal = index
+                    .scene_with_theme(view, &selection, &preview, &catalog, locale, theme)
+                    .unwrap();
+                let (timed, t) = index
+                    .scene_with_theme_timed(view, &selection, &preview, &catalog, locale, theme)
+                    .unwrap();
+                assert_eq!(
+                    bytemuck::cast_slice::<_, u8>(&normal.quads),
+                    bytemuck::cast_slice::<_, u8>(&timed.quads)
+                );
+                assert_eq!(
+                    format!("{:?}", normal.labels),
+                    format!("{:?}", timed.labels)
+                );
+                assert_eq!(
+                    (
+                        normal.visible_nodes,
+                        normal.visible_edges,
+                        normal.visible_groups
+                    ),
+                    (
+                        timed.visible_nodes,
+                        timed.visible_edges,
+                        timed.visible_groups
+                    )
+                );
+                let phases = [
+                    t.groups_ms,
+                    t.edge_query_ms,
+                    t.edge_geometry_ms,
+                    t.node_query_ms,
+                    t.node_geometry_ms,
+                    t.overlays_ms,
+                ];
+                assert!(phases.iter().all(|x| x.is_finite() && *x >= 0.));
+                assert!(
+                    t.total_ms.is_finite() && t.total_ms >= phases.iter().sum::<f64>() - 0.000001
+                );
+            }
+        }
+    }
+    assert!(
+        index
+            .scene_with_theme_timed(
+                Viewport {
+                    origin: [0., 0.],
+                    zoom: 0.,
+                    size: [800., 600.]
+                },
+                &selection,
+                &preview,
+                &catalog,
+                Locale::En,
+                Theme::Dark
+            )
+            .is_err()
+    );
+}
+
+#[test]
+fn retained_edge_metadata_tracks_source_recreation_and_live_catalog_changes() {
+    let mut editor = editor();
+    let mut index = SceneIndex::new(editor.document());
+    let id = Id::from_u128(1);
+    let mut node = editor.document().graph().nodes()[&id].clone();
+    node.type_id = "replaced".into();
+    let edge = editor.document().graph().edges()[&Id::from_u128(1001)].clone();
+    apply_and_compare(
+        &mut editor,
+        &mut index,
+        Command::Batch {
+            commands: vec![
+                Command::RemoveNode { id },
+                Command::AddNode {
+                    node,
+                    rect: Rect {
+                        x: 5000.,
+                        y: -500.,
+                        width: 300.,
+                        height: 200.,
+                    },
+                },
+                Command::Connect { edge },
+            ],
+        },
+    );
+    for tone in [NodeTone::Rose, NodeTone::Mint, NodeTone::Neutral] {
+        let catalog = [
+            (
+                "test".into(),
+                NodeLabels {
+                    tone: NodeTone::Blue,
+                    ..Default::default()
+                },
+            ),
+            (
+                "replaced".into(),
+                NodeLabels {
+                    tone,
+                    ..Default::default()
+                },
+            ),
+        ]
+        .into();
+        let view = Viewport {
+            origin: [0., 0.],
+            zoom: 0.02,
+            size: [800., 600.],
+        };
+        let a = index
+            .scene_with_theme(
+                view,
+                &BTreeSet::new(),
+                &Default::default(),
+                &catalog,
+                Locale::En,
+                Theme::Light,
+            )
+            .unwrap();
+        let b = SceneIndex::new(editor.document())
+            .scene_with_theme(
+                view,
+                &BTreeSet::new(),
+                &Default::default(),
+                &catalog,
+                Locale::En,
+                Theme::Light,
+            )
+            .unwrap();
+        assert_eq!(
+            bytemuck::cast_slice::<_, u8>(&a.quads),
+            bytemuck::cast_slice::<_, u8>(&b.quads)
+        );
+    }
+}

@@ -402,3 +402,37 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - 🟢 [Done] 3言語の取り込み文書、性能記録、ROADMAPを更新。IPC／TypeScript／GPUの形式変更なし。連続Zoomと残る曲線・形状参照の工程計測はNext。
 - English: 150 Rust tests, four explicit GPU tests, formatting, strict Clippy and 17 contracts passed. Six zoom cases preserve output fingerprints and visible counts; 360 before/after CPU samples were checked. These static scenes do not establish continuous Surface performance or FPS.
 - 简体中文：150项Rust测试、4项显式GPU测试、格式、严格Clippy及17项契约检查通过。六档Zoom输出指纹及可见数量一致，已检查修改前后360个CPU样本。静态Scene不代表连续Surface性能或FPS。
+
+## 2026-10-14: Scene工程計測とEdge情報の保持
+
+- 🟢 [Done] workspace/all-features Rust152件、明示実行した実GPU4件、fmt、厳格Clippy、生成契約17件の確認に成功。
+- 🟢 [Done] 追加2件で計測／通常SceneのQuad・文字・可視件数を2テーマ×3言語×3Zoomで比較。複数移動プレビューと選択矩形を含み、不正Viewport拒否、時間の有限／非負値・工程合計を確認。接続元ノード再作成、Undo／Redo、Catalog変更後のEdge表示を全体再構築と照合。
+- 🟢 [Done] 静的Zoom6条件で通常CPU時間と別の工程診断を各30回（予熱5回）実行。変更前後のQuad／文字指紋、Quad数、可視Node／Edge数が一致。通常360＋工程360サンプルの統計・有限／非負値・工程合計を確認。[生データ](benchmarks/2026-10-14-scene-phases.json)。全体表示中央値4.830667→2.717875ms。GPU／IPC／共有Engineは計時外。
+- 🟢 [Done] release Tauriホストの通常Surfaceで18条件×60＝1,080サンプルを確認。M4／Metal、1280×720、倍率1、Fifo。スキップ・欠字・GPU Validationエラーなし。連続ZoomのScene p95は4.445667〜6.336584ms。[生データ](benchmarks/2026-10-14-animation-scene.json)。前回は依存／実行時点が異なるため高速化率は算出しない。
+- 🟢 [Done] Rust用SceneTimings APIと通常APIの時計なし経路、Edge保持データの追加メモリー・構築費用、計測範囲を3言語で文書化。IPC／TypeScript／保存形式変更なし。
+- ⭕️ [Pending] Windows/Linuxの実GPU／Surface、表示完了と入力から表示までの遅延の検証は環境がないため保留。
+- English: 152 Rust and four explicit GPU tests passed, along with formatting, strict Clippy and 17 contracts. Before/after static scenes preserve fingerprints/counts. Native queued rendering completed 1,080 samples with no skips, missing glyphs or validation errors. Scene CPU timings exclude display latency and shared Engine contention; additional retained-edge memory and construction cost are documented.
+- 简体中文：152项Rust及4项显式GPU测试、格式、严格Clippy与17项契约检查通过。静态Scene修改前后指纹／数量一致；原生普通渲染完成1,080样本，无跳过、缺字或验证错误。Scene CPU计时不含屏幕延迟及共享Engine竞争；已记录Edge保留信息新增内存和构建成本。
+
+## 2026-10-14: Tauri関連依存の一式更新
+
+- 🟢 [Done] Tauri 2.12.3、runtime／runtime-wry 2.12.1、build／macros／codegen 2.7.2、utils 2.10.1、Wry 0.57.0、Tao 0.37.1の組み合わせでoffline解決とホストビルドが成功。以前のtrait／生成API不整合を解消。[lock差分と検証範囲](DEPENDENCY_UPDATES.md)。
+- 🟢 [Done] 最終ソースでworkspace/all-features Rust152件成功、GPU4件は通常実行でignored。GPU実装は変更せず、新ホストの実Surfaceで別途検証。fmt、厳格workspace Clippy、生成契約17件、Panel／Group／Accessible／Executionの各3言語UI回帰も成功。
+- 🟢 [Done] M4／Metal、1280×720、倍率1、Fifoでdebug Surface12条件×30＝360サンプル成功、スキップ0、欠字／GPU Validationエラーなし。性能認定や前後速度比較には使わない。[生データ](dependencies/2026-10-14-tauri-surface.json)。
+- 🟢 [Done] CUAでmacOS実アプリを確認。tauri://localhostの非空画面、同一ウインドウのGPUグラフとWebView、切り離し、浮動パネルからのノード追加、Undo、再ドッキング、グラフ上の40×30のドラッグ、設定表示の追従が成功。6→7→6ノード、revision 0→1→2→3で共有編集を確認。
+- 🟢 [Done] 一時保存先へfloating=trueを書き出して通常終了、別プロセスで再起動し浮動ウインドウ「UNGE · 設定」とドッキングボタンを確認。検証アプリは終了。一時 .app のmacOS sandbox-extension警告は依存記録に残した。Browser pluginは未提供、対象がnative Tauriアプリのためブラウザー代替ではなくCUAを使用した。
+- 🟢 [Done] 任意のUNGE_PANEL_PREFERENCES保存先、3言語の移行記録、ROADMAP、GUIのアイコン／コンパクト配置方針を取り込み規約へ反映。
+- ⭕️ [Pending] Windows/Linux、複数モニター、全Window寸法、正式署名付き配布バンドル、WASM、最低Rust版の検証。
+- English: 152 Rust tests, strict Clippy, formatting, 17 contracts and three-language UI checks pass. Updated Tauri renders 360 native Surface samples without skips. CUA confirms shared edits, floating/docking, dragging and restored floating mode. Temporary-bundle warning and unverified platforms/distribution cases are documented.
+- 简体中文：152项Rust测试、严格Clippy、格式、17项契约及三语UI检查通过。更新Tauri完成360个原生Surface样本，无跳过。CUA验证共享编辑、浮动／停靠、拖动及浮动模式恢复。临时bundle警告与未验证平台／分发情况已记录。
+
+## 2026-10-14: コンパクトなWebView設定パネル
+
+- 🟢 [Done] 既存のパネルを32pxのSVGアイコン操作へ整理し、プロパティを実行・ノード一覧より上へ配置。説明と型／版／revisionは情報アイコンで表示。13px文字、16px左右余白、意味単位の改行、ダーク／ライトの視認性を画面で確認。任意の未設定値は入力欄を畳み、draftを保持。
+- 🟢 [Done] 3言語×2テーマ×320／380／768pxのPlaywright検証成功。横方向のはみ出し、アイコンのaria-label／title、hover／focus／click、Escと再表示、開いた説明のリサイズ追従、切り離し／再ドッキングのアイコン変化を確認。既存の保存・不正値・競合・draft・JSON・選択変更／race／復旧の回帰も成功。Browser pluginが提供されていないため、既存Playwrightとインストール済みChromeを使用。
+- 🟢 [Done] macOSのTauri実画面でアイコンから追加／Undo（6→7→6ノード）、切り離し／再ドッキング、数値プロパティ22→24の保存とUndoによる22への復帰、revision更新、情報表示とEscによる閉鎖を確認。GPUグラフとWebViewが同じウインドウに表示。リサイズ追従はブラウザーで検証。
+- 🟢 [Done] workspace/all-features Rust152件成功、fmt、厳格workspace/all-targets Clippy、生成契約17件確認、Panel／Group／Accessible／Executionの3言語回帰が成功。今回はUIのみ変更し、GPU4件は通常実行でignored、明示再実行なし。Clippyの依存block 0.1.6の将来互換警告は残る。
+- 🟢 [Done] 見出し・保存済み・選択案内を3言語で短く更新。エラー／競合表示とCommand／expected_revisionを維持。再利用するDOM補助APIと破棄手順を[COMPACT_PANEL.md](COMPACT_PANEL.md)に記載。
+- ⭕️ [Pending] Windows／Linux実画面、実スクリーンリーダーは環境がないため保留。WCAG適合認定や性能改善の数値は今回の検証範囲に含めない。
+- English: Compact SVG controls, priority property placement and bounded information popups pass three-language, two-theme, three-width browser checks. macOS Tauri confirms property save/Undo and floating/docking. All 152 Rust tests, formatting, strict Clippy and 17 contracts pass. Windows/Linux and real screen readers remain unverified.
+- 简体中文：紧凑SVG控件、优先属性布局及信息弹窗通过三语、双主题、三宽度浏览器检查。macOS Tauri验证属性保存／撤销与浮动／停靠。152项Rust测试、格式、严格Clippy及17项契约检查通过。Windows／Linux及真实屏幕阅读器尚未验证。

@@ -174,11 +174,17 @@
 - 🟢 [Done] 一括移動のIndex再構築をBVH境界更新へ変更。最大1,024ノード／4,096関連Edge、差分との併用、Group、Undo／Redo、上限超過の再構築を検証。[契約と比較](BULK_MOVES.md)。
 - 🔴 [Later] 遠距離移動・並べ替え後のBVH分割品質の評価と自動再構築。
 - 🟢 [Done] Scene生成の可視ID再変換を省略し、6段階のZoomで出力一致とCPU費用を確認。[計測と範囲](SCENE_VISIBILITY.md)。
-- 🟠 [Next] 全体表示時に残る曲線生成・形状参照の費用を工程別に計測し、連続Zoomで検証。
+- 🟢 [Done] Sceneの工程別計測API、Edge境界／接続元型の保持で形状参照を削減。6段階の描画一致、通常Surface18条件・1,080サンプルで確認。[保持量と計測](SCENE_TIMINGS.md)。
+- 🔴 [Later] 曲線分割自体の保持・再利用。Zoom精度、プレビュー、保持容量を別途設計して検証する。
 
 ## 2026-10-12: stable依存の定期更新
 
 - 🟢 [Done] sha2 0.11／pollster 1.0／互換な推移依存とCIのTypeScript 7へ更新。Rust149件（標準／all-featuresの各構成）、Clippy、実GPU4件、Surface360フレーム、Schema／ACX／3言語UIを検証。[採用版・互換性記録](DEPENDENCY_UPDATES.md)。
-- 🟠 [Next] Tauri本体／Wry／runtime／build／codegenをまとめて更新。固定版と新しい内部依存のtrait・生成API不整合を先に解消し、macOSの入力・合成・dock/floatを再検証する。
+- 🟢 [Done] Tauri 2.12.3／runtime-wry 2.12.1／build・macros・codegen 2.7.2へ一式移行。macOSのSurface、入力、子WebView合成、dock/float、浮動状態の再起動復元を検証。[移行記録](DEPENDENCY_UPDATES.md)。
 - 🟠 [Next] cosmic-text 0.19、wgpu 30、schemars 1.2のAPI／描画／Schema移行と回帰検証。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告も確認する。現行pinを無条件に解除しない。
 - ⭕️ [Pending] Windows/LinuxのSurface・入力・dock/float、WASM、最低Rust版での依存更新検証。
+
+## 2026-10-14: GUIの配置方針
+
+- 🟢 [Done] サンプルWebViewをSVGアイコン中心のコンパクトな配置へ更新。プロパティを上部へ移し、説明・補助情報をhover／focusへ集約。3言語の操作名、Esc、狭い幅、保存／競合／下書き、macOS実操作を確認。[取り込み](COMPACT_PANEL.md)。
+- ⭕️ [Pending] Windows/Linuxと実スクリーンリーダーでの新パネル操作確認。

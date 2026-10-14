@@ -64,3 +64,19 @@ This maintenance batch updates TypeScript (CI), sha2, pollster, serde_json, this
 ## 简体中文
 
 本次维护更新TypeScript（CI）、sha2、pollster、serde_json、thiserror、uuid及兼容的间接依赖。SHA-256 Receipt仍采用相同的64位小写十六进制格式，并非所有依赖均已升级到最新stable版本。Tauri runtime trait及代码生成出现不兼容后，已恢复固定的Tauri组合；后续需整体迁移。wgpu 30、cosmic-text 0.19和schemars 1.2需要分别验证API、渲染和Schema迁移。候选版本、最低Rust版本及lock差异见关联JSON审计文件。两种feature配置各149项Rust测试、Clippy、4项实际GPU测试、17种生成契约、ACX、strict TypeScript及三语UI回归均通过。jsonschema 4.26.0也通过全部Schema和ACX检查。macOS原生Surface在Apple M4/Metal上通过12组语言／主题／缩放条件的360帧检查，跳过0帧；此debug构建用于功能验证，不用于性能认证。wgpu/Metal间接依赖block 0.1.6仍有未来Rust兼容性警告。Windows/Linux原生交互、WASM及最低工具链验证仍待完成。
+
+## 2026-10-14: Tauri一式の移行
+
+Tauri 2.12.3、runtime／runtime-wry 2.12.1、build／macros／codegen 2.7.2、utils 2.10.1、Wry 0.57.0、Tao 0.37.1へまとめて移行した。ホストのTauri／runtime-wry／buildはexact pin、ライブラリーのtauri依存は既存の互換範囲を維持する。前回失敗したtraitと生成APIの不整合は、新しい組み合わせでコンパイルが通り解消した。[公式release](https://github.com/tauri-apps/tauri/releases/tag/tauri-v2.12.3)、[lock差分](dependencies/2026-10-14-tauri-lock.json)。最新版すべてへの更新ではない。
+
+macOSでworkspace/all-features Rust152件、Clippy、17契約と3言語のPanel／Group／Accessible／Execution UI回帰が成功。新しいdebugホストのMetal Surfaceは12条件×30＝360成功サンプル、スキップ0。近景／全体、3言語、両テーマを含む。[Surfaceデータ](dependencies/2026-10-14-tauri-surface.json)。GPU実装自体は今回変更していない。Surfaceの時間はdebugでの動作確認で、速度比較やFPS認定に使わない。
+
+実アプリのQAはBrowserではなく、macOSの一時 .app とCUAを使用した。tauri://localhostの画面・nativeグラフが表示され、切り離し→浮動パネルから追加（6→7ノード、revision 1）→Undo（6ノード、revision 2）→再ドッキングが成功。グラフ上のドラッグでrevision 3とインスペクター追従を確認。通常終了でfloating=trueを保存し、別プロセスで再起動して「設定パネルをドッキング」の浮動ウインドウを確認した。既存の個人用配置は使わず、`UNGE_PANEL_PREFERENCES=/tmp/unge-tauri-qa-layout.json` で隔離した。検証アプリは終了した。
+
+`UNGE_PANEL_PREFERENCES` はサンプルホストの任意の保存先指定。未設定なら従来のapp_config_dir、別ウインドウモードでは従来どおり配置保存なし。実配置ファイルを試験で変更しないための設定で、Document／IPCの形式は変えない。指定先のファイル保存権限と運用はホストが管理する。
+
+一時 .app 起動時にmacOSの `sandbox_extension_issue_file_to_process failed` がstderrへ出た。画面・IPC・reparent・描画操作は成功した。正式な署名付き配布バンドルの検証は別途必要。Window寸法の全組み合わせ・複数モニター・Windows/Linux・WASM・最低Rust版は未検証。wgpu由来のblock将来互換性警告も引き続き残る。
+
+English: The Tauri stack now consistently uses 2.12.3 / runtime and runtime-wry 2.12.1 / build, macros and codegen 2.7.2 / utils 2.10.1, with Wry 0.57.0 and Tao 0.37.1. Previous runtime/codegen incompatibilities are resolved. 152 Rust tests, strict Clippy, 17 contracts and three-language UI regressions pass. Native debug Surface passes 360 samples. macOS CUA confirms floating/docking, shared edits, undo, native dragging and floating-mode restoration after restart. An optional UNGE_PANEL_PREFERENCES path isolates QA storage. Temporary-app macOS sandbox-extension warnings are recorded; signed distribution bundles, other operating systems, multi-monitor geometry and minimum toolchains remain unverified. This is not a latest-version or FPS claim.
+
+简体中文：Tauri整组迁移至2.12.3，runtime／runtime-wry 2.12.1，build／macros／codegen 2.7.2，utils 2.10.1，Wry 0.57.0及Tao 0.37.1。之前runtime／codegen不兼容已解决。152项Rust测试、严格Clippy、17项契约及三语UI回归通过。原生debug Surface通过360样本。macOS CUA确认浮动／停靠、共享编辑、Undo、原生拖动和重启后浮动模式恢复。可选UNGE_PANEL_PREFERENCES路径隔离QA配置。已记录临时app的macOS sandbox-extension警告；签名分发包、其他OS、多屏位置及最低工具链未验证。不代表全部最新版或FPS认证。

@@ -2,9 +2,9 @@ const { invoke } = window.__TAURI__.core;
 const { listen } = window.__TAURI__.event;
 const $ = id => document.getElementById(id);
 const text = {
-  en: { title:'A shared Rust document', description:'Select a node in the graph to edit its properties.', add:'Add number', addSum:'Add sum', help:'Drag nodes to move. Shift adds to the selection. Drag empty space to select; drag ports to connect. Right-drag pans, the wheel zooms, and Esc cancels.', undo:'Undo', redo:'Redo', zoomLabel:'Zoom', nodes:'nodes', revision:'revision', failed:'Operation failed', themeLabel:'Appearance', themeDark:'Dark', themeLight:'Light', language:'Language' },
-  ja: { title:'Rustで共有するグラフ', description:'グラフのノードを選択して、プロパティを設定します。', add:'数値追加', addSum:'加算追加', help:'ドラッグで移動／Shiftで追加選択\n余白のドラッグで範囲選択\nポート間をドラッグして接続\n右ドラッグで画面移動\nホイールで拡大縮小／Escで中止', undo:'元に戻す', redo:'やり直す', zoomLabel:'ズーム', nodes:'ノード', revision:'リビジョン', failed:'操作に失敗しました', themeLabel:'表示モード', themeDark:'ダーク', themeLight:'ライト', language:'言語' },
-  'zh-CN': { title:'共享的 Rust 文档', description:'在节点图中选中节点，设置其属性。', add:'添加数值', addSum:'添加加法', help:'拖动节点移动，Shift追加选择。拖动空白处框选，拖动端口连接。右键拖动平移，滚轮缩放，Esc取消。', undo:'撤销', redo:'重做', zoomLabel:'缩放', nodes:'节点', revision:'版本', failed:'操作失败', themeLabel:'外观', themeDark:'深色', themeLight:'浅色', language:'语言' }
+  en: { title:'Graph', description:'Select a node in the graph to edit its properties.', add:'Add number', addSum:'Add sum', help:'Drag nodes to move. Shift adds to the selection. Drag empty space to select; drag ports to connect. Right-drag pans, the wheel zooms, and Esc cancels.', undo:'Undo', redo:'Redo', zoomLabel:'Zoom', nodes:'nodes', revision:'revision', failed:'Operation failed', themeLabel:'Appearance', themeDark:'Dark', themeLight:'Light', language:'Language' },
+  ja: { title:'グラフ', description:'ノードを選択すると設定できます。', add:'数値追加', addSum:'加算追加', help:'ドラッグで移動／Shiftで追加選択\n余白のドラッグで範囲選択\nポート間をドラッグして接続\n右ドラッグで画面移動\nホイールで拡大縮小／Escで中止', undo:'元に戻す', redo:'やり直す', zoomLabel:'ズーム', nodes:'ノード', revision:'リビジョン', failed:'操作に失敗しました', themeLabel:'表示モード', themeDark:'ダーク', themeLight:'ライト', language:'言語' },
+  'zh-CN': { title:'节点图', description:'选择节点以编辑属性。', add:'添加数值', addSum:'添加加法', help:'拖动节点移动，Shift追加选择。拖动空白处框选，拖动端口连接。右键拖动平移，滚轮缩放，Esc取消。', undo:'撤销', redo:'重做', zoomLabel:'缩放', nodes:'节点', revision:'版本', failed:'操作失败', themeLabel:'外观', themeDark:'深色', themeLight:'浅色', language:'语言' }
 };
 let locale = navigator.language.startsWith('ja') ? 'ja' : navigator.language.startsWith('zh') ? 'zh-CN' : 'en';
 let summary = { revision:0,nodes:0,edges:0 };

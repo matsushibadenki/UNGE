@@ -327,3 +327,43 @@ Apple M4／macOSで同じrelease計測例を変更前後に順次実行しまし
 English: All six static-zoom cases retain matching quad/text fingerprints and visible counts. Overview scene median decreased from 3.527250 to 3.275500 ms (about 7%). Sequential CPU-only runs exclude GPU/Surface, IPC, shared Engine contention, groups, selection and previews; they do not establish display FPS.
 
 简体中文：六档静态Zoom的Quad／文字指纹及可见数量均一致。全景Scene中位数从3.527250降至3.275500ms，约减少7%。顺序CPU计测不含GPU／Surface、IPC、共享Engine竞争、Group、选择或预览，不代表屏幕FPS。
+
+
+## Edge情報の保持とScene工程計測（2026-10-14）
+
+Apple M4／macOS、同じrelease例で変更前後を順次比較。各Zoomで5回予熱＋通常30回・別の診断30回。前節とは異なる実行で、絶対値を横断して高速化率を計算しません。[計測契約と追加メモリー](SCENE_TIMINGS.md)、[生JSON](benchmarks/2026-10-14-scene-phases.json)。
+
+| Zoom | 通常Scene中央値 前 → 後 (ms) | Edge工程中央値 前 → 後 (ms) |
+|---:|---:|---:|
+| 1.00 | 0.029542 → 0.018500 | 0.018583 → 0.011292 |
+| 0.50 | 0.056958 → 0.032250 | 0.041875 → 0.022708 |
+| 0.20 | 0.362250 → 0.177584 | 0.249875 → 0.114083 |
+| 0.10 | 1.459625 → 0.747375 | 1.018833 → 0.421250 |
+| 0.05 | 5.283667 → 2.694125 | 3.442958 → 1.511958 |
+| 0.02 | 4.830667 → 2.717875 | 3.290500 → 1.549541 |
+
+6条件でQuad／文字の指紋、Quad数、可視Node／Edge数が一致。全体表示の通常Scene中央値4.830667→2.717875ms。Edge工程は曲線分割だけでなく、Map参照・境界・色・Quadも含むので、曲線単体の時間とは扱いません。保持情報により境界計算と接続元Nodeの再参照を省き、曲線分割は従来どおり実行します。Group／選択／Previewなしの静的fixtureで、GPU／IPC／共有Engine競合は計時外です。順次計測の負荷変動があります。
+
+English: Six cases retain identical output fingerprints/counts. Overview ordinary Scene median fell from 4.830667 to 2.717875 ms. The Edge phase includes lookup, bounds, colors, tessellation and quads; it is not isolated curve time. Extra retained data avoids bounds/source-node lookup; subdivision is unchanged. Sequential static CPU runs exclude groups/selection/previews, GPU, IPC and shared Engine contention.
+
+简体中文：六档输出指纹／数量一致。全景普通Scene中位数从4.830667降至2.717875ms。Edge阶段包括查找、边界、颜色、细分及Quad，并非单独曲线时间。额外保留数据省去边界计算和源节点查找，细分保持原规则。顺序静态CPU计测不含Group／选择／预览、GPU、IPC及共享Engine竞争。
+
+
+### 通常Surfaceの連続操作確認
+
+Apple M4／Metal、1280×720、倍率1、Fifoで既存 `--benchmark-animation` を実行。18条件×60＝1,080成功サンプル、Surfaceスキップ0。[生JSON](benchmarks/2026-10-14-animation-scene.json)。
+
+| テーマ | 言語 | 連続Zoom Scene 中央値 / p95 (ms) |
+|---|---|---:|
+| dark | en | 0.892333 / 4.552792 |
+| dark | ja | 1.405459 / 5.043291 |
+| dark | zh-cn | 1.708625 / 5.063500 |
+| light | en | 1.289833 / 6.336584 |
+| light | ja | 1.444417 / 6.232625 |
+| light | zh-cn | 1.635583 / 4.445667 |
+
+GPU完了待ちを追加しない通常提出経路です。合成Pan／Zoom／Dragであり、WebView・Registry・共有Engine競合・実マウス入力・Groupは含みません。前回のSurface結果とは依存更新や時点が異なるので高速化率を計算しません。表示完了と入力から表示までの遅延は未測定です。
+
+English: Native queued rendering completed 18 cases / 1,080 samples on M4/Metal with zero Surface skips. Continuous zoom Scene p95 was 4.445667–6.336584 ms. This synthetic fixture excludes WebView/Registry/shared Engine contention, real input and groups. No explicit GPU wait or display-latency measurement was added. Earlier native runs have different dependencies/conditions and are not a controlled speedup comparison.
+
+简体中文：M4／Metal普通提交渲染完成18组／1,080个样本，Surface跳过为0。连续Zoom的Scene p95为4.445667–6.336584ms。合成数据集不含WebView／Registry／共享Engine竞争、真实输入或Group。不增加GPU等待，也不测量屏幕延迟。此前原生计测的依赖／条件不同，不据此计算加速比。

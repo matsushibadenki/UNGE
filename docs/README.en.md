@@ -80,3 +80,7 @@ Registry avoids redundant edit validation. [Integration contract and benchmark](
 [Stable dependency maintenance and compatibility](DEPENDENCY_UPDATES.md)
 
 [Scene visibility and zoom measurement](SCENE_VISIBILITY.md)
+
+[Scene phase timings and retained Edge metadata](SCENE_TIMINGS.md)
+
+[Compact icon controls and inspector](COMPACT_PANEL.md)

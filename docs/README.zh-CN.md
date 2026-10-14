@@ -80,3 +80,7 @@ Registry减少编辑时的重复验证。[集成契约与基准](REGISTRY_VALIDA
 [stable依赖维护与兼容性](DEPENDENCY_UPDATES.md)
 
 [Scene可见ID与Zoom计测](SCENE_VISIBILITY.md)
+
+[Scene阶段计时及Edge信息保留](SCENE_TIMINGS.md)
+
+[紧凑图标控件与属性面板](COMPACT_PANEL.md)

@@ -24,7 +24,7 @@ const root = path.resolve(__dirname,'../examples/tauri-host/ui');
      rounding:field(text('Rounding','丸め処理','取整'),{kind:'string',min_length:1,max_length:5,choices:['none','round','floor']},'none'),
     }},properties:{enabled:true,gain:1,note:'',offset:0,rounding:'none'}};
     const second = structuredClone(data); second.id='node-2'; second.properties.gain=0.5;
-    const callbacks = {}; let revision = 0, theme='dark', selection=['node-1']; window.applied=[]; window.propertyRequests=[];
+    const callbacks = {}; let revision = 0, theme='dark', selection=['node-1'], floating=false; window.applied=[]; window.propertyRequests=[];
     window.selectNodes=(ids,notify=true)=>{selection=ids; if(notify) callbacks['unge://selection-changed']?.forEach(callback=>callback({payload:{revision,count:ids.length,single:ids.length===1?ids[0]:null}}));};
     window.releaseProperties=()=>{};
     const summary=()=>({revision,nodes:1,edges:0});
@@ -32,7 +32,8 @@ const root = path.resolve(__dirname,'../examples/tauri-host/ui');
     window.addJson=()=>{data.schema.fields.json=field(text('Metadata','メタデータ','元数据'),{kind:'json'},{safe:true},false);data.properties.json={safe:true};};
     window.__TAURI__={event:{listen:async(name,callback)=>{(callbacks[name] ||= []).push(callback);return()=>{};}},core:{invoke:async(name,args)=>{
      if(name==='current_execution')return null;
-     if(name==='panel_layout')return{supported:false,floating:false};
+     if(name==='panel_layout')return{supported:true,floating};
+     if(name==='set_panel_floating'){floating=args.floating;return{supported:true,floating};}
      if(name==='selection_summary'){if(window.holdSelection){window.holdSelection=false;window.selectionHeld=true;await new Promise(resolve=>window.releaseSelection=resolve);window.selectionHeld=false;}if(window.rejectSelection)throw{code:'state_unavailable'};return{revision,count:selection.length,single:selection.length===1?selection[0]:null};}
      if(name==='appearance')return{theme,colors:theme==='dark'?{}:{background:'#f5f7fb',surface:'#ffffff',border:'#68768b',accent:'#285dd5',text:'#172235',muted:'#4e617d',hover:'#e9eef8'}};
      if(name==='accessible_nodes')return{revision,total:1,nodes:[{id:data.id,title:'Adjust / 調整 / 调整',rect:{x:0,y:0,width:224,height:128},selected:true}],next:null};
@@ -65,6 +66,15 @@ const root = path.resolve(__dirname,'../examples/tauri-host/ui');
    assert.equal(page.url(),'http://unge.test/'); assert.equal(await page.title(),'UNGE');
    await page.waitForFunction(()=>document.querySelector('#nodeChoice').options.length===1);
    await page.locator('#loadProperties').click(); await page.locator('#propertyCard').waitFor({state:'visible'});
+   await page.waitForFunction(()=>document.querySelector('#undo svg') && !document.querySelector('#panelToolbar').hidden);
+   // Translated accessible names survive icon decoration and dynamic dock labels.
+   for(const button of await page.locator('.icon-button').all()) {
+    assert.ok(await button.getAttribute('aria-label'));
+    assert.equal(await button.getAttribute('aria-label'),await button.locator('.control-label').textContent());
+    assert.equal(await button.getAttribute('title'),await button.getAttribute('aria-label'));
+   }
+   await page.locator('#panelToggle').click();await page.waitForFunction(()=>document.querySelector('#panelToggle').dataset.icon==='dock');
+   await page.locator('#panelToggle').click();await page.waitForFunction(()=>document.querySelector('#panelToggle').dataset.icon==='panel');
    const gain=page.locator('#property-1');
    await gain.fill('2.5'); await page.locator('#saveProperties').click();
    await page.waitForFunction(()=>window.applied.length===1 && document.querySelector('#saveProperties').disabled);
@@ -81,13 +91,31 @@ const root = path.resolve(__dirname,'../examples/tauri-host/ui');
    await page.evaluate(()=>window.rejectSave=null); await page.locator('#saveProperties').click(); await page.waitForFunction(()=>window.applied.length===2);
    // Optional field removal is explicit; an untouched default never becomes a write.
    await page.locator('.property-field').nth(2).locator('.property-enable input').uncheck(); await page.locator('#saveProperties').click();
-   await page.waitForFunction(()=>window.applied.length===3); assert.equal(await page.evaluate(()=>window.applied[2].command.commands[0].value),null);
+   await page.waitForFunction(()=>window.applied.length===3); assert.equal(await page.evaluate(()=>window.applied[2].command.commands[0].value),null);assert.ok(!await page.locator('.property-field').nth(2).locator('.property-value').isVisible());
    // Native form controls retain keyboard focus and both themes fit narrow windows.
    for (const theme of ['dark','light']) {
     await page.locator(theme==='dark'?'#themeDark':'#themeLight').click(); await page.waitForFunction(theme=>document.documentElement.dataset.theme===theme,theme);
-    for(const width of [320,380,768]) {await page.setViewportSize({width,height:900}); assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}
+    for(const width of [320,380,768]) {
+     await page.setViewportSize({width,height:900});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+     const help=page.locator('#title').locator('..').locator('.info-button');
+     const tooltip=page.locator('#'+await help.getAttribute('aria-describedby'));
+     await help.hover();await tooltip.waitFor({state:'visible'});
+     const r=await tooltip.boundingBox();assert.ok(r.x>=15 && r.x+r.width<=width-15);await page.keyboard.press('Escape');assert.ok(!await tooltip.isVisible());await help.click();assert.ok(await tooltip.isVisible());if(width===768){await page.setViewportSize({width:320,height:900});await page.waitForFunction(id=>{const r=document.getElementById(id).getBoundingClientRect();return r.left>=15&&r.right<=innerWidth-15;},await tooltip.getAttribute('id'));await page.setViewportSize({width,height:900});}
+     await page.mouse.move(0,0);await help.focus();assert.ok(await tooltip.isVisible());
+     await help.press('Escape');assert.ok(!await tooltip.isVisible());assert.ok(await help.evaluate(el=>el===document.activeElement));
+     const fieldHelp=page.locator('.property-field').nth(1).locator('.info-button');
+     const fieldTooltip=page.locator('#'+await fieldHelp.getAttribute('aria-describedby'));
+     await fieldHelp.hover();await fieldTooltip.waitFor({state:'visible'});
+     const f=await fieldTooltip.boundingBox();assert.ok(f.x>=15 && f.x+f.width<=width-15 && f.y>=0 && f.y+f.height<=900);
+     await page.mouse.move(0,0);await fieldHelp.press('Tab');
+    }
     await page.setViewportSize({width:380,height:900});
-    if(process.env.UNGE_SCREENSHOTS){fs.mkdirSync(process.env.UNGE_SCREENSHOTS,{recursive:true});await page.locator('.property-inspector').screenshot({path:path.join(process.env.UNGE_SCREENSHOTS,`properties-${theme}-${locale}.png`)});}
+    if(process.env.UNGE_SCREENSHOTS){
+     const help=page.locator('#title').locator('..').locator('.info-button');await help.hover();
+     fs.mkdirSync(process.env.UNGE_SCREENSHOTS,{recursive:true});await page.screenshot({path:path.join(process.env.UNGE_SCREENSHOTS,`help-${theme}-${locale}.png`)});
+     await page.mouse.move(0,0);
+    }
+    if(process.env.UNGE_SCREENSHOTS){fs.mkdirSync(process.env.UNGE_SCREENSHOTS,{recursive:true});await page.locator('.property-inspector').screenshot({path:path.join(process.env.UNGE_SCREENSHOTS,`properties-${theme}-${locale}.png`)});await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:path.join(process.env.UNGE_SCREENSHOTS,`panel-${theme}-${locale}.png`)});}
    }
    await page.evaluate(()=>window.addJson()); await page.locator('#loadProperties').click();
    const json=page.locator('#property-5'); await json.fill('null'); await page.locator('#saveProperties').click();assert.equal(await json.getAttribute('aria-invalid'),'true');
@@ -160,6 +188,6 @@ const root = path.resolve(__dirname,'../examples/tauri-host/ui');
    assert.ok(await page.locator('#saveProperties').isDisabled()); assert.equal(await gain.inputValue(),'1.25');
    assert.deepEqual(errors,[]); await page.close();
   }
-  console.log('Properties UI: three languages, both themes, narrow layout, save/validation/conflict/draft/JSON and selection/race/recovery flows passed');
+  console.log('Properties UI: icons/tooltips/focus/docking, three languages, both themes, narrow layout, save/validation/conflict/draft/JSON and selection/race/recovery flows passed');
  } finally { await browser.close(); }
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -247,11 +247,15 @@ fn main() {
                 && !std::env::args().any(|arg| arg == "--separate-windows");
             let composition = workspace::Composition::new(unified);
             let preferences_path = if unified {
-                match app.path().app_config_dir() {
-                    Ok(path) => Some(path.join("panel-layout.json")),
-                    Err(error) => {
-                        eprintln!("panel preferences path: {error}");
-                        None
+                if let Some(path) = std::env::var_os("UNGE_PANEL_PREFERENCES") {
+                    Some(std::path::PathBuf::from(path))
+                } else {
+                    match app.path().app_config_dir() {
+                        Ok(path) => Some(path.join("panel-layout.json")),
+                        Err(error) => {
+                            eprintln!("panel preferences path: {error}");
+                            None
+                        }
                     }
                 }
             } else {

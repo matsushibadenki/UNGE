@@ -1,5 +1,8 @@
 use crate::{LabelCatalog, TextLabel, Theme, labels::label_text};
-use std::collections::{BTreeMap, BTreeSet};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    time::Instant,
+};
 use unge_core::{Command, Document, Id, Locale, Rect, SpatialIndex, Viewport, port_anchor};
 use unge_interaction::{MAX_SELECTION, PORT_LOD_ZOOM, Preview};
 
@@ -63,6 +66,8 @@ struct RenderNode {
 }
 struct RenderEdge {
     points: [[f32; 2]; 4],
+    bounds: Rect,
+    source_type: String,
     from: (Id, usize),
     to: (Id, usize),
 }
@@ -86,21 +91,24 @@ impl RenderEdge {
         let to = doc.graph().nodes().get(&edge.to.node)?;
         let i = from.outputs.iter().position(|p| p.name == edge.from.port)?;
         let j = to.inputs.iter().position(|p| p.name == edge.to.port)?;
-        Some(Self {
-            points: curve(
-                port_anchor(
-                    doc.placement().get(&from.id).copied().unwrap_or_default(),
-                    i,
-                    from.outputs.len(),
-                    true,
-                ),
-                port_anchor(
-                    doc.placement().get(&to.id).copied().unwrap_or_default(),
-                    j,
-                    to.inputs.len(),
-                    false,
-                ),
+        let points = curve(
+            port_anchor(
+                doc.placement().get(&from.id).copied().unwrap_or_default(),
+                i,
+                from.outputs.len(),
+                true,
             ),
+            port_anchor(
+                doc.placement().get(&to.id).copied().unwrap_or_default(),
+                j,
+                to.inputs.len(),
+                false,
+            ),
+        );
+        Some(Self {
+            points,
+            bounds: curve_bounds(points),
+            source_type: from.type_id.clone(),
             from: (from.id, i),
             to: (to.id, j),
         })
@@ -186,6 +194,21 @@ pub enum SceneUpdate {
     Rebuilt,
 }
 
+/// Explicit CPU diagnostics; excludes upload, GPU, IPC and shared locks.
+#[derive(Debug, Default, Clone, serde::Serialize)]
+pub struct SceneTimings {
+    pub groups_ms: f64,
+    pub edge_query_ms: f64,
+    pub edge_geometry_ms: f64,
+    pub node_query_ms: f64,
+    pub node_geometry_ms: f64,
+    pub overlays_ms: f64,
+    pub total_ms: f64,
+}
+fn elapsed_ms(start: Option<Instant>) -> f64 {
+    start.map_or(0., |s| s.elapsed().as_secs_f64() * 1000.)
+}
+
 #[derive(Debug)]
 pub struct Scene {
     /// Linear RGBA, matching the target's GPU colour space.
@@ -251,7 +274,7 @@ impl SceneIndex {
             let Some(edge) = RenderEdge::from_document(doc, *id) else {
                 continue;
             };
-            bounds.push((*id, curve_bounds(edge.points)));
+            bounds.push((*id, edge.bounds));
             for node in [edge.from.0, edge.to.0] {
                 incident.entry(node).or_default().insert(*id);
             }
@@ -322,7 +345,7 @@ impl SceneIndex {
                     .collect::<Option<BTreeMap<_, _>>>(),
                 edges
                     .iter()
-                    .map(|(id, e)| e.as_ref().map(|e| (*id, curve_bounds(e.points))))
+                    .map(|(id, e)| e.as_ref().map(|e| (*id, e.bounds)))
                     .collect::<Option<BTreeMap<_, _>>>(),
             ) {
                 (Some(rects), Some(bounds)) => {
@@ -337,7 +360,7 @@ impl SceneIndex {
                 .collect();
             let bounds = edges
                 .iter()
-                .map(|(id, edge)| (*id, edge.as_ref().map(|e| curve_bounds(e.points))))
+                .map(|(id, edge)| (*id, edge.as_ref().map(|e| e.bounds)))
                 .collect();
             self.node_index.update_entries(&rects) && self.edge_index.update_entries(&bounds)
         };
@@ -424,6 +447,32 @@ impl SceneIndex {
         locale: Locale,
         theme: Theme,
     ) -> unge_core::Result<Scene> {
+        self.generate::<false>(viewport, selection, preview, catalog, locale, theme)
+            .map(|(scene, _)| scene)
+    }
+    /// Same scene as scene_with_theme; normal calls do not read the clock.
+    pub fn scene_with_theme_timed(
+        &self,
+        viewport: Viewport,
+        selection: &BTreeSet<Id>,
+        preview: &Preview,
+        catalog: &LabelCatalog,
+        locale: Locale,
+        theme: Theme,
+    ) -> unge_core::Result<(Scene, SceneTimings)> {
+        self.generate::<true>(viewport, selection, preview, catalog, locale, theme)
+    }
+    fn generate<const TIMED: bool>(
+        &self,
+        viewport: Viewport,
+        selection: &BTreeSet<Id>,
+        preview: &Preview,
+        catalog: &LabelCatalog,
+        locale: Locale,
+        theme: Theme,
+    ) -> unge_core::Result<(Scene, SceneTimings)> {
+        let total = TIMED.then(Instant::now);
+        let mut timings = SceneTimings::default();
         viewport.validate()?;
         if preview.placement.len() > MAX_SELECTION
             || preview
@@ -452,6 +501,7 @@ impl SceneIndex {
         let mut grid = Quad::rectangle(area, scene.background, 0.0);
         grid.params[2] = 1.0;
         scene.quads.push(grid);
+        let start = TIMED.then(Instant::now);
         for (rect, label) in self.groups.visible(area, preview, |id| {
             self.nodes.get(&id).map(|node| node.rect)
         }) {
@@ -487,6 +537,8 @@ impl SceneIndex {
             }
             scene.visible_groups += 1;
         }
+        timings.groups_ms = elapsed_ms(start);
+        let start = TIMED.then(Instant::now);
         let edges = visible_ids(
             self.edge_index.query(area),
             preview
@@ -494,11 +546,13 @@ impl SceneIndex {
                 .keys()
                 .flat_map(|id| self.incident.get(id).into_iter().flatten().copied()),
         );
+        timings.edge_query_ms = elapsed_ms(start);
+        let start = TIMED.then(Instant::now);
         for id in edges {
             let edge = &self.edges[&id];
-            let points = if preview.placement.contains_key(&edge.from.0)
-                || preview.placement.contains_key(&edge.to.0)
-            {
+            let moved = preview.placement.contains_key(&edge.from.0)
+                || preview.placement.contains_key(&edge.to.0);
+            let points = if moved {
                 let from = &self.nodes[&edge.from.0];
                 let to = &self.nodes[&edge.to.0];
                 curve(
@@ -526,16 +580,23 @@ impl SceneIndex {
             } else {
                 edge.points
             };
-            if !curve_bounds(points).intersects(area) {
+            let bounds = if moved {
+                curve_bounds(points)
+            } else {
+                edge.bounds
+            };
+            if !bounds.intersects(area) {
                 continue;
             }
             let color = catalog
-                .get(&self.nodes[&edge.from.0].type_id)
+                .get(&edge.source_type)
                 .filter(|labels| labels.tone != crate::NodeTone::Neutral)
                 .map_or(palette.edge, |labels| palette.tone(labels.tone));
             push_curve(&mut scene, points, viewport.zoom, color.linear());
             scene.visible_edges += 1;
         }
+        timings.edge_geometry_ms = elapsed_ms(start);
+        let start = TIMED.then(Instant::now);
         // Include ports/selection borders protruding from the node bounds.
         let padded = Rect {
             x: area.x - 12.0,
@@ -547,6 +608,8 @@ impl SceneIndex {
             self.node_index.query(padded),
             preview.placement.keys().copied(),
         );
+        timings.node_query_ms = elapsed_ms(start);
+        let start = TIMED.then(Instant::now);
         for id in nodes {
             let node = &self.nodes[&id];
             let rect = preview.placement.get(&id).copied().unwrap_or(node.rect);
@@ -792,6 +855,8 @@ impl SceneIndex {
             }
             scene.visible_nodes += 1;
         }
+        timings.node_geometry_ms = elapsed_ms(start);
+        let start = TIMED.then(Instant::now);
         if let Some(cable) = &preview.cable {
             push_curve(
                 &mut scene,
@@ -831,7 +896,9 @@ impl SceneIndex {
                     .push(Quad::rectangle(border, palette.accent.linear(), 0.0));
             }
         }
-        Ok(scene)
+        timings.overlays_ms = elapsed_ms(start);
+        timings.total_ms = elapsed_ms(total);
+        Ok((scene, timings))
     }
 }
 

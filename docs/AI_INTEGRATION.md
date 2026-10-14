@@ -138,3 +138,7 @@ GPU表示に対応するHTML操作には [ACCESSIBILITY.md](ACCESSIBILITY.md) �
 CIのTypeScript固定版とjsonschemaの許容範囲も確認してください。ACX自身はsha2 0.11を使いますが、固定Tauriのcodegenは0.10を要求するため両版がCargo.lockに共存します。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告は依存更新記録に残しています。
 
 可視ID処理の改善は既存SceneIndex APIで有効になります。[範囲と計測](SCENE_VISIBILITY.md)。
+
+Sceneの工程別診断には `scene_with_theme_timed` を使います。通常APIは計時計数なしで利用できます。[保持データと計測範囲](SCENE_TIMINGS.md)。
+
+コンパクトなUIを取り込むときは [COMPACT_PANEL.md](COMPACT_PANEL.md) の読み込み順とIDマッピングを使います。3言語の操作名は既存コントローラーから反映し、Documentの編集経路は共有Engineを使ってください。

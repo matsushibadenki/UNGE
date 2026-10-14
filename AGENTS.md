@@ -11,3 +11,4 @@
 9. 変更した契約に応じてRustテスト、TypeScript型、取り込み文書を更新する。`cargo fmt`、`cargo test --workspace`、`cargo clippy --workspace --all-targets -- -D warnings`を実行する。
 10. GPUを変更した場合は実GPUのignoredテストを明示的に実行し、GPU利用不可なら未検証と報告する。
 11. ロードマップには `🟢 [Done]` / `🟠 [Next]` / `🔴 [Later]` / `⭕️ [Pending]` を使う。開発環境で検証できない項目はPendingとして保留し、未実装機能や性能目標を完成扱いしない。
+12. WebViewのGUIはアイコンを優先し、コンパクトで見やすい配置にする。説明は情報アイコンのhover／focusへ配置する。3言語のtooltipとアクセシブルな名前を揃える。

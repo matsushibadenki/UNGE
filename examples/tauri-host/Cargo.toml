@@ -7,13 +7,13 @@ license = "MIT OR Apache-2.0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 unge-interaction = { path = "../../crates/unge-interaction" }
-tauri-runtime-wry = "=2.11.4"
+tauri-runtime-wry = "=2.12.1"
 unge-core = { path = "../../crates/unge-core" }
 unge-executor = { path = "../../crates/unge-executor" }
 unge-render = { path = "../../crates/unge-render" }
 unge-tauri = { path = "../../crates/unge-tauri", features = ["acx"] }
 unge-acx = { path = "../../crates/unge-acx" }
-tauri = { version = "=2.11.6", features = ["unstable"] }
+tauri = { version = "=2.12.3", features = ["unstable"] }
 pollster = "1.0.1"
 [build-dependencies]
-tauri-build = { version = "2", features = [] }
+tauri-build = { version = "=2.7.2", features = [] }
