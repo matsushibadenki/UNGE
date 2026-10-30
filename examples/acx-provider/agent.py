@@ -12,8 +12,8 @@ import uuid
 
 
 class Agent:
-    def __init__(self, binary, desktop=False, validate=None):
-        self.process = subprocess.Popen([str(binary)] + (['--acx-stdio'] if desktop else []), stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, encoding='utf-8', bufsize=1)
+    def __init__(self, binary, desktop=False, validate=None, extra_args=()):
+        self.process = subprocess.Popen([str(binary)] + (['--acx-stdio'] if desktop else []) + list(extra_args), stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True, encoding='utf-8', bufsize=1)
         self.lines = queue.Queue()
         self.sequence = 0
         self.validate = validate or (lambda value, schema: None)

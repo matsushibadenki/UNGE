@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import unittest
 import uuid
+import tempfile
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -63,6 +64,44 @@ class AcxInteropTests(unittest.TestCase):
             self.assertEqual(observed['revision'], before['revision'] + 1)
         finally:
             client.close()
+    def test_durable_restart_and_host_selected_rotation_over_stdio(self):
+        with tempfile.TemporaryDirectory(prefix='unge-durable-') as directory:
+            folder = Path(directory)
+            document = folder / 'document.json'
+            document.write_text(json.dumps({'schema_version':1,'engine_version':'0.1.0','plugin_versions':{},'graph':{'id':str(uuid.uuid4()),'name':'durable test','nodes':{},'edges':{},'groups':{}},'placement':{}}))
+            journal = folder / 'replay.jsonl'
+            options = ['--document', str(document), '--journal', str(journal)]
+            client = agent.Agent(ROOT / 'target/debug/unge-acx-provider', extra_args=options)
+            try:
+                before = client.call('observe', {'query':'summary'})
+                manifest = client.call('discover')
+                old_provider = manifest['provider']['id']
+                self.assertTrue(manifest['capabilities'][0]['extensions']['org.unge.node-graph']['replay']['durable'])
+                intent = {'kind':'edit','document_id':before['documentId'],'expected_revision':0,'operations':[{'kind':'create_node','id':str(uuid.uuid4()),'type_id':'math.number','properties':{'value':42},'rect':{'x':0,'y':0,'width':180,'height':90}}]}
+                pf = client.call('preflight', {'input':intent})
+                bound = {'preflightId':pf['preflightId'],'preflightDigest':pf['preflightDigest']}
+                grant = client.call('authorize', bound)
+                commit = client.call('commit', {**bound,'authorization':grant['authorization'],'input':pf['input']})
+                result = client.call('execute', {'commitId':commit['commitId']})
+                evidence = client.call('receipt', {'receiptId':result['receiptId']})
+                agent.Agent.verify_json(result['resultJson'], result['result'], evidence['resultHash'])
+                Draft202012Validator(json.loads((SPEC / 'acx-receipt.schema.json').read_text()),format_checker=FormatChecker()).validate(evidence)
+            finally:
+                client.close()
+            for rotation in (False, True):
+                client = agent.Agent(ROOT / 'target/debug/unge-acx-provider', extra_args=options + (['--rotate-session'] if rotation else []))
+                try:
+                    current_provider = client.call('discover')['provider']['id']
+                    if rotation: self.assertNotEqual(current_provider, old_provider)
+                    else: self.assertEqual(current_provider, old_provider)
+                    self.assertEqual(client.call('execute', {'commitId':commit['commitId']}), result)
+                    self.assertEqual(client.call('receipt', {'receiptId':result['receiptId']}), evidence)
+                    # The demo reloads the host's saved Document. Journal replay must
+                    # never reapply the old edit to this restored snapshot.
+                    self.assertEqual(client.call('observe', {'query':'summary'}), before)
+                finally:
+                    client.close()
+
     def test_tampered_evidence_is_rejected(self):
         with self.assertRaises(RuntimeError):
             agent.Agent.verify_json('{"value":43}', {'value':43}, 'sha256:'+'0'*64)

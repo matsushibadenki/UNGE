@@ -424,7 +424,16 @@ fn failed_run_has_failed_receipt_and_is_not_reexecuted() {
             Arc::new(Fails(calls.clone())),
         )
         .unwrap();
-    h.provider = Provider::new(h.host.clone(), Arc::new(registry), Policy::math_demo());
+    let now = h.now.clone();
+    h.provider = Provider::with_clock(
+        h.host.clone(),
+        Arc::new(registry),
+        Policy {
+            max_sessions: 1,
+            ..Policy::math_demo()
+        },
+        Arc::new(move || now.load(Ordering::SeqCst)),
+    );
     user_edit(&h);
     let snapshot = h.host.snapshot().unwrap();
     let input = json!({"kind":"run","document_id":snapshot.document.graph().id,"expected_revision":snapshot.revision});
@@ -441,6 +450,26 @@ fn failed_run_has_failed_receipt_and_is_not_reexecuted() {
         .unwrap();
     assert_eq!(receipt["status"], "failed");
     assert_eq!(receipt["recovery"]["reversible"], false);
+    h.now.store(1_120, Ordering::SeqCst);
+    assert_eq!(h.provider.prune_expired_preflights(), 0);
+    assert_eq!(h.provider.retention_usage().started, 1);
+    let snapshot = h.host.snapshot().unwrap();
+    let input = json!({"kind":"run","document_id":snapshot.document.graph().id,"expected_revision":snapshot.revision});
+    assert_eq!(
+        h.provider
+            .dispatch("preflight", json!({"input":input}))
+            .unwrap_err()
+            .code,
+        "capacity_exceeded"
+    );
+    assert_eq!(h.execute(&commit), result);
+    assert_eq!(
+        h.provider
+            .dispatch("receipt", json!({"receiptId":result["receiptId"]}))
+            .unwrap(),
+        receipt
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
 }
 #[test]
 fn denied_run_type_cannot_hide_behind_pure_flag() {
@@ -732,4 +761,205 @@ fn shared_service_refuses_registry_mismatch_and_busy_run_is_receipted_once() {
     assert_eq!(result["result"]["error"]["code"], "execution_busy");
     drop(reservation);
     assert_eq!(h.execute(&commit), result);
+}
+
+#[test]
+fn expired_abandoned_commit_releases_capacity_without_reusing_authority() {
+    let mut h = Harness::policy(Policy {
+        max_sessions: 1,
+        ..Policy::math_demo()
+    });
+    let (old, authorization, commit) = h.plan();
+    let original = h.host.snapshot().unwrap();
+    h.now.store(1_119, Ordering::SeqCst);
+    let input = h.input();
+    assert_eq!(
+        h.provider
+            .dispatch("preflight", json!({"input":input}))
+            .unwrap_err()
+            .code,
+        "capacity_exceeded"
+    );
+    assert_eq!(h.provider.retention_usage().expired_unstarted, 0);
+    h.now.store(1_120, Ordering::SeqCst);
+    let usage = h.provider.retention_usage();
+    assert_eq!(
+        (
+            usage.sessions,
+            usage.max_sessions,
+            usage.expired_unstarted,
+            usage.started,
+            usage.receipts
+        ),
+        (1, 1, 1, 0, 0)
+    );
+    // Admission, rather than observe/statistics, reclaims the expired grant.
+    let input = h.input();
+    let next = h.preflight(input);
+    assert_ne!(old["preflightId"], next["preflightId"]);
+    assert_eq!(h.provider.retention_usage().sessions, 1);
+    assert_eq!(
+        h.provider
+            .dispatch("execute", json!({"commitId":commit["commitId"]}))
+            .unwrap_err()
+            .code,
+        "unauthorized"
+    );
+    assert_eq!(
+        h.provider
+            .dispatch(
+                "authorize",
+                json!({"preflightId":old["preflightId"],"preflightDigest":old["preflightDigest"]})
+            )
+            .unwrap_err()
+            .code,
+        "not_found"
+    );
+    assert_eq!(h.provider.dispatch("commit", json!({"preflightId":next["preflightId"],"preflightDigest":next["preflightDigest"],"authorization":authorization["authorization"],"input":next["input"]})).unwrap_err().code, "unauthorized");
+    assert_eq!(h.host.snapshot().unwrap().revision, original.revision);
+    assert_eq!(h.host.snapshot().unwrap().document, original.document);
+    let grant = h.authorize(&next);
+    let next_commit = h.commit(&next, &grant);
+    h.execute(&next_commit);
+    assert_eq!(h.host.snapshot().unwrap().revision, 1);
+}
+
+#[test]
+fn explicit_pruning_is_idempotent_and_clock_rollback_does_not_revive_ids() {
+    for state in 0..3 {
+        let mut h = Harness::new();
+        let input = h.input();
+        let pf = h.preflight(input);
+        let mut commit = None;
+        if state > 0 {
+            let grant = h.authorize(&pf);
+            if state == 2 {
+                commit = Some(h.commit(&pf, &grant));
+            }
+        }
+        h.now.store(1_120, Ordering::SeqCst);
+        assert_eq!(h.provider.prune_expired_preflights(), 1);
+        assert_eq!(h.provider.prune_expired_preflights(), 0);
+        assert_eq!(h.provider.retention_usage().sessions, 0);
+        assert!(!h.provider.take_changed());
+        h.now.store(1_000, Ordering::SeqCst);
+        assert_eq!(
+            h.provider
+                .dispatch(
+                    "authorize",
+                    json!({"preflightId":pf["preflightId"],"preflightDigest":pf["preflightDigest"]})
+                )
+                .unwrap_err()
+                .code,
+            "not_found"
+        );
+        if let Some(commit) = commit {
+            assert_eq!(
+                h.provider
+                    .dispatch("execute", json!({"commitId":commit["commitId"]}))
+                    .unwrap_err()
+                    .code,
+                "unauthorized"
+            );
+        }
+        assert_eq!(h.host.snapshot().unwrap().revision, 0);
+    }
+}
+
+#[test]
+fn expiry_and_admission_preserve_execution_recovery_and_both_receipts() {
+    let mut h = Harness::policy(Policy {
+        max_sessions: 1,
+        ..Policy::math_demo()
+    });
+    let (_, grant, commit) = h.plan();
+    let execution = h.execute(&commit);
+    let args = json!({"commitId":commit["commitId"],"authorization":grant["authorization"],"expectedRevision":1});
+    let recovered = h.provider.dispatch("recover", args.clone()).unwrap();
+    let receipt = h
+        .provider
+        .dispatch("receipt", json!({"receiptId":execution["receiptId"]}))
+        .unwrap();
+    let recovery_receipt = h
+        .provider
+        .dispatch("receipt", json!({"receiptId":recovered["receiptId"]}))
+        .unwrap();
+    h.provider.take_changed();
+    h.now.store(u64::MAX, Ordering::SeqCst);
+    assert_eq!(h.provider.prune_expired_preflights(), 0);
+    assert_eq!(
+        (
+            h.provider.retention_usage().started,
+            h.provider.retention_usage().receipts
+        ),
+        (1, 2)
+    );
+    let input = h.input();
+    assert_eq!(
+        h.provider
+            .dispatch("preflight", json!({"input":input}))
+            .unwrap_err()
+            .code,
+        "capacity_exceeded"
+    );
+    assert_eq!(h.execute(&commit), execution);
+    assert_eq!(h.provider.dispatch("recover", args).unwrap(), recovered);
+    assert_eq!(
+        h.provider
+            .dispatch("receipt", json!({"receiptId":execution["receiptId"]}))
+            .unwrap(),
+        receipt
+    );
+    assert_eq!(
+        h.provider
+            .dispatch("receipt", json!({"receiptId":recovered["receiptId"]}))
+            .unwrap(),
+        recovery_receipt
+    );
+    assert_eq!(h.host.snapshot().unwrap().revision, 2);
+    assert!(!h.provider.take_changed());
+}
+
+#[test]
+fn abandoned_preflights_remain_bounded_across_many_expiry_cycles() {
+    let mut h = Harness::policy(Policy {
+        max_sessions: 1,
+        ttl_seconds: 1,
+        ..Policy::math_demo()
+    });
+    for now in 1_000..1_256 {
+        h.now.store(now, Ordering::SeqCst);
+        let input = h.input();
+        let pf = h.preflight(input);
+        assert_eq!(pf["expiresAt"], now + 1);
+        let usage = h.provider.retention_usage();
+        assert_eq!(
+            (usage.sessions, usage.started, usage.receipts, usage.jobs),
+            (1, 0, 0, 0)
+        );
+    }
+    assert_eq!(h.host.snapshot().unwrap().revision, 0);
+}
+
+#[test]
+fn reclaiming_an_expired_plan_does_not_evict_another_live_grant() {
+    let mut h = Harness::policy(Policy {
+        max_sessions: 2,
+        ttl_seconds: 10,
+        ..Policy::math_demo()
+    });
+    let input = h.input();
+    let expired = h.preflight(input);
+    h.now.store(1_005, Ordering::SeqCst);
+    let input = h.input();
+    let live = h.preflight(input);
+    h.now.store(1_010, Ordering::SeqCst);
+    assert_eq!(h.provider.retention_usage().expired_unstarted, 1);
+    let input = h.input();
+    h.preflight(input);
+    assert_eq!(h.provider.retention_usage().sessions, 2);
+    assert_eq!(h.provider.retention_usage().expired_unstarted, 0);
+    assert_eq!(h.provider.dispatch("authorize", json!({"preflightId":expired["preflightId"],"preflightDigest":expired["preflightDigest"]})).unwrap_err().code,"not_found");
+    h.authorize(&live);
+    assert_eq!(h.host.snapshot().unwrap().revision, 0);
 }

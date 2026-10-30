@@ -67,3 +67,5 @@ Conformance tests MUST reject unapproved/unknown/edit/stale commits and extra ar
 首次启动验证授权、commit、文档/revision/hash及有效期，拒绝编辑commit。启动后重放返回同一执行，不会重跑。取消只针对本Provider启动的job，不修改文档、历史或撤销外部副作用。
 
 响应包含commitId、snapshot执行概要和null或既有execution。finished不保证Receipt已生成，应轮询至execution非null，并按原约定验证resultJson和Receipt。失败及取消只记录一次失败Receipt。最多一个未完成worker，保留条目受session上限约束；重启后不提供持久保证。完整约定以英文部分为准，并使用附带Schema验证。
+
+[永続再送 / Durable replay / 持久重放](ACX_DURABILITY.md): 任意のjournalで再起動後のReceipt・結果と確定済みjob概要を取得できます。途中停止jobは再開しません。

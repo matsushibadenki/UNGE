@@ -1,0 +1,309 @@
+[
+  {
+    "name": "combine",
+    "before": [
+      "4.6.8"
+    ],
+    "after": "4.6.9",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/combine/4.6.9"
+  },
+  {
+    "name": "cosmic-text",
+    "before": [
+      "0.15.0"
+    ],
+    "after": "0.19.0",
+    "rust_version": "1.89",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/cosmic-text/0.19.0"
+  },
+  {
+    "name": "defmt",
+    "before": [
+      "1.1.1"
+    ],
+    "after": "1.2.0",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/defmt/1.2.0"
+  },
+  {
+    "name": "defmt-macros",
+    "before": [
+      "1.1.1"
+    ],
+    "after": "1.2.0",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/defmt-macros/1.2.0"
+  },
+  {
+    "name": "defmt-parser",
+    "before": [
+      "1.0.0"
+    ],
+    "after": "1.1.0",
+    "rust_version": "1.81",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/defmt-parser/1.1.0"
+  },
+  {
+    "name": "deranged",
+    "before": [
+      "0.5.8"
+    ],
+    "after": "0.5.9",
+    "rust_version": "1.85.0",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/deranged/0.5.9"
+  },
+  {
+    "name": "equivalent",
+    "before": [
+      "1.0.2"
+    ],
+    "after": "1.0.3",
+    "rust_version": "1.6",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/equivalent/1.0.3"
+  },
+  {
+    "name": "font-types",
+    "before": [
+      "0.10.1",
+      "0.12.6"
+    ],
+    "after": "0.11.3",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/font-types/0.11.3"
+  },
+  {
+    "name": "font-types",
+    "before": [
+      "0.10.1",
+      "0.12.6"
+    ],
+    "after": "0.12.7",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/font-types/0.12.7"
+  },
+  {
+    "name": "harfrust",
+    "before": [
+      "0.3.2"
+    ],
+    "after": "0.5.2",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/harfrust/0.5.2"
+  },
+  {
+    "name": "libc",
+    "before": [
+      "0.2.190"
+    ],
+    "after": "0.2.191",
+    "rust_version": "1.65",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/libc/0.2.191"
+  },
+  {
+    "name": "litrs",
+    "before": [
+      "1.0.0"
+    ],
+    "after": "1.0.1",
+    "rust_version": "1.56",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/litrs/1.0.1"
+  },
+  {
+    "name": "read-fonts",
+    "before": [
+      "0.35.0",
+      "0.41.0"
+    ],
+    "after": "0.37.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/read-fonts/0.37.0"
+  },
+  {
+    "name": "schemars",
+    "before": [
+      "0.8.22",
+      "0.9.0",
+      "1.2.2"
+    ],
+    "after": "1.2.3",
+    "rust_version": "1.74",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/schemars/1.2.3"
+  },
+  {
+    "name": "sha2",
+    "before": [
+      "0.10.9",
+      "0.11.0"
+    ],
+    "after": "0.11.1",
+    "rust_version": "1.88",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/sha2/0.11.1"
+  },
+  {
+    "name": "skrifa",
+    "before": [
+      "0.37.0",
+      "0.44.0"
+    ],
+    "after": "0.40.0",
+    "rust_version": "1.85",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/skrifa/0.40.0"
+  },
+  {
+    "name": "smol_str",
+    "before": [
+      "0.2.2"
+    ],
+    "after": "0.3.6",
+    "rust_version": "1.89",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/smol_str/0.3.6"
+  },
+  {
+    "name": "static_vcruntime",
+    "before": [],
+    "after": "3.0.0",
+    "rust_version": "1.79",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/static_vcruntime/3.0.0"
+  },
+  {
+    "name": "syn",
+    "before": [
+      "1.0.109",
+      "2.0.119",
+      "3.0.8"
+    ],
+    "after": "3.0.9",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/syn/3.0.9"
+  },
+  {
+    "name": "tauri",
+    "before": [
+      "2.12.3"
+    ],
+    "after": "2.12.4",
+    "rust_version": "1.90",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tauri/2.12.4"
+  },
+  {
+    "name": "tauri-build",
+    "before": [
+      "2.7.2"
+    ],
+    "after": "2.7.3",
+    "rust_version": "1.90",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tauri-build/2.7.3"
+  },
+  {
+    "name": "tauri-codegen",
+    "before": [
+      "2.7.2"
+    ],
+    "after": "2.7.3",
+    "rust_version": "1.90",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tauri-codegen/2.7.3"
+  },
+  {
+    "name": "tauri-macros",
+    "before": [
+      "2.7.2"
+    ],
+    "after": "2.7.3",
+    "rust_version": "1.90",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tauri-macros/2.7.3"
+  },
+  {
+    "name": "tauri-runtime",
+    "before": [
+      "2.12.1"
+    ],
+    "after": "2.12.2",
+    "rust_version": "1.90",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tauri-runtime/2.12.2"
+  },
+  {
+    "name": "tauri-runtime-wry",
+    "before": [
+      "2.12.1"
+    ],
+    "after": "2.12.2",
+    "rust_version": "1.90",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tauri-runtime-wry/2.12.2"
+  },
+  {
+    "name": "tauri-utils",
+    "before": [
+      "2.10.1"
+    ],
+    "after": "2.10.2",
+    "rust_version": "1.90",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tauri-utils/2.10.2"
+  },
+  {
+    "name": "tokio",
+    "before": [
+      "1.53.2"
+    ],
+    "after": "1.53.3",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/tokio/1.53.3"
+  },
+  {
+    "name": "unicode-ident",
+    "before": [
+      "1.0.26"
+    ],
+    "after": "1.0.27",
+    "rust_version": "1.71",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/unicode-ident/1.0.27"
+  },
+  {
+    "name": "zerocopy",
+    "before": [
+      "0.8.62"
+    ],
+    "after": "0.8.63",
+    "rust_version": "1.56.0",
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/zerocopy/0.8.63"
+  },
+  {
+    "name": "zerocopy-derive",
+    "before": [
+      "0.8.62"
+    ],
+    "after": "0.8.63",
+    "rust_version": null,
+    "yanked": false,
+    "source": "https://crates.io/api/v1/crates/zerocopy-derive/0.8.63"
+  }
+]

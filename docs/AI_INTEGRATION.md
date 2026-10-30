@@ -142,3 +142,9 @@ CIのTypeScript固定版とjsonschemaの許容範囲も確認してください�
 Sceneの工程別診断には `scene_with_theme_timed` を使います。通常APIは計時計数なしで利用できます。[保持データと計測範囲](SCENE_TIMINGS.md)。
 
 コンパクトなUIを取り込むときは [COMPACT_PANEL.md](COMPACT_PANEL.md) の読み込み順とIDマッピングを使います。3言語の操作名は既存コントローラーから反映し、Documentの編集経路は共有Engineを使ってください。
+
+cosmic-textの再公開型は0.19です。旧Bufferのset_wrap/set_text引数と遅延整形の移行は[GPU文字](GPU_TEXT.md)を参照し、キャッシュする前にlayoutを確定してください。
+
+長時間接続するACXホストは[保持運用](ACX_RETENTION.md)を参照してください。新規preflight前に期限切れ未実行grantだけを回収します。実行済み結果・Receiptは残るため、実行済み記録で満杯になった場合は[永続ジャーナルとProvider切り替え](ACX_DURABILITY.md)を有効にします。保持量APIはRustホスト専用で、IPC命令は追加していません。
+
+永続化はProviderのwith_journalで最初の要求前に設定します。Document/Undo保存とは別で、開始済み未完了commitは再実行しません。ストレージ異常時にメモリー内モードへフォールバックしないでください。新しいgrantの再取得を使って不明な効果を自動再試行しません。

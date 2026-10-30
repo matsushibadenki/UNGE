@@ -1,5 +1,9 @@
 import type { Locale } from './i18n';
 const en = {
+  storage_locked: 'Another provider owns this replay journal.', storage_corrupt: 'The replay journal is invalid. Preserve it and ask the host to inspect storage.',
+  storage_unavailable: 'Execution stopped because its record could not be saved. Check the outcome before retrying.',
+  storage_full: 'Replay storage is full. Ask the host to increase capacity without deleting history.', persistence_required: 'Provider switching requires persistent replay storage.',
+
   unknown_job: 'No job exists for this commit.', jobs_unavailable: 'The host does not support asynchronous jobs.',
   execution_busy: 'Another execution is active.', execution_panicked: 'A host error interrupted execution.', execution_aborted: 'Execution was abandoned.', state_unavailable: 'Execution state is unavailable.', registry_mismatch: 'The host execution registry does not match.',
   invalid_properties: 'A property value is invalid or missing.',
@@ -16,6 +20,10 @@ const en = {
 } as const;
 type Translations = { [K in keyof typeof en]: string };
 const ja: Translations = {
+  storage_locked: '別のProviderがこの再送記録を使用しています。', storage_corrupt: '再送記録が無効です。削除せずホストで保存先を確認してください。',
+  storage_unavailable: '実行記録を保存できず操作を停止しました。再試行する前に結果を確認してください。',
+  storage_full: '再送記録の保存容量が不足しています。履歴を削除せずホストで容量を増やしてください。', persistence_required: 'Providerの切り替えには再送記録の永続化が必要です。',
+
   unknown_job: 'このcommitのジョブは存在しません。', jobs_unavailable: 'ホストは非同期ジョブに対応していません。',
   execution_busy: '別の実行が進行中です。', execution_panicked: 'ホストのエラーで実行中断しました。', execution_aborted: '実行が破棄されました。', state_unavailable: '実行状態を利用できません。', registry_mismatch: 'ホストの実行Registryが一致しません。',
   invalid_properties: 'プロパティの値が無効、または必須項目が未入力です。',
@@ -31,6 +39,10 @@ const ja: Translations = {
   execution_failed: 'ノードの実行に失敗しました。', invalid_policy: 'ホストのポリシーが無効です。',
 };
 const zh: Translations = {
+  storage_locked: '另一个Provider正在使用此重放日志。', storage_corrupt: '重放日志无效。请保留日志并由宿主检查存储。',
+  storage_unavailable: '执行记录无法保存，操作已停止。重试前请先核实结果。',
+  storage_full: '重放存储容量不足。请由宿主增加容量，不要删除历史。', persistence_required: '切换Provider需要持久重放存储。',
+
   unknown_job: '此commit没有对应任务。', jobs_unavailable: '主机不支持异步任务。',
   execution_busy: '另一个执行正在进行。', execution_panicked: '主机错误导致执行中断。', execution_aborted: '执行已被放弃。', state_unavailable: '执行状态不可用。', registry_mismatch: '主机执行Registry不匹配。',
   invalid_properties: '属性值无效或缺少必填项。',

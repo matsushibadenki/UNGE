@@ -90,7 +90,9 @@
 - 🟢 [Done] Rust/Python間の正確なハッシュ材料照合、型付きTypeScriptクライアント、3言語エラー辞書
 - 🟢 [Done] Headless JSON Lines Provider、Tauriの共有Documentへ接続する `--acx-stdio` モード
 - 🟢 [Done] acx側へのProfile仕様・Schema・例・テスト追加、UNGEへの持ち運び可能なSchema同梱
-- 🟠 [Next] 別実装Providerとの相互運用、承認・Receipt・再送記録の永続化、セッション保持上限の運用
+- 🟢 [Done] 期限切れ未実行preflightの自動／明示的回収、Rustホストの保持件数照会。実行済み結果・Receipt・jobの再送を維持。[保持運用](ACX_RETENTION.md)。
+- 🟢 [Done] 任意の永続ジャーナルによる開始guard・結果/Receipt保存と再起動後の再送、単一writer排他、実行中を拒否するProvider epoch切り替え。[有効化と復元範囲](ACX_DURABILITY.md)。
+- 🟠 [Next] 別実装Providerとの相互運用、Document/Undo保存とのトランザクション連携、長期ログの圧縮・退避運用
 - 🔴 [Later] MCP/A2A binding、署名、多ユーザー認証、外部副作用や課金を伴う実行Profile
 
 ## 今回の優先順位（2026-10-05）
@@ -181,10 +183,35 @@
 
 - 🟢 [Done] sha2 0.11／pollster 1.0／互換な推移依存とCIのTypeScript 7へ更新。Rust149件（標準／all-featuresの各構成）、Clippy、実GPU4件、Surface360フレーム、Schema／ACX／3言語UIを検証。[採用版・互換性記録](DEPENDENCY_UPDATES.md)。
 - 🟢 [Done] Tauri 2.12.3／runtime-wry 2.12.1／build・macros・codegen 2.7.2へ一式移行。macOSのSurface、入力、子WebView合成、dock/float、浮動状態の再起動復元を検証。[移行記録](DEPENDENCY_UPDATES.md)。
-- 🟠 [Next] cosmic-text 0.19、wgpu 30、schemars 1.2のAPI／描画／Schema移行と回帰検証。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告も確認する。現行pinを無条件に解除しない。
+- 🟢 [Done] cosmic-text 0.19へ移行し、遅延整形API・再公開型の取り込み手順・実GPU・Surfaceを検証。2026-10-19の記録を参照。
+- 🟠 [Next] wgpu 30、直接依存schemars 1.2.3のAPI／描画／Schema移行と回帰検証。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告も確認する。現行pinを無条件に解除しない。
 - ⭕️ [Pending] Windows/LinuxのSurface・入力・dock/float、WASM、最低Rust版での依存更新検証。
 
 ## 2026-10-14: GUIの配置方針
 
 - 🟢 [Done] サンプルWebViewをSVGアイコン中心のコンパクトな配置へ更新。プロパティを上部へ移し、説明・補助情報をhover／focusへ集約。3言語の操作名、Esc、狭い幅、保存／競合／下書き、macOS実操作を確認。[取り込み](COMPACT_PANEL.md)。
 - ⭕️ [Pending] Windows/Linuxと実スクリーンリーダーでの新パネル操作確認。
+
+## 2026-10-19: 文字描画とstableパッチ更新
+
+- 🟢 [Done] cosmic-text 0.19、sha2 0.11.1、Tauri 2.12.4一式と互換な推移依存を更新。両Rust構成各152件、Clippy、実GPU4件、Surface360フレーム、17契約、ACX、3言語UIを確認。[記録](DEPENDENCY_UPDATES.md)。
+- ⭕️ [Pending] Windows/Linux、WASM、最低Rust版、署名配布と多モニターでの検証。
+
+## 2026-10-25: ACXの継続利用と保持運用
+
+- 🟢 [Done] 新規preflightの受付前に期限切れ・未実行セッションだけを回収。承認／commit済みの未実行確認も対象とし、期限前の確認・実行中job・実行/回復Receiptを保護。
+- 🟢 [Done] Rust専用の保持量照会と明示的prune API。期限境界・混在grant・時計の巻き戻り・256サイクルの受付・失敗/回復/非同期jobの再送を検証。両Rust構成各158件、Clippy、17契約とACX stdioが成功。[取り込みと範囲](ACX_RETENTION.md)。
+- 🟢 [Done] 実行済み記録の任意永続化と再送保証を保つProvider切り替え。以下の永続再送を参照。独立Providerとの相互運用は未完了。
+
+## 2026-10-25: ACXの永続再送とProvider切り替え
+
+- 🟢 [Done] 開始前/完了応答前の同期保存、同じcommitの結果とReceiptの再取得、成否不明commitの再実行拒否、完了済みRecover/job再送、writer排他と容量予約。任意のRust APIとstdioオプションで有効化。[設計と限界](ACX_DURABILITY.md)。
+- 🟢 [Done] 実行中のepoch切り替え拒否、旧Receiptを残す切り替え、別プロセスでの中断・再起動、破損・I/O失敗・容量不足・Document不一致の検証。両Rust構成各169件、Clippy、17契約、stdio再起動検証が成功。
+- 🟠 [Next] Document/Undo保存とのトランザクション連携と長期ログの圧縮／退避。永続化ジャーナルはDocument自動保存ではない。
+- ⭕️ [Pending] Windows/Linux、実電源断、最低Rust版、filesystem別の実機検証。独立Providerとの相互運用は別途必要。
+
+## 2026-10-26: UUID stable更新
+
+- 🟢 [Done] uuid 1.28.0→1.29.0、455種のCargo依存のstable候補／MSRV監査。両Rust構成各169件、Clippy、17契約、Schema6件、ACX再起動を含むstdio6件、strict TypeScript、headlessを確認。[互換性・保留記録](DEPENDENCY_UPDATES.md#2026-10-26-uuidの互換更新と全依存監査)。
+- 🟠 [Next] Tauri 2.12.5一式／Wry 0.57.1、wgpu 30、直接schemars 1.2.3、他の推移依存候補を関連回帰検証とともに分割移行。exact pinは維持。
+- ⭕️ [Pending] 他OS、WASM、最低Rust版と実電源断の実機検証。

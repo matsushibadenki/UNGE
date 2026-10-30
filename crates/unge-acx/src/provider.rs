@@ -22,6 +22,7 @@ pub struct Policy {
     pub create_types: BTreeSet<String>,
     pub execute_types: BTreeSet<String>,
     pub ttl_seconds: u64,
+    /// Maximum retained sessions; expired unstarted grants are reclaimed before admission.
     pub max_sessions: usize,
     pub max_nodes: usize,
     pub max_run_nodes: usize,
@@ -53,6 +54,18 @@ impl Policy {
         }
     }
 }
+/// Counts for host admission/monitoring; not a heap-byte or durable-storage budget.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct RetentionUsage {
+    pub sessions: usize,
+    pub max_sessions: usize,
+    pub expired_unstarted: usize,
+    pub started: usize,
+    pub receipts: usize,
+    pub jobs: usize,
+    /// Workers still running or awaiting collection of their terminal result.
+    pub active_jobs: usize,
+}
 struct Session {
     preflight: Value,
     input: Intent,
@@ -63,6 +76,7 @@ struct Session {
     recovery: Option<Value>,
     started: bool,
     after_revision: Option<u64>,
+    recovery_started: bool,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -138,10 +152,16 @@ fn clock() -> u64 {
         .as_secs()
 }
 
+struct RecordTarget<'a> {
+    commit: &'a str,
+    recovery: bool,
+    job: Option<RunSummary>,
+}
+
 type RunObserver = Arc<dyn Fn(RunSummary) + Send + Sync>;
 
 /// Serial lifecycle service. Execute on a host worker thread, not the UI/render thread.
-/// State/receipt retention is bounded and in memory; no guarantees survive a restart.
+/// Replay is in memory unless a host-owned journal is attached before serving requests.
 pub struct Provider {
     host: Arc<dyn GraphHost>,
     registry: Arc<Registry>,
@@ -154,6 +174,7 @@ pub struct Provider {
     now: Arc<dyn Fn() -> u64 + Send + Sync>,
     provider_id: String,
     changed: bool,
+    journal: Option<crate::journal::Journal>,
 }
 impl Provider {
     pub fn new(host: Arc<dyn GraphHost>, registry: Arc<Registry>, policy: Policy) -> Self {
@@ -177,7 +198,113 @@ impl Provider {
             now,
             provider_id: format!("urn:unge:session:{}", Id::new_v4()),
             changed: false,
+            journal: None,
         }
+    }
+    /// Attach a single-writer replay journal before any requests are served.
+    /// The host must restore the same Document ID; Document state/Undo is not stored here.
+    pub fn with_journal(
+        mut self,
+        path: impl AsRef<std::path::Path>,
+        options: crate::JournalOptions,
+    ) -> Result<Self> {
+        if self.journal.is_some()
+            || !self.sessions.is_empty()
+            || !self.receipts.is_empty()
+            || !self.jobs.is_empty()
+        {
+            return Err(AcxError::new(
+                "invalid_request",
+                "attach persistence to a fresh provider",
+            ));
+        }
+        let document = self.host.snapshot()?.document.graph().id;
+        let journal = crate::journal::Journal::open(
+            path.as_ref(),
+            document,
+            self.provider_id.clone(),
+            options,
+        )?;
+        self.provider_id = journal.provider.clone();
+        self.journal = Some(journal);
+        Ok(self)
+    }
+    pub fn journal_usage(&self) -> Option<crate::JournalUsage> {
+        self.journal.as_ref().map(|j| j.usage())
+    }
+    /// Start a new admission epoch without deleting any persisted replay evidence.
+    /// Only the trusted owner can rotate; active/finalizing jobs prevent rotation.
+    pub fn rotate_session(&mut self) -> Result<String> {
+        if self.journal.is_none() {
+            return Err(AcxError::new(
+                "persistence_required",
+                "rotation requires a replay journal",
+            ));
+        }
+        self.collect_jobs()?;
+        if self.jobs.values().any(|job| job.is_active()) {
+            return Err(AcxError::new(
+                "execution_busy",
+                "finalize active jobs before rotating",
+            ));
+        }
+        let next = format!("urn:unge:session:{}", Id::new_v4());
+        self.journal.as_mut().unwrap().rotate(next.clone())?;
+        self.sessions.clear();
+        self.receipts.clear();
+        self.jobs.clear();
+        self.provider_id = next.clone();
+        Ok(next)
+    }
+    fn replay_execution(&self, commit: &str) -> Option<Result<Value>> {
+        let record = self.journal.as_ref()?.records.get(commit)?;
+        Some(record.execution.clone().ok_or_else(|| {
+            AcxError::new(
+                "execution_uncertain",
+                "durable start has no confirmed outcome; do not retry effects",
+            )
+        }))
+    }
+    fn replay_job(&self, commit: &str) -> Option<Result<Value>> {
+        let record = self.journal.as_ref()?.records.get(commit)?;
+        Some(if !record.is_job {
+            Err(AcxError::new(
+                "execution_uncertain",
+                "commit was not an asynchronous job; retrieve execute result",
+            ))
+        } else if let (Some(run), Some(execution)) = (&record.job, &record.execution) {
+            Ok(json!({"commitId":commit,"run":run,"execution":execution}))
+        } else {
+            Err(AcxError::new(
+                "execution_uncertain",
+                "interrupted job must not be restarted",
+            ))
+        })
+    }
+    fn persist_start(&mut self, session_id: &str, recovery: bool, job: bool) -> Result<()> {
+        let session = &self.sessions[session_id];
+        if let Some(journal) = &mut self.journal {
+            if journal.document != session.input.target().0 {
+                return Err(AcxError::new(
+                    "document_mismatch",
+                    "journal Document does not match",
+                ));
+            }
+            journal.begin(
+                session.commit.as_deref().expect("committed session"),
+                session.preflight["requestHash"].as_str().unwrap(),
+                &hash_bytes(
+                    session
+                        .authorization
+                        .as_deref()
+                        .expect("authorized session")
+                        .as_bytes(),
+                ),
+                job,
+                recovery,
+            )?;
+        }
+        Ok(())
     }
     /// Trusted host integration; preserves the approved synchronous ACX run/Receipt contract.
     pub fn with_execution(
@@ -193,6 +320,41 @@ impl Provider {
         }
         self.execution = Some((service, Arc::new(observer)));
         Ok(self)
+    }
+    /// Inspect retained records without collecting jobs, pruning, or editing the Document.
+    pub fn retention_usage(&self) -> RetentionUsage {
+        let now = (self.now)();
+        RetentionUsage {
+            sessions: self.sessions.len(),
+            max_sessions: self.policy.max_sessions,
+            expired_unstarted: self
+                .sessions
+                .values()
+                .filter(|s| {
+                    !s.started
+                        && now >= s.preflight["expiresAt"].as_u64().expect("preflight expiry")
+                })
+                .count(),
+            started: self.sessions.values().filter(|s| s.started).count(),
+            receipts: self.receipts.len(),
+            jobs: self.jobs.len(),
+            active_jobs: self.jobs.values().filter(|job| job.is_active()).count(),
+        }
+    }
+    /// Reclaim expired grants that never began execution. Started/uncertain attempts,
+    /// job records and original execution/recovery receipts remain retained for replay.
+    /// This never edits the Document or cancels work. Removed IDs cannot be reused.
+    pub fn prune_expired_preflights(&mut self) -> usize {
+        let now = (self.now)();
+        let before = self.sessions.len();
+        self.sessions.retain(|_, session| {
+            session.started
+                || now
+                    < session.preflight["expiresAt"]
+                        .as_u64()
+                        .expect("preflight expiry")
+        });
+        before - self.sessions.len()
     }
     pub fn take_changed(&mut self) -> bool {
         std::mem::take(&mut self.changed)
@@ -216,7 +378,7 @@ impl Provider {
                 "effects":if id==EDIT {vec!["graph-document-mutation"]}else if id==RUN {vec!["host-allowlisted-node-execution"]}else {vec![]},
                 "economics":{"model":"free","currency":"USD","max":"0.00"},"evidence":{"receipt":if id==OBSERVE {"none"}else{"plain"}},
                 "recovery":{"reversible":reversible,"condition":if reversible {"same document, latest unchanged revision, retained undo, unexpired grant"}else{"not supported"}},
-                "extensions":{"org.unge.node-graph":{"profileVersion":"0.1.0","asyncJobs":if id==RUN && self.execution.is_some(){json!({"profile":"experimental-node-graph-jobs-v1","methods":["run_start","run_status","run_cancel"],"key":"commitId"})}else{Value::Null},"description":{"en":description,"ja":ja,"zh-CN":zh},"requestSchema":"embedded inputSchema","digestEncoding":"provider-json-utf8-v1","policy":{"edit":self.policy.allow_edit,"run":self.policy.allow_run,"createTypes":self.policy.create_types,"executeTypes":self.policy.execute_types},"limits":{"requestBytes":MAX_MESSAGE_BYTES,"operations":256,"pageItems":100,"sessions":self.policy.max_sessions,"nodes":self.policy.max_nodes,"runNodes":self.policy.max_run_nodes}}}
+                "extensions":{"org.unge.node-graph":{"profileVersion":"0.1.0","replay":{"durable":self.journal.is_some(),"interruptedExecution":"execution_uncertain","rotation":"host-only"},"asyncJobs":if id==RUN && self.execution.is_some(){json!({"profile":"experimental-node-graph-jobs-v1","methods":["run_start","run_status","run_cancel"],"key":"commitId"})}else{Value::Null},"description":{"en":description,"ja":ja,"zh-CN":zh},"requestSchema":"embedded inputSchema","digestEncoding":"provider-json-utf8-v1","policy":{"edit":self.policy.allow_edit,"run":self.policy.allow_run,"createTypes":self.policy.create_types,"executeTypes":self.policy.execute_types},"limits":{"requestBytes":MAX_MESSAGE_BYTES,"operations":256,"pageItems":100,"sessions":self.policy.max_sessions,"nodes":self.policy.max_nodes,"runNodes":self.policy.max_run_nodes}}}
             })
         };
         json!({"acx":"0.1","provider":{"id":self.provider_id,"name":"UNGE Rust graph provider"},"capabilities":[
@@ -226,6 +388,9 @@ impl Provider {
         ]})
     }
     pub fn dispatch(&mut self, method: &str, params: Value) -> Result<Value> {
+        if let Some(journal) = &self.journal {
+            journal.check()?;
+        }
         self.collect_jobs()?;
         if encode(&params)?.len() > MAX_MESSAGE_BYTES {
             return Err(AcxError::new("limit_exceeded", "request exceeds 256 KiB"));
@@ -245,6 +410,11 @@ impl Provider {
                 let args: ReceiptArgs = parse(params)?;
                 self.receipts
                     .get(&args.receipt_id)
+                    .or_else(|| {
+                        self.journal
+                            .as_ref()
+                            .and_then(|j| j.receipts.get(&args.receipt_id))
+                    })
                     .cloned()
                     .ok_or_else(|| AcxError::new("not_found", "unknown receipt"))
             }
@@ -379,13 +549,24 @@ impl Provider {
         }
     }
     fn preflight(&mut self, args: PreflightArgs) -> Result<Value> {
+        self.prune_expired_preflights();
         if self.sessions.len() >= self.policy.max_sessions {
             return Err(AcxError::new(
                 "capacity_exceeded",
-                "session retention is full; host must start a new provider session",
+                "session retention is full after expired unstarted grants were reclaimed; retain receipts before rotating the provider",
             ));
         }
         let snapshot = self.host.snapshot()?;
+        if self
+            .journal
+            .as_ref()
+            .is_some_and(|j| j.document != snapshot.document.graph().id)
+        {
+            return Err(AcxError::new(
+                "document_mismatch",
+                "journal Document does not match",
+            ));
+        }
         let (document, revision) = args.input.target();
         check_snapshot(&snapshot, document, revision)?;
         self.require_policy(&args.input, &snapshot)?;
@@ -451,6 +632,7 @@ impl Provider {
                 recovery: None,
                 started: false,
                 after_revision: None,
+                recovery_started: false,
             },
         );
         Ok(preflight)
@@ -536,6 +718,7 @@ impl Provider {
     }
     fn record(
         &mut self,
+        target: RecordTarget<'_>,
         preflight: &Value,
         result: Value,
         status: &str,
@@ -546,10 +729,23 @@ impl Provider {
         let receipt = json!({"acx":"0.1","receiptId":receipt_id,"capability":preflight["capability"],"provider":self.provider_id,
             "status":status,"issuedAt":chrono::Utc::now().to_rfc3339(),"requestHash":preflight["requestHash"],"resultHash":hash_bytes(result_json.as_bytes()),
             "effects":preflight["effects"],"cost":{"currency":"USD","amount":"0.00"},"recovery":recovery});
-        self.receipts.insert(receipt_id.clone(), receipt);
-        Ok(json!({"result":result,"resultJson":result_json,"receiptId":receipt_id}))
+        let execution = json!({"result":result,"resultJson":result_json,"receiptId":receipt_id});
+        if let Some(journal) = &mut self.journal {
+            journal.finish(
+                target.commit,
+                execution.clone(),
+                receipt.clone(),
+                target.job,
+                target.recovery,
+            )?;
+        }
+        self.receipts.insert(receipt_id, receipt);
+        Ok(execution)
     }
     fn execute(&mut self, args: ExecuteArgs) -> Result<Value> {
+        if let Some(result) = self.replay_execution(&args.commit_id) {
+            return result;
+        }
         let id = self.session_for_commit(&args.commit_id)?;
         let session = &self.sessions[&id];
         if let Some(result) = &session.execution {
@@ -567,6 +763,7 @@ impl Provider {
         let command = session.command.clone();
         let mut preflight = session.preflight.clone();
         let is_edit = command.is_some();
+        self.persist_start(&id, false, false)?;
         self.sessions.get_mut(&id).unwrap().started = true;
         let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(
             || -> Result<(Value, bool, Option<u64>)> {
@@ -628,13 +825,56 @@ impl Provider {
         } else {
             json!({"reversible":false})
         };
-        let execution = self.record(&preflight, result, status, recovery)?;
+        let execution = self.record(
+            RecordTarget {
+                commit: &args.commit_id,
+                recovery: false,
+                job: None,
+            },
+            &preflight,
+            result,
+            status,
+            recovery,
+        )?;
         let session = self.sessions.get_mut(&id).unwrap();
         session.after_revision = after;
         session.execution = Some(execution.clone());
         Ok(execution)
     }
     fn recover(&mut self, args: RecoverArgs) -> Result<Value> {
+        // Restored/rotated records are replay-only: never use a restored revision/Undo
+        // stack to perform a new rollback. Completed recoveries still replay exactly.
+        if let Some(record) = self
+            .journal
+            .as_ref()
+            .and_then(|j| j.records.get(&args.commit_id))
+        {
+            if record.authorization_hash != hash_bytes(args.authorization.as_bytes()) {
+                return Err(AcxError::new(
+                    "unauthorized",
+                    "recovery authorization does not match",
+                ));
+            }
+            if let Some(result) = &record.recovery {
+                return Ok(result.clone());
+            }
+            if record.recovery_started {
+                return Err(AcxError::new(
+                    "execution_uncertain",
+                    "recovery already started; inspect the host",
+                ));
+            }
+            if !self
+                .sessions
+                .values()
+                .any(|s| s.commit.as_deref() == Some(&args.commit_id))
+            {
+                return Err(AcxError::new(
+                    "recovery_unavailable",
+                    "restored records cannot authorize a new rollback",
+                ));
+            }
+        }
         let id = self.session_for_commit(&args.commit_id)?;
         let session = &self.sessions[&id];
         if session.authorization.as_deref() != Some(&args.authorization) {
@@ -646,6 +886,12 @@ impl Provider {
         if let Some(result) = &session.recovery {
             return Ok(result.clone());
         }
+        if session.recovery_started {
+            return Err(AcxError::new(
+                "execution_uncertain",
+                "recovery already started",
+            ));
+        }
         self.unexpired(session)?;
         if session.after_revision != Some(args.expected_revision) {
             return Err(AcxError::new(
@@ -655,10 +901,21 @@ impl Provider {
         }
         let document = session.input.target().0;
         let mut preflight = session.preflight.clone();
-        let after = self.host.undo(document, args.expected_revision)?;
+        check_snapshot(&self.host.snapshot()?, document, args.expected_revision)?;
+        self.persist_start(&id, true, false)?;
+        self.sessions.get_mut(&id).unwrap().recovery_started = true;
+        let after = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            self.host.undo(document, args.expected_revision)
+        }))
+        .map_err(|_| {
+            AcxError::new(
+                "execution_uncertain",
+                "host panicked during recovery; do not retry",
+            )
+        })??;
         self.changed = true;
         preflight["effects"] = json!(["graph-edit-rollback"]);
-        let recovered=self.record(&preflight,json!({"recoveredCommitId":args.commit_id,"summary":after.summary(),"documentHash":hash_json(&after.document)?}),"succeeded",json!({"reversible":false,"state":"recovered"}))?;
+        let recovered=self.record(RecordTarget { commit: &args.commit_id, recovery: true, job: None }, &preflight,json!({"recoveredCommitId":args.commit_id,"summary":after.summary(),"documentHash":hash_json(&after.document)?}),"succeeded",json!({"reversible":false,"state":"recovered"}))?;
         self.sessions.get_mut(&id).unwrap().recovery = Some(recovered.clone());
         Ok(recovered)
     }

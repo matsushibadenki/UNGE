@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-19",
+  "toolchain": "Rust/Cargo 1.99.0",
+  "rust_default": 152,
+  "rust_all_features": 152,
+  "gpu": 4,
+  "resolved_stable_versions": 30,
+  "clippy": "standard and all-features, all-targets: exit 0",
+  "fmt": "exit 0",
+  "contracts_generated": 17,
+  "contracts_tests": 6,
+  "acx_tests": 5,
+  "jsonschema": "4.26.0 also passed schema tests",
+  "typescript": "7.0.2 unchanged; strict check passed",
+  "ui": "Panel/Group/Accessibility/Execution 3 languages; Properties Chrome test: icons/tooltips/focus/docking, 3 languages, both themes, narrow layout, save/conflict/draft/selection races passed",
+  "surface": {
+    "adapter": "Apple M4",
+    "backend": "Metal",
+    "cases": 12,
+    "frames": 360,
+    "skipped": 0,
+    "build": "debug"
+  },
+  "limits": [
+    "Windows/Linux and WASM not tested",
+    "minimum Rust versions not tested",
+    "native docking and input manual actions not repeated this batch",
+    "no performance improvement or FPS claim"
+  ],
+  "remaining": [
+    "wgpu 30.0.1 migration and block 0.1.6 future Rust warning",
+    "direct schemars 0.8.22 to 1.2.3 migration"
+  ]
+}

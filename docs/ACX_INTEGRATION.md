@@ -152,3 +152,7 @@ Tauri与Provider共享RunService及同一Registry Arc可防止UI/AI同时重复�
 Discover asyncJobs before calling startRun/runStatus/cancelRun for an approved run commit. Poll until execution is non-null, then verify the existing Receipt and exact result bytes. Synchronous execute remains available. See [the optional job profile](ACX_ASYNC_JOBS.md#english).
 
 先发现asyncJobs，再对获批run commit调用startRun/runStatus/cancelRun。轮询至execution非null后验证原Receipt及准确结果字节。同步execute仍可用。参见[可选任务扩展](ACX_ASYNC_JOBS.md#简体中文)。
+
+[保持運用 / Retention / 保留管理](ACX_RETENTION.md)
+
+[永続再送 / Durable replay / 持久重放](ACX_DURABILITY.md): 任意のjournalで再起動後のReceipt・結果と確定済みjob概要を取得できます。途中停止jobは再開しません。

@@ -7,6 +7,11 @@ pub(super) struct Job {
     summary: Arc<Mutex<RunSummary>>,
     receiver: Option<mpsc::Receiver<Result<(Value, bool)>>>,
 }
+impl Job {
+    pub(super) fn is_active(&self) -> bool {
+        self.receiver.is_some()
+    }
+}
 impl Drop for Job {
     fn drop(&mut self) {
         let id = self.summary.lock().expect("job summary").id;
@@ -17,6 +22,9 @@ impl Provider {
     pub(super) fn start_job(&mut self, args: ExecuteArgs) -> Result<Value> {
         if self.jobs.contains_key(&args.commit_id) {
             return self.job_response(&args.commit_id);
+        }
+        if let Some(result) = self.replay_job(&args.commit_id) {
+            return result;
         }
         let session_id = self.session_for_commit(&args.commit_id)?;
         let session = &self.sessions[&session_id];
@@ -53,6 +61,9 @@ impl Provider {
         ));
         let progress = summary.clone();
         let observer = observer.clone();
+        let service = service.clone();
+        self.persist_start(&session_id, false, true)?;
+        self.sessions.get_mut(&session_id).unwrap().started = true;
         let (sender, receiver) = mpsc::sync_channel(1);
         let document_id = snapshot.document.graph().id;
         let revision = snapshot.revision;
@@ -81,6 +92,19 @@ impl Provider {
         self.job_response(&args.commit_id)
     }
     pub(super) fn job_response(&self, commit_id: &str) -> Result<Value> {
+        if self
+            .journal
+            .as_ref()
+            .and_then(|j| j.records.get(commit_id))
+            .is_some_and(|r| r.execution.is_some())
+        {
+            return self.replay_job(commit_id).expect("retained journal record");
+        }
+        if !self.jobs.contains_key(commit_id)
+            && let Some(result) = self.replay_job(commit_id)
+        {
+            return result;
+        }
         let job = self
             .jobs
             .get(commit_id)
@@ -96,6 +120,21 @@ impl Provider {
         )
     }
     pub(super) fn cancel_job(&mut self, args: ExecuteArgs) -> Result<Value> {
+        if self
+            .journal
+            .as_ref()
+            .and_then(|j| j.records.get(&args.commit_id))
+            .is_some_and(|r| r.execution.is_some())
+        {
+            return self
+                .replay_job(&args.commit_id)
+                .expect("retained journal record");
+        }
+        if !self.jobs.contains_key(&args.commit_id)
+            && let Some(result) = self.replay_job(&args.commit_id)
+        {
+            return result;
+        }
         let job = self
             .jobs
             .get(&args.commit_id)
@@ -151,7 +190,22 @@ impl Provider {
                 Ok((result, false)) => (result, "failed"),
                 Err(error) => (json!({"error":error}), "failed"),
             };
-            let execution = self.record(&preflight, result, status, json!({"reversible":false}))?;
+            let summary = self.jobs[&commit_id]
+                .summary
+                .lock()
+                .map_err(|e| AcxError::new("state_unavailable", e))?
+                .clone();
+            let execution = self.record(
+                RecordTarget {
+                    commit: &commit_id,
+                    recovery: false,
+                    job: Some(summary),
+                },
+                &preflight,
+                result,
+                status,
+                json!({"reversible":false}),
+            )?;
             self.sessions.get_mut(&session_id).unwrap().execution = Some(execution);
         }
         Ok(())

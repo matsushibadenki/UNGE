@@ -1,0 +1,107 @@
+[
+  {
+    "name": "bytemuck",
+    "latest": "1.25.2",
+    "rust_version": null,
+    "repository": "https://github.com/Lokathor/bytemuck",
+    "source": "https://crates.io/crates/bytemuck"
+  },
+  {
+    "name": "chrono",
+    "latest": "0.4.45",
+    "rust_version": "1.62.0",
+    "repository": "https://github.com/chronotope/chrono",
+    "source": "https://crates.io/crates/chrono"
+  },
+  {
+    "name": "cosmic-text",
+    "latest": "0.19.0",
+    "rust_version": "1.89",
+    "repository": "https://github.com/pop-os/cosmic-text",
+    "source": "https://crates.io/crates/cosmic-text"
+  },
+  {
+    "name": "futures",
+    "latest": "0.3.34",
+    "rust_version": "1.71",
+    "repository": "https://github.com/rust-lang/futures-rs",
+    "source": "https://crates.io/crates/futures"
+  },
+  {
+    "name": "pollster",
+    "latest": "1.0.1",
+    "rust_version": "1.69",
+    "repository": "https://github.com/zesterer/pollster",
+    "source": "https://crates.io/crates/pollster"
+  },
+  {
+    "name": "schemars",
+    "latest": "1.2.3",
+    "rust_version": "1.74",
+    "repository": "https://github.com/GREsau/schemars",
+    "source": "https://crates.io/crates/schemars"
+  },
+  {
+    "name": "serde",
+    "latest": "1.0.229",
+    "rust_version": "1.56",
+    "repository": "https://github.com/serde-rs/serde",
+    "source": "https://crates.io/crates/serde"
+  },
+  {
+    "name": "serde_json",
+    "latest": "1.0.154",
+    "rust_version": "1.71",
+    "repository": "https://github.com/serde-rs/json",
+    "source": "https://crates.io/crates/serde_json"
+  },
+  {
+    "name": "sha2",
+    "latest": "0.11.1",
+    "rust_version": "1.88",
+    "repository": "https://github.com/RustCrypto/hashes",
+    "source": "https://crates.io/crates/sha2"
+  },
+  {
+    "name": "tauri",
+    "latest": "2.12.4",
+    "rust_version": "1.90",
+    "repository": "https://github.com/tauri-apps/tauri",
+    "source": "https://crates.io/crates/tauri"
+  },
+  {
+    "name": "tauri-build",
+    "latest": "2.7.3",
+    "rust_version": "1.90",
+    "repository": "https://github.com/tauri-apps/tauri",
+    "source": "https://crates.io/crates/tauri-build"
+  },
+  {
+    "name": "tauri-runtime-wry",
+    "latest": "2.12.2",
+    "rust_version": "1.90",
+    "repository": "https://github.com/tauri-apps/tauri",
+    "source": "https://crates.io/crates/tauri-runtime-wry"
+  },
+  {
+    "name": "thiserror",
+    "latest": "2.0.21",
+    "rust_version": "1.77",
+    "repository": "https://github.com/dtolnay/thiserror",
+    "source": "https://crates.io/crates/thiserror"
+  },
+  {
+    "name": "uuid",
+    "latest": "1.28.0",
+    "rust_version": "1.89.0",
+    "repository": "https://github.com/uuid-rs/uuid",
+    "source": "https://crates.io/crates/uuid"
+  },
+  {
+    "name": "wgpu",
+    "latest": "30.0.1",
+    "rust_version": "1.87.0",
+    "repository": "https://github.com/gfx-rs/wgpu",
+    "source": "https://crates.io/crates/wgpu"
+  }
+]

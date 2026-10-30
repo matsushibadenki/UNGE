@@ -1,7 +1,7 @@
 use serde_json::{Value, json};
 use std::sync::{
     Arc,
-    atomic::{AtomicUsize, Ordering},
+    atomic::{AtomicU64, AtomicUsize, Ordering},
 };
 use unge_acx::*;
 use unge_core::*;
@@ -18,6 +18,13 @@ impl NodeExecutor for Wait {
     }
 }
 fn setup(wait: bool) -> (Provider, Arc<MemoryHost>, Arc<AtomicUsize>, RunService) {
+    setup_retention(wait, Policy::math_demo(), Arc::new(AtomicU64::new(1_000)))
+}
+fn setup_retention(
+    wait: bool,
+    policy: Policy,
+    now: Arc<AtomicU64>,
+) -> (Provider, Arc<MemoryHost>, Arc<AtomicUsize>, RunService) {
     let calls = Arc::new(AtomicUsize::new(0));
     let mut registry = math_registry();
     if wait {
@@ -41,9 +48,14 @@ fn setup(wait: bool) -> (Provider, Arc<MemoryHost>, Arc<AtomicUsize>, RunService
         Scheduler::new(1, 10),
         RunLimits::default(),
     );
-    let provider = Provider::new(host.clone(), registry, Policy::math_demo())
-        .with_execution(service.clone(), |_| {})
-        .unwrap();
+    let provider = Provider::with_clock(
+        host.clone(),
+        registry,
+        policy,
+        Arc::new(move || now.load(Ordering::SeqCst)),
+    )
+    .with_execution(service.clone(), |_| {})
+    .unwrap();
     (provider, host, calls, service)
 }
 fn commit(provider: &mut Provider, host: &MemoryHost, kind: &str) -> String {
@@ -262,4 +274,135 @@ fn busy_start_does_not_consume_another_commit_and_params_are_strict() {
         .dispatch("run_cancel", json!({"commitId":b}))
         .unwrap();
     terminal(&mut provider, &b);
+}
+
+#[test]
+fn expired_active_and_finalized_jobs_keep_their_session_and_replay() {
+    let now = Arc::new(AtomicU64::new(1_000));
+    let (mut provider, host, calls, _) = setup_retention(
+        true,
+        Policy {
+            max_sessions: 1,
+            ttl_seconds: 1,
+            ..Policy::math_demo()
+        },
+        now.clone(),
+    );
+    let id = commit(&mut provider, &host, "run");
+    provider
+        .dispatch("run_start", json!({"commitId":id}))
+        .unwrap();
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(3);
+    while calls.load(Ordering::SeqCst) == 0 {
+        assert!(std::time::Instant::now() < until);
+        std::thread::yield_now();
+    }
+    now.store(1_001, Ordering::SeqCst);
+    assert_eq!(provider.prune_expired_preflights(), 0);
+    let usage = provider.retention_usage();
+    assert_eq!(
+        (
+            usage.sessions,
+            usage.started,
+            usage.jobs,
+            usage.active_jobs,
+            usage.expired_unstarted
+        ),
+        (1, 1, 1, 1, 0)
+    );
+    let snapshot = host.snapshot().unwrap();
+    assert_eq!(provider.dispatch("preflight",json!({"input":{"kind":"run","document_id":snapshot.document.graph().id,"expected_revision":snapshot.revision}})).unwrap_err().code,"capacity_exceeded");
+    provider
+        .dispatch("run_cancel", json!({"commitId":id}))
+        .unwrap();
+    let done = terminal(&mut provider, &id);
+    assert_eq!(provider.prune_expired_preflights(), 0);
+    let usage = provider.retention_usage();
+    assert_eq!(
+        (
+            usage.sessions,
+            usage.receipts,
+            usage.jobs,
+            usage.active_jobs
+        ),
+        (1, 1, 1, 0)
+    );
+    assert_eq!(
+        provider
+            .dispatch("run_start", json!({"commitId":id}))
+            .unwrap(),
+        done
+    );
+    assert_eq!(
+        provider
+            .dispatch("execute", json!({"commitId":id}))
+            .unwrap(),
+        done["execution"]
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+    assert_eq!(host.snapshot().unwrap().revision, snapshot.revision);
+}
+
+#[test]
+fn durable_jobs_refuse_active_rotation_and_replay_after_restart() {
+    let directory = std::env::temp_dir().join(format!("unge-job-journal-{}", Id::new_v4()));
+    std::fs::create_dir(&directory).unwrap();
+    let path = directory.join("journal.jsonl");
+    let (provider, host, calls, _) = setup(true);
+    let mut provider = provider
+        .with_journal(&path, JournalOptions::default())
+        .unwrap();
+    let id = commit(&mut provider, &host, "run");
+    provider
+        .dispatch("run_start", json!({"commitId":id}))
+        .unwrap();
+    assert_eq!(
+        provider.rotate_session().unwrap_err().code,
+        "execution_busy"
+    );
+    let until = std::time::Instant::now() + std::time::Duration::from_secs(3);
+    while calls.load(Ordering::SeqCst) == 0 {
+        assert!(std::time::Instant::now() < until);
+        std::thread::yield_now();
+    }
+    provider
+        .dispatch("run_cancel", json!({"commitId":id}))
+        .unwrap();
+    let done = terminal(&mut provider, &id);
+    let receipt_id = done["execution"]["receiptId"].clone();
+    let receipt = provider
+        .dispatch("receipt", json!({"receiptId":receipt_id}))
+        .unwrap();
+    provider.rotate_session().unwrap();
+    assert_eq!(
+        provider
+            .dispatch("run_start", json!({"commitId":id}))
+            .unwrap(),
+        done
+    );
+    drop(provider);
+    let mut provider = Provider::new(host, Arc::new(math_registry()), Policy::default())
+        .with_journal(&path, JournalOptions::default())
+        .unwrap();
+    for method in ["run_start", "run_status", "run_cancel"] {
+        assert_eq!(
+            provider.dispatch(method, json!({"commitId":id})).unwrap(),
+            done
+        );
+    }
+    assert_eq!(
+        provider
+            .dispatch("execute", json!({"commitId":id}))
+            .unwrap(),
+        done["execution"]
+    );
+    assert_eq!(
+        provider
+            .dispatch("receipt", json!({"receiptId":receipt_id}))
+            .unwrap(),
+        receipt
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+    drop(provider);
+    std::fs::remove_dir_all(directory).unwrap();
 }

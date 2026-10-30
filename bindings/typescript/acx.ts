@@ -1,5 +1,9 @@
 import type { RunSummary } from './execution';
-/** Experimental ACX JSON Lines profile. The transport is a host-owned process/pipe. */
+/** Experimental ACX JSON Lines profile. The transport is a host-owned process/pipe.
+ * Durable hosts replay the same execution/Receipt by commitId after restart/rotation.
+ * execution_uncertain means effects MUST NOT be automatically retried. New grants
+ * and journal/epoch administration remain trusted host operations, not wire methods.
+ */
 import type { Definition } from './definitions';
 import type { Edge, Group, Id, Json, Rect } from './index';
 export type AcxOperation =
@@ -15,6 +19,8 @@ export type AcxOperation =
 export type AcxIntent =
   | { kind: 'edit'; document_id: Id; expected_revision: number; operations: AcxOperation[] }
   | { kind: 'run'; document_id: Id; expected_revision: number };
+/** Optional org.unge.node-graph discovery extension; old hosts may omit it. */
+export interface AcxReplayPolicy { durable: boolean; interruptedExecution: 'execution_uncertain'; rotation: 'host-only' }
 export interface AcxError { code: string; message: string }
 export interface AcxEnvelope { id: string; method: string; params: unknown }
 export type AcxResponse = { id: string | null; result: unknown; error?: never } | { id: string | null; error: AcxError; result?: never };
@@ -23,6 +29,7 @@ export interface Preflight {
   preflightId: string; provider: string; capability: string; version: string;
   input: AcxIntent; requestJson: string; requestHash: string;
   preflightJson: string; preflightDigest: string; documentHash: string;
+  /** Expired, never-started grants can be reclaimed on a later preflight; use a fresh approval. */
   expiresAt: number; effects: string[]; preview: Record<string, unknown>;
   cost: { currency: string; estimated: string; max: string };
   approval: { type: 'policy'; scope: string };

@@ -84,3 +84,7 @@ Registry avoids redundant edit validation. [Integration contract and benchmark](
 [Scene phase timings and retained Edge metadata](SCENE_TIMINGS.md)
 
 [Compact icon controls and inspector](COMPACT_PANEL.md)
+
+[ACX expired-preflight reclamation and retention monitoring](ACX_RETENTION.md)
+
+[ACX durable replay and safe provider rotation](ACX_DURABILITY.md)

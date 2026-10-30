@@ -137,3 +137,5 @@ Scene生成はSpatialIndexのID順のVecを保持し、プレビュー候補を�
 RenderEdgeは確定境界と接続元のtype_idを保持する。色はViewのCatalog／Themeで解決し、Previewは一時形状を使う。編集・履歴で関連Edgeを更新する。[Scene計測と費用](SCENE_TIMINGS.md)。
 
 compact.jsはWebViewの表示だけを装飾する。SVG、aria-label、情報表示を既存コントローラーのテキストから更新し、編集・下書きの制御を置き換えない。[UIの取り込み](COMPACT_PANEL.md)。
+
+ACXの任意の永続ジャーナルはProviderの開始guardと結果/Receiptを同期保存する。Graph/Document/Rendererの所有権やIPCフレームを変更しない。Document/Undoのチェックポイントはホストの責務で、途中停止した効果の成否は推定せず再実行を拒否する。[永続再送とepoch切り替え](ACX_DURABILITY.md)。

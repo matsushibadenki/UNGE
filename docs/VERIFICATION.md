@@ -436,3 +436,21 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 - ⭕️ [Pending] Windows／Linux実画面、実スクリーンリーダーは環境がないため保留。WCAG適合認定や性能改善の数値は今回の検証範囲に含めない。
 - English: Compact SVG controls, priority property placement and bounded information popups pass three-language, two-theme, three-width browser checks. macOS Tauri confirms property save/Undo and floating/docking. All 152 Rust tests, formatting, strict Clippy and 17 contracts pass. Windows/Linux and real screen readers remain unverified.
 - 简体中文：紧凑SVG控件、优先属性布局及信息弹窗通过三语、双主题、三宽度浏览器检查。macOS Tauri验证属性保存／撤销与浮动／停靠。152项Rust测试、格式、严格Clippy及17项契约检查通过。Windows／Linux及真实屏幕阅读器尚未验证。
+
+## 2026-10-25: ACX保持枠の回収
+
+- 🟢 [Done] `cargo fmt --all`、fmt check、標準/all-featuresのworkspaceテスト各158件、標準/all-featuresの全target Clippy（`-D warnings`）が成功。既存block 0.1.6の将来Rust互換性警告は残る。
+- 🟢 [Done] 新規6回帰と既存失敗実行ケースの強化で、期限境界、有効grant混在、旧承認の流用拒否、時計巻き戻り、模擬256サイクル、実行/回復Receipt再送、期限後の非同期job保持を確認。ACX35件成功。
+- 🟢 [Done] TypeScript 7.0.2 strict型検査、17契約の生成差分なし、Schema6件、実stdio ACX5件が成功。公開wire型とJSON Schemaは変更なし。Rustホスト用の`RetentionUsage`/`retention_usage`/`prune_expired_preflights`を追加。[契約](ACX_RETENTION.md)。
+- 今回はGPUコードを変更しておらず、GPU ignoredテストは再実行していない。永続化・独立Providerとの相互運用は完了扱いにしない。
+
+## 2026-10-25: 永続再送とProvider切り替え
+
+- 🟢 [Done] macOS / Rust 1.99.1で標準/all-featuresのworkspace各169件、両構成all-targets Clippy（-D warnings）、fmt/check、TypeScript strictが成功。既存block 0.1.6の将来互換性警告は残る。
+- 🟢 [Done] 17契約に生成差分なし、Schema6件、実stdio6件成功。新しいreplay discovery情報とstorageエラー5codeの3言語を追加。実行/Receipt/job wire形式は維持。
+- 🟢 [Done] 永続化11回帰: I/O失敗、hash/version/末尾破損、サイズ上限、Document不一致、別writer排他、失敗結果の再送、回復/非同期job、開始/効果/完了/async開始/Undo後のプロセス停止を検証。ignored補助入口2つは親テストが実行するfixture。[範囲](ACX_DURABILITY.md)。
+- ⭕️ [Pending] Windows/Linux、実電源断、最低Rust版、filesystem別の実機検証。Document/Undoのチェックポイントをジャーナルに保存したとは扱わない。
+
+## 2026-10-26: UUID更新
+
+uuid 1.29.0、Rust 1.99.1／macOSでworkspace標準・all-features各169件成功（0失敗、6 ignored）。両構成のall-targets Clippy（-D warnings）、fmt、17生成契約、Schema6件、ACX stdio6件、TypeScript 7.0.2 strict、headlessの42、diff checkが成功。ACXには実行記録の再起動／Provider切り替え回帰を含む。既存GPU4件は今回は実行していない。補助入口2件のignoredは親テストから別プロセスで実行した。block 0.1.6のCargo将来互換性警告は残る。その他OS／WASM／最低Rust版は未検証。[版と監査記録](DEPENDENCY_UPDATES.md#2026-10-26-uuidの互換更新と全依存監査)。

@@ -84,3 +84,7 @@ Registry减少编辑时的重复验证。[集成契约与基准](REGISTRY_VALIDA
 [Scene阶段计时及Edge信息保留](SCENE_TIMINGS.md)
 
 [紧凑图标控件与属性面板](COMPACT_PANEL.md)
+
+[ACX过期未执行预检回收与保留量监控](ACX_RETENTION.md)
+
+[ACX执行记录持久化与安全Provider切换](ACX_DURABILITY.md)

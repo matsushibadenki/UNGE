@@ -2,7 +2,9 @@
 
 ## 日本語
 
-`unge-render` はcosmic-text 0.15による文字整形・システムフォントのフォールバックと、wgpu 27のGlyph Atlasを使います。文字列の整形、ラスタライズ、キャッシュ、GPU転送はすべてRust内で行います。WebViewとの通信は言語コード等の小さな命令だけです。
+`unge-render` はcosmic-text 0.19による文字整形・システムフォントのフォールバックと、wgpu 27のGlyph Atlasを使います。文字列の整形、ラスタライズ、キャッシュ、GPU転送はすべてRust内で行います。WebViewとの通信は言語コード等の小さな命令だけです。
+
+cosmic-textの再公開型も0.19です。ホストで旧版のBufferを直接操作していた場合、`set_wrap`／`set_text`のFontSystem引数を取り除き、`shape_until_scroll`を呼んでから`layout_runs`を参照してください。内部も同じ順序で整形してからキャッシュします。システムフォントやfallbackの変更により、旧版と字形・幅が完全に一致することは保証しません。Rendererの呼び出し契約とAtlasの容量制限は維持します。
 
 ### ホストへの取り込み
 
@@ -48,6 +50,8 @@ CJKフォントを持つ実機で、英語・日本語・简体中文のグリ�
 
 ## English
 
+The re-exported cosmic-text types are now version 0.19. Hosts using Buffer directly must remove FontSystem arguments from set_wrap/set_text and call shape_until_scroll before reading layout_runs. Font fallback and glyph metrics may differ from the older release; renderer APIs and atlas limits remain unchanged.
+
 Node and port labels are shaped with cosmic-text and rendered through a Rust-owned wgpu glyph atlas. Provide `LabelCatalog` from the host; missing translations fall back to type/port identifiers. Use `Engine::set_labels` and the per-view `client.locale('en' | 'ja' | 'zh-cn')`. Language changes do not edit the Document, consume undo history or change ACX contracts.
 
 Use `prepare_sized` for physical texture dimensions and logical Viewport coordinates; native SurfaceRenderer handles this automatically. Labels follow drag previews, clip to one line and respect node stacking. Title/port LOD thresholds are 0.6/0.75. Crowded port rows omit labels. Each labelled node adds ordered geometry/text batches; large-graph performance remains unmeasured.
@@ -57,6 +61,8 @@ System fonts are the default. Hosts must supply licensed fonts covering their re
 Limits: 256 Unicode scalars per label, 16384 labels and 65536 visible glyphs per frame, 1024 cached layouts, a 4MiB R8 atlas and a 3MiB instance buffer. Atlas exhaustion resets and retries the frame once, then returns an error. Font-library memory is outside these limits. Submit each prepared frame before preparing the next. Raster sizes above 512px are magnified from a bounded bitmap; colour glyphs render as monochrome silhouettes. Dark/Light themes are covered in [theme integration](THEMES.md#english). Ellipsis, full-name tooltips and accessibility remain planned.
 
 ## 简体中文
+
+重新导出的cosmic-text类型已更新为0.19。直接操作Buffer的宿主需删除set_wrap/set_text中的FontSystem参数，并在读取layout_runs前调用shape_until_scroll。字体回退和字形宽度可能与旧版不同；Renderer API及图集容量限制保持不变。
 
 节点与端口名称由cosmic-text整形，通过Rust持有的wgpu字形图集渲染。宿主提供 `LabelCatalog`，未提供翻译时使用原始类型或端口标识符。使用 `Engine::set_labels` 与每个视图的 `client.locale('zh-cn')`；切换语言不修改Document、撤销历史或ACX契约。
 
@@ -68,5 +74,5 @@ Limits: 256 Unicode scalars per label, 16384 labels and 65536 visible glyphs per
 
 ## Sources
 
-- [cosmic-text 0.15 source and API](https://docs.rs/crate/cosmic-text/0.15.0)
+- [cosmic-text 0.19 source and API](https://docs.rs/crate/cosmic-text/0.19.0)
 - [wgpu 27 API](https://docs.rs/wgpu/27.0.1/wgpu/)

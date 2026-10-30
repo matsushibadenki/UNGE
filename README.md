@@ -154,3 +154,7 @@ Registryの重複検証を削減しました。[取り込み契約と比較例](
 [Scene工程計測とEdge情報の保持](docs/SCENE_TIMINGS.md)
 
 [アイコン中心のコンパクトな設定パネル](docs/COMPACT_PANEL.md)
+
+[ACXの期限切れ未実行preflight回収と保持量照会](docs/ACX_RETENTION.md)
+
+[ACX実行記録の永続化と安全なProvider切り替え](docs/ACX_DURABILITY.md)

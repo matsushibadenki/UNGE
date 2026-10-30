@@ -80,3 +80,54 @@ macOSでworkspace/all-features Rust152件、Clippy、17契約と3言語のPanel�
 English: The Tauri stack now consistently uses 2.12.3 / runtime and runtime-wry 2.12.1 / build, macros and codegen 2.7.2 / utils 2.10.1, with Wry 0.57.0 and Tao 0.37.1. Previous runtime/codegen incompatibilities are resolved. 152 Rust tests, strict Clippy, 17 contracts and three-language UI regressions pass. Native debug Surface passes 360 samples. macOS CUA confirms floating/docking, shared edits, undo, native dragging and floating-mode restoration after restart. An optional UNGE_PANEL_PREFERENCES path isolates QA storage. Temporary-app macOS sandbox-extension warnings are recorded; signed distribution bundles, other operating systems, multi-monitor geometry and minimum toolchains remain unverified. This is not a latest-version or FPS claim.
 
 简体中文：Tauri整组迁移至2.12.3，runtime／runtime-wry 2.12.1，build／macros／codegen 2.7.2，utils 2.10.1，Wry 0.57.0及Tao 0.37.1。之前runtime／codegen不兼容已解决。152项Rust测试、严格Clippy、17项契约及三语UI回归通过。原生debug Surface通过360样本。macOS CUA确认浮动／停靠、共享编辑、Undo、原生拖动和重启后浮动模式恢复。可选UNGE_PANEL_PREFERENCES路径隔离QA配置。已记录临时app的macOS sandbox-extension警告；签名分发包、其他OS、多屏位置及最低工具链未验证。不代表全部最新版或FPS认证。
+
+## 2026-10-19: 文字描画とstableパッチ更新
+
+開始時の作業ツリーはclean。公式レジストリで[直接依存15種の最新stable/MSRV](dependencies/2026-10-19-direct.json)を再確認し、[追加・更新した30解決版](dependencies/2026-10-19-resolved.json)はすべてstable、yankなし。[全lock差分](dependencies/2026-10-19-lock.json)。Rust/Cargo 1.99.0、macOSで検証した。すべての依存が最新版になったという意味ではない。
+
+| 直接依存 | 更新前 | 採用版 | 公式MSRV |
+|---|---|---|---|
+| cosmic-text | 0.15.0 | 0.19.0 (exact) | 1.89 |
+| sha2 | 0.11.0 | 0.11.1 | 1.88 |
+| Tauri | 2.12.3 | 2.12.4 (ホストexact) | 1.90 |
+| tauri-runtime-wry | 2.12.1 | 2.12.2 (exact) | 1.90 |
+| tauri-build | 2.7.2 | 2.7.3 (exact) | 1.90 |
+
+Tauriはruntime 2.12.2、build/macros/codegen 2.7.3、utils 2.10.2に揃えた。Wry 0.57.0、Tao 0.37.1は維持。公式パッチreleaseは空pathのIPC/asset handlerやmobile応答処理の修正を含む。[Tauri 2.12.4 release](https://github.com/tauri-apps/tauri/releases/tag/tauri-v2.12.4)。既存のRust共有Document、View所有権、revision、命令、IPC契約は変更していない。
+
+cosmic-text 0.19の遅延setterに合わせ、内部のset_wrap/set_textからFontSystem引数を除き、shape_until_scroll後にlayout_runsを読み、確定したGlyphをキャッシュする。Rendererの公開呼び出しとAtlasの容量制限は維持する。公開再エクスポートのcosmic-text型も0.19へ変わるため、旧Bufferを直接操作する取り込み先は移行が必要。フォントfallbackや字形幅の完全一致は保証しない。[3言語の取り込み手順](GPU_TEXT.md)、[公式変更履歴](https://github.com/pop-os/cosmic-text/blob/main/CHANGELOG.md)、[0.19 API](https://docs.rs/cosmic-text/0.19.0/cosmic_text/)。
+
+検証結果は[一覧](dependencies/2026-10-19-verification.json)。
+
+- 🟢 [Done] cargo fmtとfmt check、workspaceテストは標準/all-featuresで各152件成功。Clippyは標準/all-featuresのall-targetsと-D warningsで終了コード0。
+- 🟢 [Done] 指定の`cargo test --locked -p unge-render --test render -- --ignored`で実GPU2件、themes/profileのignoredも2件成功。CJK、1倍/2倍の画素密度、クリップ、重なり、再利用、テーマ、queryを確認。
+- 🟢 [Done] debug native SurfaceはApple M4/Metal、10,000ノード/30,000エッジ、3言語・両テーマ・2段階Zoomの12条件×30＝360フレーム成功、スキップ0、欠字/GPU Validationエラーなし。[生データ](dependencies/2026-10-19-surface.json)。性能比較や60FPS認定には用いない。
+- 🟢 [Done] headlessで42、ACX相互運用5件、17契約の生成差分なし、Schema検証6件（3,000例以上の値判定一致）。最新stable jsonschema 4.26.0でもSchema6件成功。TypeScript 7.0.2/jsonschema 4.26.0は引き続き最新stable、CI指定の変更なし。
+- 🟢 [Done] 3言語のPanel/Group/Accessibility/Execution UI回帰、TypeScript strict検査、Chrome上のProperties UI（アイコン/tooltip/focus/dock制御、両テーマ、狭い幅、保存、競合、下書き、選択競合/回復）が成功。
+- 🟠 [Next] wgpu 27.0.1→30.0.1。複数majorのSurface/Device/診断query/パイプライン移行を別単位で検証する。wgpu-hal/Metal経由のblock 0.1.6の将来Rust互換性警告は残る。
+- 🟠 [Next] 直接依存のschemars 0.8.22→1.2.3。RootSchema、Draft7、definitionsを維持するgenerator移植と公開Schemaの互換性検証が必要。Tauriの推移依存schemars 1.2は今回1.2.3へ更新済みだが、直接依存の移行完了ではない。
+- ⭕️ [Pending] Windows/Linux、WASM、最低Rust版、署名配布、多モニターの実機検証。
+
+今回のTauriパッチでnative入力/dock/floatの手動再操作は実施していない。前回の手動検証結果とは分けて扱う。
+
+English: This batch upgrades cosmic-text 0.15→0.19, sha2 0.11.0→0.11.1 and the pinned Tauri stack to 2.12.4 / runtime(-wry) 2.12.2 / build, macros, codegen 2.7.3 / utils 2.10.2. Thirty newly resolved versions are stable and not yanked. Buffer setters now defer shaping; the renderer explicitly completes layout before caching glyphs. Hosts using re-exported cosmic-text Buffer APIs must migrate; glyph metrics may change. Both Rust configurations pass 152 tests, strict Clippy passes, four real-GPU tests and 360 debug Surface frames pass, with no skipped frames or missing benchmark glyphs. Generated contracts remain identical; schema, ACX, strict TypeScript and three-language UI regressions pass. Direct schemars 1.2.3 and wgpu 30 migrations remain Next; block 0.1.6 still has a future-Rust warning. Native input/docking was not manually repeated. Other OSes, WASM, minimum toolchains, signed distribution and multiple monitors remain unverified. No FPS or performance improvement is claimed.
+
+简体中文：本次将cosmic-text 0.15升级至0.19、sha2 0.11.0升级至0.11.1，并将Tauri整组固定至2.12.4／runtime(-wry) 2.12.2／build、macros、codegen 2.7.3／utils 2.10.2。30个新解析版本均为stable且未yank。Buffer setter现在延迟整形；Renderer在缓存Glyph前明确完成排版。直接使用重新导出的cosmic-text Buffer API的宿主需迁移，字形宽度可能变化。两种Rust配置各152项测试、严格Clippy、4项实际GPU测试及360帧debug原生Surface检查均通过，跳过0帧且无基准缺字。生成契约无变化，Schema、ACX、strict TypeScript及三语UI回归通过。直接依赖schemars 1.2.3和wgpu 30迁移仍属Next；block 0.1.6的未来Rust警告仍存在。此次未手动重复原生输入／停靠操作，其他OS、WASM、最低工具链、签名分发及多屏仍未验证。不代表FPS或性能改善认证。
+
+## 2026-10-26: UUIDの互換更新と全依存監査
+
+開始時からCargo.lock、文字描画、ACX永続化などに未コミット変更があったため、その内容を保護して小さい更新単位に限定した。Cargo.lockの開始時コピーとの差分はuuid 1.28.0→1.29.0と、Cargoがcssparser-macros 0.7.1の既存許容範囲`>=2,<4`から選んだsyn 3.0.9→2.0.119の参照変更のみ。synの既存解決版自体は削除していない。manifestのexact pinは変更していない。
+
+[公式release](https://github.com/uuid-rs/uuid/releases/tag/v1.29.0)と公式crate配布ソースを比較した。変更はNonNilUuidのversion別constructor追加であり、UNGEが利用する既存Uuid v4生成・parse・表示・serde実装に変更はない。MSRVは1.89.0のまま。Rust 1.99.1／macOSで検証する。Document ID、ACX commit/Receipt形式、再送契約を維持する。
+
+[455種のCargoレジストリ依存のstable候補・MSRV・保留記録](dependencies/2026-10-26-audit.json)を保存した。build metadataとprereleaseを区別して選定し、yank版を除外した。これは全候補への移行完了を意味しない。開発・ビルド・OS別の推移依存も含む。TypeScript 7.0.2とjsonschema 4.26.0は公式npm/PyPIで最新stableを確認し、CI指定を維持した。
+
+- 🟠 [Next] Tauri 2.12.5／runtime-wry 2.12.3／build・macros 2.7.4とWry 0.57.1を一組として別途検証。NSIS修正を含む[公式release](https://github.com/tauri-apps/tauri/releases/tag/tauri-v2.12.5)を確認したが、native入力・dock/float・Surfaceを今回再検証していないため現行pinを維持する。
+- 🟠 [Next] wgpu 30.0.1と直接schemars 1.2.3への移行は、既存のGPU／公開Schema回帰条件を維持して別単位で行う。他の互換な推移依存候補も、一次資料確認と関連検証を伴う次の小単位へ分ける。
+- ⭕️ [Pending] Windows/Linux、WASM、最低Rust版、実電源断の検証。GPU／描画依存は変更していないため、今回の実GPU／Surface手動検証は未実施。block 0.1.6の将来Rust互換性警告は既知の保留事項。
+
+標準／all-featuresのworkspace Rustテストは各169件成功（failed 0、ignored 6）。ignoredは既存GPU4件と親テストが別プロセスで呼ぶ補助入口2件。両構成のall-targets Clippy（`-D warnings`）は終了コード0。`cargo fmt --all`／fmt check、17生成契約の一致、Schema6件、再起動／Provider切り替えを含むACX stdio6件、TypeScript 7.0.2 strict、headlessの42を確認した。`git diff --check`も成功。
+
+English: With existing uncommitted renderer and durable-ACX work preserved, this small batch updates uuid 1.28.0→1.29.0. Official release/source changes add NonNilUuid constructors; existing UUID v4 generation, parsing, formatting and serialization remain unchanged. MSRV stays 1.89.0. Cargo also reselects the already-present syn 2.0.119 for cssparser-macros' >=2,<4 requirement. Exact pins remain intact. The linked audit covers 455 registry crate names and their stable candidates/MSRVs, including build/dev/transitive dependencies. TypeScript 7.0.2 and jsonschema 4.26.0 remain current. Tauri/Wry, wgpu, direct schemars and other transitive updates require separate validated batches. Validation passes: 169 Rust tests in each workspace configuration, strict Clippy in both, formatting, 17 generated contracts, six schema tests, six ACX stdio tests including restart/rotation, strict TypeScript and headless output 42. No GPU/Surface manual checks were performed; other OSes, WASM and minimum toolchains remain unverified.
+
+简体中文：保留现有未提交的Renderer与ACX持久化修改，本批仅将uuid 1.28.0升级至1.29.0。官方release及源码差异为NonNilUuid新增构造函数；现有UUID v4生成、解析、格式和序列化实现未变，MSRV仍为1.89.0。Cargo还在cssparser-macros的>=2,<4范围内改用已存在的syn 2.0.119，exact pin不变。关联审计记录455种注册表依赖的stable候选及MSRV，包含开发／构建／间接依赖。TypeScript 7.0.2与jsonschema 4.26.0仍为最新stable。Tauri/Wry、wgpu、直接schemars及其他间接依赖需分批迁移验证。两种workspace配置各169项Rust测试、严格Clippy、格式检查、17项生成契约、6项Schema、6项ACX stdio（含重启／切换）、strict TypeScript和headless输出42均通过。此次未执行GPU／Surface手动检查；其他OS、WASM及最低工具链仍未验证。

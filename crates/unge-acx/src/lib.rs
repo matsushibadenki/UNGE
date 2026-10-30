@@ -2,6 +2,8 @@
 //! are separate: a trusted host supplies policy and an atomic document adapter.
 mod host;
 mod intent;
+mod journal;
+pub use journal::{JournalOptions, JournalUsage};
 mod provider;
 mod transport;
 pub use host::*;
