@@ -88,3 +88,7 @@ Registry减少编辑时的重复验证。[集成契约与基准](REGISTRY_VALIDA
 [ACX过期未执行预检回收与保留量监控](ACX_RETENTION.md)
 
 [ACX执行记录持久化与安全Provider切换](ACX_DURABILITY.md)
+
+[可选Rust持久编辑宿主：恢复Document、revision及Undo/Redo](ACX_EDITOR_PERSISTENCE.md)
+
+[状态与Receipt日志前缀相互验证及备份不匹配检测](ACX_LOG_PAIRING.md)

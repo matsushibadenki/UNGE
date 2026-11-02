@@ -64,6 +64,57 @@ class AcxInteropTests(unittest.TestCase):
             self.assertEqual(observed['revision'], before['revision'] + 1)
         finally:
             client.close()
+    def test_persistent_editor_state_and_receipt_survive_stdio_restart(self):
+        with tempfile.TemporaryDirectory(prefix='unge-state-') as directory:
+            folder = Path(directory)
+            document = folder / 'seed.json'
+            document.write_text(json.dumps({'schema_version':1,'engine_version':'0.1.0','plugin_versions':{},'graph':{'id':str(uuid.uuid4()),'name':'saved editor','nodes':{},'edges':{},'groups':{}},'placement':{}}))
+            options = ['--document',str(document),'--journal',str(folder/'replay.jsonl'),'--state-log',str(folder/'state.jsonl')]
+            client = agent.Agent(ROOT / 'target/debug/unge-acx-provider', extra_args=options)
+            try:
+                before = client.call('observe', {'query':'summary'})
+                early_state = (folder/'state.jsonl').read_bytes()
+                early_replay = (folder/'replay.jsonl').read_bytes()
+                intent = {'kind':'edit','document_id':before['documentId'],'expected_revision':0,'operations':[{'kind':'create_node','id':str(uuid.uuid4()),'type_id':'math.number','properties':{'value':42},'rect':{'x':0,'y':0,'width':180,'height':90}}]}
+                pf = client.call('preflight',{'input':intent})
+                bound = {'preflightId':pf['preflightId'],'preflightDigest':pf['preflightDigest']}
+                grant = client.call('authorize',bound)
+                commit = client.call('commit',{**bound,'input':pf['input'],'authorization':grant['authorization']})
+                args = {'commitId':commit['commitId']}
+                result = client.call('execute',args)
+                evidence = client.call('receipt',{'receiptId':result['receiptId']})
+                saved = client.call('observe',{'query':'summary'})
+                self.assertEqual((saved['nodes'],saved['revision']),(1,1))
+            finally:
+                client.close()
+            import subprocess
+            saved_state = (folder/'state.jsonl').read_bytes()
+            saved_replay = (folder/'replay.jsonl').read_bytes()
+            for name, old in [('state.jsonl',early_state),('replay.jsonl',early_replay)]:
+                (folder/name).write_bytes(old)
+                process = subprocess.run([str(ROOT/'target/debug/unge-acx-provider'),*options],input='',text=True,capture_output=True)
+                self.assertNotEqual(process.returncode,0)
+                self.assertIn('storage_corrupt',process.stderr)
+                self.assertEqual((folder/name).read_bytes(),old)
+                (folder/'state.jsonl').write_bytes(saved_state)
+                (folder/'replay.jsonl').write_bytes(saved_replay)
+            for extra in [[],['--rotate-session']]:
+                client = agent.Agent(ROOT / 'target/debug/unge-acx-provider',extra_args=options+extra)
+                try:
+                    self.assertEqual(client.call('observe',{'query':'summary'}),saved)
+                    self.assertEqual(client.call('execute',args),result)
+                    self.assertEqual(client.call('receipt',{'receiptId':result['receiptId']}),evidence)
+                    agent.Agent.verify_json(result['resultJson'],result['result'],evidence['resultHash'])
+                finally:
+                    client.close()
+            # Missing state must not silently recreate an empty editor beside old receipts.
+            (folder/'state.jsonl').unlink()
+            import subprocess
+            process = subprocess.run([str(ROOT/'target/debug/unge-acx-provider'),*options],input='',text=True,capture_output=True)
+            self.assertNotEqual(process.returncode,0)
+            self.assertIn('restore the pair together',process.stderr)
+            self.assertFalse((folder/'state.jsonl').exists())
+
     def test_durable_restart_and_host_selected_rotation_over_stdio(self):
         with tempfile.TemporaryDirectory(prefix='unge-durable-') as directory:
             folder = Path(directory)

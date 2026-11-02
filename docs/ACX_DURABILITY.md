@@ -12,7 +12,7 @@ Rustホストが`Provider::with_journal`を指定すると、実行開始と完�
 
 これは同じcommitの**試行を重ねない**保証です。任意のGraphHost、外部API、ファイルやDBの効果とログを単一トランザクションにする仕組みではなく、途中停止した効果の成否を確定できるexactly-once処理ではありません。完了応答を受信した結果は保存済みですが、途中停止時にはReceiptが未確定の場合があります。
 
-Document、revision、Undo履歴、GPU資源をこのログから復元しません。ホストが同じDocument IDの保存状態を復元してから接続してください。異なるDocument IDへの接続は拒否します。再起動／切り替え前の未実行grantは復元せず、新しい観測・事前確認・承認が必要です。過去epochの編集を新たにRecoverすることも拒否します。既に完了したRecoverの再送のみ可能です。
+Document、revision、Undo履歴、GPU資源をこのログから復元しません。CLI／サーバーでは別の[PersistentHost](ACX_EDITOR_PERSISTENCE.md)を組み合わせてDocument・revision・Undo/Redoを保存できます。ホストが同じDocument IDの保存状態を復元してから接続してください。異なるDocument IDへの接続は拒否します。再起動／切り替え前の未実行grantは復元せず、新しい観測・事前確認・承認が必要です。過去epochの編集を新たにRecoverすることも拒否します。既に完了したRecoverの再送のみ可能です。
 
 ### Rustホストでの有効化と切り替え
 
@@ -44,7 +44,7 @@ target/debug/unge-acx-provider --document project.graph.json --journal private/r
 target/debug/unge-acx-provider --document project.graph.json --journal private/replay.jsonl --rotate-session
 ```
 
-この例は`--document`を読み込みますが、編集後のDocumentを自動保存しません。Documentの保存を別途実装したホストへ取り込むための例です。`--journal`は`--document`が必須で、`--journal-max-bytes N`で上限を指定できます。Pythonの`Agent(..., extra_args=[...])`から同じホスト引数を渡せます。rotateやストレージ管理のACXメソッドは追加していません。
+この例は`--document`を読み込みますが、`--state-log`なしでは編集後のDocumentを自動保存しません。状態保存は[永続ホストの有効化](ACX_EDITOR_PERSISTENCE.md)を参照。Documentの保存を別途実装したホストへ取り込むための例です。`--journal`は`--document`が必須で、`--journal-max-bytes N`で上限を指定できます。Pythonの`Agent(..., extra_args=[...])`から同じホスト引数を渡せます。rotateやストレージ管理のACXメソッドは追加していません。
 
 ### 容量と保存障害
 
@@ -68,7 +68,7 @@ Enable `Provider::with_journal(path, JournalOptions::default())` before serving 
 
 Every attempt is fsynced before effects, and a completion record containing exact result bytes and its receipt is fsynced before replying. A start without a confirmed finish returns `execution_uncertain`; never retry it automatically under the same or a new commit. This prevents repeated attempts by commit ID, not an atomic exactly-once transaction with arbitrary external effects. An interrupted attempt may have no confirmed Receipt. Document state, revision, Undo and GPU resources are not checkpointed. Unstarted approvals are not restored; new rollback attempts from archived epochs are rejected. Completed rollback replays remain available.
 
-Host-only rotation finalizes completed jobs, refuses active/unfinalized operations, persists a new provider ID and clears hot sessions only. Historical receipts keep their original IDs, provider and hashes. A single-writer file lock prevents concurrent owners. Handover reopens the same journal after the previous owner stops; never bypass it by switching to an empty log. The stdio example accepts `--document`, `--journal`, `--journal-max-bytes` and `--rotate-session`. It does not automatically save edited Documents. Journal/rotation control is not an agent RPC.
+Host-only rotation finalizes completed jobs, refuses active/unfinalized operations, persists a new provider ID and clears hot sessions only. Historical receipts keep their original IDs, provider and hashes. A single-writer file lock prevents concurrent owners. Handover reopens the same journal after the previous owner stops; never bypass it by switching to an empty log. The stdio example accepts `--document`, `--journal`, `--journal-max-bytes` and `--rotate-session`. It saves editor state only when the separate `--state-log` option is enabled; see [PersistentHost](ACX_EDITOR_PERSISTENCE.md). Journal/rotation control is not an agent RPC.
 
 Default file budget is 256MiB (minimum 1KiB). Completion space is reserved before effects. Rotation never erases history and does not cure disk exhaustion. The entire journal is validated, synced and indexed in memory at open; compaction/archiving and long-running memory/startup budgets remain future work. Frames are size-limited, versioned and hash-chained; malformed/truncated storage fails closed without repair or volatile fallback. Hash chains are integrity checks, not authentication. I/O failures stop further operations. Unix creation uses mode 0600 and syncs the file and directory; trusted local filesystems with working locks/fsync are required. Network filesystems and multi-machine writers are not supported.
 
@@ -80,7 +80,7 @@ Tests terminate subprocesses at start/effect/finish, async start and rollback bo
 
 开始记录先同步落盘，再执行操作；完成记录包含准确的结果JSON和Receipt，先同步再响应。仅有开始记录时返回`execution_uncertain`，不能用原commit或自动创建新commit重试。这保证同一commit不重复尝试，并非与任意外部效果组成exactly-once事务；中断时可能没有确定的Receipt。日志不保存Document／revision／Undo／GPU资源。未执行授权不会恢复，旧epoch的新回滚请求被拒绝；已完成回滚的重放仍可使用。
 
-切换仅由宿主发起：先收集已完成job，拒绝执行中／未完成的本地操作，持久化新provider ID后才清理当前会话。历史Receipt保留原ID、provider和hash。单writer文件锁拒绝并发所有者；旧所有者停止后打开同一日志进行交接，不能通过切到空日志绕过旧记录。stdio示例支持`--document`、`--journal`、`--journal-max-bytes`及`--rotate-session`，但不自动保存编辑后的Document。日志管理和切换不是AI可调用的RPC。
+切换仅由宿主发起：先收集已完成job，拒绝执行中／未完成的本地操作，持久化新provider ID后才清理当前会话。历史Receipt保留原ID、provider和hash。单writer文件锁拒绝并发所有者；旧所有者停止后打开同一日志进行交接，不能通过切到空日志绕过旧记录。stdio示例支持`--document`、`--journal`、`--journal-max-bytes`及`--rotate-session`，仅在启用独立的`--state-log`选项时保存编辑状态，参见[PersistentHost](ACX_EDITOR_PERSISTENCE.md)。日志管理和切换不是AI可调用的RPC。
 
 默认文件上限256MiB，最小配置1KiB。执行前预留完成记录空间；切换不删除历史，也不能解决磁盘不足。启动时验证并重新同步日志，在内存重建全日志索引，压缩／归档及长期内存／启动时间管理仍待实现。记录有大小限制、版本和hash chain；损坏或截断时拒绝打开，不擅自修复、不退回内存模式。hash chain不是身份认证。I/O失败后停止后续操作。Unix新文件权限0600并同步文件和目录，要求可信本地filesystem支持锁及fsync；不支持网络filesystem或多机writer。
 
@@ -97,3 +97,9 @@ Tests terminate subprocesses at start/effect/finish, async start and rollback bo
 English: macOS/Rust 1.99.1 passes 169 workspace tests in each configuration, strict Clippy, fmt, strict TypeScript, 17 unchanged generated contracts, six schema tests and six real-stdio tests. The ACX package passes 46 tests, including 11 new durability regressions. Two ignored fixture entry points run as subprocesses under their parent tests. Checkpoint transactions, archive/compaction and independent-provider interop remain unfinished; other-platform/power-loss/minimum-toolchain validation remains pending.
 
 简体中文：macOS/Rust 1.99.1下，两种配置各169项workspace测试、严格Clippy、fmt、strict TypeScript、17种生成契约无差异、6项Schema及6项实际stdio测试通过。ACX共46项测试成功，其中11项为新增持久化回归。两个ignored辅助入口由父测试自动启动为子进程。checkpoint事务、归档／压缩、独立实现互操作尚未完成；其他平台／断电／最低工具链验证待完成。
+
+PersistentHostを使う場合は[状態／Receiptログの相互prefix検証](ACX_LOG_PAIRING.md)も適用する。新規ペアは自動結合するが、相互証拠のない旧実行済みログの自動移行は行わない。
+
+English: PersistentHost uses [cross-log prefix checks](ACX_LOG_PAIRING.md); executed legacy logs without pairing require explicit migration.
+
+简体中文：PersistentHost使用[相互前缀验证](ACX_LOG_PAIRING.md)；无配对证据的旧执行日志需明确迁移。

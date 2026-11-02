@@ -219,15 +219,77 @@ impl Provider {
             ));
         }
         let document = self.host.snapshot()?.document.graph().id;
-        let journal = crate::journal::Journal::open(
+        let mut journal = crate::journal::Journal::open(
             path.as_ref(),
             document,
             self.provider_id.clone(),
             options,
         )?;
+        if let Some(info) = self.host.persistence()? {
+            if let Some(anchor) = &journal.host_checkpoint {
+                self.host.verify_persistence(anchor)?;
+            } else if !journal.records.is_empty() {
+                return Err(AcxError::new(
+                    "persistence_required",
+                    "legacy receipt/state logs need an explicit paired migration",
+                ));
+            }
+            if let Some(replay) = &info.replay {
+                journal.verify_prefix(replay)?;
+            }
+            if journal.host_checkpoint.is_none() {
+                self.host.acknowledge_replay(journal.checkpoint())?;
+                let checkpoint = self
+                    .host
+                    .persistence()?
+                    .ok_or_else(|| {
+                        AcxError::new(
+                            "storage_corrupt",
+                            "persistent adapter disappeared during pairing",
+                        )
+                    })?
+                    .checkpoint;
+                journal.bind_host(checkpoint)?;
+            }
+            self.host.acknowledge_replay(journal.checkpoint())?;
+        } else if journal.host_checkpoint.is_some() {
+            return Err(AcxError::new(
+                "persistence_required",
+                "paired journal requires its persistent host",
+            ));
+        }
         self.provider_id = journal.provider.clone();
         self.journal = Some(journal);
         Ok(self)
+    }
+    fn check_pair(&self) -> Result<()> {
+        if let Some(journal) = &self.journal {
+            journal.check()?;
+            if let Some(anchor) = &journal.host_checkpoint {
+                self.host.verify_persistence(anchor)?;
+                let info = self.host.persistence()?.ok_or_else(|| {
+                    AcxError::new("persistence_required", "paired host unavailable")
+                })?;
+                let replay = info.replay.ok_or_else(|| {
+                    AcxError::new("storage_corrupt", "missing replay acknowledgement")
+                })?;
+                journal.verify_prefix(&replay)?;
+            }
+        } else if self.host.persistence()?.is_some() {
+            return Err(AcxError::new(
+                "persistence_required",
+                "persistent provider host requires its replay journal",
+            ));
+        }
+        Ok(())
+    }
+    fn acknowledge_pair(&self) -> Result<()> {
+        if let Some(journal) = &self.journal
+            && journal.host_checkpoint.is_some()
+        {
+            self.host.acknowledge_replay(journal.checkpoint())?;
+        }
+        Ok(())
     }
     pub fn journal_usage(&self) -> Option<crate::JournalUsage> {
         self.journal.as_ref().map(|j| j.usage())
@@ -241,6 +303,8 @@ impl Provider {
                 "rotation requires a replay journal",
             ));
         }
+        self.check_pair()?;
+        self.acknowledge_pair()?;
         self.collect_jobs()?;
         if self.jobs.values().any(|job| job.is_active()) {
             return Err(AcxError::new(
@@ -249,7 +313,9 @@ impl Provider {
             ));
         }
         let next = format!("urn:unge:session:{}", Id::new_v4());
+        self.check_pair()?;
         self.journal.as_mut().unwrap().rotate(next.clone())?;
+        self.acknowledge_pair()?;
         self.sessions.clear();
         self.receipts.clear();
         self.jobs.clear();
@@ -304,6 +370,7 @@ impl Provider {
                 recovery,
             )?;
         }
+        self.acknowledge_pair()?;
         Ok(())
     }
     /// Trusted host integration; preserves the approved synchronous ACX run/Receipt contract.
@@ -388,9 +455,8 @@ impl Provider {
         ]})
     }
     pub fn dispatch(&mut self, method: &str, params: Value) -> Result<Value> {
-        if let Some(journal) = &self.journal {
-            journal.check()?;
-        }
+        self.check_pair()?;
+        self.acknowledge_pair()?;
         self.collect_jobs()?;
         if encode(&params)?.len() > MAX_MESSAGE_BYTES {
             return Err(AcxError::new("limit_exceeded", "request exceeds 256 KiB"));
@@ -737,7 +803,11 @@ impl Provider {
                 receipt.clone(),
                 target.job,
                 target.recovery,
+                self.host.persistence()?.map(|info| info.checkpoint),
             )?;
+            if journal.host_checkpoint.is_some() {
+                self.host.acknowledge_replay(journal.checkpoint())?;
+            }
         }
         self.receipts.insert(receipt_id, receipt);
         Ok(execution)

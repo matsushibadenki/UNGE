@@ -148,3 +148,7 @@ cosmic-textの再公開型は0.19です。旧Bufferのset_wrap/set_text引数と
 長時間接続するACXホストは[保持運用](ACX_RETENTION.md)を参照してください。新規preflight前に期限切れ未実行grantだけを回収します。実行済み結果・Receiptは残るため、実行済み記録で満杯になった場合は[永続ジャーナルとProvider切り替え](ACX_DURABILITY.md)を有効にします。保持量APIはRustホスト専用で、IPC命令は追加していません。
 
 永続化はProviderのwith_journalで最初の要求前に設定します。Document/Undo保存とは別で、開始済み未完了commitは再実行しません。ストレージ異常時にメモリー内モードへフォールバックしないでください。新しいgrantの再取得を使って不明な効果を自動再試行しません。
+
+CLI／サーバーで編集状態も保存する場合は[PersistentHostの取り込みと2ログの境界](ACX_EDITOR_PERSISTENCE.md)を参照。Tauri Engineと同じDocumentを二重所有しない。
+
+PersistentHostとReceiptログの組合せは[相互prefix検証](ACX_LOG_PAIRING.md)に従う。永続ホストのGraphHostラッパーはpersistence／verify_persistence／acknowledge_replayも転送し、旧実行済みログを勝手に結び直さない。

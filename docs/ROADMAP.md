@@ -92,7 +92,8 @@
 - 🟢 [Done] acx側へのProfile仕様・Schema・例・テスト追加、UNGEへの持ち運び可能なSchema同梱
 - 🟢 [Done] 期限切れ未実行preflightの自動／明示的回収、Rustホストの保持件数照会。実行済み結果・Receipt・jobの再送を維持。[保持運用](ACX_RETENTION.md)。
 - 🟢 [Done] 任意の永続ジャーナルによる開始guard・結果/Receipt保存と再起動後の再送、単一writer排他、実行中を拒否するProvider epoch切り替え。[有効化と復元範囲](ACX_DURABILITY.md)。
-- 🟠 [Next] 別実装Providerとの相互運用、Document/Undo保存とのトランザクション連携、長期ログの圧縮・退避運用
+- 🟢 [Done] CLI／サーバー向けPersistentHostでDocument・revision・Undo/Redoを同期保存し、Receiptログと組み合わせて再起動後の状態と再送を維持。[取り込みと保証の境界](ACX_EDITOR_PERSISTENCE.md)。
+- 🟠 [Next] 別実装Providerとの相互運用、Tauri共有Engineの保存接続、状態／Receiptの単一トランザクションと完全なバックアップ世代manifest、長期ログの圧縮・退避運用
 - 🔴 [Later] MCP/A2A binding、署名、多ユーザー認証、外部副作用や課金を伴う実行Profile
 
 ## 今回の優先順位（2026-10-05）
@@ -221,3 +222,17 @@
 - 🟢 [Done] cc 1.10.0／find-msvc-tools 0.1.15／crc32fast 1.5.4／erased-serde 0.4.11へ互換更新。両Rust構成各169件、Clippy、17契約、Schema／ACX各6件、strict TypeScript、CRC独立照合4,272入力とCコンパイル／リンクをmacOSで確認。[採用範囲と一次資料](DEPENDENCY_UPDATES.md#2026-11-02-ビルドcrcシリアライズの互換更新)。
 - 🟠 [Next] Tauri／Wry一式、wgpu 30、直接schemars 1.2.3と他の候補の段階移行を継続。
 - ⭕️ [Pending] Windows/MSVC固有経路、他OS／CPU／WASM／最低Rust版の実機検証。
+
+## 2026-11-02: 編集状態と履歴の永続化
+
+- 🟢 [Done] 任意のRust PersistentHostとCLI `--state-log`。Command／Undo／Redoの検証・同期保存後に共有状態を公開し、Document・revision・同じ上限の履歴を復元。元のseedファイルは保持。[契約と費用](ACX_EDITOR_PERSISTENCE.md)。
+- 🟢 [Done] 再起動・Provider切り替え後の元Receipt再送、編集保存後／Receipt前の実プロセス中断で再実行拒否、履歴上限・Redo破棄・競合・容量・破損・書込み失敗・片側ログ欠損の回帰。workspace両構成各176件、Clippy、17契約、Schema6件、実stdio7件が成功。
+- 🟠 [Next] Tauri共有Engineへの保存接続、2ログの単一トランザクション／完全なバックアップ世代manifest、長期ログ圧縮・退避。相互確認済みprefixの結合は下記で実装済み。
+- ⭕️ [Pending] Windows/Linux、実電源断、最低Rust版、巨大Documentでの性能とメモリー計測。GPU資源や外部副作用の復元は対象外。
+
+## 2026-11-02: 状態・Receiptログの相互検証
+
+- 🟢 [Done] hash-chain prefixの相互保存・双方向検証。開始guardの確認後に効果へ進み、状態prefixを結果／Receiptと同じ完了レコードへ保存し、完了確認後に応答。[範囲と旧形式の扱い](ACX_LOG_PAIRING.md)。
+- 🟢 [Done] 片側の既知prefix巻き戻し、同一Document IDの別ペア差し替え、確認済みepochの巻き戻しを拒否。正しい一組の復元、完了確認の容量不足後の安全な再送、実stdioの双方向巻き戻しも検証。両Rust構成各181件、Clippy、17契約、Schema6件、実stdio7件、strict TypeScriptが成功。
+- 🟠 [Next] Tauri保存接続、2ログの単一トランザクション、旧実行済みログの明示的オフライン移行、完全なバックアップ世代manifestと長期ログ圧縮。整合した一組全体の巻き戻しや未確認の直接編集の新しさはローカル相互prefixだけで証明しない。
+- ⭕️ [Pending] Windows/Linux、実電源断、最低Rust版、長期運用のメモリー／性能計測。

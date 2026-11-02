@@ -221,7 +221,7 @@ pub struct HistoryStats {
     pub redo_steps: usize,
     pub bytes: usize,
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct HistoryEntry {
     command: Command,
     bytes: usize,
@@ -264,6 +264,8 @@ fn elapsed_ms(start: Option<Instant>) -> f64 {
 }
 
 /// Single source of truth. Share this from Rust app state, never from a WebView.
+/// Cloning is for isolated transaction staging; publish one authoritative Editor.
+#[derive(Clone)]
 pub struct Editor {
     document: Document,
     undo: VecDeque<HistoryEntry>,

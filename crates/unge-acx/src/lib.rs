@@ -1,6 +1,8 @@
 //! Experimental ACX Node Graph Profile. Transport, authority and document ownership
 //! are separate: a trusted host supplies policy and an atomic document adapter.
 mod host;
+mod persistent_host;
+pub use persistent_host::{PersistentHost, PersistentHostOptions};
 mod intent;
 mod journal;
 pub use journal::{JournalOptions, JournalUsage};

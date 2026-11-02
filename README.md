@@ -158,3 +158,7 @@ Registryの重複検証を削減しました。[取り込み契約と比較例](
 [ACXの期限切れ未実行preflight回収と保持量照会](docs/ACX_RETENTION.md)
 
 [ACX実行記録の永続化と安全なProvider切り替え](docs/ACX_DURABILITY.md)
+
+[Document・revision・Undo/Redoを復元する任意のRust永続ホスト](docs/ACX_EDITOR_PERSISTENCE.md)
+
+[状態ログとReceiptログの相互検証・バックアップ取り違えの検出](docs/ACX_LOG_PAIRING.md)

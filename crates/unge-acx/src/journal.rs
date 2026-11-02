@@ -1,5 +1,5 @@
 //! Single-writer, fsynced, hash-chained replay journal. Not a Document/Undo store.
-use crate::{AcxError, Result, hash_bytes};
+use crate::{AcxError, LogCheckpoint, Result, hash_bytes};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::{
@@ -37,6 +37,9 @@ pub struct JournalUsage {
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 enum Event {
+    HostBound {
+        checkpoint: LogCheckpoint,
+    },
     Opened {
         version: u32,
         document: Id,
@@ -59,6 +62,8 @@ enum Event {
         receipt: Value,
         job: Option<RunSummary>,
         recovery: bool,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        host_checkpoint: Option<LogCheckpoint>,
     },
 }
 #[derive(Serialize, Deserialize)]
@@ -92,6 +97,8 @@ pub(super) struct Journal {
     previous: String,
     poisoned: bool,
     reserved: BTreeSet<(String, bool)>,
+    prefixes: Vec<String>,
+    pub host_checkpoint: Option<LogCheckpoint>,
 }
 fn corrupt(message: impl ToString) -> AcxError {
     AcxError::new("storage_corrupt", message)
@@ -157,6 +164,8 @@ impl Journal {
             previous: String::new(),
             poisoned: false,
             reserved: BTreeSet::new(),
+            prefixes: Vec::new(),
+            host_checkpoint: None,
         };
         if created {
             #[cfg(unix)]
@@ -214,6 +223,7 @@ impl Journal {
                 journal.validate(&event)?;
                 journal.apply(event);
                 journal.sequence += 1;
+                journal.prefixes.push(frame.hash.clone());
                 journal.previous = frame.hash;
                 journal.bytes += read as u64;
             }
@@ -229,6 +239,31 @@ impl Journal {
         // Confirm the validated prefix before serving any restored result.
         journal.file.sync_all().map_err(unavailable)?;
         Ok(journal)
+    }
+    pub fn checkpoint(&self) -> LogCheckpoint {
+        LogCheckpoint {
+            identity: self.prefixes[0].clone(),
+            sequence: self.sequence,
+            hash: self.previous.clone(),
+        }
+    }
+    pub fn verify_prefix(&self, checkpoint: &LogCheckpoint) -> Result<()> {
+        self.check()?;
+        let index = checkpoint
+            .sequence
+            .checked_sub(1)
+            .and_then(|i| usize::try_from(i).ok());
+        if checkpoint.identity != self.prefixes[0]
+            || index.and_then(|i| self.prefixes.get(i)) != Some(&checkpoint.hash)
+        {
+            return Err(corrupt(
+                "replay log is from another generation or was rolled back",
+            ));
+        }
+        Ok(())
+    }
+    pub fn bind_host(&mut self, checkpoint: LogCheckpoint) -> Result<()> {
+        self.append(Event::HostBound { checkpoint }, None, None)
     }
     pub fn check(&self) -> Result<()> {
         if self.poisoned {
@@ -255,6 +290,20 @@ impl Journal {
             };
         }
         match event {
+            Event::HostBound { checkpoint } => {
+                if self.host_checkpoint.is_some()
+                    || !self.records.is_empty()
+                    || checkpoint.sequence == 0
+                    || checkpoint.identity.is_empty()
+                    || checkpoint.hash.is_empty()
+                {
+                    Err(corrupt(
+                        "invalid state pairing or legacy records require migration",
+                    ))
+                } else {
+                    Ok(())
+                }
+            }
             Event::Opened { .. } => Err(corrupt("duplicate header")),
             Event::Rotated { provider } if provider.is_empty() || !self.reserved.is_empty() => {
                 Err(corrupt("invalid rotation"))
@@ -293,7 +342,21 @@ impl Journal {
                 receipt,
                 recovery,
                 job,
+                host_checkpoint,
             } => {
+                if self.host_checkpoint.is_some() != host_checkpoint.is_some()
+                    || self
+                        .host_checkpoint
+                        .as_ref()
+                        .zip(host_checkpoint.as_ref())
+                        .is_some_and(|(old, next)| {
+                            old.identity != next.identity
+                                || old.sequence > next.sequence
+                                || (old.sequence == next.sequence && old.hash != next.hash)
+                        })
+                {
+                    return Err(corrupt("state pairing changed in completion"));
+                }
                 let r = self
                     .records
                     .get(commit)
@@ -328,6 +391,7 @@ impl Journal {
     }
     fn apply(&mut self, event: Event) {
         match event {
+            Event::HostBound { checkpoint } => self.host_checkpoint = Some(checkpoint),
             Event::Opened {
                 document, provider, ..
             } => {
@@ -364,7 +428,11 @@ impl Journal {
                 receipt,
                 job,
                 recovery,
+                host_checkpoint,
             } => {
+                if let Some(checkpoint) = host_checkpoint {
+                    self.host_checkpoint = Some(checkpoint);
+                }
                 let r = self.records.get_mut(&commit).unwrap();
                 if recovery {
                     r.recovery = Some(execution);
@@ -422,6 +490,7 @@ impl Journal {
         }
         self.bytes += bytes.len() as u64;
         self.sequence += 1;
+        self.prefixes.push(hash.clone());
         self.previous = hash;
         if let Some(key) = reserve {
             self.reserved.insert(key);
@@ -460,6 +529,7 @@ impl Journal {
         receipt: Value,
         job: Option<RunSummary>,
         recovery: bool,
+        host_checkpoint: Option<LogCheckpoint>,
     ) -> Result<()> {
         self.append(
             Event::Finished {
@@ -468,6 +538,7 @@ impl Journal {
                 receipt,
                 job,
                 recovery,
+                host_checkpoint,
             },
             None,
             Some((commit.into(), recovery)),
@@ -533,7 +604,7 @@ mod tests {
         let execution = serde_json::json!({"result":{},"resultJson":"{}","receiptId":"receipt"});
         let receipt = serde_json::json!({"receiptId":"receipt","resultHash":hash_bytes(b"{}"),"requestHash":"request","provider":"provider"});
         assert_eq!(
-            j.finish("commit", execution, receipt, None, false)
+            j.finish("commit", execution, receipt, None, false, None)
                 .unwrap_err()
                 .code,
             "storage_unavailable"

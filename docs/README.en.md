@@ -88,3 +88,7 @@ Registry avoids redundant edit validation. [Integration contract and benchmark](
 [ACX expired-preflight reclamation and retention monitoring](ACX_RETENTION.md)
 
 [ACX durable replay and safe provider rotation](ACX_DURABILITY.md)
+
+[Optional durable Rust editor: Document, revision and Undo/Redo restoration](ACX_EDITOR_PERSISTENCE.md)
+
+[Cross-log prefix verification and backup mismatch detection](ACX_LOG_PAIRING.md)

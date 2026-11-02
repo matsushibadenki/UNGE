@@ -27,7 +27,7 @@ Tauriアダプターは1つのDocumentを共有する最小構成です。
 
 GPU座標のオーバーフローを避けるため、保存する矩形とViewportのワールド座標は絶対値10億以内に制限します。
 Graphのノード・エッジ・Groupは外部から可変アクセスできません。
-CommandだけがEditorのDocumentを更新します。逆命令で履歴を保持し、変更のたびに全Documentを複製しません。
+CommandだけがEditorのDocumentを更新します。通常のEditorは逆命令で履歴を保持し、変更のたびに全Documentを複製しません。任意のPersistentHostは保存前の検証用にEditorと履歴を一時コピーし、同期後に単一の正本へ公開します。[永続ホスト](ACX_EDITOR_PERSISTENCE.md)。
 Batchの途中や最後の検証に失敗した場合、逆順に戻してrevisionと履歴を維持します。
 Undo/Redo履歴は合算の件数とシリアライズ後ペイロード容量で制限します（既定256件・16MiB）。巨大な逆命令を保持できなければ履歴を破棄し、途中の編集を飛ばしたUndoを防ぎます。総ヒープ使用量の制限やディスク退避は未実装です。
 
@@ -139,3 +139,5 @@ RenderEdgeは確定境界と接続元のtype_idを保持する。色はViewのCa
 compact.jsはWebViewの表示だけを装飾する。SVG、aria-label、情報表示を既存コントローラーのテキストから更新し、編集・下書きの制御を置き換えない。[UIの取り込み](COMPACT_PANEL.md)。
 
 ACXの任意の永続ジャーナルはProviderの開始guardと結果/Receiptを同期保存する。Graph/Document/Rendererの所有権やIPCフレームを変更しない。Document/Undoのチェックポイントはホストの責務で、途中停止した効果の成否は推定せず再実行を拒否する。[永続再送とepoch切り替え](ACX_DURABILITY.md)。
+
+PersistentHostとReceiptログは[hash-chain prefixの相互検証](ACX_LOG_PAIRING.md)で確認済み履歴を結ぶ。2ファイルの単一トランザクションや一組全体の最新性の証明ではない。

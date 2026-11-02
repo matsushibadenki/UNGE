@@ -458,3 +458,13 @@ uuid 1.29.0、Rust 1.99.1／macOSでworkspace標準・all-features各169件成�
 ## 2026-11-02: ビルド・CRC・シリアライズ依存
 
 Rust 1.99.1／macOS。workspace標準／all-features各169件成功、0失敗、6 ignored。両構成all-targets Clippy（-D warnings）、fmt／fmt check、17契約一致、Schema6件、ACX stdio6件、TypeScript 7.0.2 strict、headlessの42が成功。Schemaは初回にjsonschema不足で停止し、一時venvへ4.26.0を導入して再実行成功。CRC4,272入力の独立bit計算照合（one-shot／分割／combine）、多言語collect_str一致、ccのCコンパイル／リンク／Rust呼び出しも成功。[再現用probe](dependencies/2026-11-02-probe.json)。既存GPU4件は今回未実行。補助入口2件は親テストが別プロセスで実行。GPU／Surface手動操作、Windows/MSVC、他OS／CPU、WASM、最低Rust版は未検証。block 0.1.6の将来Rust警告は継続。
+
+## 2026-11-02: PersistentHost
+
+workspace標準／all-features各176件成功（失敗0、ignored 7）。all-targets Clippy（両構成、-D warnings）、fmt／fmt check、17契約一致、Schema6件、実stdio7件、headlessの42が成功。新規Rust回帰は7件、別プロセスで編集保存直後／Receipt前の中断も実行した。ignored 7件のうち4件は既存GPU、3件は親テストが実際に起動する補助入口。初回Clippyのcollapsible_if指摘は修正後に両構成で成功。既知のblock 0.1.6将来Rust互換性警告は残る。GPUコード／wire契約は変更なし。
+
+Document・revision・Undo/Redoの再起動復元、履歴の件数／バイト上限、Undo後の新規編集によるRedo破棄、同一revisionへの同時編集、Document不一致、writerロック、壊れた末尾、保存前の容量不足、書込み失敗時の未公開／処理停止、状態とReceiptの再送、CLIの片側ログ欠損拒否を確認。Windows/Linux、電源断、最低Rust版、巨大Document性能、Tauri保存接続、2ログの単一トランザクション／バックアップ世代照合は未完了。[仕様](ACX_EDITOR_PERSISTENCE.md)。
+
+## 2026-11-02: 状態／Receiptの相互prefix検証
+
+workspace標準／all-features各181件成功（失敗0、ignored 7）、両構成all-targets Clippy（-D warnings）、fmt／fmt check、TypeScript 7.0.2 strict、17契約一致、Schema6件、実stdio7件、headlessの42が成功。新規Rust5件で状態／Receipt片側巻き戻し、同一ID別ペア差し替え、整合した一組の復元、epoch巻き戻し、完了確認容量不足と再送、旧ログの無検証結合・メモリーへの切り替え・Receiptログ未接続を拒否。実stdioでも双方向の片側巻き戻しがstorage_corruptとなり、ファイルを修復しないことを確認。既存の編集保存後／Receipt前のプロセス中断テストも成功。[保証範囲と移行保留](ACX_LOG_PAIRING.md)。既知のblock将来互換性警告は残る。GPUコード変更なし、実GPU4件は未実行。残るignored3件は親テストから実行済みの補助入口。Windows/Linux、実電源断、最低Rust版、長期性能は未検証。
