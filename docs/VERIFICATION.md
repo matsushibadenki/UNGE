@@ -454,3 +454,7 @@ acx側へ任意の実験Profile、Schema、適合テストを追加しました�
 ## 2026-10-26: UUID更新
 
 uuid 1.29.0、Rust 1.99.1／macOSでworkspace標準・all-features各169件成功（0失敗、6 ignored）。両構成のall-targets Clippy（-D warnings）、fmt、17生成契約、Schema6件、ACX stdio6件、TypeScript 7.0.2 strict、headlessの42、diff checkが成功。ACXには実行記録の再起動／Provider切り替え回帰を含む。既存GPU4件は今回は実行していない。補助入口2件のignoredは親テストから別プロセスで実行した。block 0.1.6のCargo将来互換性警告は残る。その他OS／WASM／最低Rust版は未検証。[版と監査記録](DEPENDENCY_UPDATES.md#2026-10-26-uuidの互換更新と全依存監査)。
+
+## 2026-11-02: ビルド・CRC・シリアライズ依存
+
+Rust 1.99.1／macOS。workspace標準／all-features各169件成功、0失敗、6 ignored。両構成all-targets Clippy（-D warnings）、fmt／fmt check、17契約一致、Schema6件、ACX stdio6件、TypeScript 7.0.2 strict、headlessの42が成功。Schemaは初回にjsonschema不足で停止し、一時venvへ4.26.0を導入して再実行成功。CRC4,272入力の独立bit計算照合（one-shot／分割／combine）、多言語collect_str一致、ccのCコンパイル／リンク／Rust呼び出しも成功。[再現用probe](dependencies/2026-11-02-probe.json)。既存GPU4件は今回未実行。補助入口2件は親テストが別プロセスで実行。GPU／Surface手動操作、Windows/MSVC、他OS／CPU、WASM、最低Rust版は未検証。block 0.1.6の将来Rust警告は継続。

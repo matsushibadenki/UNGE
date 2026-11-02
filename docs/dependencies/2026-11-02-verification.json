@@ -1,0 +1,28 @@
+{
+  "toolchain": "rustc 1.99.1, macOS",
+  "tests": {
+    "tests": {
+      "passed": 169,
+      "failed": 0,
+      "ignored": 6
+    },
+    "features": {
+      "passed": 169,
+      "failed": 0,
+      "ignored": 6
+    }
+  },
+  "clippy": [
+    "workspace all-targets -D warnings: pass",
+    "workspace all-features all-targets -D warnings: pass"
+  ],
+  "fmt": "pass",
+  "generated_contracts": 17,
+  "schema_tests": 6,
+  "acx_stdio_tests": 6,
+  "typescript": "7.0.2 strict: pass",
+  "headless": 42,
+  "environment_repair": "Initial schema test stopped: missing jsonschema; temporary venv with jsonschema 4.26.0 passed on retry.",
+  "gpu": "unchanged, not run",
+  "windows_msvc": "unverified"
+}

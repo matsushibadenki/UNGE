@@ -215,3 +215,9 @@
 - 🟢 [Done] uuid 1.28.0→1.29.0、455種のCargo依存のstable候補／MSRV監査。両Rust構成各169件、Clippy、17契約、Schema6件、ACX再起動を含むstdio6件、strict TypeScript、headlessを確認。[互換性・保留記録](DEPENDENCY_UPDATES.md#2026-10-26-uuidの互換更新と全依存監査)。
 - 🟠 [Next] Tauri 2.12.5一式／Wry 0.57.1、wgpu 30、直接schemars 1.2.3、他の推移依存候補を関連回帰検証とともに分割移行。exact pinは維持。
 - ⭕️ [Pending] 他OS、WASM、最低Rust版と実電源断の実機検証。
+
+## 2026-11-02: ビルドとシリアライズ依存
+
+- 🟢 [Done] cc 1.10.0／find-msvc-tools 0.1.15／crc32fast 1.5.4／erased-serde 0.4.11へ互換更新。両Rust構成各169件、Clippy、17契約、Schema／ACX各6件、strict TypeScript、CRC独立照合4,272入力とCコンパイル／リンクをmacOSで確認。[採用範囲と一次資料](DEPENDENCY_UPDATES.md#2026-11-02-ビルドcrcシリアライズの互換更新)。
+- 🟠 [Next] Tauri／Wry一式、wgpu 30、直接schemars 1.2.3と他の候補の段階移行を継続。
+- ⭕️ [Pending] Windows/MSVC固有経路、他OS／CPU／WASM／最低Rust版の実機検証。

@@ -1,0 +1,22 @@
+{
+  "crc_cases": 4272,
+  "crc_modes": [
+    "one-shot",
+    "7-byte chunks",
+    "combine"
+  ],
+  "crc_reference": "independent bitwise IEEE CRC32, 16 alignments, lengths 0..256 and boundary/large buffers up to 65536; known vector 123456789",
+  "serde": "collect_str through erased serializer matches ordinary serde_json for Japanese/Simplified Chinese/English/emoji",
+  "cc": "compile and link C addition, invoke from Rust, expect 42",
+  "result": "CRC 4272 cases (one-shot/chunked/combine), erased collect_str 3-language parity, cc compiled/linked C -> 42: passed",
+  "probe_files": {
+    "Cargo.toml": "[package]\nname = \"unge-dependency-probe\"\nversion = \"0.0.0\"\nedition = \"2024\"\n[dependencies]\ncrc32fast = \"=1.5.4\"\nerased-serde = \"=0.4.11\"\nserde = \"1\"\nserde_json = \"1\"\n[build-dependencies]\ncc = \"=1.10.0\"\n",
+    "build.rs": "fn main() { cc::Build::new().file(\"probe.c\").flag_if_supported(\"-Wall\").compile(\"probe\"); }\n",
+    "probe.c": "int unge_add(int a, int b) { return a + b; }\n",
+    "src/main.rs": "unsafe extern \"C\" { fn unge_add(a: i32, b: i32) -> i32; }\nfn reference(bytes: &[u8]) -> u32 {\n    let mut crc = !0u32;\n    for byte in bytes { crc ^= *byte as u32; for _ in 0..8 { crc = (crc >> 1) ^ (0xedb88320 & (crc & 1).wrapping_neg()); } }\n    !crc\n}\nstruct DisplayValue;\nimpl std::fmt::Display for DisplayValue { fn fmt(&self,f:&mut std::fmt::Formatter<'_>)->std::fmt::Result {f.write_str(\"\u65e5\u672c\u8a9e / \u7b80\u4f53\u4e2d\u6587 / English \ud83e\udd80\")} }\nimpl serde::Serialize for DisplayValue { fn serialize<S:serde::Serializer>(&self,s:S)->Result<S::Ok,S::Error>{s.collect_str(self)} }\nfn main() {\n    assert_eq!(unsafe {unge_add(20,22)},42);\n    let data:Vec<u8>=(0..65552usize).map(|n|((n.wrapping_mul(137)^ (n>>4))&255) as u8).collect();\n    let mut lengths:Vec<usize>=(0..257).collect(); lengths.extend([511,512,513,1023,1024,1025,32767,32768,32769,65536]);\n    let mut count=0;\n    for offset in 0..16 {for &len in &lengths {\n        let bytes=&data[offset..offset+len]; let expected=reference(bytes);\n        assert_eq!(crc32fast::hash(bytes),expected,\"offset {offset}, len {len}\");\n        let split=len/3; let mut a=crc32fast::Hasher::new();a.update(&bytes[..split]);let mut b=crc32fast::Hasher::new();b.update(&bytes[split..]);a.combine(&b);assert_eq!(a.finalize(),expected);\n        let mut chunked=crc32fast::Hasher::new();for chunk in bytes.chunks(7){chunked.update(chunk);}assert_eq!(chunked.finalize(),expected);count+=1;\n    }}\n    assert_eq!(crc32fast::hash(b\"123456789\"),0xcbf43926);\n    let value=DisplayValue; let erased:&dyn erased_serde::Serialize=&value; let mut bytes=Vec::new();\n    erased_serde::serialize(erased,&mut serde_json::Serializer::new(&mut bytes)).unwrap();\n    assert_eq!(String::from_utf8(bytes).unwrap(),serde_json::to_string(&value).unwrap());\n    println!(\"CRC {count} cases (one-shot/chunked/combine), erased collect_str 3-language parity, cc compiled/linked C -> 42: passed\");\n}\n"
+  },
+  "limitations": [
+    "MSVC/Windows-specific find-msvc-tools paths not executed",
+    "Other OS/architectures, WASM and minimum toolchains unverified"
+  ]
+}

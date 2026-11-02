@@ -131,3 +131,29 @@ English: This batch upgrades cosmic-text 0.15→0.19, sha2 0.11.0→0.11.1 and t
 English: With existing uncommitted renderer and durable-ACX work preserved, this small batch updates uuid 1.28.0→1.29.0. Official release/source changes add NonNilUuid constructors; existing UUID v4 generation, parsing, formatting and serialization remain unchanged. MSRV stays 1.89.0. Cargo also reselects the already-present syn 2.0.119 for cssparser-macros' >=2,<4 requirement. Exact pins remain intact. The linked audit covers 455 registry crate names and their stable candidates/MSRVs, including build/dev/transitive dependencies. TypeScript 7.0.2 and jsonschema 4.26.0 remain current. Tauri/Wry, wgpu, direct schemars and other transitive updates require separate validated batches. Validation passes: 169 Rust tests in each workspace configuration, strict Clippy in both, formatting, 17 generated contracts, six schema tests, six ACX stdio tests including restart/rotation, strict TypeScript and headless output 42. No GPU/Surface manual checks were performed; other OSes, WASM and minimum toolchains remain unverified.
 
 简体中文：保留现有未提交的Renderer与ACX持久化修改，本批仅将uuid 1.28.0升级至1.29.0。官方release及源码差异为NonNilUuid新增构造函数；现有UUID v4生成、解析、格式和序列化实现未变，MSRV仍为1.89.0。Cargo还在cssparser-macros的>=2,<4范围内改用已存在的syn 2.0.119，exact pin不变。关联审计记录455种注册表依赖的stable候选及MSRV，包含开发／构建／间接依赖。TypeScript 7.0.2与jsonschema 4.26.0仍为最新stable。Tauri/Wry、wgpu、直接schemars及其他间接依赖需分批迁移验证。两种workspace配置各169项Rust测试、严格Clippy、格式检查、17项生成契约、6项Schema、6项ACX stdio（含重启／切换）、strict TypeScript和headless输出42均通过。此次未执行GPU／Surface手动检查；其他OS、WASM及最低工具链仍未验证。
+
+## 2026-11-02: ビルド・CRC・シリアライズの互換更新
+
+開始時の作業ツリーはclean。公式crates.ioで455種のレジストリ依存（直接・推移・開発・ビルド・OS別）を再確認した。[候補・MSRV・採用／保留理由](dependencies/2026-11-02-audit.json)。今回の小単位は以下の4解決版のみ。manifest、Tauri／cosmic-text／schemarsのexact pin、Document／IPC／Receipt契約は変更していない。
+
+| 推移依存 | 更新前 | 採用stable | 公式MSRV |
+|---|---|---|---|
+| cc | 1.8.0 | 1.10.0 | 1.65.0 |
+| find-msvc-tools | 0.1.14 | 0.1.15 | 1.65 |
+| crc32fast | 1.5.2 | 1.5.4 | 1.63 |
+| erased-serde | 0.4.10 | 0.4.11 | 1.68 |
+
+公式配布ソースのCHANGELOG／差分を確認した。ccはlibtool追加、compiler flag順序・LTO・環境変数・jobserver待機等の修正を含み、find-msvc-tools 0.1.15のWindows binding追加を要求する。crc32fastは短い入力・AArch64／x86経路の内部最適化と境界保護を含む。erased-serdeは`collect_str`を元serializerへ転送する修正で、3言語とemojiを含む通常serde_jsonとの出力一致を確認した。公開API移植は不要。
+
+一次資料は各公式crate配布：[cc 1.10.0](https://crates.io/api/v1/crates/cc/1.10.0/download)、[find-msvc-tools 0.1.15](https://crates.io/api/v1/crates/find-msvc-tools/0.1.15/download)、[crc32fast 1.5.4](https://crates.io/api/v1/crates/crc32fast/1.5.4/download)、[erased-serde 0.4.11](https://crates.io/api/v1/crates/erased-serde/0.4.11/download)。releaseページ取得ができなかったため、配布ソース内の変更履歴と前版ソース比較を根拠とした。CRCはTauri icon用PNG／flate2、erased-serdeはTauri設定、ccはObjective-C例外helper等の経路で使用される。wgpu／文字描画依存は変更していない。
+
+[独立検証と再現用ソース](dependencies/2026-11-02-probe.json)：CRC 4,272入力（16段階のalignment、長さ0〜256と境界・最大65,536byte）について、独立したIEEE CRC32のbit計算とone-shot／7byte分割／combineを照合。既知ベクトルも一致。ccでCを実際にコンパイル／リンクしてRustから呼び42を確認した。これらはmacOS／Rust 1.99.1での機能検証で、性能改善率の主張には使用しない。
+
+標準／all-featuresのworkspaceテストは各169件成功（0失敗、6 ignored）、両構成のall-targets Clippy（`-D warnings`）は成功。cargo fmt／fmt check、17生成契約一致、Schema6件、Receipt再送・再起動／Provider切り替えを含むACX stdio6件、TypeScript 7.0.2 strict、headlessの42を確認。検証用Pythonにjsonschemaがなかったため一時venvへ4.26.0を導入して再実行し成功した。公式npm／PyPIでもTypeScript 7.0.2／jsonschema 4.26.0は最新stable、CI指定を維持。ignoredは既存GPU4件と、親テストから別プロセスで実行する補助入口2件。
+
+- 🟠 [Next] Tauri 2.12.5／runtime-wry 2.12.3／build・macros 2.7.4とWry 0.57.1は引き続き一組としてnative Surface・入力・dock/floatを検証して移行する。wgpu 30.0.1と直接schemars 1.2.3も既存のAPI／Schema回帰条件を維持して別単位とする。他の候補も一次資料と関連回帰検証を伴って分割更新する。
+- ⭕️ [Pending] Windowsのfind-msvc-tools／MSVC固有経路、他OS・CPU・WASM、最低Rust版の実機検証。今回のmacOS検証成功でこれらを完成扱いしない。GPU／Surface手動操作は今回未実施。block 0.1.6の将来Rust互換性警告は継続。
+
+English: Starting from a clean tree, this batch updates only cc 1.8→1.10, find-msvc-tools 0.1.14→0.1.15, crc32fast 1.5.2→1.5.4 and erased-serde 0.4.10→0.4.11. Official registry metadata and distributed sources/changelogs were checked for 455 crate names. Exact pins and Document/IPC/Receipt contracts remain unchanged. Independent checks validate 4,272 CRC inputs against a bitwise oracle in one-shot/chunked/combine modes, multilingual collect_str serialization parity, and a C compile/link/call returning 42. Tauri/Wry, wgpu and direct schemars migration remain separate batches. Windows/MSVC-specific paths, other platforms/CPUs, WASM and minimum toolchains remain unverified. GPU/Surface manual checks were not repeated; the known block future-Rust warning remains. Both workspace configurations pass 169 tests, strict Clippy passes in both, formatting and 17 generated contracts pass, as do six schema tests, six ACX stdio tests, strict TypeScript and headless output 42. A temporary venv supplied missing jsonschema 4.26.0; the retry passed. This is not a full latest-version or performance certification.
+
+简体中文：从clean工作区开始，本批仅更新cc 1.8→1.10、find-msvc-tools 0.1.14→0.1.15、crc32fast 1.5.2→1.5.4及erased-serde 0.4.10→0.4.11。已核对455种crate的官方注册表信息及采用版本的官方发布源码／变更记录。exact pin与Document／IPC／Receipt契约不变。独立验证包含4,272个CRC输入与逐bit参考计算的单次／分块／combine对照、多语言collect_str序列化一致性，以及C编译／链接／调用返回42。Tauri/Wry、wgpu与直接schemars仍需分批迁移。Windows/MSVC专用路径、其他平台／CPU、WASM及最低工具链仍未验证，此次未重复GPU／Surface手动检查。既有block未来Rust兼容性警告仍存在，两种workspace配置各169项测试及严格Clippy、格式、17项生成契约、6项Schema、6项ACX stdio、strict TypeScript及headless输出42均通过。验证环境缺少jsonschema，已在临时venv安装4.26.0并重试通过。不代表全部依赖最新版或性能认证。

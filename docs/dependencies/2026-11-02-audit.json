@@ -1,0 +1,6645 @@
+{
+  "date": "2026-11-02 JST",
+  "initial_git_status": "clean",
+  "toolchain": "Rust 1.99.1, macOS",
+  "selection": "Highest numeric stable SemVer (build metadata ignored for ordering); yanked and prereleases excluded. No major unification or exact-pin removal.",
+  "crates": [
+    {
+      "name": "adler2",
+      "locked": [
+        "2.0.1"
+      ],
+      "latest": "2.0.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/adler2",
+      "repository": "https://github.com/oyvindln/adler2",
+      "adopted": [
+        "2.0.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "aho-corasick",
+      "locked": [
+        "1.1.5"
+      ],
+      "latest": "1.1.5",
+      "msrv": "1.60.0",
+      "source": "https://crates.io/api/v1/crates/aho-corasick",
+      "repository": "https://github.com/BurntSushi/aho-corasick",
+      "adopted": [
+        "1.1.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "alloc-no-stdlib",
+      "locked": [
+        "3.0.0"
+      ],
+      "latest": "3.0.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/alloc-no-stdlib",
+      "repository": "https://github.com/dropbox/rust-alloc-no-stdlib",
+      "adopted": [
+        "3.0.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "alloc-stdlib",
+      "locked": [
+        "0.3.0"
+      ],
+      "latest": "0.3.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/alloc-stdlib",
+      "repository": "https://github.com/dropbox/rust-alloc-no-stdlib",
+      "adopted": [
+        "0.3.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "android_system_properties",
+      "locked": [
+        "0.1.6"
+      ],
+      "latest": "0.1.6",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/android_system_properties",
+      "repository": "https://github.com/nical/android_system_properties",
+      "adopted": [
+        "0.1.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "anyhow",
+      "locked": [
+        "1.0.104"
+      ],
+      "latest": "1.0.104",
+      "msrv": "1.68",
+      "source": "https://crates.io/api/v1/crates/anyhow",
+      "repository": "https://github.com/dtolnay/anyhow",
+      "adopted": [
+        "1.0.104"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "arrayvec",
+      "locked": [
+        "0.7.8"
+      ],
+      "latest": "0.7.8",
+      "msrv": "1.51",
+      "source": "https://crates.io/api/v1/crates/arrayvec",
+      "repository": "https://github.com/bluss/arrayvec",
+      "adopted": [
+        "0.7.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ash",
+      "locked": [
+        "0.38.0+1.3.281"
+      ],
+      "latest": "0.38.0+1.3.281",
+      "msrv": "1.69.0",
+      "source": "https://crates.io/api/v1/crates/ash",
+      "repository": "https://github.com/ash-rs/ash",
+      "adopted": [
+        "0.38.0+1.3.281"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "atk",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/atk",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "atk-sys",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/atk-sys",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "atomic-waker",
+      "locked": [
+        "1.1.2"
+      ],
+      "latest": "1.1.2",
+      "msrv": "1.36",
+      "source": "https://crates.io/api/v1/crates/atomic-waker",
+      "repository": "https://github.com/smol-rs/atomic-waker",
+      "adopted": [
+        "1.1.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "autocfg",
+      "locked": [
+        "1.5.1"
+      ],
+      "latest": "1.5.1",
+      "msrv": "1.0",
+      "source": "https://crates.io/api/v1/crates/autocfg",
+      "repository": "https://github.com/cuviper/autocfg",
+      "adopted": [
+        "1.5.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "base64",
+      "locked": [
+        "0.21.7",
+        "0.22.1",
+        "0.23.1"
+      ],
+      "latest": "0.23.1",
+      "msrv": "1.71.0",
+      "source": "https://crates.io/api/v1/crates/base64",
+      "repository": "https://github.com/marshallpierce/rust-base64",
+      "adopted": [
+        "0.21.7",
+        "0.22.1",
+        "0.23.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "bit-set",
+      "locked": [
+        "0.8.0"
+      ],
+      "latest": "0.11.1",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/bit-set",
+      "repository": "https://github.com/contain-rs/bit-vec",
+      "adopted": [
+        "0.8.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "bit-vec",
+      "locked": [
+        "0.8.0"
+      ],
+      "latest": "0.10.1",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/bit-vec",
+      "repository": "https://github.com/contain-rs/bit-vec",
+      "adopted": [
+        "0.8.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "bitflags",
+      "locked": [
+        "1.3.2",
+        "2.13.2"
+      ],
+      "latest": "2.13.2",
+      "msrv": "1.56.0",
+      "source": "https://crates.io/api/v1/crates/bitflags",
+      "repository": "https://github.com/bitflags/bitflags",
+      "adopted": [
+        "1.3.2",
+        "2.13.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "block",
+      "locked": [
+        "0.1.6"
+      ],
+      "latest": "0.1.6",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/block",
+      "repository": "http://github.com/SSheldon/rust-block",
+      "adopted": [
+        "0.1.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "block-buffer",
+      "locked": [
+        "0.10.4",
+        "0.12.1"
+      ],
+      "latest": "0.12.1",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/block-buffer",
+      "repository": "https://github.com/RustCrypto/utils",
+      "adopted": [
+        "0.10.4",
+        "0.12.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "block2",
+      "locked": [
+        "0.6.2"
+      ],
+      "latest": "0.6.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/block2",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.6.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "brotli",
+      "locked": [
+        "9.0.0"
+      ],
+      "latest": "9.1.1",
+      "msrv": "1.59.0",
+      "source": "https://crates.io/api/v1/crates/brotli",
+      "repository": "https://github.com/dropbox/rust-brotli",
+      "adopted": [
+        "9.0.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "brotli-decompressor",
+      "locked": [
+        "6.0.1"
+      ],
+      "latest": "6.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/brotli-decompressor",
+      "repository": "https://github.com/dropbox/rust-brotli-decompressor",
+      "adopted": [
+        "6.0.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "bs58",
+      "locked": [
+        "0.5.1"
+      ],
+      "latest": "0.5.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/bs58",
+      "repository": "https://github.com/Nullus157/bs58-rs",
+      "adopted": [
+        "0.5.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "bumpalo",
+      "locked": [
+        "3.20.3"
+      ],
+      "latest": "3.20.3",
+      "msrv": "1.71.1",
+      "source": "https://crates.io/api/v1/crates/bumpalo",
+      "repository": "https://github.com/fitzgen/bumpalo",
+      "adopted": [
+        "3.20.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "bytemuck",
+      "locked": [
+        "1.25.2"
+      ],
+      "latest": "1.25.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/bytemuck",
+      "repository": "https://github.com/Lokathor/bytemuck",
+      "adopted": [
+        "1.25.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "bytemuck_derive",
+      "locked": [
+        "1.12.1"
+      ],
+      "latest": "1.12.1",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/bytemuck_derive",
+      "repository": "https://github.com/Lokathor/bytemuck",
+      "adopted": [
+        "1.12.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "byteorder",
+      "locked": [
+        "1.5.0"
+      ],
+      "latest": "1.5.0",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/byteorder",
+      "repository": "https://github.com/BurntSushi/byteorder",
+      "adopted": [
+        "1.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "bytes",
+      "locked": [
+        "1.12.1"
+      ],
+      "latest": "1.12.1",
+      "msrv": "1.57",
+      "source": "https://crates.io/api/v1/crates/bytes",
+      "repository": "https://github.com/tokio-rs/bytes",
+      "adopted": [
+        "1.12.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cairo-rs",
+      "locked": [
+        "0.18.5"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/cairo-rs",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.5"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "cairo-sys-rs",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/cairo-sys-rs",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "camino",
+      "locked": [
+        "1.2.6"
+      ],
+      "latest": "1.2.6",
+      "msrv": "1.61.0",
+      "source": "https://crates.io/api/v1/crates/camino",
+      "repository": "https://github.com/camino-rs/camino",
+      "adopted": [
+        "1.2.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cargo-platform",
+      "locked": [
+        "0.1.9"
+      ],
+      "latest": "0.3.3",
+      "msrv": "1.91",
+      "source": "https://crates.io/api/v1/crates/cargo-platform",
+      "repository": "https://github.com/rust-lang/cargo",
+      "adopted": [
+        "0.1.9"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "cargo_metadata",
+      "locked": [
+        "0.19.2"
+      ],
+      "latest": "0.23.1",
+      "msrv": "1.86.0",
+      "source": "https://crates.io/api/v1/crates/cargo_metadata",
+      "repository": "https://github.com/oli-obk/cargo_metadata",
+      "adopted": [
+        "0.19.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "cargo_toml",
+      "locked": [
+        "1.0.1"
+      ],
+      "latest": "1.0.1",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/cargo_toml",
+      "repository": "https://gitlab.com/lib.rs/cargo_toml",
+      "adopted": [
+        "1.0.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cc",
+      "locked": [
+        "1.8.0"
+      ],
+      "latest": "1.10.0",
+      "msrv": "1.65.0",
+      "source": "https://crates.io/api/v1/crates/cc",
+      "repository": "https://github.com/rust-lang/cc-rs",
+      "adopted": [
+        "1.10.0"
+      ],
+      "decision": "updated"
+    },
+    {
+      "name": "cesu8",
+      "locked": [
+        "1.1.0"
+      ],
+      "latest": "1.1.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/cesu8",
+      "repository": "https://github.com/emk/cesu8-rs",
+      "adopted": [
+        "1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cfb",
+      "locked": [
+        "0.14.0"
+      ],
+      "latest": "0.16.0",
+      "msrv": "1.74",
+      "source": "https://crates.io/api/v1/crates/cfb",
+      "repository": "https://github.com/mdsteele/rust-cfb",
+      "adopted": [
+        "0.14.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "cfg-expr",
+      "locked": [
+        "0.15.8"
+      ],
+      "latest": "0.20.10",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/cfg-expr",
+      "repository": "https://github.com/EmbarkStudios/cfg-expr",
+      "adopted": [
+        "0.15.8"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "cfg-if",
+      "locked": [
+        "1.0.5"
+      ],
+      "latest": "1.0.5",
+      "msrv": "1.32",
+      "source": "https://crates.io/api/v1/crates/cfg-if",
+      "repository": "https://github.com/rust-lang/cfg-if",
+      "adopted": [
+        "1.0.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cfg_aliases",
+      "locked": [
+        "0.2.2"
+      ],
+      "latest": "0.2.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/cfg_aliases",
+      "repository": "https://github.com/katharostech/cfg_aliases",
+      "adopted": [
+        "0.2.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "chrono",
+      "locked": [
+        "0.4.45"
+      ],
+      "latest": "0.4.45",
+      "msrv": "1.62.0",
+      "source": "https://crates.io/api/v1/crates/chrono",
+      "repository": "https://github.com/chronotope/chrono",
+      "adopted": [
+        "0.4.45"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "codespan-reporting",
+      "locked": [
+        "0.12.0"
+      ],
+      "latest": "0.13.1",
+      "msrv": "1.67",
+      "source": "https://crates.io/api/v1/crates/codespan-reporting",
+      "repository": "https://github.com/brendanzab/codespan",
+      "adopted": [
+        "0.12.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "combine",
+      "locked": [
+        "4.6.9"
+      ],
+      "latest": "4.6.9",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/combine",
+      "repository": "https://github.com/Marwes/combine",
+      "adopted": [
+        "4.6.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "const-oid",
+      "locked": [
+        "0.10.2"
+      ],
+      "latest": "0.10.2",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/const-oid",
+      "repository": "https://github.com/RustCrypto/formats",
+      "adopted": [
+        "0.10.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cookie",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.18.2",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/cookie",
+      "repository": "https://github.com/SergioBenitez/cookie-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "core-foundation",
+      "locked": [
+        "0.10.1"
+      ],
+      "latest": "0.10.1",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/core-foundation",
+      "repository": "https://github.com/servo/core-foundation-rs",
+      "adopted": [
+        "0.10.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "core-foundation-sys",
+      "locked": [
+        "0.8.7"
+      ],
+      "latest": "0.8.7",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/core-foundation-sys",
+      "repository": "https://github.com/servo/core-foundation-rs",
+      "adopted": [
+        "0.8.7"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "core-graphics",
+      "locked": [
+        "0.25.0"
+      ],
+      "latest": "0.25.0",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/core-graphics",
+      "repository": "https://github.com/servo/core-foundation-rs",
+      "adopted": [
+        "0.25.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "core-graphics-types",
+      "locked": [
+        "0.2.0"
+      ],
+      "latest": "0.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/core-graphics-types",
+      "repository": "https://github.com/servo/core-foundation-rs",
+      "adopted": [
+        "0.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "core_maths",
+      "locked": [
+        "0.1.1"
+      ],
+      "latest": "0.1.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/core_maths",
+      "repository": "https://github.com/robertbastian/core_maths",
+      "adopted": [
+        "0.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cosmic-text",
+      "locked": [
+        "0.19.0"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.89",
+      "source": "https://crates.io/api/v1/crates/cosmic-text",
+      "repository": "https://github.com/pop-os/cosmic-text",
+      "adopted": [
+        "0.19.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cpufeatures",
+      "locked": [
+        "0.2.17",
+        "0.3.1"
+      ],
+      "latest": "0.3.1",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/cpufeatures",
+      "repository": "https://github.com/RustCrypto/utils",
+      "adopted": [
+        "0.2.17",
+        "0.3.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "crc32fast",
+      "locked": [
+        "1.5.2"
+      ],
+      "latest": "1.5.4",
+      "msrv": "1.63",
+      "source": "https://crates.io/api/v1/crates/crc32fast",
+      "repository": "https://github.com/srijs/rust-crc32fast",
+      "adopted": [
+        "1.5.4"
+      ],
+      "decision": "updated"
+    },
+    {
+      "name": "crossbeam-channel",
+      "locked": [
+        "0.5.17"
+      ],
+      "latest": "0.5.17",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/crossbeam-channel",
+      "repository": "https://github.com/crossbeam-rs/crossbeam",
+      "adopted": [
+        "0.5.17"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "crossbeam-utils",
+      "locked": [
+        "0.8.23"
+      ],
+      "latest": "0.8.23",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/crossbeam-utils",
+      "repository": "https://github.com/crossbeam-rs/crossbeam",
+      "adopted": [
+        "0.8.23"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "crunchy",
+      "locked": [
+        "0.2.4"
+      ],
+      "latest": "0.2.4",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/crunchy",
+      "repository": "https://github.com/eira-fransham/crunchy",
+      "adopted": [
+        "0.2.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "crypto-common",
+      "locked": [
+        "0.1.7",
+        "0.2.2"
+      ],
+      "latest": "0.2.2",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/crypto-common",
+      "repository": "https://github.com/RustCrypto/traits",
+      "adopted": [
+        "0.1.7",
+        "0.2.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "cssparser",
+      "locked": [
+        "0.37.0"
+      ],
+      "latest": "0.38.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/cssparser",
+      "repository": "https://github.com/servo/rust-cssparser",
+      "adopted": [
+        "0.37.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "cssparser-macros",
+      "locked": [
+        "0.7.1"
+      ],
+      "latest": "0.7.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/cssparser-macros",
+      "repository": "https://github.com/servo/rust-cssparser",
+      "adopted": [
+        "0.7.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ctor",
+      "locked": [
+        "1.0.13"
+      ],
+      "latest": "1.0.13",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/ctor",
+      "repository": "https://github.com/mmastrac/linktime",
+      "adopted": [
+        "1.0.13"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "darling",
+      "locked": [
+        "0.24.1"
+      ],
+      "latest": "0.24.1",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/darling",
+      "repository": "https://github.com/TedDriggs/darling",
+      "adopted": [
+        "0.24.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "darling_core",
+      "locked": [
+        "0.24.1"
+      ],
+      "latest": "0.24.1",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/darling_core",
+      "repository": "https://github.com/TedDriggs/darling",
+      "adopted": [
+        "0.24.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "darling_macro",
+      "locked": [
+        "0.24.1"
+      ],
+      "latest": "0.24.1",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/darling_macro",
+      "repository": "https://github.com/TedDriggs/darling",
+      "adopted": [
+        "0.24.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dbus",
+      "locked": [
+        "0.9.12"
+      ],
+      "latest": "0.9.12",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/dbus",
+      "repository": "https://github.com/diwic/dbus-rs",
+      "adopted": [
+        "0.9.12"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "defmt",
+      "locked": [
+        "1.2.0"
+      ],
+      "latest": "1.2.0",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/defmt",
+      "repository": "https://github.com/knurling-rs/defmt",
+      "adopted": [
+        "1.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "defmt-macros",
+      "locked": [
+        "1.2.0"
+      ],
+      "latest": "1.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/defmt-macros",
+      "repository": "https://github.com/knurling-rs/defmt",
+      "adopted": [
+        "1.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "defmt-parser",
+      "locked": [
+        "1.1.0"
+      ],
+      "latest": "1.1.0",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/defmt-parser",
+      "repository": "https://github.com/knurling-rs/defmt",
+      "adopted": [
+        "1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "deranged",
+      "locked": [
+        "0.5.9"
+      ],
+      "latest": "0.5.9",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/deranged",
+      "repository": "https://github.com/jhpratt/deranged",
+      "adopted": [
+        "0.5.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "derive_more",
+      "locked": [
+        "2.1.1"
+      ],
+      "latest": "2.1.1",
+      "msrv": "1.81.0",
+      "source": "https://crates.io/api/v1/crates/derive_more",
+      "repository": "https://github.com/JelteF/derive_more",
+      "adopted": [
+        "2.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "derive_more-impl",
+      "locked": [
+        "2.1.1"
+      ],
+      "latest": "2.1.1",
+      "msrv": "1.81.0",
+      "source": "https://crates.io/api/v1/crates/derive_more-impl",
+      "repository": "https://github.com/JelteF/derive_more",
+      "adopted": [
+        "2.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "digest",
+      "locked": [
+        "0.10.7",
+        "0.11.3"
+      ],
+      "latest": "0.11.3",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/digest",
+      "repository": "https://github.com/RustCrypto/traits",
+      "adopted": [
+        "0.10.7",
+        "0.11.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dirs",
+      "locked": [
+        "7.0.0"
+      ],
+      "latest": "7.0.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/dirs",
+      "repository": "https://codeberg.org/dirs/dirs-rs",
+      "adopted": [
+        "7.0.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dirs-sys",
+      "locked": [
+        "0.5.0"
+      ],
+      "latest": "0.5.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/dirs-sys",
+      "repository": "https://github.com/dirs-dev/dirs-sys-rs",
+      "adopted": [
+        "0.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dispatch2",
+      "locked": [
+        "0.3.1"
+      ],
+      "latest": "0.3.1",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/dispatch2",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "displaydoc",
+      "locked": [
+        "0.2.7"
+      ],
+      "latest": "0.2.7",
+      "msrv": "1.71.0",
+      "source": "https://crates.io/api/v1/crates/displaydoc",
+      "repository": "https://github.com/yaahc/displaydoc",
+      "adopted": [
+        "0.2.7"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dlopen2",
+      "locked": [
+        "0.8.2"
+      ],
+      "latest": "0.9.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/dlopen2",
+      "repository": "https://github.com/OpenByteDev/dlopen2",
+      "adopted": [
+        "0.8.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "dlopen2_derive",
+      "locked": [
+        "0.4.3"
+      ],
+      "latest": "0.5.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/dlopen2_derive",
+      "repository": "https://github.com/OpenByteDev/dlopen2",
+      "adopted": [
+        "0.4.3"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "document-features",
+      "locked": [
+        "0.2.12"
+      ],
+      "latest": "0.2.12",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/document-features",
+      "repository": "https://github.com/slint-ui/document-features",
+      "adopted": [
+        "0.2.12"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dom_query",
+      "locked": [
+        "0.28.0"
+      ],
+      "latest": "0.29.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/dom_query",
+      "repository": "https://github.com/niklak/dom_query",
+      "adopted": [
+        "0.28.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "dpi",
+      "locked": [
+        "0.1.2"
+      ],
+      "latest": "0.1.2",
+      "msrv": "1.73",
+      "source": "https://crates.io/api/v1/crates/dpi",
+      "repository": "https://github.com/rust-windowing/winit",
+      "adopted": [
+        "0.1.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dtoa",
+      "locked": [
+        "1.0.11"
+      ],
+      "latest": "1.0.11",
+      "msrv": "1.68",
+      "source": "https://crates.io/api/v1/crates/dtoa",
+      "repository": "https://github.com/dtolnay/dtoa",
+      "adopted": [
+        "1.0.11"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dtoa-short",
+      "locked": [
+        "0.3.5"
+      ],
+      "latest": "0.3.5",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/dtoa-short",
+      "repository": "https://github.com/upsuper/dtoa-short",
+      "adopted": [
+        "0.3.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dunce",
+      "locked": [
+        "1.0.5"
+      ],
+      "latest": "1.0.5",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/dunce",
+      "repository": "https://gitlab.com/kornelski/dunce",
+      "adopted": [
+        "1.0.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "dyn-clone",
+      "locked": [
+        "1.0.20"
+      ],
+      "latest": "1.0.20",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/dyn-clone",
+      "repository": "https://github.com/dtolnay/dyn-clone",
+      "adopted": [
+        "1.0.20"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "embed-resource",
+      "locked": [
+        "3.0.12"
+      ],
+      "latest": "3.0.12",
+      "msrv": "1.76",
+      "source": "https://crates.io/api/v1/crates/embed-resource",
+      "repository": "https://github.com/nabijaczleweli/rust-embed-resource",
+      "adopted": [
+        "3.0.12"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "embed_plist",
+      "locked": [
+        "1.2.2"
+      ],
+      "latest": "1.2.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/embed_plist",
+      "repository": "https://github.com/nvzqz/embed-plist-rs",
+      "adopted": [
+        "1.2.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "equivalent",
+      "locked": [
+        "1.0.3"
+      ],
+      "latest": "1.0.3",
+      "msrv": "1.6",
+      "source": "https://crates.io/api/v1/crates/equivalent",
+      "repository": "https://github.com/indexmap-rs/equivalent",
+      "adopted": [
+        "1.0.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "erased-serde",
+      "locked": [
+        "0.4.10"
+      ],
+      "latest": "0.4.11",
+      "msrv": "1.68",
+      "source": "https://crates.io/api/v1/crates/erased-serde",
+      "repository": "https://github.com/dtolnay/erased-serde",
+      "adopted": [
+        "0.4.11"
+      ],
+      "decision": "updated"
+    },
+    {
+      "name": "fastrand",
+      "locked": [
+        "2.5.0"
+      ],
+      "latest": "2.5.0",
+      "msrv": "1.63",
+      "source": "https://crates.io/api/v1/crates/fastrand",
+      "repository": "https://github.com/smol-rs/fastrand",
+      "adopted": [
+        "2.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "fdeflate",
+      "locked": [
+        "0.3.7"
+      ],
+      "latest": "0.3.7",
+      "msrv": "1.67.0",
+      "source": "https://crates.io/api/v1/crates/fdeflate",
+      "repository": "https://github.com/image-rs/fdeflate",
+      "adopted": [
+        "0.3.7"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "field-offset",
+      "locked": [
+        "0.3.6"
+      ],
+      "latest": "0.3.6",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/field-offset",
+      "repository": "https://github.com/Diggsey/rust-field-offset",
+      "adopted": [
+        "0.3.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "find-msvc-tools",
+      "locked": [
+        "0.1.14"
+      ],
+      "latest": "0.1.15",
+      "msrv": "1.65.0",
+      "source": "https://crates.io/api/v1/crates/find-msvc-tools",
+      "repository": "https://github.com/rust-lang/cc-rs",
+      "adopted": [
+        "0.1.15"
+      ],
+      "decision": "updated"
+    },
+    {
+      "name": "flate2",
+      "locked": [
+        "1.1.10"
+      ],
+      "latest": "1.1.10",
+      "msrv": "1.67.0",
+      "source": "https://crates.io/api/v1/crates/flate2",
+      "repository": "https://github.com/rust-lang/flate2-rs",
+      "adopted": [
+        "1.1.10"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "fnv",
+      "locked": [
+        "1.0.7"
+      ],
+      "latest": "1.0.7",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/fnv",
+      "repository": "https://github.com/servo/rust-fnv",
+      "adopted": [
+        "1.0.7"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "foldhash",
+      "locked": [
+        "0.1.5",
+        "0.2.0"
+      ],
+      "latest": "0.2.0",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/foldhash",
+      "repository": "https://github.com/orlp/foldhash",
+      "adopted": [
+        "0.1.5",
+        "0.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "font-types",
+      "locked": [
+        "0.11.3",
+        "0.12.7"
+      ],
+      "latest": "0.12.7",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/font-types",
+      "repository": "https://github.com/googlefonts/fontations",
+      "adopted": [
+        "0.11.3",
+        "0.12.7"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "fontconfig-parser",
+      "locked": [
+        "0.5.8"
+      ],
+      "latest": "0.5.8",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/fontconfig-parser",
+      "repository": "https://github.com/Riey/fontconfig-parser",
+      "adopted": [
+        "0.5.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "fontdb",
+      "locked": [
+        "0.23.0"
+      ],
+      "latest": "0.24.0",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/fontdb",
+      "repository": "https://github.com/RazrFalcon/fontdb",
+      "adopted": [
+        "0.23.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "foreign-types",
+      "locked": [
+        "0.5.0"
+      ],
+      "latest": "0.5.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/foreign-types",
+      "repository": "https://github.com/sfackler/foreign-types",
+      "adopted": [
+        "0.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "foreign-types-macros",
+      "locked": [
+        "0.2.4"
+      ],
+      "latest": "0.2.4",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/foreign-types-macros",
+      "repository": "https://github.com/sfackler/foreign-types",
+      "adopted": [
+        "0.2.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "foreign-types-shared",
+      "locked": [
+        "0.3.1"
+      ],
+      "latest": "0.3.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/foreign-types-shared",
+      "repository": "https://github.com/sfackler/foreign-types",
+      "adopted": [
+        "0.3.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "form_urlencoded",
+      "locked": [
+        "1.2.2"
+      ],
+      "latest": "1.2.2",
+      "msrv": "1.51",
+      "source": "https://crates.io/api/v1/crates/form_urlencoded",
+      "repository": "https://github.com/servo/rust-url",
+      "adopted": [
+        "1.2.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/futures",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-channel",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/futures-channel",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-core",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.36",
+      "source": "https://crates.io/api/v1/crates/futures-core",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-executor",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/futures-executor",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-io",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.36",
+      "source": "https://crates.io/api/v1/crates/futures-io",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-macro",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/futures-macro",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-sink",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.36",
+      "source": "https://crates.io/api/v1/crates/futures-sink",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-task",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/futures-task",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "futures-util",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/futures-util",
+      "repository": "https://github.com/rust-lang/futures-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "gdk",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gdk",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gdk-pixbuf",
+      "locked": [
+        "0.18.5"
+      ],
+      "latest": "0.22.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gdk-pixbuf",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.5"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gdk-pixbuf-sys",
+      "locked": [
+        "0.18.0"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gdk-pixbuf-sys",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gdk-sys",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gdk-sys",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gdkwayland-sys",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gdkwayland-sys",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gdkx11",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gdkx11",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gdkx11-sys",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gdkx11-sys",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "generic-array",
+      "locked": [
+        "0.14.7"
+      ],
+      "latest": "1.4.5",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/generic-array",
+      "repository": "https://github.com/fizyk20/generic-array.git",
+      "adopted": [
+        "0.14.7"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "getrandom",
+      "locked": [
+        "0.3.4",
+        "0.4.3"
+      ],
+      "latest": "0.4.3",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/getrandom",
+      "repository": "https://github.com/rust-random/getrandom",
+      "adopted": [
+        "0.3.4",
+        "0.4.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "gio",
+      "locked": [
+        "0.18.4"
+      ],
+      "latest": "0.22.10",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gio",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.4"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gio-sys",
+      "locked": [
+        "0.18.1"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gio-sys",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gl_generator",
+      "locked": [
+        "0.14.0"
+      ],
+      "latest": "0.14.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/gl_generator",
+      "repository": "https://github.com/brendanzab/gl-rs/",
+      "adopted": [
+        "0.14.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "glib",
+      "locked": [
+        "0.18.5"
+      ],
+      "latest": "0.22.10",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/glib",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.5"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "glib-macros",
+      "locked": [
+        "0.18.5"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/glib-macros",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.5"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "glib-sys",
+      "locked": [
+        "0.18.1"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/glib-sys",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "glob",
+      "locked": [
+        "0.3.4"
+      ],
+      "latest": "0.3.4",
+      "msrv": "1.63.0",
+      "source": "https://crates.io/api/v1/crates/glob",
+      "repository": "https://github.com/rust-lang/glob",
+      "adopted": [
+        "0.3.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "glow",
+      "locked": [
+        "0.16.0"
+      ],
+      "latest": "0.18.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/glow",
+      "repository": "https://github.com/grovesNL/glow",
+      "adopted": [
+        "0.16.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "glutin_wgl_sys",
+      "locked": [
+        "0.6.1"
+      ],
+      "latest": "0.6.1",
+      "msrv": "1.70.0",
+      "source": "https://crates.io/api/v1/crates/glutin_wgl_sys",
+      "repository": "https://github.com/rust-windowing/glutin",
+      "adopted": [
+        "0.6.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "gobject-sys",
+      "locked": [
+        "0.18.0"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gobject-sys",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gpu-alloc",
+      "locked": [
+        "0.6.2"
+      ],
+      "latest": "0.6.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/gpu-alloc",
+      "repository": "https://github.com/zakarumych/gpu-alloc",
+      "adopted": [
+        "0.6.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "gpu-alloc-types",
+      "locked": [
+        "0.3.1"
+      ],
+      "latest": "0.3.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/gpu-alloc-types",
+      "repository": "https://github.com/zakarumych/gpu-alloc",
+      "adopted": [
+        "0.3.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "gpu-allocator",
+      "locked": [
+        "0.27.0"
+      ],
+      "latest": "0.28.0",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/gpu-allocator",
+      "repository": "https://github.com/Traverse-Research/gpu-allocator",
+      "adopted": [
+        "0.27.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gpu-descriptor",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/gpu-descriptor",
+      "repository": "https://github.com/zakarumych/gpu-descriptor",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "gpu-descriptor-types",
+      "locked": [
+        "0.2.0"
+      ],
+      "latest": "0.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/gpu-descriptor-types",
+      "repository": "https://github.com/zakarumych/gpu-descriptor",
+      "adopted": [
+        "0.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "gtk",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gtk",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gtk-sys",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gtk-sys",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "gtk3-macros",
+      "locked": [
+        "0.18.2"
+      ],
+      "latest": "0.19.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/gtk3-macros",
+      "repository": "https://github.com/gtk-rs/gtk3-rs",
+      "adopted": [
+        "0.18.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "half",
+      "locked": [
+        "2.7.1"
+      ],
+      "latest": "2.7.1",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/half",
+      "repository": "https://github.com/VoidStarKat/half-rs",
+      "adopted": [
+        "2.7.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "harfrust",
+      "locked": [
+        "0.5.2"
+      ],
+      "latest": "0.15.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/harfrust",
+      "repository": "https://github.com/harfbuzz/harfrust",
+      "adopted": [
+        "0.5.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "hashbrown",
+      "locked": [
+        "0.12.3",
+        "0.15.5",
+        "0.16.1",
+        "0.17.1"
+      ],
+      "latest": "0.17.1",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/hashbrown",
+      "repository": "https://github.com/rust-lang/hashbrown",
+      "adopted": [
+        "0.12.3",
+        "0.15.5",
+        "0.16.1",
+        "0.17.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "heck",
+      "locked": [
+        "0.4.1",
+        "0.5.0"
+      ],
+      "latest": "0.5.0",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/heck",
+      "repository": "https://github.com/withoutboats/heck",
+      "adopted": [
+        "0.4.1",
+        "0.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "hex",
+      "locked": [
+        "0.4.3"
+      ],
+      "latest": "0.4.3",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/hex",
+      "repository": "https://github.com/KokaKiwi/rust-hex",
+      "adopted": [
+        "0.4.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "hexf-parse",
+      "locked": [
+        "0.2.1"
+      ],
+      "latest": "0.2.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/hexf-parse",
+      "repository": "https://github.com/lifthrasiir/hexf",
+      "adopted": [
+        "0.2.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "html5ever",
+      "locked": [
+        "0.39.0"
+      ],
+      "latest": "0.40.1",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/html5ever",
+      "repository": "https://github.com/servo/html5ever",
+      "adopted": [
+        "0.39.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "http",
+      "locked": [
+        "1.5.0"
+      ],
+      "latest": "1.5.0",
+      "msrv": "1.57.0",
+      "source": "https://crates.io/api/v1/crates/http",
+      "repository": "https://github.com/hyperium/http",
+      "adopted": [
+        "1.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "http-body",
+      "locked": [
+        "1.1.0"
+      ],
+      "latest": "1.1.0",
+      "msrv": "1.61",
+      "source": "https://crates.io/api/v1/crates/http-body",
+      "repository": "https://github.com/hyperium/http-body",
+      "adopted": [
+        "1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "http-body-util",
+      "locked": [
+        "0.1.5"
+      ],
+      "latest": "0.1.5",
+      "msrv": "1.61",
+      "source": "https://crates.io/api/v1/crates/http-body-util",
+      "repository": "https://github.com/hyperium/http-body",
+      "adopted": [
+        "0.1.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "httparse",
+      "locked": [
+        "1.10.1"
+      ],
+      "latest": "1.10.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/httparse",
+      "repository": "https://github.com/seanmonstar/httparse",
+      "adopted": [
+        "1.10.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "hybrid-array",
+      "locked": [
+        "0.4.15"
+      ],
+      "latest": "0.4.15",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/hybrid-array",
+      "repository": "https://github.com/RustCrypto/hybrid-array",
+      "adopted": [
+        "0.4.15"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "hyper",
+      "locked": [
+        "1.12.0"
+      ],
+      "latest": "1.12.0",
+      "msrv": "1.63",
+      "source": "https://crates.io/api/v1/crates/hyper",
+      "repository": "https://github.com/hyperium/hyper",
+      "adopted": [
+        "1.12.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "hyper-util",
+      "locked": [
+        "0.1.21"
+      ],
+      "latest": "0.1.21",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/hyper-util",
+      "repository": "https://github.com/hyperium/hyper-util",
+      "adopted": [
+        "0.1.21"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "iana-time-zone",
+      "locked": [
+        "0.1.65"
+      ],
+      "latest": "0.1.65",
+      "msrv": "1.62.0",
+      "source": "https://crates.io/api/v1/crates/iana-time-zone",
+      "repository": "https://github.com/strawlab/iana-time-zone",
+      "adopted": [
+        "0.1.65"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "iana-time-zone-haiku",
+      "locked": [
+        "0.1.2"
+      ],
+      "latest": "0.1.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/iana-time-zone-haiku",
+      "repository": "https://github.com/strawlab/iana-time-zone",
+      "adopted": [
+        "0.1.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ico",
+      "locked": [
+        "0.5.0"
+      ],
+      "latest": "0.6.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/ico",
+      "repository": "https://github.com/mdsteele/rust-ico",
+      "adopted": [
+        "0.5.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "icu_collections",
+      "locked": [
+        "2.3.0"
+      ],
+      "latest": "2.4.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/icu_collections",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "2.3.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "icu_locale_core",
+      "locked": [
+        "2.3.0"
+      ],
+      "latest": "2.4.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/icu_locale_core",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "2.3.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "icu_normalizer",
+      "locked": [
+        "2.3.0"
+      ],
+      "latest": "2.4.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/icu_normalizer",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "2.3.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "icu_normalizer_data",
+      "locked": [
+        "2.3.0"
+      ],
+      "latest": "2.4.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/icu_normalizer_data",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "2.3.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "icu_properties",
+      "locked": [
+        "2.3.0"
+      ],
+      "latest": "2.4.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/icu_properties",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "2.3.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "icu_properties_data",
+      "locked": [
+        "2.3.0"
+      ],
+      "latest": "2.4.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/icu_properties_data",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "2.3.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "icu_provider",
+      "locked": [
+        "2.3.1"
+      ],
+      "latest": "2.4.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/icu_provider",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "2.3.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "ident_case",
+      "locked": [
+        "1.0.1"
+      ],
+      "latest": "1.0.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/ident_case",
+      "repository": "https://github.com/TedDriggs/ident_case",
+      "adopted": [
+        "1.0.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "idna",
+      "locked": [
+        "1.1.0"
+      ],
+      "latest": "1.1.0",
+      "msrv": "1.57",
+      "source": "https://crates.io/api/v1/crates/idna",
+      "repository": "https://github.com/servo/rust-url/",
+      "adopted": [
+        "1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "idna_adapter",
+      "locked": [
+        "1.2.2"
+      ],
+      "latest": "1.2.2",
+      "msrv": "1.86",
+      "source": "https://crates.io/api/v1/crates/idna_adapter",
+      "repository": "https://github.com/hsivonen/idna_adapter",
+      "adopted": [
+        "1.2.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "indexmap",
+      "locked": [
+        "1.9.3",
+        "2.14.2"
+      ],
+      "latest": "2.14.2",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/indexmap",
+      "repository": "https://github.com/indexmap-rs/indexmap",
+      "adopted": [
+        "1.9.3",
+        "2.14.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "infer",
+      "locked": [
+        "0.22.0"
+      ],
+      "latest": "0.22.0",
+      "msrv": "1.74",
+      "source": "https://crates.io/api/v1/crates/infer",
+      "repository": "https://github.com/bojand/infer",
+      "adopted": [
+        "0.22.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ipnet",
+      "locked": [
+        "2.12.2"
+      ],
+      "latest": "2.12.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/ipnet",
+      "repository": "https://github.com/krisprice/ipnet",
+      "adopted": [
+        "2.12.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "itoa",
+      "locked": [
+        "1.0.18"
+      ],
+      "latest": "1.0.18",
+      "msrv": "1.68",
+      "source": "https://crates.io/api/v1/crates/itoa",
+      "repository": "https://github.com/dtolnay/itoa",
+      "adopted": [
+        "1.0.18"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "javascriptcore-rs",
+      "locked": [
+        "1.1.2"
+      ],
+      "latest": "2.0.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/javascriptcore-rs",
+      "repository": "https://github.com/tauri-apps/javascriptcore-rs",
+      "adopted": [
+        "1.1.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "javascriptcore-rs-sys",
+      "locked": [
+        "1.1.1"
+      ],
+      "latest": "2.0.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/javascriptcore-rs-sys",
+      "repository": "https://github.com/tauri-apps/javascriptcore-rs",
+      "adopted": [
+        "1.1.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "jiff",
+      "locked": [
+        "0.2.38"
+      ],
+      "latest": "0.2.38",
+      "msrv": "1.70",
+      "source": "https://crates.io/api/v1/crates/jiff",
+      "repository": "https://github.com/BurntSushi/jiff",
+      "adopted": [
+        "0.2.38"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "jiff-core",
+      "locked": [
+        "0.1.1"
+      ],
+      "latest": "0.1.1",
+      "msrv": "1.70",
+      "source": "https://crates.io/api/v1/crates/jiff-core",
+      "repository": "https://github.com/BurntSushi/jiff",
+      "adopted": [
+        "0.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "jiff-static",
+      "locked": [
+        "0.2.38"
+      ],
+      "latest": "0.2.38",
+      "msrv": "1.70",
+      "source": "https://crates.io/api/v1/crates/jiff-static",
+      "repository": "https://github.com/BurntSushi/jiff",
+      "adopted": [
+        "0.2.38"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "jiff-tzdb",
+      "locked": [
+        "0.1.9"
+      ],
+      "latest": "0.1.9",
+      "msrv": "1.70",
+      "source": "https://crates.io/api/v1/crates/jiff-tzdb",
+      "repository": "https://github.com/BurntSushi/jiff",
+      "adopted": [
+        "0.1.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "jiff-tzdb-platform",
+      "locked": [
+        "0.1.3"
+      ],
+      "latest": "0.1.3",
+      "msrv": "1.70",
+      "source": "https://crates.io/api/v1/crates/jiff-tzdb-platform",
+      "repository": "https://github.com/BurntSushi/jiff",
+      "adopted": [
+        "0.1.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "jni",
+      "locked": [
+        "0.21.1"
+      ],
+      "latest": "0.22.4",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/jni",
+      "repository": "https://github.com/jni-rs/jni-rs",
+      "adopted": [
+        "0.21.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "jni-sys",
+      "locked": [
+        "0.3.1",
+        "0.4.1"
+      ],
+      "latest": "0.4.1",
+      "msrv": "1.76.0",
+      "source": "https://crates.io/api/v1/crates/jni-sys",
+      "repository": "https://github.com/jni-rs/jni-sys",
+      "adopted": [
+        "0.3.1",
+        "0.4.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "jni-sys-macros",
+      "locked": [
+        "0.4.1"
+      ],
+      "latest": "0.4.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/jni-sys-macros",
+      "repository": "https://github.com/jni-rs/jni-sys",
+      "adopted": [
+        "0.4.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "js-sys",
+      "locked": [
+        "0.3.106"
+      ],
+      "latest": "0.3.107",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/js-sys",
+      "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/js-sys",
+      "adopted": [
+        "0.3.106"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "json-patch",
+      "locked": [
+        "4.2.0"
+      ],
+      "latest": "4.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/json-patch",
+      "repository": "https://github.com/idubrov/json-patch",
+      "adopted": [
+        "4.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "jsonptr",
+      "locked": [
+        "0.7.1"
+      ],
+      "latest": "0.8.2",
+      "msrv": "1.79.0",
+      "source": "https://crates.io/api/v1/crates/jsonptr",
+      "repository": "https://github.com/chanced/jsonptr",
+      "adopted": [
+        "0.7.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "keyboard-types",
+      "locked": [
+        "0.8.3"
+      ],
+      "latest": "0.8.3",
+      "msrv": "1.61",
+      "source": "https://crates.io/api/v1/crates/keyboard-types",
+      "repository": "https://github.com/rust-windowing/keyboard-types",
+      "adopted": [
+        "0.8.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "khronos-egl",
+      "locked": [
+        "6.0.0"
+      ],
+      "latest": "6.0.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/khronos-egl",
+      "repository": "https://github.com/timothee-haudebourg/khronos-egl",
+      "adopted": [
+        "6.0.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "khronos_api",
+      "locked": [
+        "3.1.0"
+      ],
+      "latest": "3.1.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/khronos_api",
+      "repository": "https://github.com/brendanzab/gl-rs/",
+      "adopted": [
+        "3.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "libappindicator",
+      "locked": [
+        "0.9.0"
+      ],
+      "latest": "0.9.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/libappindicator",
+      "repository": null,
+      "adopted": [
+        "0.9.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "libappindicator-sys",
+      "locked": [
+        "0.9.0"
+      ],
+      "latest": "0.9.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/libappindicator-sys",
+      "repository": null,
+      "adopted": [
+        "0.9.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "libc",
+      "locked": [
+        "0.2.191"
+      ],
+      "latest": "0.2.191",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/libc",
+      "repository": "https://github.com/rust-lang/libc",
+      "adopted": [
+        "0.2.191"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "libdbus-sys",
+      "locked": [
+        "0.2.7"
+      ],
+      "latest": "0.2.7",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/libdbus-sys",
+      "repository": "https://github.com/diwic/dbus-rs",
+      "adopted": [
+        "0.2.7"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "libloading",
+      "locked": [
+        "0.7.4",
+        "0.8.9"
+      ],
+      "latest": "0.9.0",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/libloading",
+      "repository": "https://github.com/nagisa/rust_libloading/",
+      "adopted": [
+        "0.7.4",
+        "0.8.9"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "libm",
+      "locked": [
+        "0.2.16"
+      ],
+      "latest": "0.2.16",
+      "msrv": "1.63",
+      "source": "https://crates.io/api/v1/crates/libm",
+      "repository": "https://github.com/rust-lang/compiler-builtins",
+      "adopted": [
+        "0.2.16"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "libredox",
+      "locked": [
+        "0.1.25"
+      ],
+      "latest": "0.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/libredox",
+      "repository": "https://gitlab.redox-os.org/redox-os/libredox.git",
+      "adopted": [
+        "0.1.25"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "linebender_resource_handle",
+      "locked": [
+        "0.1.1"
+      ],
+      "latest": "0.1.1",
+      "msrv": "1.70",
+      "source": "https://crates.io/api/v1/crates/linebender_resource_handle",
+      "repository": "https://github.com/linebender/raw_resource_handle",
+      "adopted": [
+        "0.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "litemap",
+      "locked": [
+        "0.8.3"
+      ],
+      "latest": "0.8.3",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/litemap",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.8.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "litrs",
+      "locked": [
+        "1.0.1"
+      ],
+      "latest": "1.0.1",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/litrs",
+      "repository": "https://github.com/LukasKalbertodt/litrs",
+      "adopted": [
+        "1.0.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "lock_api",
+      "locked": [
+        "0.4.14"
+      ],
+      "latest": "0.5.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/lock_api",
+      "repository": "https://github.com/Amanieu/parking_lot",
+      "adopted": [
+        "0.4.14"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "log",
+      "locked": [
+        "0.4.34"
+      ],
+      "latest": "0.4.35",
+      "msrv": "1.71.0",
+      "source": "https://crates.io/api/v1/crates/log",
+      "repository": "https://github.com/rust-lang/log",
+      "adopted": [
+        "0.4.34"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "malloc_buf",
+      "locked": [
+        "0.0.6"
+      ],
+      "latest": "1.0.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/malloc_buf",
+      "repository": "https://github.com/SSheldon/malloc_buf",
+      "adopted": [
+        "0.0.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "markup5ever",
+      "locked": [
+        "0.39.0"
+      ],
+      "latest": "0.40.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/markup5ever",
+      "repository": "https://github.com/servo/html5ever",
+      "adopted": [
+        "0.39.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "memchr",
+      "locked": [
+        "2.8.3"
+      ],
+      "latest": "2.8.3",
+      "msrv": "1.61",
+      "source": "https://crates.io/api/v1/crates/memchr",
+      "repository": "https://github.com/BurntSushi/memchr",
+      "adopted": [
+        "2.8.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "memmap2",
+      "locked": [
+        "0.9.11"
+      ],
+      "latest": "0.9.12",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/memmap2",
+      "repository": "https://github.com/RazrFalcon/memmap2-rs",
+      "adopted": [
+        "0.9.11"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "memoffset",
+      "locked": [
+        "0.9.1"
+      ],
+      "latest": "0.9.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/memoffset",
+      "repository": "https://github.com/Gilnaa/memoffset",
+      "adopted": [
+        "0.9.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "metal",
+      "locked": [
+        "0.32.0"
+      ],
+      "latest": "0.33.0",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/metal",
+      "repository": "https://github.com/gfx-rs/metal-rs",
+      "adopted": [
+        "0.32.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "mime",
+      "locked": [
+        "0.3.17"
+      ],
+      "latest": "0.3.17",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/mime",
+      "repository": "https://github.com/hyperium/mime",
+      "adopted": [
+        "0.3.17"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "miniz_oxide",
+      "locked": [
+        "0.8.9",
+        "0.9.1"
+      ],
+      "latest": "0.9.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/miniz_oxide",
+      "repository": "https://github.com/Frommi/miniz_oxide/tree/master/miniz_oxide",
+      "adopted": [
+        "0.8.9",
+        "0.9.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "mio",
+      "locked": [
+        "1.2.4"
+      ],
+      "latest": "1.2.4",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/mio",
+      "repository": "https://github.com/tokio-rs/mio",
+      "adopted": [
+        "1.2.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "muda",
+      "locked": [
+        "0.20.0"
+      ],
+      "latest": "0.21.2",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/muda",
+      "repository": "https://github.com/tauri-apps/muda",
+      "adopted": [
+        "0.20.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "naga",
+      "locked": [
+        "27.0.3"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.87",
+      "source": "https://crates.io/api/v1/crates/naga",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.3"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "ndk",
+      "locked": [
+        "0.9.0"
+      ],
+      "latest": "0.9.0",
+      "msrv": "1.66",
+      "source": "https://crates.io/api/v1/crates/ndk",
+      "repository": "https://github.com/rust-mobile/ndk",
+      "adopted": [
+        "0.9.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ndk-context",
+      "locked": [
+        "0.1.1"
+      ],
+      "latest": "0.1.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/ndk-context",
+      "repository": "https://github.com/rust-windowing/android-ndk-rs",
+      "adopted": [
+        "0.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ndk-sys",
+      "locked": [
+        "0.6.0+11769913"
+      ],
+      "latest": "0.6.0+11769913",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/ndk-sys",
+      "repository": "https://github.com/rust-mobile/ndk",
+      "adopted": [
+        "0.6.0+11769913"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "new_debug_unreachable",
+      "locked": [
+        "1.0.6"
+      ],
+      "latest": "1.0.6",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/new_debug_unreachable",
+      "repository": "https://github.com/mbrubeck/rust-debug-unreachable",
+      "adopted": [
+        "1.0.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "num-conv",
+      "locked": [
+        "0.2.2"
+      ],
+      "latest": "0.2.2",
+      "msrv": "1.57.0",
+      "source": "https://crates.io/api/v1/crates/num-conv",
+      "repository": "https://github.com/jhpratt/num-conv",
+      "adopted": [
+        "0.2.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "num-traits",
+      "locked": [
+        "0.2.19"
+      ],
+      "latest": "0.2.19",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/num-traits",
+      "repository": "https://github.com/rust-num/num-traits",
+      "adopted": [
+        "0.2.19"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "num_enum",
+      "locked": [
+        "0.7.6"
+      ],
+      "latest": "0.7.6",
+      "msrv": "1.70.0",
+      "source": "https://crates.io/api/v1/crates/num_enum",
+      "repository": "https://github.com/illicitonion/num_enum",
+      "adopted": [
+        "0.7.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "num_enum_derive",
+      "locked": [
+        "0.7.6"
+      ],
+      "latest": "0.7.6",
+      "msrv": "1.70.0",
+      "source": "https://crates.io/api/v1/crates/num_enum_derive",
+      "repository": "https://github.com/illicitonion/num_enum",
+      "adopted": [
+        "0.7.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc",
+      "locked": [
+        "0.2.7"
+      ],
+      "latest": "0.2.7",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/objc",
+      "repository": "http://github.com/SSheldon/rust-objc",
+      "adopted": [
+        "0.2.7"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2",
+      "locked": [
+        "0.6.5"
+      ],
+      "latest": "0.6.5",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.6.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-app-kit",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-app-kit",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-cloud-kit",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-cloud-kit",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-core-data",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-core-data",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-core-foundation",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-core-foundation",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-core-graphics",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-core-graphics",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-core-image",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-core-image",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-core-location",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-core-location",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-core-text",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-core-text",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-encode",
+      "locked": [
+        "4.1.0"
+      ],
+      "latest": "4.1.0",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-encode",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "4.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-exception-helper",
+      "locked": [
+        "0.1.1"
+      ],
+      "latest": "0.1.1",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-exception-helper",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-foundation",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-foundation",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-io-surface",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-io-surface",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-quartz-core",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-quartz-core",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-ui-kit",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-ui-kit",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-user-notifications",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-user-notifications",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "objc2-web-kit",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/objc2-web-kit",
+      "repository": "https://github.com/madsmtm/objc2",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "once_cell",
+      "locked": [
+        "1.21.4"
+      ],
+      "latest": "1.21.4",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/once_cell",
+      "repository": "https://github.com/matklad/once_cell",
+      "adopted": [
+        "1.21.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "option-ext",
+      "locked": [
+        "0.2.0"
+      ],
+      "latest": "0.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/option-ext",
+      "repository": "https://github.com/soc/option-ext.git",
+      "adopted": [
+        "0.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ordered-float",
+      "locked": [
+        "5.5.0"
+      ],
+      "latest": "5.5.1",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/ordered-float",
+      "repository": "https://github.com/reem/rust-ordered-float",
+      "adopted": [
+        "5.5.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "pango",
+      "locked": [
+        "0.18.3"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/pango",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.3"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "pango-sys",
+      "locked": [
+        "0.18.0"
+      ],
+      "latest": "0.22.9",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/pango-sys",
+      "repository": "https://github.com/gtk-rs/gtk-rs-core",
+      "adopted": [
+        "0.18.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "parking_lot",
+      "locked": [
+        "0.12.5"
+      ],
+      "latest": "0.13.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/parking_lot",
+      "repository": "https://github.com/Amanieu/parking_lot",
+      "adopted": [
+        "0.12.5"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "parking_lot_core",
+      "locked": [
+        "0.9.12"
+      ],
+      "latest": "0.10.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/parking_lot_core",
+      "repository": "https://github.com/Amanieu/parking_lot",
+      "adopted": [
+        "0.9.12"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "paste",
+      "locked": [
+        "1.0.15"
+      ],
+      "latest": "1.0.15",
+      "msrv": "1.31",
+      "source": "https://crates.io/api/v1/crates/paste",
+      "repository": "https://github.com/dtolnay/paste",
+      "adopted": [
+        "1.0.15"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "percent-encoding",
+      "locked": [
+        "2.3.2"
+      ],
+      "latest": "2.3.2",
+      "msrv": "1.51",
+      "source": "https://crates.io/api/v1/crates/percent-encoding",
+      "repository": "https://github.com/servo/rust-url/",
+      "adopted": [
+        "2.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "phf",
+      "locked": [
+        "0.13.1"
+      ],
+      "latest": "0.14.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/phf",
+      "repository": "https://github.com/rust-phf/rust-phf",
+      "adopted": [
+        "0.13.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "phf_codegen",
+      "locked": [
+        "0.13.1"
+      ],
+      "latest": "0.14.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/phf_codegen",
+      "repository": "https://github.com/rust-phf/rust-phf",
+      "adopted": [
+        "0.13.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "phf_generator",
+      "locked": [
+        "0.13.1"
+      ],
+      "latest": "0.14.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/phf_generator",
+      "repository": "https://github.com/rust-phf/rust-phf",
+      "adopted": [
+        "0.13.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "phf_macros",
+      "locked": [
+        "0.13.1"
+      ],
+      "latest": "0.14.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/phf_macros",
+      "repository": "https://github.com/rust-phf/rust-phf",
+      "adopted": [
+        "0.13.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "phf_shared",
+      "locked": [
+        "0.13.1"
+      ],
+      "latest": "0.14.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/phf_shared",
+      "repository": "https://github.com/rust-phf/rust-phf",
+      "adopted": [
+        "0.13.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "pin-project-lite",
+      "locked": [
+        "0.2.17"
+      ],
+      "latest": "0.2.17",
+      "msrv": "1.37",
+      "source": "https://crates.io/api/v1/crates/pin-project-lite",
+      "repository": "https://github.com/taiki-e/pin-project-lite",
+      "adopted": [
+        "0.2.17"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "pkg-config",
+      "locked": [
+        "0.3.34"
+      ],
+      "latest": "0.3.34",
+      "msrv": "1.63",
+      "source": "https://crates.io/api/v1/crates/pkg-config",
+      "repository": "https://github.com/rust-lang/pkg-config-rs",
+      "adopted": [
+        "0.3.34"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "plist",
+      "locked": [
+        "1.10.1"
+      ],
+      "latest": "1.10.3",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/plist",
+      "repository": "https://github.com/ebarnard/rust-plist/",
+      "adopted": [
+        "1.10.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "png",
+      "locked": [
+        "0.17.16",
+        "0.18.1"
+      ],
+      "latest": "0.18.1",
+      "msrv": "1.73",
+      "source": "https://crates.io/api/v1/crates/png",
+      "repository": "https://github.com/image-rs/image-png",
+      "adopted": [
+        "0.17.16",
+        "0.18.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "pollster",
+      "locked": [
+        "1.0.1"
+      ],
+      "latest": "1.0.1",
+      "msrv": "1.69",
+      "source": "https://crates.io/api/v1/crates/pollster",
+      "repository": "https://github.com/zesterer/pollster",
+      "adopted": [
+        "1.0.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "portable-atomic",
+      "locked": [
+        "1.15.0"
+      ],
+      "latest": "1.15.0",
+      "msrv": "1.34",
+      "source": "https://crates.io/api/v1/crates/portable-atomic",
+      "repository": "https://github.com/taiki-e/portable-atomic",
+      "adopted": [
+        "1.15.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "portable-atomic-util",
+      "locked": [
+        "0.2.8"
+      ],
+      "latest": "0.2.8",
+      "msrv": "1.36",
+      "source": "https://crates.io/api/v1/crates/portable-atomic-util",
+      "repository": "https://github.com/taiki-e/portable-atomic-util",
+      "adopted": [
+        "0.2.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "potential_utf",
+      "locked": [
+        "0.1.6"
+      ],
+      "latest": "0.1.6",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/potential_utf",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.1.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "powerfmt",
+      "locked": [
+        "0.2.1"
+      ],
+      "latest": "0.2.1",
+      "msrv": "1.79.0",
+      "source": "https://crates.io/api/v1/crates/powerfmt",
+      "repository": "https://github.com/jhpratt/powerfmt",
+      "adopted": [
+        "0.2.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "precomputed-hash",
+      "locked": [
+        "0.1.1"
+      ],
+      "latest": "0.1.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/precomputed-hash",
+      "repository": "https://github.com/emilio/precomputed-hash",
+      "adopted": [
+        "0.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "presser",
+      "locked": [
+        "0.3.1"
+      ],
+      "latest": "0.3.1",
+      "msrv": "1.64",
+      "source": "https://crates.io/api/v1/crates/presser",
+      "repository": "https://github.com/EmbarkStudios/presser",
+      "adopted": [
+        "0.3.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "proc-macro-crate",
+      "locked": [
+        "1.3.1",
+        "2.0.2",
+        "3.5.0"
+      ],
+      "latest": "3.5.0",
+      "msrv": "1.82.0",
+      "source": "https://crates.io/api/v1/crates/proc-macro-crate",
+      "repository": "https://github.com/bkchr/proc-macro-crate",
+      "adopted": [
+        "1.3.1",
+        "2.0.2",
+        "3.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "proc-macro-error",
+      "locked": [
+        "1.0.4"
+      ],
+      "latest": "1.0.4",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/proc-macro-error",
+      "repository": "https://gitlab.com/CreepySkeleton/proc-macro-error",
+      "adopted": [
+        "1.0.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "proc-macro-error-attr",
+      "locked": [
+        "1.0.4"
+      ],
+      "latest": "1.0.4",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/proc-macro-error-attr",
+      "repository": "https://gitlab.com/CreepySkeleton/proc-macro-error",
+      "adopted": [
+        "1.0.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "proc-macro2",
+      "locked": [
+        "1.0.107"
+      ],
+      "latest": "1.0.107",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/proc-macro2",
+      "repository": "https://github.com/dtolnay/proc-macro2",
+      "adopted": [
+        "1.0.107"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "profiling",
+      "locked": [
+        "1.0.18"
+      ],
+      "latest": "1.0.18",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/profiling",
+      "repository": "https://github.com/aclysma/profiling",
+      "adopted": [
+        "1.0.18"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "quick-xml",
+      "locked": [
+        "0.42.0"
+      ],
+      "latest": "0.42.0",
+      "msrv": "1.86",
+      "source": "https://crates.io/api/v1/crates/quick-xml",
+      "repository": "https://github.com/tafia/quick-xml",
+      "adopted": [
+        "0.42.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "quote",
+      "locked": [
+        "1.0.47"
+      ],
+      "latest": "1.0.47",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/quote",
+      "repository": "https://github.com/dtolnay/quote",
+      "adopted": [
+        "1.0.47"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "r-efi",
+      "locked": [
+        "5.3.0",
+        "6.0.0"
+      ],
+      "latest": "7.1.0",
+      "msrv": "1.68",
+      "source": "https://crates.io/api/v1/crates/r-efi",
+      "repository": "https://github.com/r-efi/r-efi",
+      "adopted": [
+        "5.3.0",
+        "6.0.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "range-alloc",
+      "locked": [
+        "0.1.5"
+      ],
+      "latest": "0.1.5",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/range-alloc",
+      "repository": "https://github.com/gfx-rs/range-alloc",
+      "adopted": [
+        "0.1.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "rangemap",
+      "locked": [
+        "1.8.0"
+      ],
+      "latest": "1.8.0",
+      "msrv": "1.81.0",
+      "source": "https://crates.io/api/v1/crates/rangemap",
+      "repository": "https://github.com/jeffparsons/rangemap",
+      "adopted": [
+        "1.8.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "raw-window-handle",
+      "locked": [
+        "0.6.2"
+      ],
+      "latest": "0.6.2",
+      "msrv": "1.64",
+      "source": "https://crates.io/api/v1/crates/raw-window-handle",
+      "repository": "https://github.com/rust-windowing/raw-window-handle",
+      "adopted": [
+        "0.6.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "read-fonts",
+      "locked": [
+        "0.37.0",
+        "0.41.0"
+      ],
+      "latest": "0.46.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/read-fonts",
+      "repository": "https://github.com/googlefonts/fontations",
+      "adopted": [
+        "0.37.0",
+        "0.41.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "redox_syscall",
+      "locked": [
+        "0.5.18"
+      ],
+      "latest": "0.9.5",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/redox_syscall",
+      "repository": "https://gitlab.redox-os.org/redox-os/kernel",
+      "adopted": [
+        "0.5.18"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "redox_users",
+      "locked": [
+        "0.5.3"
+      ],
+      "latest": "0.5.3",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/redox_users",
+      "repository": "https://gitlab.redox-os.org/redox-os/users",
+      "adopted": [
+        "0.5.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ref-cast",
+      "locked": [
+        "1.0.27"
+      ],
+      "latest": "1.0.27",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/ref-cast",
+      "repository": "https://github.com/dtolnay/ref-cast",
+      "adopted": [
+        "1.0.27"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ref-cast-impl",
+      "locked": [
+        "1.0.27"
+      ],
+      "latest": "1.0.27",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/ref-cast-impl",
+      "repository": "https://github.com/dtolnay/ref-cast",
+      "adopted": [
+        "1.0.27"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "regex",
+      "locked": [
+        "1.13.1"
+      ],
+      "latest": "1.13.1",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/regex",
+      "repository": "https://github.com/rust-lang/regex",
+      "adopted": [
+        "1.13.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "regex-automata",
+      "locked": [
+        "0.4.18"
+      ],
+      "latest": "0.4.18",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/regex-automata",
+      "repository": "https://github.com/rust-lang/regex",
+      "adopted": [
+        "0.4.18"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "regex-syntax",
+      "locked": [
+        "0.8.11"
+      ],
+      "latest": "0.8.11",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/regex-syntax",
+      "repository": "https://github.com/rust-lang/regex",
+      "adopted": [
+        "0.8.11"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "renderdoc-sys",
+      "locked": [
+        "1.1.0"
+      ],
+      "latest": "1.1.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/renderdoc-sys",
+      "repository": "https://github.com/ebkalderon/renderdoc-rs",
+      "adopted": [
+        "1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "reqwest",
+      "locked": [
+        "0.13.5"
+      ],
+      "latest": "0.13.5",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/reqwest",
+      "repository": "https://github.com/seanmonstar/reqwest",
+      "adopted": [
+        "0.13.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "roxmltree",
+      "locked": [
+        "0.20.0"
+      ],
+      "latest": "0.21.2",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/roxmltree",
+      "repository": "https://github.com/RazrFalcon/roxmltree",
+      "adopted": [
+        "0.20.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "rustc-hash",
+      "locked": [
+        "1.1.0",
+        "2.1.3"
+      ],
+      "latest": "2.1.3",
+      "msrv": "1.77",
+      "source": "https://crates.io/api/v1/crates/rustc-hash",
+      "repository": "https://github.com/rust-lang/rustc-hash",
+      "adopted": [
+        "1.1.0",
+        "2.1.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "rustc_version",
+      "locked": [
+        "0.4.1"
+      ],
+      "latest": "0.4.1",
+      "msrv": "1.32",
+      "source": "https://crates.io/api/v1/crates/rustc_version",
+      "repository": "https://github.com/djc/rustc-version-rs",
+      "adopted": [
+        "0.4.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "rustversion",
+      "locked": [
+        "1.0.23"
+      ],
+      "latest": "1.0.23",
+      "msrv": "1.31",
+      "source": "https://crates.io/api/v1/crates/rustversion",
+      "repository": "https://github.com/dtolnay/rustversion",
+      "adopted": [
+        "1.0.23"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "same-file",
+      "locked": [
+        "1.0.6"
+      ],
+      "latest": "1.0.6",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/same-file",
+      "repository": "https://github.com/BurntSushi/same-file",
+      "adopted": [
+        "1.0.6"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "schemars",
+      "locked": [
+        "0.8.22",
+        "0.9.0",
+        "1.2.3"
+      ],
+      "latest": "1.2.3",
+      "msrv": "1.74",
+      "source": "https://crates.io/api/v1/crates/schemars",
+      "repository": "https://github.com/GREsau/schemars",
+      "adopted": [
+        "0.8.22",
+        "0.9.0",
+        "1.2.3"
+      ],
+      "decision": "retained",
+      "next": "Direct 0.8.22 pin retained: migrate RootSchema/Draft7/definitions generator and validate schema/TypeScript/runtime parity. Latest transitive copy is not a direct migration."
+    },
+    {
+      "name": "schemars_derive",
+      "locked": [
+        "0.8.22"
+      ],
+      "latest": "1.2.3",
+      "msrv": "1.74",
+      "source": "https://crates.io/api/v1/crates/schemars_derive",
+      "repository": "https://github.com/GREsau/schemars",
+      "adopted": [
+        "0.8.22"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "scopeguard",
+      "locked": [
+        "1.2.0"
+      ],
+      "latest": "1.2.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/scopeguard",
+      "repository": "https://github.com/bluss/scopeguard",
+      "adopted": [
+        "1.2.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "selectors",
+      "locked": [
+        "0.38.0"
+      ],
+      "latest": "0.41.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/selectors",
+      "repository": "https://github.com/servo/stylo",
+      "adopted": [
+        "0.38.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "self_cell",
+      "locked": [
+        "1.3.0"
+      ],
+      "latest": "1.3.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/self_cell",
+      "repository": "https://github.com/Voultapher/self_cell",
+      "adopted": [
+        "1.3.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "semver",
+      "locked": [
+        "1.0.28"
+      ],
+      "latest": "1.0.28",
+      "msrv": "1.68",
+      "source": "https://crates.io/api/v1/crates/semver",
+      "repository": "https://github.com/dtolnay/semver",
+      "adopted": [
+        "1.0.28"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde",
+      "locked": [
+        "1.0.229"
+      ],
+      "latest": "1.0.229",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/serde",
+      "repository": "https://github.com/serde-rs/serde",
+      "adopted": [
+        "1.0.229"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde-untagged",
+      "locked": [
+        "0.1.9"
+      ],
+      "latest": "0.1.9",
+      "msrv": "1.61",
+      "source": "https://crates.io/api/v1/crates/serde-untagged",
+      "repository": "https://github.com/dtolnay/serde-untagged",
+      "adopted": [
+        "0.1.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde_core",
+      "locked": [
+        "1.0.229"
+      ],
+      "latest": "1.0.229",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/serde_core",
+      "repository": "https://github.com/serde-rs/serde",
+      "adopted": [
+        "1.0.229"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde_derive",
+      "locked": [
+        "1.0.229"
+      ],
+      "latest": "1.0.229",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/serde_derive",
+      "repository": "https://github.com/serde-rs/serde",
+      "adopted": [
+        "1.0.229"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde_derive_internals",
+      "locked": [
+        "0.29.1"
+      ],
+      "latest": "0.30.0",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/serde_derive_internals",
+      "repository": "https://github.com/serde-rs/serde",
+      "adopted": [
+        "0.29.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "serde_json",
+      "locked": [
+        "1.0.154"
+      ],
+      "latest": "1.0.154",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/serde_json",
+      "repository": "https://github.com/serde-rs/json",
+      "adopted": [
+        "1.0.154"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde_repr",
+      "locked": [
+        "0.1.21"
+      ],
+      "latest": "0.1.21",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/serde_repr",
+      "repository": "https://github.com/dtolnay/serde-repr",
+      "adopted": [
+        "0.1.21"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde_spanned",
+      "locked": [
+        "0.6.9",
+        "1.1.2"
+      ],
+      "latest": "1.1.2",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/serde_spanned",
+      "repository": "https://github.com/toml-rs/toml",
+      "adopted": [
+        "0.6.9",
+        "1.1.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde_with",
+      "locked": [
+        "3.24.0"
+      ],
+      "latest": "3.24.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/serde_with",
+      "repository": "https://github.com/jonasbb/serde_with/",
+      "adopted": [
+        "3.24.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serde_with_macros",
+      "locked": [
+        "3.24.0"
+      ],
+      "latest": "3.24.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/serde_with_macros",
+      "repository": "https://github.com/jonasbb/serde_with/",
+      "adopted": [
+        "3.24.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serialize-to-javascript",
+      "locked": [
+        "0.1.2"
+      ],
+      "latest": "0.1.2",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/serialize-to-javascript",
+      "repository": "https://github.com/chippers/serialize-to-javascript",
+      "adopted": [
+        "0.1.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "serialize-to-javascript-impl",
+      "locked": [
+        "0.1.2"
+      ],
+      "latest": "0.1.2",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/serialize-to-javascript-impl",
+      "repository": "https://github.com/chippers/serialize-to-javascript",
+      "adopted": [
+        "0.1.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "servo_arc",
+      "locked": [
+        "0.4.3"
+      ],
+      "latest": "0.5.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/servo_arc",
+      "repository": "https://github.com/servo/stylo",
+      "adopted": [
+        "0.4.3"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "sha2",
+      "locked": [
+        "0.10.9",
+        "0.11.1"
+      ],
+      "latest": "0.11.1",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/sha2",
+      "repository": "https://github.com/RustCrypto/hashes",
+      "adopted": [
+        "0.10.9",
+        "0.11.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "shlex",
+      "locked": [
+        "2.0.1"
+      ],
+      "latest": "2.0.1",
+      "msrv": "1.46.0",
+      "source": "https://crates.io/api/v1/crates/shlex",
+      "repository": "https://github.com/comex/rust-shlex",
+      "adopted": [
+        "2.0.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "simd-adler32",
+      "locked": [
+        "0.3.10"
+      ],
+      "latest": "0.3.10",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/simd-adler32",
+      "repository": "https://github.com/mcountryman/simd-adler32",
+      "adopted": [
+        "0.3.10"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "siphasher",
+      "locked": [
+        "1.0.4"
+      ],
+      "latest": "1.0.4",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/siphasher",
+      "repository": "https://github.com/jedisct1/rust-siphash",
+      "adopted": [
+        "1.0.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "skrifa",
+      "locked": [
+        "0.40.0",
+        "0.44.0"
+      ],
+      "latest": "0.49.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/skrifa",
+      "repository": "https://github.com/googlefonts/fontations",
+      "adopted": [
+        "0.40.0",
+        "0.44.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "slab",
+      "locked": [
+        "0.4.12"
+      ],
+      "latest": "0.4.12",
+      "msrv": "1.51",
+      "source": "https://crates.io/api/v1/crates/slab",
+      "repository": "https://github.com/tokio-rs/slab",
+      "adopted": [
+        "0.4.12"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "slotmap",
+      "locked": [
+        "1.1.1"
+      ],
+      "latest": "1.1.1",
+      "msrv": "1.58.0",
+      "source": "https://crates.io/api/v1/crates/slotmap",
+      "repository": "https://github.com/orlp/slotmap",
+      "adopted": [
+        "1.1.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "smallvec",
+      "locked": [
+        "1.16.3"
+      ],
+      "latest": "1.16.4",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/smallvec",
+      "repository": "https://github.com/servo/rust-smallvec",
+      "adopted": [
+        "1.16.3"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "smol_str",
+      "locked": [
+        "0.3.6"
+      ],
+      "latest": "0.3.7",
+      "msrv": "1.89",
+      "source": "https://crates.io/api/v1/crates/smol_str",
+      "repository": "https://github.com/rust-lang/rust-analyzer/tree/master/lib/smol_str",
+      "adopted": [
+        "0.3.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "socket2",
+      "locked": [
+        "0.6.5"
+      ],
+      "latest": "0.6.5",
+      "msrv": "1.70",
+      "source": "https://crates.io/api/v1/crates/socket2",
+      "repository": "https://github.com/rust-lang/socket2",
+      "adopted": [
+        "0.6.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "softbuffer",
+      "locked": [
+        "0.4.8"
+      ],
+      "latest": "0.4.8",
+      "msrv": "1.71.0",
+      "source": "https://crates.io/api/v1/crates/softbuffer",
+      "repository": "https://github.com/rust-windowing/softbuffer",
+      "adopted": [
+        "0.4.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "soup3",
+      "locked": [
+        "0.5.0"
+      ],
+      "latest": "0.9.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/soup3",
+      "repository": "https://gitlab.gnome.org/World/Rust/soup3-rs",
+      "adopted": [
+        "0.5.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "soup3-sys",
+      "locked": [
+        "0.5.0"
+      ],
+      "latest": "0.9.0",
+      "msrv": "1.92",
+      "source": "https://crates.io/api/v1/crates/soup3-sys",
+      "repository": "https://gitlab.gnome.org/World/Rust/soup3-rs",
+      "adopted": [
+        "0.5.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "spirv",
+      "locked": [
+        "0.3.0+sdk-1.3.268.0"
+      ],
+      "latest": "0.4.0+sdk-1.4.341.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/spirv",
+      "repository": "https://github.com/gfx-rs/rspirv",
+      "adopted": [
+        "0.3.0+sdk-1.3.268.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "stable_deref_trait",
+      "locked": [
+        "1.2.1"
+      ],
+      "latest": "1.2.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/stable_deref_trait",
+      "repository": "https://github.com/storyyeller/stable_deref_trait",
+      "adopted": [
+        "1.2.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "static_assertions",
+      "locked": [
+        "1.1.0"
+      ],
+      "latest": "1.1.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/static_assertions",
+      "repository": "https://github.com/nvzqz/static-assertions-rs",
+      "adopted": [
+        "1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "static_vcruntime",
+      "locked": [
+        "3.0.0"
+      ],
+      "latest": "3.0.0",
+      "msrv": "1.79",
+      "source": "https://crates.io/api/v1/crates/static_vcruntime",
+      "repository": "https://github.com/ChrisDenton/static_vcruntime",
+      "adopted": [
+        "3.0.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "string_cache",
+      "locked": [
+        "0.9.0"
+      ],
+      "latest": "0.11.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/string_cache",
+      "repository": "https://github.com/servo/string-cache",
+      "adopted": [
+        "0.9.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "string_cache_codegen",
+      "locked": [
+        "0.6.1"
+      ],
+      "latest": "0.11.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/string_cache_codegen",
+      "repository": "https://github.com/servo/string-cache",
+      "adopted": [
+        "0.6.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "strsim",
+      "locked": [
+        "0.11.1"
+      ],
+      "latest": "0.11.1",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/strsim",
+      "repository": "https://github.com/rapidfuzz/strsim-rs",
+      "adopted": [
+        "0.11.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "swash",
+      "locked": [
+        "0.2.10"
+      ],
+      "latest": "0.2.10",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/swash",
+      "repository": "https://github.com/dfrg/swash",
+      "adopted": [
+        "0.2.10"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "swift-rs",
+      "locked": [
+        "1.0.9"
+      ],
+      "latest": "1.0.9",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/swift-rs",
+      "repository": "https://github.com/Brendonovich/swift-rs",
+      "adopted": [
+        "1.0.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "syn",
+      "locked": [
+        "1.0.109",
+        "2.0.119",
+        "3.0.9"
+      ],
+      "latest": "3.0.9",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/syn",
+      "repository": "https://github.com/dtolnay/syn",
+      "adopted": [
+        "1.0.109",
+        "2.0.119",
+        "3.0.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "sync_wrapper",
+      "locked": [
+        "1.0.2"
+      ],
+      "latest": "1.0.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/sync_wrapper",
+      "repository": "https://github.com/Actyx/sync_wrapper",
+      "adopted": [
+        "1.0.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "synstructure",
+      "locked": [
+        "0.14.0"
+      ],
+      "latest": "0.14.0",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/synstructure",
+      "repository": "https://github.com/mystor/synstructure",
+      "adopted": [
+        "0.14.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "sys-locale",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/sys-locale",
+      "repository": "https://github.com/1Password/sys-locale",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "system-deps",
+      "locked": [
+        "6.2.2"
+      ],
+      "latest": "9.0.1",
+      "msrv": "1.78.0",
+      "source": "https://crates.io/api/v1/crates/system-deps",
+      "repository": "https://github.com/gdesmott/system-deps",
+      "adopted": [
+        "6.2.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "tao",
+      "locked": [
+        "0.37.1"
+      ],
+      "latest": "0.37.2",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/tao",
+      "repository": "https://github.com/tauri-apps/tao",
+      "adopted": [
+        "0.37.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "tao-macros",
+      "locked": [
+        "0.1.4"
+      ],
+      "latest": "0.1.4",
+      "msrv": "1.74",
+      "source": "https://crates.io/api/v1/crates/tao-macros",
+      "repository": "https://github.com/tauri-apps/tao",
+      "adopted": [
+        "0.1.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "target-lexicon",
+      "locked": [
+        "0.12.16"
+      ],
+      "latest": "0.13.5",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/target-lexicon",
+      "repository": "https://github.com/bytecodealliance/target-lexicon",
+      "adopted": [
+        "0.12.16"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "tauri",
+      "locked": [
+        "2.12.4"
+      ],
+      "latest": "2.12.5",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tauri",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "adopted": [
+        "2.12.4"
+      ],
+      "decision": "retained",
+      "next": "Migrate pinned Tauri/runtime/build/codegen stack together; verify native Surface, input and dock/float before adoption."
+    },
+    {
+      "name": "tauri-build",
+      "locked": [
+        "2.7.3"
+      ],
+      "latest": "2.7.4",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tauri-build",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "adopted": [
+        "2.7.3"
+      ],
+      "decision": "retained",
+      "next": "Migrate pinned Tauri/runtime/build/codegen stack together; verify native Surface, input and dock/float before adoption."
+    },
+    {
+      "name": "tauri-codegen",
+      "locked": [
+        "2.7.3"
+      ],
+      "latest": "2.7.4",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tauri-codegen",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "adopted": [
+        "2.7.3"
+      ],
+      "decision": "retained",
+      "next": "Migrate pinned Tauri/runtime/build/codegen stack together; verify native Surface, input and dock/float before adoption."
+    },
+    {
+      "name": "tauri-macros",
+      "locked": [
+        "2.7.3"
+      ],
+      "latest": "2.7.4",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tauri-macros",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "adopted": [
+        "2.7.3"
+      ],
+      "decision": "retained",
+      "next": "Migrate pinned Tauri/runtime/build/codegen stack together; verify native Surface, input and dock/float before adoption."
+    },
+    {
+      "name": "tauri-runtime",
+      "locked": [
+        "2.12.2"
+      ],
+      "latest": "2.12.2",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tauri-runtime",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "adopted": [
+        "2.12.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tauri-runtime-wry",
+      "locked": [
+        "2.12.2"
+      ],
+      "latest": "2.12.3",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tauri-runtime-wry",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "adopted": [
+        "2.12.2"
+      ],
+      "decision": "retained",
+      "next": "Migrate pinned Tauri/runtime/build/codegen stack together; verify native Surface, input and dock/float before adoption."
+    },
+    {
+      "name": "tauri-utils",
+      "locked": [
+        "2.10.2"
+      ],
+      "latest": "2.10.2",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tauri-utils",
+      "repository": "https://github.com/tauri-apps/tauri",
+      "adopted": [
+        "2.10.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tauri-winres",
+      "locked": [
+        "0.3.6"
+      ],
+      "latest": "0.3.7",
+      "msrv": "1.76",
+      "source": "https://crates.io/api/v1/crates/tauri-winres",
+      "repository": "https://github.com/tauri-apps/winres",
+      "adopted": [
+        "0.3.6"
+      ],
+      "decision": "retained",
+      "next": "Migrate pinned Tauri/runtime/build/codegen stack together; verify native Surface, input and dock/float before adoption."
+    },
+    {
+      "name": "tendril",
+      "locked": [
+        "0.5.1"
+      ],
+      "latest": "0.5.1",
+      "msrv": "1.71.0",
+      "source": "https://crates.io/api/v1/crates/tendril",
+      "repository": "https://github.com/servo/html5ever",
+      "adopted": [
+        "0.5.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "termcolor",
+      "locked": [
+        "1.4.1"
+      ],
+      "latest": "1.4.1",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/termcolor",
+      "repository": "https://github.com/BurntSushi/termcolor",
+      "adopted": [
+        "1.4.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "thiserror",
+      "locked": [
+        "1.0.69",
+        "2.0.21"
+      ],
+      "latest": "2.0.21",
+      "msrv": "1.77",
+      "source": "https://crates.io/api/v1/crates/thiserror",
+      "repository": "https://github.com/dtolnay/thiserror",
+      "adopted": [
+        "1.0.69",
+        "2.0.21"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "thiserror-impl",
+      "locked": [
+        "1.0.69",
+        "2.0.21"
+      ],
+      "latest": "2.0.21",
+      "msrv": "1.77",
+      "source": "https://crates.io/api/v1/crates/thiserror-impl",
+      "repository": "https://github.com/dtolnay/thiserror",
+      "adopted": [
+        "1.0.69",
+        "2.0.21"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "time",
+      "locked": [
+        "0.3.55"
+      ],
+      "latest": "0.3.55",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/time",
+      "repository": "https://github.com/time-rs/time",
+      "adopted": [
+        "0.3.55"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "time-core",
+      "locked": [
+        "0.1.9"
+      ],
+      "latest": "0.1.9",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/time-core",
+      "repository": "https://github.com/time-rs/time",
+      "adopted": [
+        "0.1.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "time-macros",
+      "locked": [
+        "0.2.32"
+      ],
+      "latest": "0.2.32",
+      "msrv": "1.88.0",
+      "source": "https://crates.io/api/v1/crates/time-macros",
+      "repository": "https://github.com/time-rs/time",
+      "adopted": [
+        "0.2.32"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tinystr",
+      "locked": [
+        "0.8.4"
+      ],
+      "latest": "0.8.5",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/tinystr",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.8.4"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "tinyvec",
+      "locked": [
+        "1.13.3"
+      ],
+      "latest": "1.13.3",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/tinyvec",
+      "repository": "https://github.com/Lokathor/tinyvec",
+      "adopted": [
+        "1.13.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tokio",
+      "locked": [
+        "1.53.3"
+      ],
+      "latest": "1.54.1",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/tokio",
+      "repository": "https://github.com/tokio-rs/tokio",
+      "adopted": [
+        "1.53.3"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "tokio-util",
+      "locked": [
+        "0.7.20"
+      ],
+      "latest": "0.7.20",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/tokio-util",
+      "repository": "https://github.com/tokio-rs/tokio",
+      "adopted": [
+        "0.7.20"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "toml",
+      "locked": [
+        "0.8.2",
+        "1.1.8+spec-1.1.0"
+      ],
+      "latest": "1.1.8+spec-1.1.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/toml",
+      "repository": "https://github.com/toml-rs/toml",
+      "adopted": [
+        "0.8.2",
+        "1.1.8+spec-1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "toml_datetime",
+      "locked": [
+        "0.6.3",
+        "1.1.2+spec-1.1.0"
+      ],
+      "latest": "1.1.2+spec-1.1.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/toml_datetime",
+      "repository": "https://github.com/toml-rs/toml",
+      "adopted": [
+        "0.6.3",
+        "1.1.2+spec-1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "toml_edit",
+      "locked": [
+        "0.19.15",
+        "0.20.2",
+        "0.25.17+spec-1.1.0"
+      ],
+      "latest": "0.25.17+spec-1.1.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/toml_edit",
+      "repository": "https://github.com/toml-rs/toml",
+      "adopted": [
+        "0.19.15",
+        "0.20.2",
+        "0.25.17+spec-1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "toml_parser",
+      "locked": [
+        "1.1.5+spec-1.1.0"
+      ],
+      "latest": "1.1.5+spec-1.1.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/toml_parser",
+      "repository": "https://github.com/toml-rs/toml",
+      "adopted": [
+        "1.1.5+spec-1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "toml_writer",
+      "locked": [
+        "1.1.3+spec-1.1.0"
+      ],
+      "latest": "1.1.3+spec-1.1.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/toml_writer",
+      "repository": "https://github.com/toml-rs/toml",
+      "adopted": [
+        "1.1.3+spec-1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tower",
+      "locked": [
+        "0.5.3"
+      ],
+      "latest": "0.5.3",
+      "msrv": "1.64.0",
+      "source": "https://crates.io/api/v1/crates/tower",
+      "repository": "https://github.com/tower-rs/tower",
+      "adopted": [
+        "0.5.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tower-http",
+      "locked": [
+        "0.6.11"
+      ],
+      "latest": "0.7.1",
+      "msrv": "1.65",
+      "source": "https://crates.io/api/v1/crates/tower-http",
+      "repository": "https://github.com/tower-rs/tower-http",
+      "adopted": [
+        "0.6.11"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "tower-layer",
+      "locked": [
+        "0.3.3"
+      ],
+      "latest": "0.3.3",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/tower-layer",
+      "repository": "https://github.com/tower-rs/tower",
+      "adopted": [
+        "0.3.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tower-service",
+      "locked": [
+        "0.3.3"
+      ],
+      "latest": "0.3.3",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/tower-service",
+      "repository": "https://github.com/tower-rs/tower",
+      "adopted": [
+        "0.3.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tracing",
+      "locked": [
+        "0.1.44"
+      ],
+      "latest": "0.1.44",
+      "msrv": "1.65.0",
+      "source": "https://crates.io/api/v1/crates/tracing",
+      "repository": "https://github.com/tokio-rs/tracing",
+      "adopted": [
+        "0.1.44"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tracing-core",
+      "locked": [
+        "0.1.36"
+      ],
+      "latest": "0.1.36",
+      "msrv": "1.65.0",
+      "source": "https://crates.io/api/v1/crates/tracing-core",
+      "repository": "https://github.com/tokio-rs/tracing",
+      "adopted": [
+        "0.1.36"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "tray-icon",
+      "locked": [
+        "0.25.1"
+      ],
+      "latest": "0.26.1",
+      "msrv": "1.90",
+      "source": "https://crates.io/api/v1/crates/tray-icon",
+      "repository": "https://github.com/tauri-apps/tray-icon",
+      "adopted": [
+        "0.25.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "try-lock",
+      "locked": [
+        "0.2.5"
+      ],
+      "latest": "0.2.5",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/try-lock",
+      "repository": "https://github.com/seanmonstar/try-lock",
+      "adopted": [
+        "0.2.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "ttf-parser",
+      "locked": [
+        "0.25.1"
+      ],
+      "latest": "0.25.1",
+      "msrv": "1.63.0",
+      "source": "https://crates.io/api/v1/crates/ttf-parser",
+      "repository": "https://github.com/harfbuzz/ttf-parser",
+      "adopted": [
+        "0.25.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "typeid",
+      "locked": [
+        "1.0.3"
+      ],
+      "latest": "1.0.3",
+      "msrv": "1.34",
+      "source": "https://crates.io/api/v1/crates/typeid",
+      "repository": "https://github.com/dtolnay/typeid",
+      "adopted": [
+        "1.0.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "typenum",
+      "locked": [
+        "1.20.1"
+      ],
+      "latest": "1.20.1",
+      "msrv": "1.41.0",
+      "source": "https://crates.io/api/v1/crates/typenum",
+      "repository": "https://github.com/paholg/typenum",
+      "adopted": [
+        "1.20.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "unicode-bidi",
+      "locked": [
+        "0.3.18"
+      ],
+      "latest": "0.3.18",
+      "msrv": "1.47.0",
+      "source": "https://crates.io/api/v1/crates/unicode-bidi",
+      "repository": "https://github.com/servo/unicode-bidi",
+      "adopted": [
+        "0.3.18"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "unicode-ident",
+      "locked": [
+        "1.0.27"
+      ],
+      "latest": "1.0.27",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/unicode-ident",
+      "repository": "https://github.com/dtolnay/unicode-ident",
+      "adopted": [
+        "1.0.27"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "unicode-linebreak",
+      "locked": [
+        "0.1.5"
+      ],
+      "latest": "0.1.5",
+      "msrv": "1.56",
+      "source": "https://crates.io/api/v1/crates/unicode-linebreak",
+      "repository": "https://github.com/axelf4/unicode-linebreak",
+      "adopted": [
+        "0.1.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "unicode-script",
+      "locked": [
+        "0.5.8"
+      ],
+      "latest": "0.5.8",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/unicode-script",
+      "repository": "https://github.com/unicode-rs/unicode-script",
+      "adopted": [
+        "0.5.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "unicode-segmentation",
+      "locked": [
+        "1.13.3"
+      ],
+      "latest": "1.13.3",
+      "msrv": "1.85.0",
+      "source": "https://crates.io/api/v1/crates/unicode-segmentation",
+      "repository": "https://github.com/unicode-rs/unicode-segmentation",
+      "adopted": [
+        "1.13.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "unicode-width",
+      "locked": [
+        "0.2.2"
+      ],
+      "latest": "0.2.3",
+      "msrv": "1.66",
+      "source": "https://crates.io/api/v1/crates/unicode-width",
+      "repository": "https://github.com/unicode-rs/unicode-width",
+      "adopted": [
+        "0.2.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "url",
+      "locked": [
+        "2.5.8"
+      ],
+      "latest": "2.5.8",
+      "msrv": "1.63",
+      "source": "https://crates.io/api/v1/crates/url",
+      "repository": "https://github.com/servo/rust-url",
+      "adopted": [
+        "2.5.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "urlpattern",
+      "locked": [
+        "0.6.0"
+      ],
+      "latest": "0.6.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/urlpattern",
+      "repository": "https://github.com/denoland/rust-urlpattern",
+      "adopted": [
+        "0.6.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "utf8_iter",
+      "locked": [
+        "1.0.4"
+      ],
+      "latest": "1.1.0",
+      "msrv": "1.83",
+      "source": "https://crates.io/api/v1/crates/utf8_iter",
+      "repository": "https://github.com/hsivonen/utf8_iter",
+      "adopted": [
+        "1.0.4"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "uuid",
+      "locked": [
+        "1.29.0"
+      ],
+      "latest": "1.29.0",
+      "msrv": "1.89.0",
+      "source": "https://crates.io/api/v1/crates/uuid",
+      "repository": "https://github.com/uuid-rs/uuid",
+      "adopted": [
+        "1.29.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "version-compare",
+      "locked": [
+        "0.2.1"
+      ],
+      "latest": "0.2.1",
+      "msrv": "1.56.0",
+      "source": "https://crates.io/api/v1/crates/version-compare",
+      "repository": "https://gitlab.com/timvisee/version-compare",
+      "adopted": [
+        "0.2.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "version_check",
+      "locked": [
+        "0.9.5"
+      ],
+      "latest": "0.9.5",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/version_check",
+      "repository": "https://github.com/SergioBenitez/version_check",
+      "adopted": [
+        "0.9.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "vswhom",
+      "locked": [
+        "0.1.0"
+      ],
+      "latest": "0.1.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/vswhom",
+      "repository": "https://github.com/nabijaczleweli/vswhom.rs",
+      "adopted": [
+        "0.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "vswhom-sys",
+      "locked": [
+        "0.1.3"
+      ],
+      "latest": "0.1.3",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/vswhom-sys",
+      "repository": "https://github.com/nabijaczleweli/vswhom-sys.rs",
+      "adopted": [
+        "0.1.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "walkdir",
+      "locked": [
+        "2.5.0"
+      ],
+      "latest": "2.5.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/walkdir",
+      "repository": "https://github.com/BurntSushi/walkdir",
+      "adopted": [
+        "2.5.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "want",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.3.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/want",
+      "repository": "https://github.com/seanmonstar/want",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "wasi",
+      "locked": [
+        "0.11.1+wasi-snapshot-preview1"
+      ],
+      "latest": "0.14.7+wasi-0.2.4",
+      "msrv": "1.82.0",
+      "source": "https://crates.io/api/v1/crates/wasi",
+      "repository": "https://github.com/bytecodealliance/wasi-rs",
+      "adopted": [
+        "0.11.1+wasi-snapshot-preview1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "wasip2",
+      "locked": [
+        "1.0.4+wasi-0.2.12"
+      ],
+      "latest": "2.0.1+wasi-0.2.12",
+      "msrv": "1.87.0",
+      "source": "https://crates.io/api/v1/crates/wasip2",
+      "repository": "https://github.com/bytecodealliance/wasi-rs",
+      "adopted": [
+        "1.0.4+wasi-0.2.12"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "wasm-bindgen",
+      "locked": [
+        "0.2.129"
+      ],
+      "latest": "0.2.130",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/wasm-bindgen",
+      "repository": "https://github.com/wasm-bindgen/wasm-bindgen",
+      "adopted": [
+        "0.2.129"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "wasm-bindgen-futures",
+      "locked": [
+        "0.4.79"
+      ],
+      "latest": "0.4.80",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/wasm-bindgen-futures",
+      "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/futures",
+      "adopted": [
+        "0.4.79"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "wasm-bindgen-macro",
+      "locked": [
+        "0.2.129"
+      ],
+      "latest": "0.2.130",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/wasm-bindgen-macro",
+      "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/macro",
+      "adopted": [
+        "0.2.129"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "wasm-bindgen-macro-support",
+      "locked": [
+        "0.2.129"
+      ],
+      "latest": "0.2.130",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/wasm-bindgen-macro-support",
+      "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/main/crates/macro-support",
+      "adopted": [
+        "0.2.129"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "wasm-bindgen-shared",
+      "locked": [
+        "0.2.129"
+      ],
+      "latest": "0.2.130",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/wasm-bindgen-shared",
+      "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/shared",
+      "adopted": [
+        "0.2.129"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "wasm-streams",
+      "locked": [
+        "0.5.0"
+      ],
+      "latest": "0.7.0",
+      "msrv": "1.88",
+      "source": "https://crates.io/api/v1/crates/wasm-streams",
+      "repository": "https://github.com/MattiasBuelens/wasm-streams/",
+      "adopted": [
+        "0.5.0"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "web-sys",
+      "locked": [
+        "0.3.106"
+      ],
+      "latest": "0.3.107",
+      "msrv": "1.81",
+      "source": "https://crates.io/api/v1/crates/web-sys",
+      "repository": "https://github.com/wasm-bindgen/wasm-bindgen/tree/master/crates/web-sys",
+      "adopted": [
+        "0.3.106"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "web-time",
+      "locked": [
+        "1.1.0"
+      ],
+      "latest": "1.1.0",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/web-time",
+      "repository": "https://github.com/daxpedda/web-time",
+      "adopted": [
+        "1.1.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "web_atoms",
+      "locked": [
+        "0.2.6"
+      ],
+      "latest": "0.3.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/web_atoms",
+      "repository": "https://github.com/servo/html5ever",
+      "adopted": [
+        "0.2.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "webkit2gtk",
+      "locked": [
+        "2.0.2"
+      ],
+      "latest": "2.0.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/webkit2gtk",
+      "repository": "https://github.com/tauri-apps/webkit2gtk-rs",
+      "adopted": [
+        "2.0.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "webkit2gtk-sys",
+      "locked": [
+        "2.0.2"
+      ],
+      "latest": "2.0.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/webkit2gtk-sys",
+      "repository": "https://github.com/tauri-apps/webkit2gtk-rs",
+      "adopted": [
+        "2.0.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "webview2-com",
+      "locked": [
+        "0.39.1"
+      ],
+      "latest": "0.39.1",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/webview2-com",
+      "repository": "https://github.com/wravery/webview2-rs",
+      "adopted": [
+        "0.39.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "webview2-com-macros",
+      "locked": [
+        "0.8.1"
+      ],
+      "latest": "0.8.1",
+      "msrv": "1.74",
+      "source": "https://crates.io/api/v1/crates/webview2-com-macros",
+      "repository": "https://github.com/wravery/webview2-rs",
+      "adopted": [
+        "0.8.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "webview2-com-sys",
+      "locked": [
+        "0.39.1"
+      ],
+      "latest": "0.39.1",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/webview2-com-sys",
+      "repository": "https://github.com/wravery/webview2-rs",
+      "adopted": [
+        "0.39.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "wgpu",
+      "locked": [
+        "27.0.1"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.87.0",
+      "source": "https://crates.io/api/v1/crates/wgpu",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.1"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "wgpu-core",
+      "locked": [
+        "27.0.3"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.87",
+      "source": "https://crates.io/api/v1/crates/wgpu-core",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.3"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "wgpu-core-deps-apple",
+      "locked": [
+        "27.0.0"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.76",
+      "source": "https://crates.io/api/v1/crates/wgpu-core-deps-apple",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.0"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "wgpu-core-deps-emscripten",
+      "locked": [
+        "27.0.0"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.76",
+      "source": "https://crates.io/api/v1/crates/wgpu-core-deps-emscripten",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.0"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "wgpu-core-deps-windows-linux-android",
+      "locked": [
+        "27.0.0"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.76",
+      "source": "https://crates.io/api/v1/crates/wgpu-core-deps-windows-linux-android",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.0"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "wgpu-hal",
+      "locked": [
+        "27.0.4"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.87",
+      "source": "https://crates.io/api/v1/crates/wgpu-hal",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.4"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "wgpu-types",
+      "locked": [
+        "27.0.1"
+      ],
+      "latest": "30.0.1",
+      "msrv": "1.87",
+      "source": "https://crates.io/api/v1/crates/wgpu-types",
+      "repository": "https://github.com/gfx-rs/wgpu",
+      "adopted": [
+        "27.0.1"
+      ],
+      "decision": "retained",
+      "next": "API migration plus real GPU tests and native Surface/input/three-language rendering verification."
+    },
+    {
+      "name": "winapi",
+      "locked": [
+        "0.3.9"
+      ],
+      "latest": "0.3.9",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/winapi",
+      "repository": "https://github.com/retep998/winapi-rs",
+      "adopted": [
+        "0.3.9"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "winapi-i686-pc-windows-gnu",
+      "locked": [
+        "0.4.0"
+      ],
+      "latest": "0.4.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/winapi-i686-pc-windows-gnu",
+      "repository": "https://github.com/retep998/winapi-rs",
+      "adopted": [
+        "0.4.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "winapi-util",
+      "locked": [
+        "0.1.11"
+      ],
+      "latest": "0.1.11",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/winapi-util",
+      "repository": "https://github.com/BurntSushi/winapi-util",
+      "adopted": [
+        "0.1.11"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "winapi-x86_64-pc-windows-gnu",
+      "locked": [
+        "0.4.0"
+      ],
+      "latest": "0.4.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/winapi-x86_64-pc-windows-gnu",
+      "repository": "https://github.com/retep998/winapi-rs",
+      "adopted": [
+        "0.4.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "window-vibrancy",
+      "locked": [
+        "0.8.1"
+      ],
+      "latest": "0.8.1",
+      "msrv": "1.77",
+      "source": "https://crates.io/api/v1/crates/window-vibrancy",
+      "repository": "https://github.com/tauri-apps/tauri-plugin-vibrancy",
+      "adopted": [
+        "0.8.1"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "windows",
+      "locked": [
+        "0.58.0",
+        "0.62.2"
+      ],
+      "latest": "0.62.2",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/windows",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.58.0",
+        "0.62.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "windows-collections",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-collections",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-core",
+      "locked": [
+        "0.58.0",
+        "0.62.2"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-core",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.58.0",
+        "0.62.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-future",
+      "locked": [
+        "0.3.2"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-future",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.3.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-implement",
+      "locked": [
+        "0.58.0",
+        "0.60.2"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-implement",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.58.0",
+        "0.60.2"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-interface",
+      "locked": [
+        "0.58.0",
+        "0.59.3"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-interface",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.58.0",
+        "0.59.3"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-link",
+      "locked": [
+        "0.2.1"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/windows-link",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.2.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-numerics",
+      "locked": [
+        "0.3.1"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-numerics",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.3.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-result",
+      "locked": [
+        "0.2.0",
+        "0.4.1"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-result",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.2.0",
+        "0.4.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-strings",
+      "locked": [
+        "0.1.0",
+        "0.5.1"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-strings",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.1.0",
+        "0.5.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-sys",
+      "locked": [
+        "0.45.0",
+        "0.61.2"
+      ],
+      "latest": "0.61.2",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/windows-sys",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.45.0",
+        "0.61.2"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "windows-targets",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.5",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows-targets",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-threading",
+      "locked": [
+        "0.2.1"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-threading",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.2.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows-version",
+      "locked": [
+        "0.1.7"
+      ],
+      "latest": "0.100.0",
+      "msrv": "1.95",
+      "source": "https://crates.io/api/v1/crates/windows-version",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.1.7"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_aarch64_gnullvm",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_aarch64_gnullvm",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_aarch64_msvc",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_aarch64_msvc",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_i686_gnu",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_i686_gnu",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_i686_gnullvm",
+      "locked": [
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_i686_gnullvm",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_i686_msvc",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_i686_msvc",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_x86_64_gnu",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_x86_64_gnu",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_x86_64_gnullvm",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_x86_64_gnullvm",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "windows_x86_64_msvc",
+      "locked": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "latest": "0.53.1",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/windows_x86_64_msvc",
+      "repository": "https://github.com/microsoft/windows-rs",
+      "adopted": [
+        "0.42.2",
+        "0.52.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "winnow",
+      "locked": [
+        "0.5.40",
+        "1.0.4"
+      ],
+      "latest": "1.0.4",
+      "msrv": "1.65.0",
+      "source": "https://crates.io/api/v1/crates/winnow",
+      "repository": "https://github.com/winnow-rs/winnow",
+      "adopted": [
+        "0.5.40",
+        "1.0.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "winreg",
+      "locked": [
+        "0.56.0"
+      ],
+      "latest": "0.56.0",
+      "msrv": "1.60",
+      "source": "https://crates.io/api/v1/crates/winreg",
+      "repository": "https://github.com/gentoo90/winreg-rs",
+      "adopted": [
+        "0.56.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "wit-bindgen",
+      "locked": [
+        "0.57.1"
+      ],
+      "latest": "0.63.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/wit-bindgen",
+      "repository": "https://github.com/bytecodealliance/wit-bindgen",
+      "adopted": [
+        "0.57.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "writeable",
+      "locked": [
+        "0.6.4"
+      ],
+      "latest": "0.6.4",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/writeable",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.6.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "wry",
+      "locked": [
+        "0.57.0"
+      ],
+      "latest": "0.57.1",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/wry",
+      "repository": "https://github.com/tauri-apps/wry",
+      "adopted": [
+        "0.57.0"
+      ],
+      "decision": "retained",
+      "next": "Migrate pinned Tauri/runtime/build/codegen stack together; verify native Surface, input and dock/float before adoption."
+    },
+    {
+      "name": "x11",
+      "locked": [
+        "2.21.0"
+      ],
+      "latest": "2.21.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/x11",
+      "repository": "https://github.com/AltF02/x11-rs.git",
+      "adopted": [
+        "2.21.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "x11-dl",
+      "locked": [
+        "2.21.0"
+      ],
+      "latest": "2.21.0",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/x11-dl",
+      "repository": "https://github.com/AltF02/x11-rs.git",
+      "adopted": [
+        "2.21.0"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "xml-rs",
+      "locked": [
+        "0.8.29"
+      ],
+      "latest": "1.0.0",
+      "msrv": "1.85",
+      "source": "https://crates.io/api/v1/crates/xml-rs",
+      "repository": "https://github.com/kornelski/xml-rs",
+      "adopted": [
+        "0.8.29"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "yazi",
+      "locked": [
+        "0.2.1"
+      ],
+      "latest": "0.2.2",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/yazi",
+      "repository": "https://github.com/dfrg/yazi",
+      "adopted": [
+        "0.2.1"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "yoke",
+      "locked": [
+        "0.8.3"
+      ],
+      "latest": "0.8.4",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/yoke",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.8.3"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "yoke-derive",
+      "locked": [
+        "0.8.4"
+      ],
+      "latest": "0.8.4",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/yoke-derive",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.8.4"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zeno",
+      "locked": [
+        "0.3.3"
+      ],
+      "latest": "0.3.3",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/zeno",
+      "repository": "https://github.com/dfrg/zeno",
+      "adopted": [
+        "0.3.3"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zerocopy",
+      "locked": [
+        "0.8.63"
+      ],
+      "latest": "0.8.63",
+      "msrv": "1.56.0",
+      "source": "https://crates.io/api/v1/crates/zerocopy",
+      "repository": "https://github.com/google/zerocopy",
+      "adopted": [
+        "0.8.63"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zerocopy-derive",
+      "locked": [
+        "0.8.63"
+      ],
+      "latest": "0.8.63",
+      "msrv": null,
+      "source": "https://crates.io/api/v1/crates/zerocopy-derive",
+      "repository": "https://github.com/google/zerocopy",
+      "adopted": [
+        "0.8.63"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zerofrom",
+      "locked": [
+        "0.1.8"
+      ],
+      "latest": "0.1.8",
+      "msrv": "1.71.1",
+      "source": "https://crates.io/api/v1/crates/zerofrom",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.1.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zerofrom-derive",
+      "locked": [
+        "0.1.8"
+      ],
+      "latest": "0.1.8",
+      "msrv": "1.71.1",
+      "source": "https://crates.io/api/v1/crates/zerofrom-derive",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.1.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zerotrie",
+      "locked": [
+        "0.2.5"
+      ],
+      "latest": "0.2.5",
+      "msrv": "1.82",
+      "source": "https://crates.io/api/v1/crates/zerotrie",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.2.5"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zerovec",
+      "locked": [
+        "0.11.8"
+      ],
+      "latest": "0.11.9",
+      "msrv": "1.83",
+      "source": "https://crates.io/api/v1/crates/zerovec",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.11.8"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "zerovec-derive",
+      "locked": [
+        "0.11.6"
+      ],
+      "latest": "0.11.7",
+      "msrv": "1.83",
+      "source": "https://crates.io/api/v1/crates/zerovec-derive",
+      "repository": "https://github.com/unicode-org/icu4x",
+      "adopted": [
+        "0.11.6"
+      ],
+      "decision": "retained",
+      "next": "Separate small update batch after upstream source/release review and relevant regression checks. Parent constraints and multiple major versions are preserved."
+    },
+    {
+      "name": "zlib-rs",
+      "locked": [
+        "0.6.8"
+      ],
+      "latest": "0.6.8",
+      "msrv": "1.75",
+      "source": "https://crates.io/api/v1/crates/zlib-rs",
+      "repository": "https://github.com/trifectatechfoundation/zlib-rs",
+      "adopted": [
+        "0.6.8"
+      ],
+      "decision": "retained"
+    },
+    {
+      "name": "zmij",
+      "locked": [
+        "1.0.23"
+      ],
+      "latest": "1.0.23",
+      "msrv": "1.71",
+      "source": "https://crates.io/api/v1/crates/zmij",
+      "repository": "https://github.com/dtolnay/zmij",
+      "adopted": [
+        "1.0.23"
+      ],
+      "decision": "retained"
+    }
+  ],
+  "ci": [
+    {
+      "name": "typescript",
+      "latest": "7.0.2",
+      "source": "https://registry.npmjs.org/typescript/latest"
+    },
+    {
+      "name": "jsonschema",
+      "latest": "4.26.0",
+      "source": "https://pypi.org/pypi/jsonschema/json"
+    }
+  ]
+}
