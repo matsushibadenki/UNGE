@@ -92,3 +92,5 @@ Registry avoids redundant edit validation. [Integration contract and benchmark](
 [Optional durable Rust editor: Document, revision and Undo/Redo restoration](ACX_EDITOR_PERSISTENCE.md)
 
 [Cross-log prefix verification and backup mismatch detection](ACX_LOG_PAIRING.md)
+
+For offline persistent-host backup generations and restore, see [ACX_BACKUP.md](ACX_BACKUP.md).

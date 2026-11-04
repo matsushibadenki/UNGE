@@ -12,7 +12,7 @@
         },
         "members": {
           "format": "uint",
-          "minimum": 0.0,
+          "minimum": 0,
           "type": "integer"
         }
       },
@@ -40,25 +40,25 @@
     },
     "revision": {
       "format": "uint64",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "selected_nodes": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "total": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     }
   },
   "required": [
-    "groups",
     "revision",
+    "total",
     "selected_nodes",
-    "total"
+    "groups"
   ],
   "title": "GroupPage",
   "type": "object"

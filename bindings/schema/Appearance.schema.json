@@ -22,8 +22,8 @@
     }
   },
   "required": [
-    "colors",
-    "theme"
+    "theme",
+    "colors"
   ],
   "title": "Appearance",
   "type": "object"

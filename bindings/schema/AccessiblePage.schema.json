@@ -20,9 +20,9 @@
       },
       "required": [
         "id",
+        "title",
         "rect",
-        "selected",
-        "title"
+        "selected"
       ],
       "type": "object"
     },
@@ -46,10 +46,10 @@
         }
       },
       "required": [
-        "height",
-        "width",
         "x",
-        "y"
+        "y",
+        "width",
+        "height"
       ],
       "type": "object"
     }
@@ -70,19 +70,19 @@
     },
     "revision": {
       "format": "uint64",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "total": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     }
   },
   "required": [
-    "nodes",
     "revision",
-    "total"
+    "total",
+    "nodes"
   ],
   "title": "AccessiblePage",
   "type": "object"

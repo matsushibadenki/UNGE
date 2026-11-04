@@ -13,9 +13,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "add_node"
-              ],
+              "const": "add_node",
               "type": "string"
             },
             "node": {
@@ -39,15 +37,13 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "remove_node"
-              ],
+              "const": "remove_node",
               "type": "string"
             }
           },
           "required": [
-            "id",
-            "kind"
+            "kind",
+            "id"
           ],
           "type": "object"
         },
@@ -58,9 +54,7 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "move_node"
-              ],
+              "const": "move_node",
               "type": "string"
             },
             "rect": {
@@ -68,8 +62,8 @@
             }
           },
           "required": [
-            "id",
             "kind",
+            "id",
             "rect"
           ],
           "type": "object"
@@ -80,15 +74,13 @@
               "$ref": "#/definitions/Edge"
             },
             "kind": {
-              "enum": [
-                "connect"
-              ],
+              "const": "connect",
               "type": "string"
             }
           },
           "required": [
-            "edge",
-            "kind"
+            "kind",
+            "edge"
           ],
           "type": "object"
         },
@@ -99,15 +91,13 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "disconnect"
-              ],
+              "const": "disconnect",
               "type": "string"
             }
           },
           "required": [
-            "id",
-            "kind"
+            "kind",
+            "id"
           ],
           "type": "object"
         },
@@ -121,17 +111,15 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "set_property"
-              ],
+              "const": "set_property",
               "type": "string"
             },
             "value": true
           },
           "required": [
+            "kind",
             "id",
-            "key",
-            "kind"
+            "key"
           ],
           "type": "object"
         },
@@ -152,15 +140,13 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "set_group"
-              ],
+              "const": "set_group",
               "type": "string"
             }
           },
           "required": [
-            "id",
-            "kind"
+            "kind",
+            "id"
           ],
           "type": "object"
         },
@@ -173,15 +159,13 @@
               "type": "array"
             },
             "kind": {
-              "enum": [
-                "batch"
-              ],
+              "const": "batch",
               "type": "string"
             }
           },
           "required": [
-            "commands",
-            "kind"
+            "kind",
+            "commands"
           ],
           "type": "object"
         }
@@ -192,9 +176,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "bool"
-              ],
+              "const": "bool",
               "type": "string"
             }
           },
@@ -206,9 +188,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "int"
-              ],
+              "const": "int",
               "type": "string"
             }
           },
@@ -220,9 +200,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "float"
-              ],
+              "const": "float",
               "type": "string"
             }
           },
@@ -234,9 +212,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "string"
-              ],
+              "const": "string",
               "type": "string"
             }
           },
@@ -248,9 +224,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "json"
-              ],
+              "const": "json",
               "type": "string"
             }
           },
@@ -262,9 +236,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "bytes"
-              ],
+              "const": "bytes",
               "type": "string"
             }
           },
@@ -276,9 +248,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "image"
-              ],
+              "const": "image",
               "type": "string"
             }
           },
@@ -290,9 +260,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "audio"
-              ],
+              "const": "audio",
               "type": "string"
             }
           },
@@ -304,9 +272,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "video"
-              ],
+              "const": "video",
               "type": "string"
             }
           },
@@ -318,9 +284,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "tensor"
-              ],
+              "const": "tensor",
               "type": "string"
             }
           },
@@ -332,9 +296,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "event"
-              ],
+              "const": "event",
               "type": "string"
             }
           },
@@ -346,9 +308,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "any"
-              ],
+              "const": "any",
               "type": "string"
             }
           },
@@ -360,9 +320,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "custom"
-              ],
+              "const": "custom",
               "type": "string"
             },
             "name": {
@@ -391,8 +349,8 @@
         }
       },
       "required": [
-        "from",
         "id",
+        "from",
         "to"
       ],
       "type": "object"
@@ -448,9 +406,7 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "create"
-              ],
+              "const": "create",
               "type": "string"
             },
             "label": {
@@ -458,8 +414,8 @@
             }
           },
           "required": [
-            "id",
             "kind",
+            "id",
             "label"
           ],
           "type": "object"
@@ -471,9 +427,7 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "rename"
-              ],
+              "const": "rename",
               "type": "string"
             },
             "label": {
@@ -481,8 +435,8 @@
             }
           },
           "required": [
-            "id",
             "kind",
+            "id",
             "label"
           ],
           "type": "object"
@@ -494,15 +448,13 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "add_selection"
-              ],
+              "const": "add_selection",
               "type": "string"
             }
           },
           "required": [
-            "id",
-            "kind"
+            "kind",
+            "id"
           ],
           "type": "object"
         },
@@ -513,15 +465,13 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "remove_selection"
-              ],
+              "const": "remove_selection",
               "type": "string"
             }
           },
           "required": [
-            "id",
-            "kind"
+            "kind",
+            "id"
           ],
           "type": "object"
         },
@@ -532,15 +482,13 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "delete"
-              ],
+              "const": "delete",
               "type": "string"
             }
           },
           "required": [
-            "id",
-            "kind"
+            "kind",
+            "id"
           ],
           "type": "object"
         },
@@ -551,15 +499,13 @@
               "type": "string"
             },
             "kind": {
-              "enum": [
-                "select_members"
-              ],
+              "const": "select_members",
               "type": "string"
             }
           },
           "required": [
-            "id",
-            "kind"
+            "kind",
+            "id"
           ],
           "type": "object"
         }
@@ -602,9 +548,9 @@
       },
       "required": [
         "id",
+        "type_id",
         "inputs",
-        "outputs",
-        "type_id"
+        "outputs"
       ],
       "type": "object"
     },
@@ -628,46 +574,12 @@
               "$ref": "#/definitions/PointerButton"
             },
             "kind": {
-              "enum": [
-                "down"
-              ],
+              "const": "down",
               "type": "string"
             },
             "pointer": {
               "format": "uint32",
-              "minimum": 0.0,
-              "type": "integer"
-            },
-            "position": {
-              "items": {
-                "format": "float",
-                "type": "number"
-              },
-              "maxItems": 2,
-              "minItems": 2,
-              "type": "array"
-            }
-          },
-          "required": [
-            "button",
-            "kind",
-            "pointer",
-            "position"
-          ],
-          "type": "object"
-        },
-        {
-          "additionalProperties": false,
-          "properties": {
-            "kind": {
-              "enum": [
-                "move"
-              ],
-              "type": "string"
-            },
-            "pointer": {
-              "format": "uint32",
-              "minimum": 0.0,
+              "minimum": 0,
               "type": "integer"
             },
             "position": {
@@ -683,7 +595,8 @@
           "required": [
             "kind",
             "pointer",
-            "position"
+            "position",
+            "button"
           ],
           "type": "object"
         },
@@ -691,14 +604,12 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "up"
-              ],
+              "const": "move",
               "type": "string"
             },
             "pointer": {
               "format": "uint32",
-              "minimum": 0.0,
+              "minimum": 0,
               "type": "integer"
             },
             "position": {
@@ -722,9 +633,36 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "cancel"
-              ],
+              "const": "up",
+              "type": "string"
+            },
+            "pointer": {
+              "format": "uint32",
+              "minimum": 0,
+              "type": "integer"
+            },
+            "position": {
+              "items": {
+                "format": "float",
+                "type": "number"
+              },
+              "maxItems": 2,
+              "minItems": 2,
+              "type": "array"
+            }
+          },
+          "required": [
+            "kind",
+            "pointer",
+            "position"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "const": "cancel",
               "type": "string"
             }
           },
@@ -751,9 +689,9 @@
         }
       },
       "required": [
-        "cardinality",
-        "data_type",
         "name",
+        "data_type",
+        "cardinality",
         "required"
       ],
       "type": "object"
@@ -778,10 +716,10 @@
         }
       },
       "required": [
-        "height",
-        "width",
         "x",
-        "y"
+        "y",
+        "width",
+        "height"
       ],
       "type": "object"
     },
@@ -820,8 +758,8 @@
       },
       "required": [
         "origin",
-        "size",
-        "zoom"
+        "zoom",
+        "size"
       ],
       "type": "object"
     }
@@ -834,29 +772,25 @@
         },
         "expected_revision": {
           "format": "uint64",
-          "minimum": 0.0,
+          "minimum": 0,
           "type": "integer"
         },
         "kind": {
-          "enum": [
-            "group"
-          ],
+          "const": "group",
           "type": "string"
         }
       },
       "required": [
-        "action",
+        "kind",
         "expected_revision",
-        "kind"
+        "action"
       ],
       "type": "object"
     },
     {
       "properties": {
         "kind": {
-          "enum": [
-            "set_theme"
-          ],
+          "const": "set_theme",
           "type": "string"
         },
         "theme": {
@@ -872,9 +806,7 @@
     {
       "properties": {
         "kind": {
-          "enum": [
-            "set_locale"
-          ],
+          "const": "set_locale",
           "type": "string"
         },
         "locale": {
@@ -894,20 +826,18 @@
         },
         "expected_revision": {
           "format": "uint64",
-          "minimum": 0.0,
+          "minimum": 0,
           "type": "integer"
         },
         "kind": {
-          "enum": [
-            "pointer"
-          ],
+          "const": "pointer",
           "type": "string"
         }
       },
       "required": [
-        "event",
+        "kind",
         "expected_revision",
-        "kind"
+        "event"
       ],
       "type": "object"
     },
@@ -918,20 +848,18 @@
         },
         "expected_revision": {
           "format": "uint64",
-          "minimum": 0.0,
+          "minimum": 0,
           "type": "integer"
         },
         "kind": {
-          "enum": [
-            "apply"
-          ],
+          "const": "apply",
           "type": "string"
         }
       },
       "required": [
-        "command",
+        "kind",
         "expected_revision",
-        "kind"
+        "command"
       ],
       "type": "object"
     },
@@ -939,19 +867,17 @@
       "properties": {
         "expected_revision": {
           "format": "uint64",
-          "minimum": 0.0,
+          "minimum": 0,
           "type": "integer"
         },
         "kind": {
-          "enum": [
-            "undo"
-          ],
+          "const": "undo",
           "type": "string"
         }
       },
       "required": [
-        "expected_revision",
-        "kind"
+        "kind",
+        "expected_revision"
       ],
       "type": "object"
     },
@@ -959,28 +885,24 @@
       "properties": {
         "expected_revision": {
           "format": "uint64",
-          "minimum": 0.0,
+          "minimum": 0,
           "type": "integer"
         },
         "kind": {
-          "enum": [
-            "redo"
-          ],
+          "const": "redo",
           "type": "string"
         }
       },
       "required": [
-        "expected_revision",
-        "kind"
+        "kind",
+        "expected_revision"
       ],
       "type": "object"
     },
     {
       "properties": {
         "kind": {
-          "enum": [
-            "set_viewport"
-          ],
+          "const": "set_viewport",
           "type": "string"
         },
         "viewport": {
@@ -1004,24 +926,20 @@
           "uniqueItems": true
         },
         "kind": {
-          "enum": [
-            "select"
-          ],
+          "const": "select",
           "type": "string"
         }
       },
       "required": [
-        "ids",
-        "kind"
+        "kind",
+        "ids"
       ],
       "type": "object"
     },
     {
       "properties": {
         "kind": {
-          "enum": [
-            "summary"
-          ],
+          "const": "summary",
           "type": "string"
         }
       },

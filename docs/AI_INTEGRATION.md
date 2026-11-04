@@ -152,3 +152,7 @@ cosmic-textの再公開型は0.19です。旧Bufferのset_wrap/set_text引数と
 CLI／サーバーで編集状態も保存する場合は[PersistentHostの取り込みと2ログの境界](ACX_EDITOR_PERSISTENCE.md)を参照。Tauri Engineと同じDocumentを二重所有しない。
 
 PersistentHostとReceiptログの組合せは[相互prefix検証](ACX_LOG_PAIRING.md)に従う。永続ホストのGraphHostラッパーはpersistence／verify_persistence／acknowledge_replayも転送し、旧実行済みログを勝手に結び直さない。
+
+停止した永続ホストのseed・両ログ・必要資産の退避には [ACX_BACKUP.md](ACX_BACKUP.md) の世代manifestを使う。復元副本の起動時にもログの相互検証を行い、保管世代そのものを稼働ログにしない。
+
+Schema featureを有効にするホストはschemars 1.2.3を使用する。Draft 7の生成と再帰参照の扱いは [CONTRACT_GENERATION.md](CONTRACT_GENERATION.md) に従い、既定macroへ置き換えない。

@@ -13,9 +13,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "bool"
-              ],
+              "const": "bool",
               "type": "string"
             }
           },
@@ -27,9 +25,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "int"
-              ],
+              "const": "int",
               "type": "string"
             }
           },
@@ -41,9 +37,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "float"
-              ],
+              "const": "float",
               "type": "string"
             }
           },
@@ -55,9 +49,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "string"
-              ],
+              "const": "string",
               "type": "string"
             }
           },
@@ -69,9 +61,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "json"
-              ],
+              "const": "json",
               "type": "string"
             }
           },
@@ -83,9 +73,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "bytes"
-              ],
+              "const": "bytes",
               "type": "string"
             }
           },
@@ -97,9 +85,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "image"
-              ],
+              "const": "image",
               "type": "string"
             }
           },
@@ -111,9 +97,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "audio"
-              ],
+              "const": "audio",
               "type": "string"
             }
           },
@@ -125,9 +109,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "video"
-              ],
+              "const": "video",
               "type": "string"
             }
           },
@@ -139,9 +121,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "tensor"
-              ],
+              "const": "tensor",
               "type": "string"
             }
           },
@@ -153,9 +133,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "event"
-              ],
+              "const": "event",
               "type": "string"
             }
           },
@@ -167,9 +145,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "any"
-              ],
+              "const": "any",
               "type": "string"
             }
           },
@@ -181,9 +157,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "custom"
-              ],
+              "const": "custom",
               "type": "string"
             },
             "name": {
@@ -233,9 +207,9 @@
         }
       },
       "required": [
-        "cardinality",
-        "data_type",
         "name",
+        "data_type",
+        "cardinality",
         "required"
       ],
       "type": "object"
@@ -244,7 +218,7 @@
       "additionalProperties": false,
       "properties": {
         "default": {
-          "description": "Applied only by Definition::instantiate; validation never repairs values. Null represents no default, matching SetProperty's deletion convention."
+          "description": "Applied only by Definition::instantiate; validation never repairs values.\nNull represents no default, matching SetProperty's deletion convention."
         },
         "description": {
           "$ref": "#/definitions/LocalizedText"
@@ -261,8 +235,8 @@
         }
       },
       "required": [
-        "description",
         "name",
+        "description",
         "value_type"
       ],
       "type": "object"
@@ -290,9 +264,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "bool"
-              ],
+              "const": "bool",
               "type": "string"
             }
           },
@@ -305,9 +277,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "int"
-              ],
+              "const": "int",
               "type": "string"
             },
             "maximum": {
@@ -334,9 +304,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "float"
-              ],
+              "const": "float",
               "type": "string"
             },
             "maximum": {
@@ -372,14 +340,12 @@
               ]
             },
             "kind": {
-              "enum": [
-                "string"
-              ],
+              "const": "string",
               "type": "string"
             },
             "max_length": {
               "format": "uint",
-              "minimum": 0.0,
+              "minimum": 0,
               "type": [
                 "integer",
                 "null"
@@ -388,7 +354,7 @@
             "min_length": {
               "default": 0,
               "format": "uint",
-              "minimum": 0.0,
+              "minimum": 0,
               "type": "integer"
             }
           },
@@ -401,9 +367,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "json"
-              ],
+              "const": "json",
               "type": "string"
             }
           },
@@ -457,13 +421,13 @@
     }
   },
   "required": [
+    "type_id",
+    "version",
+    "name",
     "description",
     "inputs",
-    "name",
     "outputs",
-    "pure",
-    "type_id",
-    "version"
+    "pure"
   ],
   "title": "Definition",
   "type": "object"

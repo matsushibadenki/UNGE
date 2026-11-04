@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generate portable contracts from Rust. --check detects stale committed artifacts."""
 import argparse
+import copy
 import json
 from pathlib import Path
 import subprocess
@@ -62,10 +63,45 @@ def ts_type(schema, output=False):
     raise ValueError(f'Unsupported schema shape: {schema}')
 
 
+def portable_schema(name, schema):
+    # schemars 1 uses '#' for recursive roots. Publish the established named
+    # definition reference so each schema also composes into the shared TS map.
+    schema = copy.deepcopy(schema)
+    root_reference = False
+    def walk(value):
+        nonlocal root_reference
+        if isinstance(value, dict):
+            if value.get('$ref') == '#':
+                value['$ref'] = '#/definitions/' + name.replace('~', '~0').replace('/', '~1')
+                root_reference = True
+            # Traverse schema positions only; defaults/examples/const may contain
+            # arbitrary user JSON whose $ref strings must remain untouched.
+            for keyword in ('properties', 'patternProperties', 'definitions', '$defs', 'dependentSchemas'):
+                for child in value.get(keyword, {}).values(): walk(child)
+            for keyword in ('allOf', 'anyOf', 'oneOf', 'prefixItems'):
+                for child in value.get(keyword, []): walk(child)
+            for keyword in ('items', 'additionalProperties', 'additionalItems', 'contains',
+                            'propertyNames', 'not', 'if', 'then', 'else'):
+                child = value.get(keyword)
+                if isinstance(child, list):
+                    for item in child: walk(item)
+                else:
+                    walk(child)
+    walk(schema)
+    if root_reference:
+        definition = {k: v for k, v in schema.items() if k not in ('$schema', 'definitions', 'title')}
+        definitions = schema.setdefault('definitions', {})
+        if name in definitions and definitions[name] != definition:
+            raise ValueError(f'Conflicting recursive root: {name}')
+        definitions[name] = definition
+    return schema
+
+
 def artifacts(schemas):
     definitions = {}
     files = {}
     for name, schema in sorted(schemas.items()):
+        schema = portable_schema(name, schema)
         files[ROOT / 'bindings/schema' / (name + '.schema.json')] = json.dumps(schema, ensure_ascii=False, indent=2, sort_keys=True) + '\n'
         for key, definition in {**schema.get('definitions', {}), name: {k: v for k, v in schema.items() if k not in ('$schema', 'definitions', 'title')}}.items():
             if key in definitions and definitions[key] != definition:

@@ -4,7 +4,7 @@ import json
 import subprocess
 import unittest
 from jsonschema import Draft7Validator, FormatChecker
-from generate_contracts import ROOT, artifacts, ts_type
+from generate_contracts import ROOT, artifacts, ts_type, portable_schema
 
 
 class Contracts(unittest.TestCase):
@@ -37,6 +37,31 @@ class Contracts(unittest.TestCase):
         for path in (ROOT / 'bindings/schema').glob('*.json'):
             Draft7Validator.check_schema(json.loads(path.read_text()))
 
+    def test_draft7_references_and_recursive_commands(self):
+        for path in (ROOT / 'bindings/schema').glob('*.schema.json'):
+            schema = json.loads(path.read_text())
+            self.assertEqual(schema['$schema'], 'http://json-schema.org/draft-07/schema#')
+            def walk(value):
+                if isinstance(value, dict):
+                    self.assertNotIn('$defs', value)
+                    self.assertNotIn('prefixItems', value)
+                    if '$ref' in value:
+                        self.assertTrue(value['$ref'].startswith('#/definitions/'))
+                        target = schema
+                        for segment in value['$ref'][2:].split('/'):
+                            target = target[segment.replace('~1', '/').replace('~0', '~')]
+                    for child in value.values(): walk(child)
+                elif isinstance(value, list):
+                    for child in value: walk(child)
+            walk(schema)
+        nested = self.fixtures['Command']
+        for _ in range(4):
+            nested = {'kind':'batch', 'commands':[nested]}
+        validator = self.validator('Command')
+        self.assertTrue(validator.is_valid(nested))
+        nested['commands'].append({'kind':'unknown'})
+        self.assertFalse(validator.is_valid(nested))
+
     def test_rejection_and_serde_defaults(self):
         validator = self.validator('Request')
         self.assertFalse(validator.is_valid({'kind': 'unknown'}))
@@ -61,6 +86,16 @@ class Contracts(unittest.TestCase):
             for sample in case['samples']:
                 with self.subTest(schema=case['schema'], value=sample['value']):
                     self.assertEqual(validator.is_valid(sample['value']), sample['valid'])
+
+    def test_recursive_root_normalization_preserves_input_and_rejects_conflicts(self):
+        original = {'type':'object', 'properties':{'child':{'$ref':'#'}}, 'default':{'$ref':'#'}}
+        normalized = portable_schema('Tree', original)
+        self.assertEqual(original['properties']['child']['$ref'], '#')
+        self.assertEqual(normalized['default'], {'$ref':'#'})
+        self.assertEqual(normalized['properties']['child']['$ref'], '#/definitions/Tree')
+        self.assertEqual(normalized['definitions']['Tree']['properties'], normalized['properties'])
+        with self.assertRaises(ValueError):
+            portable_schema('Tree', {**original,'definitions':{'Tree':{'type':'string'}}})
 
     def test_typescript_conversion(self):
         self.assertEqual(ts_type({'type': 'array', 'items': {'type': 'number'}, 'minItems': 2, 'maxItems': 2}), '[number, number]')

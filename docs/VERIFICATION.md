@@ -468,3 +468,23 @@ Document・revision・Undo/Redoの再起動復元、履歴の件数／バイト�
 ## 2026-11-02: 状態／Receiptの相互prefix検証
 
 workspace標準／all-features各181件成功（失敗0、ignored 7）、両構成all-targets Clippy（-D warnings）、fmt／fmt check、TypeScript 7.0.2 strict、17契約一致、Schema6件、実stdio7件、headlessの42が成功。新規Rust5件で状態／Receipt片側巻き戻し、同一ID別ペア差し替え、整合した一組の復元、epoch巻き戻し、完了確認容量不足と再送、旧ログの無検証結合・メモリーへの切り替え・Receiptログ未接続を拒否。実stdioでも双方向の片側巻き戻しがstorage_corruptとなり、ファイルを修復しないことを確認。既存の編集保存後／Receipt前のプロセス中断テストも成功。[保証範囲と移行保留](ACX_LOG_PAIRING.md)。既知のblock将来互換性警告は残る。GPUコード変更なし、実GPU4件は未実行。残るignored3件は親テストから実行済みの補助入口。Windows/Linux、実電源断、最低Rust版、長期性能は未検証。
+
+## 2026-11-04: オフラインバックアップ世代
+
+- 🟢 [Done] `scripts/backup.py`のcreate／verify／restoreとCI用`test_backup.py`を追加。6件の回帰で1MiBを越えるストリームコピー、資産を含む復元一致、0600、既存出力拒否、改変・欠損・余分なファイル・不正manifest／version／path／role・末端symlink・重複inode・ロック・同期失敗・コピー中の変更を確認。CLIのverifyも実行。
+- 🟢 [Done] 実Rust ACX Providerが保持するFile::try_lockに対してPythonのflockが競合を検出。Provider正常終了後にseed・両ログ・資産を保存／復元し、別プロセスでDocument／revision・元Receipt・同commitの元結果が一致。ライブ保存、外部副作用の復元、意味上のペア整合性の認定は提供しない。
+- 🟢 [Done] `cargo fmt --all -- --check`、`cargo test --workspace --all-features --locked --offline`（181件成功、7件ignored）、`cargo clippy --workspace --all-features --all-targets --locked --offline -- -D warnings`、生成契約17件の確認に成功。GPU変更なし、実GPU4件は今回明示再実行なし。残るignored3件は既存親テストから起動する子プロセス用fixture。依存block 0.1.6の将来互換警告は残る。
+- 初回workspace実行では既存`capacity_is_reserved_before_effects_and_volatile_rotation_is_refused`の再openが`storage_locked`となった。対象のpersistenceテスト一式とworkspace全体を再実行し成功。原因は確定しておらず、既存ロック処理やテストを今回の変更で緩めていない。
+- 🟢 [Done] 3言語の取り込み・復元手順、manifestの保証範囲、停止／資産の列挙／新規復元先の契約とROADMAPを更新。IPC／TypeScript／Rust APIは変更なし。
+- ⭕️ [Pending] Windows実装、Linux実機、実電源断、ネットワークfilesystem、大規模資産の性能。Tauri共有Engine保存接続、状態／Receipt単一トランザクション、圧縮・旧ログ移行は引き続き未実装。
+- English: Six backup regressions pass, including real Rust/Python lock exclusion and restored Document/revision/original receipt replay over stdio. All 181 Rust tests, formatting, strict Clippy and 17 contracts pass on retry. The first run encountered a transient existing journal reopen lock failure; its cause is unconfirmed. GPU code was unchanged. Other platforms, power loss and large-resource performance remain pending.
+- 简体中文：6项备份回归通过，包含真实Rust／Python锁排他及stdio恢复后Document／revision／原Receipt重放。重跑后181项Rust测试、格式、严格Clippy及17项契约均通过。首次运行遇到既有日志重开锁失败，原因未确定。GPU代码未改动。其他平台、断电及大资产性能待验证。
+
+## 2026-11-04: schemars生成契約の移行
+
+- 🟢 [Done] schemars直接依存1.2.3。workspace/all-features Rust181件成功（失敗0、ignored7）、fmt、厳格all-targets Clippy、17契約、Schema8件、ACX実stdio7件、バックアップ6件、TypeScript 7.0.2 strictが成功。今回は既存テストのロック失敗なし。
+- 🟢 [Done] 14 root／4 Port Schemaの限定的な正規化比較と入力／出力TypeScriptのバイト一致。再帰rootの参照解決、入れ子Command、default内の任意JSON保持、同名競合拒否の新規回帰と、既存Port値3,068例の判定照合を確認。[採用範囲と比較記録](DEPENDENCY_UPDATES.md#2026-11-04-schemars-123への直接依存移行)。
+- 生成器とPort値SchemaはDraft 7を明示。raw Schemaのenum→const等の表現は変わる。TypeScriptとDocument／IPC／ACXのwire型は維持。GPU描画・UI配置は変更していないため、その実画面／実GPU検証を今回追加していない。
+- ⭕️ [Pending] Windows/Linux、WASM、最低Rust版。GPU4件は通常実行でignored、他3件は既存親テストから呼ぶ子プロセスfixture。既存block将来互換警告は残る。
+- English: The schemars migration passes 181 Rust tests, strict Clippy, formatting, 17 contracts, eight schema regressions, seven real-stdio ACX tests, six backup tests and strict TypeScript. Scoped normalization preserves 14 root/four port schema constraints and generated TypeScript is byte-identical. Other-platform/WASM/minimum-toolchain checks remain pending.
+- 简体中文：schemars迁移通过181项Rust测试、严格Clippy、格式、17项契约、8项Schema、7项实际stdio ACX、6项备份及strict TypeScript。14个root／4个Port Schema限定规范化后约束相同，TypeScript生成物字节一致。其他平台／WASM／最低工具链待验证。

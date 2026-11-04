@@ -13,9 +13,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "bool"
-              ],
+              "const": "bool",
               "type": "string"
             }
           },
@@ -27,9 +25,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "int"
-              ],
+              "const": "int",
               "type": "string"
             }
           },
@@ -41,9 +37,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "float"
-              ],
+              "const": "float",
               "type": "string"
             }
           },
@@ -55,9 +49,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "string"
-              ],
+              "const": "string",
               "type": "string"
             }
           },
@@ -69,9 +61,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "json"
-              ],
+              "const": "json",
               "type": "string"
             }
           },
@@ -83,9 +73,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "bytes"
-              ],
+              "const": "bytes",
               "type": "string"
             }
           },
@@ -97,9 +85,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "image"
-              ],
+              "const": "image",
               "type": "string"
             }
           },
@@ -111,9 +97,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "audio"
-              ],
+              "const": "audio",
               "type": "string"
             }
           },
@@ -125,9 +109,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "video"
-              ],
+              "const": "video",
               "type": "string"
             }
           },
@@ -139,9 +121,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "tensor"
-              ],
+              "const": "tensor",
               "type": "string"
             }
           },
@@ -153,9 +133,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "event"
-              ],
+              "const": "event",
               "type": "string"
             }
           },
@@ -167,9 +145,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "any"
-              ],
+              "const": "any",
               "type": "string"
             }
           },
@@ -181,9 +157,7 @@
         {
           "properties": {
             "kind": {
-              "enum": [
-                "custom"
-              ],
+              "const": "custom",
               "type": "string"
             },
             "name": {
@@ -212,8 +186,8 @@
         }
       },
       "required": [
-        "from",
         "id",
+        "from",
         "to"
       ],
       "type": "object"
@@ -263,11 +237,11 @@
         }
       },
       "required": [
-        "edges",
-        "groups",
         "id",
         "name",
-        "nodes"
+        "nodes",
+        "edges",
+        "groups"
       ],
       "type": "object"
     },
@@ -325,9 +299,9 @@
       },
       "required": [
         "id",
+        "type_id",
         "inputs",
-        "outputs",
-        "type_id"
+        "outputs"
       ],
       "type": "object"
     },
@@ -347,9 +321,9 @@
         }
       },
       "required": [
-        "cardinality",
-        "data_type",
         "name",
+        "data_type",
+        "cardinality",
         "required"
       ],
       "type": "object"
@@ -374,10 +348,10 @@
         }
       },
       "required": [
-        "height",
-        "width",
         "x",
-        "y"
+        "y",
+        "width",
+        "height"
       ],
       "type": "object"
     }
@@ -405,14 +379,14 @@
     },
     "schema_version": {
       "format": "uint32",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     }
   },
   "required": [
+    "schema_version",
     "engine_version",
-    "graph",
-    "schema_version"
+    "graph"
   ],
   "title": "Document",
   "type": "object"

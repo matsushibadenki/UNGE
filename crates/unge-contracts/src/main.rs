@@ -1,8 +1,13 @@
 //! Build-time exporter; never invoked through IPC.
-use schemars::{JsonSchema, schema::RootSchema};
+use schemars::{JsonSchema, Schema, generate::SchemaSettings};
 use std::collections::BTreeMap;
-fn add<T: JsonSchema>(schemas: &mut BTreeMap<String, RootSchema>) {
-    schemas.insert(T::schema_name(), schemars::schema_for!(T));
+fn add<T: JsonSchema>(schemas: &mut BTreeMap<String, Schema>) {
+    schemas.insert(
+        T::schema_name().into_owned(),
+        SchemaSettings::draft07()
+            .into_generator()
+            .into_root_schema_for::<T>(),
+    );
 }
 fn fixtures() -> serde_json::Value {
     use unge_core::{Command, Document, Id, Rect};

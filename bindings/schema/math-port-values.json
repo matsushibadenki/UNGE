@@ -9,9 +9,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bool"
-                  ],
+                  "const": "bool",
                   "type": "string"
                 }
               },
@@ -23,9 +21,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "int"
-                  ],
+                  "const": "int",
                   "type": "string"
                 }
               },
@@ -37,9 +33,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "float"
-                  ],
+                  "const": "float",
                   "type": "string"
                 }
               },
@@ -51,9 +45,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "string"
-                  ],
+                  "const": "string",
                   "type": "string"
                 }
               },
@@ -65,9 +57,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "json"
-                  ],
+                  "const": "json",
                   "type": "string"
                 }
               },
@@ -79,9 +69,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bytes"
-                  ],
+                  "const": "bytes",
                   "type": "string"
                 }
               },
@@ -93,9 +81,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "image"
-                  ],
+                  "const": "image",
                   "type": "string"
                 }
               },
@@ -107,9 +93,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "audio"
-                  ],
+                  "const": "audio",
                   "type": "string"
                 }
               },
@@ -121,9 +105,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "video"
-                  ],
+                  "const": "video",
                   "type": "string"
                 }
               },
@@ -135,9 +117,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "tensor"
-                  ],
+                  "const": "tensor",
                   "type": "string"
                 }
               },
@@ -149,9 +129,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "event"
-                  ],
+                  "const": "event",
                   "type": "string"
                 }
               },
@@ -163,9 +141,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "any"
-                  ],
+                  "const": "any",
                   "type": "string"
                 }
               },
@@ -177,9 +153,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "custom"
-                  ],
+                  "const": "custom",
                   "type": "string"
                 },
                 "name": {
@@ -202,9 +176,7 @@
               {
                 "properties": {
                   "kind": {
-                    "enum": [
-                      "float"
-                    ],
+                    "const": "float",
                     "type": "string"
                   },
                   "value": {
@@ -224,9 +196,7 @@
                 "description": "Immutable content/version ID resolved in a host-owned CPU/GPU resource store.",
                 "properties": {
                   "kind": {
-                    "enum": [
-                      "resource"
-                    ],
+                    "const": "resource",
                     "type": "string"
                   },
                   "value": {
@@ -248,8 +218,8 @@
                       }
                     },
                     "required": [
-                      "data_type",
-                      "id"
+                      "id",
+                      "data_type"
                     ],
                     "type": "object"
                   }
@@ -272,9 +242,7 @@
               {
                 "properties": {
                   "kind": {
-                    "enum": [
-                      "float"
-                    ],
+                    "const": "float",
                     "type": "string"
                   },
                   "value": {
@@ -294,9 +262,7 @@
                 "description": "Immutable content/version ID resolved in a host-owned CPU/GPU resource store.",
                 "properties": {
                   "kind": {
-                    "enum": [
-                      "resource"
-                    ],
+                    "const": "resource",
                     "type": "string"
                   },
                   "value": {
@@ -318,8 +284,8 @@
                       }
                     },
                     "required": [
-                      "data_type",
-                      "id"
+                      "id",
+                      "data_type"
                     ],
                     "type": "object"
                   }
@@ -352,9 +318,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bool"
-                  ],
+                  "const": "bool",
                   "type": "string"
                 }
               },
@@ -366,9 +330,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "int"
-                  ],
+                  "const": "int",
                   "type": "string"
                 }
               },
@@ -380,9 +342,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "float"
-                  ],
+                  "const": "float",
                   "type": "string"
                 }
               },
@@ -394,9 +354,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "string"
-                  ],
+                  "const": "string",
                   "type": "string"
                 }
               },
@@ -408,9 +366,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "json"
-                  ],
+                  "const": "json",
                   "type": "string"
                 }
               },
@@ -422,9 +378,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bytes"
-                  ],
+                  "const": "bytes",
                   "type": "string"
                 }
               },
@@ -436,9 +390,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "image"
-                  ],
+                  "const": "image",
                   "type": "string"
                 }
               },
@@ -450,9 +402,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "audio"
-                  ],
+                  "const": "audio",
                   "type": "string"
                 }
               },
@@ -464,9 +414,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "video"
-                  ],
+                  "const": "video",
                   "type": "string"
                 }
               },
@@ -478,9 +426,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "tensor"
-                  ],
+                  "const": "tensor",
                   "type": "string"
                 }
               },
@@ -492,9 +438,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "event"
-                  ],
+                  "const": "event",
                   "type": "string"
                 }
               },
@@ -506,9 +450,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "any"
-                  ],
+                  "const": "any",
                   "type": "string"
                 }
               },
@@ -520,9 +462,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "custom"
-                  ],
+                  "const": "custom",
                   "type": "string"
                 },
                 "name": {
@@ -544,9 +484,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "float"
-                  ],
+                  "const": "float",
                   "type": "string"
                 },
                 "value": {
@@ -566,9 +504,7 @@
               "description": "Immutable content/version ID resolved in a host-owned CPU/GPU resource store.",
               "properties": {
                 "kind": {
-                  "enum": [
-                    "resource"
-                  ],
+                  "const": "resource",
                   "type": "string"
                 },
                 "value": {
@@ -590,8 +526,8 @@
                     }
                   },
                   "required": [
-                    "data_type",
-                    "id"
+                    "id",
+                    "data_type"
                   ],
                   "type": "object"
                 }
@@ -622,9 +558,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bool"
-                  ],
+                  "const": "bool",
                   "type": "string"
                 }
               },
@@ -636,9 +570,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "int"
-                  ],
+                  "const": "int",
                   "type": "string"
                 }
               },
@@ -650,9 +582,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "float"
-                  ],
+                  "const": "float",
                   "type": "string"
                 }
               },
@@ -664,9 +594,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "string"
-                  ],
+                  "const": "string",
                   "type": "string"
                 }
               },
@@ -678,9 +606,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "json"
-                  ],
+                  "const": "json",
                   "type": "string"
                 }
               },
@@ -692,9 +618,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bytes"
-                  ],
+                  "const": "bytes",
                   "type": "string"
                 }
               },
@@ -706,9 +630,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "image"
-                  ],
+                  "const": "image",
                   "type": "string"
                 }
               },
@@ -720,9 +642,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "audio"
-                  ],
+                  "const": "audio",
                   "type": "string"
                 }
               },
@@ -734,9 +654,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "video"
-                  ],
+                  "const": "video",
                   "type": "string"
                 }
               },
@@ -748,9 +666,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "tensor"
-                  ],
+                  "const": "tensor",
                   "type": "string"
                 }
               },
@@ -762,9 +678,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "event"
-                  ],
+                  "const": "event",
                   "type": "string"
                 }
               },
@@ -776,9 +690,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "any"
-                  ],
+                  "const": "any",
                   "type": "string"
                 }
               },
@@ -790,9 +702,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "custom"
-                  ],
+                  "const": "custom",
                   "type": "string"
                 },
                 "name": {
@@ -821,9 +731,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bool"
-                  ],
+                  "const": "bool",
                   "type": "string"
                 }
               },
@@ -835,9 +743,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "int"
-                  ],
+                  "const": "int",
                   "type": "string"
                 }
               },
@@ -849,9 +755,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "float"
-                  ],
+                  "const": "float",
                   "type": "string"
                 }
               },
@@ -863,9 +767,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "string"
-                  ],
+                  "const": "string",
                   "type": "string"
                 }
               },
@@ -877,9 +779,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "json"
-                  ],
+                  "const": "json",
                   "type": "string"
                 }
               },
@@ -891,9 +791,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "bytes"
-                  ],
+                  "const": "bytes",
                   "type": "string"
                 }
               },
@@ -905,9 +803,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "image"
-                  ],
+                  "const": "image",
                   "type": "string"
                 }
               },
@@ -919,9 +815,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "audio"
-                  ],
+                  "const": "audio",
                   "type": "string"
                 }
               },
@@ -933,9 +827,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "video"
-                  ],
+                  "const": "video",
                   "type": "string"
                 }
               },
@@ -947,9 +839,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "tensor"
-                  ],
+                  "const": "tensor",
                   "type": "string"
                 }
               },
@@ -961,9 +851,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "event"
-                  ],
+                  "const": "event",
                   "type": "string"
                 }
               },
@@ -975,9 +863,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "any"
-                  ],
+                  "const": "any",
                   "type": "string"
                 }
               },
@@ -989,9 +875,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "custom"
-                  ],
+                  "const": "custom",
                   "type": "string"
                 },
                 "name": {
@@ -1013,9 +897,7 @@
             {
               "properties": {
                 "kind": {
-                  "enum": [
-                    "float"
-                  ],
+                  "const": "float",
                   "type": "string"
                 },
                 "value": {
@@ -1035,9 +917,7 @@
               "description": "Immutable content/version ID resolved in a host-owned CPU/GPU resource store.",
               "properties": {
                 "kind": {
-                  "enum": [
-                    "resource"
-                  ],
+                  "const": "resource",
                   "type": "string"
                 },
                 "value": {
@@ -1059,8 +939,8 @@
                     }
                   },
                   "required": [
-                    "data_type",
-                    "id"
+                    "id",
+                    "data_type"
                   ],
                   "type": "object"
                 }

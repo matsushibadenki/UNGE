@@ -67,4 +67,14 @@ Draft 7 Schema描述反序列化，`generated.ts` 提供输入类型，`generate
 图语义、权限和数值表示仍由Rust验证。JavaScript调用方必须遵守安全整数范围。
 ACX协议Schema仍为独立契约。按节点Port名称生成值映射Schema见 PORT_VALUE_SCHEMAS.md。
 
-生成は [Schemars 0.8.22の公式API](https://docs.rs/schemars/0.8.22/schemars/) を使用しています。バージョンを固定し、Serde属性との互換性を実際のJSONで検証しています。
+## schemars 1.2.3への取り込み
+
+直接依存は1.2.3に固定しています。生成器とDefinitionのPort値Schemaは、`SchemaSettings::draft07().into_generator().into_root_schema_for::<T>()`を明示してDraft 7と`definitions`を維持します。1.xの`schema_for!`既定値をそのまま代用しないでください。`RootSchema`の代わりに`schemars::Schema`を使用し、`schema_name()`はCow文字列です。
+
+1.xの再帰root参照`#`は、型生成の前に`#/definitions/<root名>`とその定義へ正規化します。同名の不一致は拒否し、外部参照や未知キーワードの拒否も維持します。単一値enumはconstになり、Port値のタグ取得もconstを読みます。SchemaのJSONバイト列は変わりますが、入力・出力のTypeScript生成物は同一です。検証の最終判断は引き続きRustです。Tauriビルド依存が使うschemars 0.8.22は共存します。
+
+English: Direct dependencies are pinned to schemars 1.2.3. Explicit `SchemaSettings::draft07()` preserves Draft 7/definitions; do not substitute the 1.x default schema_for macro. RootSchema becomes Schema and schema_name returns Cow. Recursive root `#` references are normalized to named definitions before TypeScript generation; conflicts/external references/unsupported keywords still fail. Single-value enums become const, including Port value tags. Schema bytes change while generated input/output TypeScript stays identical. Tauri's transitive 0.8.22 remains alongside it.
+
+简体中文：直接依赖固定schemars 1.2.3，显式使用`SchemaSettings::draft07()`维持Draft 7／definitions，不直接替换为1.x默认schema_for。RootSchema改为Schema，schema_name返回Cow。生成TypeScript前将递归root的`#`转换为具名definition；同名冲突、外部引用和未知关键字仍拒绝。单值enum改为const，Port值标签也读取const。Schema字节变化，输入／输出TypeScript生成物保持一致。Tauri间接依赖的0.8.22仍共存。
+
+参照：[公式移行手順](https://graham.cool/schemars/migrating/)、[1.2.3 API](https://docs.rs/schemars/1.2.3/schemars/)。

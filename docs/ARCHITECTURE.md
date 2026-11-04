@@ -141,3 +141,7 @@ compact.jsはWebViewの表示だけを装飾する。SVG、aria-label、情報�
 ACXの任意の永続ジャーナルはProviderの開始guardと結果/Receiptを同期保存する。Graph/Document/Rendererの所有権やIPCフレームを変更しない。Document/Undoのチェックポイントはホストの責務で、途中停止した効果の成否は推定せず再実行を拒否する。[永続再送とepoch切り替え](ACX_DURABILITY.md)。
 
 PersistentHostとReceiptログは[hash-chain prefixの相互検証](ACX_LOG_PAIRING.md)で確認済み履歴を結ぶ。2ファイルの単一トランザクションや一組全体の最新性の証明ではない。
+
+オフラインの [バックアップ世代](ACX_BACKUP.md) はseed・状態／Receiptログ・明示資産をハッシュ付きmanifestにまとめる。Documentの所有権や保存トランザクションを変更せず、復元先起動時の意味上のログ検証を維持する。
+
+Schema生成の直接依存はschemars 1.2.3。生成器とPort値SchemaはDraft 7を明示し、再帰root参照を従来の名前付きdefinitionsへ正規化する。公開TypeScript形状は維持する。[移行契約](CONTRACT_GENERATION.md)。

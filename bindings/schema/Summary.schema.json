@@ -3,24 +3,24 @@
   "properties": {
     "edges": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "nodes": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "revision": {
       "format": "uint64",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     }
   },
   "required": [
-    "edges",
+    "revision",
     "nodes",
-    "revision"
+    "edges"
   ],
   "title": "Summary",
   "type": "object"

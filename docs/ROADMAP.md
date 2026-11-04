@@ -93,7 +93,7 @@
 - 🟢 [Done] 期限切れ未実行preflightの自動／明示的回収、Rustホストの保持件数照会。実行済み結果・Receipt・jobの再送を維持。[保持運用](ACX_RETENTION.md)。
 - 🟢 [Done] 任意の永続ジャーナルによる開始guard・結果/Receipt保存と再起動後の再送、単一writer排他、実行中を拒否するProvider epoch切り替え。[有効化と復元範囲](ACX_DURABILITY.md)。
 - 🟢 [Done] CLI／サーバー向けPersistentHostでDocument・revision・Undo/Redoを同期保存し、Receiptログと組み合わせて再起動後の状態と再送を維持。[取り込みと保証の境界](ACX_EDITOR_PERSISTENCE.md)。
-- 🟠 [Next] 別実装Providerとの相互運用、Tauri共有Engineの保存接続、状態／Receiptの単一トランザクションと完全なバックアップ世代manifest、長期ログの圧縮・退避運用
+- 🟠 [Next] 別実装Providerとの相互運用、Tauri共有Engineの保存接続、状態／Receiptの単一トランザクション、長期ログの圧縮運用
 - 🔴 [Later] MCP/A2A binding、署名、多ユーザー認証、外部副作用や課金を伴う実行Profile
 
 ## 今回の優先順位（2026-10-05）
@@ -185,7 +185,8 @@
 - 🟢 [Done] sha2 0.11／pollster 1.0／互換な推移依存とCIのTypeScript 7へ更新。Rust149件（標準／all-featuresの各構成）、Clippy、実GPU4件、Surface360フレーム、Schema／ACX／3言語UIを検証。[採用版・互換性記録](DEPENDENCY_UPDATES.md)。
 - 🟢 [Done] Tauri 2.12.3／runtime-wry 2.12.1／build・macros・codegen 2.7.2へ一式移行。macOSのSurface、入力、子WebView合成、dock/float、浮動状態の再起動復元を検証。[移行記録](DEPENDENCY_UPDATES.md)。
 - 🟢 [Done] cosmic-text 0.19へ移行し、遅延整形API・再公開型の取り込み手順・実GPU・Surfaceを検証。2026-10-19の記録を参照。
-- 🟠 [Next] wgpu 30、直接依存schemars 1.2.3のAPI／描画／Schema移行と回帰検証。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告も確認する。現行pinを無条件に解除しない。
+- 🟢 [Done] 直接依存schemars 1.2.3へ移行。Draft 7／再帰参照／Port値Schemaを維持し、TypeScript一致と構造制約を検証。2026-11-04の記録を参照。
+- 🟠 [Next] wgpu 30のAPI／描画移行と回帰検証。wgpu/Metal経由のblock 0.1.6の将来Rust互換性警告も確認する。現行pinを無条件に解除しない。
 - ⭕️ [Pending] Windows/LinuxのSurface・入力・dock/float、WASM、最低Rust版での依存更新検証。
 
 ## 2026-10-14: GUIの配置方針
@@ -236,3 +237,17 @@
 - 🟢 [Done] 片側の既知prefix巻き戻し、同一Document IDの別ペア差し替え、確認済みepochの巻き戻しを拒否。正しい一組の復元、完了確認の容量不足後の安全な再送、実stdioの双方向巻き戻しも検証。両Rust構成各181件、Clippy、17契約、Schema6件、実stdio7件、strict TypeScriptが成功。
 - 🟠 [Next] Tauri保存接続、2ログの単一トランザクション、旧実行済みログの明示的オフライン移行、完全なバックアップ世代manifestと長期ログ圧縮。整合した一組全体の巻き戻しや未確認の直接編集の新しさはローカル相互prefixだけで証明しない。
 - ⭕️ [Pending] Windows/Linux、実電源断、最低Rust版、長期運用のメモリー／性能計測。
+
+## 2026-11-04: オフラインバックアップ世代
+
+- 🟢 [Done] 停止済みホストのseed・状態／Receipt両ログ・明示した資産を、version付きmanifestとサイズ／SHA-256で一組に保存。既存出力先を拒否し、復元コピーの検証後に公開。[取り込みと境界](ACX_BACKUP.md)。
+- 🟢 [Done] macOSでRust writerとのロック競合、改変／欠損／余分なファイル、書込み失敗、symlink／重複入力、未知version／不正pathを検証。復元した実stdioでDocument／revision／元Receiptとcommit再送を確認。
+- 🟠 [Next] Tauri共有Engine保存接続、状態／Receipt単一トランザクション、旧実行済みログの移行、長期ログ圧縮。資産の自動発見やmanifestの署名は未実装。
+- ⭕️ [Pending] Windows対応、Linux実機、実電源断、ネットワークfilesystem、大規模資産の性能。
+
+## 2026-11-04: Schema生成基盤の移行
+
+- 🟢 [Done] UNGEの直接schemars依存を0.8.22→1.2.3へ固定更新。Draft 7／definitionsを明示し、再帰root参照の正規化とconstタグ取得を追加。[取り込み](CONTRACT_GENERATION.md)。Tauriの推移依存0.8.22は維持。
+- 🟢 [Done] 14 root Schemaと4 Port値Schemaの構造制約が、注釈／required順序／enumとconstの表現を正規化して一致。TypeScript入力／出力はバイト一致。[比較記録](dependencies/2026-11-04-schemars.json)。Schema8件（Port値3,068例のRust照合を含む）、実ACX7件、バックアップ6件、workspace/all-features Rust181件、Clippy、17契約、strict TypeScriptが成功。
+- 🟠 [Next] Tauri共有保存接続、長期ログ運用、Tauri／Wry・wgpuの個別移行を継続。
+- ⭕️ [Pending] 他OS／WASM／最低Rust版の依存更新検証。今回はGPU処理を変更せず、GPU／Surface実測は再実行していない。

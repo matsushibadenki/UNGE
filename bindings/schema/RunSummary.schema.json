@@ -22,12 +22,12 @@
   "properties": {
     "blocked": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "cached": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "cancel_requested": {
@@ -35,12 +35,12 @@
     },
     "cancelled": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "completed": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "document_id": {
@@ -55,12 +55,12 @@
     },
     "failed": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "finished": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "id": {
@@ -79,17 +79,17 @@
     },
     "revision": {
       "format": "uint64",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "sequence": {
       "format": "uint64",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "started": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "state": {
@@ -97,25 +97,25 @@
     },
     "total": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     }
   },
   "required": [
-    "blocked",
-    "cached",
-    "cancel_requested",
-    "cancelled",
-    "completed",
-    "document_id",
-    "failed",
-    "finished",
     "id",
+    "document_id",
     "revision",
     "sequence",
-    "started",
     "state",
-    "total"
+    "total",
+    "started",
+    "finished",
+    "completed",
+    "cached",
+    "failed",
+    "blocked",
+    "cancelled",
+    "cancel_requested"
   ],
   "title": "RunSummary",
   "type": "object"

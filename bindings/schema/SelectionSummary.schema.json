@@ -4,12 +4,12 @@
   "properties": {
     "count": {
       "format": "uint",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "revision": {
       "format": "uint64",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "single": {
@@ -22,8 +22,8 @@
     }
   },
   "required": [
-    "count",
-    "revision"
+    "revision",
+    "count"
   ],
   "title": "SelectionSummary",
   "type": "object"

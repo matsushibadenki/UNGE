@@ -92,3 +92,5 @@ Registry减少编辑时的重复验证。[集成契约与基准](REGISTRY_VALIDA
 [可选Rust持久编辑宿主：恢复Document、revision及Undo/Redo](ACX_EDITOR_PERSISTENCE.md)
 
 [状态与Receipt日志前缀相互验证及备份不匹配检测](ACX_LOG_PAIRING.md)
+
+已停止的持久化宿主的备份世代与恢复见 [ACX_BACKUP.md](ACX_BACKUP.md)。

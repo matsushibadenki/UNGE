@@ -1,0 +1,110 @@
+{
+  "date": "2026-11-04",
+  "from": "schemars 0.8.22",
+  "to": "schemars 1.2.3",
+  "normalization": "Schema annotations title/description excluded; required order sorted; singleton enum becomes const. Property names and arbitrary JSON values are preserved.",
+  "schemas": [
+    {
+      "file": "AccessiblePage.schema.json",
+      "before_sha256": "d4026923f95d0375a3dcb384a3306eb7c4250cf77148397d6736b56c93e5e76b",
+      "after_sha256": "f79c8eeb20a13c68b407928d3c28422df257ccac389414737a0c0d8590d9ee43",
+      "canonical_equal": true
+    },
+    {
+      "file": "ApiError.schema.json",
+      "before_sha256": "682be5baa0062b8a09c31fe5b6d8494c18f36ae77dc74a2e610b2ec23eb5ba0c",
+      "after_sha256": "682be5baa0062b8a09c31fe5b6d8494c18f36ae77dc74a2e610b2ec23eb5ba0c",
+      "canonical_equal": true
+    },
+    {
+      "file": "Appearance.schema.json",
+      "before_sha256": "49c18eb915dac9cca1a6f40591097f140c31d8ad73057f4ad63528b0b1bdeee0",
+      "after_sha256": "3cf976eba0faaf0295d2c5b16b37fe6e6d9b97321436d8ef66fc333ef3585575",
+      "canonical_equal": true
+    },
+    {
+      "file": "Command.schema.json",
+      "before_sha256": "7bf80159e756fe071e69710c49403000d0b516b7bad238f439aaee71f9c2c32e",
+      "after_sha256": "b78f7ce78db655de8b7da8c36441d96585ccbd1eb203d317bbc59b630b595117",
+      "canonical_equal": true
+    },
+    {
+      "file": "Definition.schema.json",
+      "before_sha256": "b999cc2f98ade2e4815987935d07bf93397c67e99768c6f7e3d5c6fece32c9d4",
+      "after_sha256": "0d577726bb2e4eff7c12627a874e4d8259b301645006bc74b1b9a7588a0ad8cd",
+      "canonical_equal": true
+    },
+    {
+      "file": "Document.schema.json",
+      "before_sha256": "c53703faff31861c94aa1f418b5e5d44c9f460a87c0a95fa6a4f484ea72d82ec",
+      "after_sha256": "17e60bee055adf8bf54a086be78c3bc5098e0d99aeb29e4d4a7a29dfa755bd4d",
+      "canonical_equal": true
+    },
+    {
+      "file": "GroupPage.schema.json",
+      "before_sha256": "15ac08cebabb1a7472d42a8c3045904c74f80a12d8cc29907b0f5fc07f9f4e59",
+      "after_sha256": "15ea3e4d386c7ece0dd9ee4a2817b3aa63835e4bbbda83791b2c83aa4361d68c",
+      "canonical_equal": true
+    },
+    {
+      "file": "NodeProperties.schema.json",
+      "before_sha256": "830b69655a3052f3b98768c547a3db9e46bddc6516f01c30172faae7d1788f71",
+      "after_sha256": "cb90905c075166521b1df4495ee79be2ccba34ad18f2680208710318bf96b4c5",
+      "canonical_equal": true
+    },
+    {
+      "file": "ProgressEvent.schema.json",
+      "before_sha256": "16ac7aaef863bf3ee898806f61a9e052d147eadf91d68fb446dff81d9a573767",
+      "after_sha256": "bb246f7cc3c0f8420123e6a348b09270697c7b3eedcf95c0f044b579bb8e8810",
+      "canonical_equal": true
+    },
+    {
+      "file": "Request.schema.json",
+      "before_sha256": "8cba152fc7b9c7a1c3db32252b0c20ffabadcb99a8a83ad2d61815bae4c29d51",
+      "after_sha256": "16cfd55b67e2edb33ec333ee0309b020bd2c0240fae732b4770c1ac343446f94",
+      "canonical_equal": true
+    },
+    {
+      "file": "RunSummary.schema.json",
+      "before_sha256": "138c2580f2065eb2e9e5768cef6a64fd4af3783303c714c7f158ff745cac5ce7",
+      "after_sha256": "410d4e0477dad59087e664b84bb8aaf0bae7ee17f60ddd900e6cb97727191d42",
+      "canonical_equal": true
+    },
+    {
+      "file": "SelectionSummary.schema.json",
+      "before_sha256": "0318b2e360da57c73352067619292e965039d56ee36fcb69d875d6814b0bf560",
+      "after_sha256": "1ae20a598680099f05eb64b2a9c9dfe786638483022b5f516690d90a794968b5",
+      "canonical_equal": true
+    },
+    {
+      "file": "Summary.schema.json",
+      "before_sha256": "8112946c9625ee294c51641f86d6da29ed18f95e8debd65b51f0e4f00db220c4",
+      "after_sha256": "34c114fae9d478334e54d7dccb10e624f0d45a909b40042b33538c754950a284",
+      "canonical_equal": true
+    },
+    {
+      "file": "Value.schema.json",
+      "before_sha256": "c68218361f0e47ed61eb6813e82a01b492878b920e15df075ded363657e00f41",
+      "after_sha256": "b2e6ed94679cdf01dc6aef6eda5f26b4e3d20a24420593b1ebcd7048806c2b4d",
+      "canonical_equal": true
+    }
+  ],
+  "typescript": [
+    {
+      "file": "generated.ts",
+      "sha256": "7f3e1a4a494132b446ccedf13ebce3e2fce141c00bfbabcf2ebf2813259c10b5",
+      "byte_equal": true
+    },
+    {
+      "file": "generated-output.ts",
+      "sha256": "74f2ba53d2988096a7019e4c3f006f4b8a84d42b6773202ef713bf73a45d99fa",
+      "byte_equal": true
+    }
+  ],
+  "port_maps": {
+    "schemas": 4,
+    "canonical_equal": true,
+    "before_sha256": "8e6374d98e14661097dcf678ed240a332d4d5f2bb8bdbcd87e434773fe59c6bb",
+    "after_sha256": "8501d2e155081c9c5b78feea27f1a4623b258e75fe40561416289e35863ce198"
+  }
+}

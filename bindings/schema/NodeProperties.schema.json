@@ -24,7 +24,7 @@
       "additionalProperties": false,
       "properties": {
         "default": {
-          "description": "Applied only by Definition::instantiate; validation never repairs values. Null represents no default, matching SetProperty's deletion convention."
+          "description": "Applied only by Definition::instantiate; validation never repairs values.\nNull represents no default, matching SetProperty's deletion convention."
         },
         "description": {
           "$ref": "#/definitions/LocalizedText"
@@ -41,8 +41,8 @@
         }
       },
       "required": [
-        "description",
         "name",
+        "description",
         "value_type"
       ],
       "type": "object"
@@ -70,9 +70,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "bool"
-              ],
+              "const": "bool",
               "type": "string"
             }
           },
@@ -85,9 +83,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "int"
-              ],
+              "const": "int",
               "type": "string"
             },
             "maximum": {
@@ -114,9 +110,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "float"
-              ],
+              "const": "float",
               "type": "string"
             },
             "maximum": {
@@ -152,14 +146,12 @@
               ]
             },
             "kind": {
-              "enum": [
-                "string"
-              ],
+              "const": "string",
               "type": "string"
             },
             "max_length": {
               "format": "uint",
-              "minimum": 0.0,
+              "minimum": 0,
               "type": [
                 "integer",
                 "null"
@@ -168,7 +160,7 @@
             "min_length": {
               "default": 0,
               "format": "uint",
-              "minimum": 0.0,
+              "minimum": 0,
               "type": "integer"
             }
           },
@@ -181,9 +173,7 @@
           "additionalProperties": false,
           "properties": {
             "kind": {
-              "enum": [
-                "json"
-              ],
+              "const": "json",
               "type": "string"
             }
           },
@@ -212,7 +202,7 @@
     },
     "revision": {
       "format": "uint64",
-      "minimum": 0.0,
+      "minimum": 0,
       "type": "integer"
     },
     "schema": {
@@ -226,14 +216,14 @@
     }
   },
   "required": [
-    "description",
     "id",
-    "name",
-    "properties",
     "revision",
-    "schema",
     "type_id",
-    "version"
+    "version",
+    "name",
+    "description",
+    "schema",
+    "properties"
   ],
   "title": "NodeProperties",
   "type": "object"

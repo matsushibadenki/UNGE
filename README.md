@@ -162,3 +162,5 @@ Registryの重複検証を削減しました。[取り込み契約と比較例](
 [Document・revision・Undo/Redoを復元する任意のRust永続ホスト](docs/ACX_EDITOR_PERSISTENCE.md)
 
 [状態ログとReceiptログの相互検証・バックアップ取り違えの検出](docs/ACX_LOG_PAIRING.md)
+
+停止済み永続ホストのバックアップ／復元は [ACX_BACKUP.md](docs/ACX_BACKUP.md) を参照してください。

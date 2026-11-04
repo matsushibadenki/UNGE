@@ -81,3 +81,5 @@ Defaults: 256MiB log (CLI `--state-max-bytes N`), 16MiB frame, 256 history steps
 English: Both workspace configurations pass 176 tests and strict all-targets Clippy; formatting, 17 unchanged contracts, six schema tests, seven real-stdio tests and headless output 42 pass. Seven new Rust regressions include a real-process crash fixture. Tauri integration, a single state/receipt transaction, a full backup-generation manifest and compaction remain unfinished; other-platform/power-loss/minimum-toolchain/performance validation is pending.
 
 简体中文：两种workspace配置各176项测试及严格all-targets Clippy、格式、17项契约无差异、6项Schema、7项实际stdio测试及headless输出42均通过。新增7项Rust回归包含真实进程中断。Tauri接入、状态／Receipt单一事务、完整备份世代manifest和压缩尚未完成；其他平台／断电／最低工具链／性能验证待完成。
+
+2026-11-04: 停止済みホスト用の [バックアップ世代manifestと復元ツール](ACX_BACKUP.md) を追加。Tauri接続・単一トランザクション・圧縮は引き続き未実装。 Offline backup generations are now available; Tauri, atomic state/receipt transactions and compaction remain unfinished. 已新增离线备份世代；Tauri接入、单一事务与压缩仍未实现。

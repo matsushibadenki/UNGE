@@ -59,7 +59,12 @@ fn schema(ports: &[Port], inputs: bool) -> Result<serde_json::Value, String> {
     use unge_core::DataType;
     check_ports(ports)?;
     // Derive the wire shape, including resource IDs, from the actual serde enum.
-    let wire = serde_json::to_value(schemars::schema_for!(Value)).map_err(|e| e.to_string())?;
+    let wire = serde_json::to_value(
+        schemars::generate::SchemaSettings::draft07()
+            .into_generator()
+            .into_root_schema_for::<Value>(),
+    )
+    .map_err(|e| e.to_string())?;
     let variants = wire["oneOf"]
         .as_array()
         .ok_or("Value schema must be a tagged union")?;
@@ -68,7 +73,7 @@ fn schema(ports: &[Port], inputs: bool) -> Result<serde_json::Value, String> {
     for port in ports {
         let mut accepted = Vec::new();
         for variant in variants {
-            let kind = variant["properties"]["kind"]["enum"][0]
+            let kind = variant["properties"]["kind"]["const"]
                 .as_str()
                 .ok_or("missing Value tag")?;
             let primitive = match kind {
