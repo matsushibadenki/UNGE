@@ -56,3 +56,7 @@ English: Both workspace configurations pass 181 tests and strict all-targets Cli
 简体中文：两种workspace配置各181项测试及严格all-targets Clippy、格式、strict TypeScript、17项契约无差异、6项Schema、7项实际stdio及headless输出42通过。新增5项Rust回归覆盖前缀回退／替换、整组恢复、epoch回退、确认失败后重放及不安全配置；既有真实进程中断测试也通过。旧日志离线迁移、完整世代manifest、原子事务、压缩和Tauri接入仍未完成。其他平台／断电／最低工具链／长期性能验证待完成。
 
 停止して一組で退避・復元する手順は [ACX_BACKUP.md](ACX_BACKUP.md) を参照。See the offline generation tool for paired backup/restore. 成对离线备份／恢复见该工具说明。
+
+Tauri Engineも相互検証3メソッドを転送します。新しい共有保存APIと起動順は [TAURI_PERSISTENCE.md](TAURI_PERSISTENCE.md)。Tauri now forwards all pairing methods. Tauri现已转发全部配对方法。
+
+停止済みの一組を圧縮保管する場合も [ACX_BACKUP.md](ACX_BACKUP.md) のrestoreで原バイト列へ戻し、通常の相互prefix検証を行います。Compressed generations restore original bytes before normal pairing checks. 压缩世代先恢复原字节，再正常验证相互前缀。

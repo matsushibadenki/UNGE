@@ -367,3 +367,29 @@ GPU完了待ちを追加しない通常提出経路です。合成Pan／Zoom／D
 English: Native queued rendering completed 18 cases / 1,080 samples on M4/Metal with zero Surface skips. Continuous zoom Scene p95 was 4.445667–6.336584 ms. This synthetic fixture excludes WebView/Registry/shared Engine contention, real input and groups. No explicit GPU wait or display-latency measurement was added. Earlier native runs have different dependencies/conditions and are not a controlled speedup comparison.
 
 简体中文：M4／Metal普通提交渲染完成18组／1,080个样本，Surface跳过为0。连续Zoom的Scene p95为4.445667–6.336584ms。合成数据集不含WebView／Registry／共享Engine竞争、真实输入或Group。不增加GPU等待，也不测量屏幕延迟。此前原生计测的依赖／条件不同，不据此计算加速比。
+
+## 2026-11-06: 永続Editorの編集と再起動復元
+
+🟢 [Done] 保持量APIとreleaseベンチマークを追加。[再現方法と計時範囲](PERSISTENCE_PROFILING.md)・[全12条件の生JSON](benchmarks/2026-11-06-persistence.json)。macOS 27.2／aarch64、Rust 1.99.1。OSの一時ディレクトリを使用し、CPU型番・記憶媒体は独立に確認していません。最終計測ではプロジェクトのビルド／テストを同時実行していませんが、通常のデスクトップ活動は隔離していません。
+
+math.numberだけの接続0・Group0のGraph。100／1,000／10,000ノード×履歴事前0／128×移動／プロパティの12条件、各5回予熱＋30成功サンプル。各条件の編集・Undo・Redoを両Editorで比較し、計2,160個の操作時間、60個のウォーム復元時間、12個の初期作成時間を保存。中央値・p95・有限非負値・レコード数／revision／保持履歴を独立に再集計しました。各遷移後のDocument／revision／履歴一致、全体・Registry検証、復元後のRedo／Undoも成功。
+
+以下は事前履歴128の中央値、単位msです。復元は同じログを5回開いた中央値で、cold bootではありません。
+
+| Node | 移動 メモリー内 | 移動 永続化 | プロパティ メモリー内 | プロパティ 永続化 | プロパティログ復元 |
+|---:|---:|---:|---:|---:|---:|
+| 100 | 0.006 | 3.998 | 0.073 | 4.868 | 9.767 |
+| 1,000 | 0.007 | 5.714 | 0.555 | 6.434 | 100.699 |
+| 10,000 | 0.007 | 12.890 | 8.234 | 23.527 | 1,460.461 |
+
+10,000ノード／履歴128の永続化p95は移動16.776ms、プロパティ30.740ms。同条件のログは271レコードで、プロパティの状態ログは3,886,099バイト、保持履歴はUndo128＋Redo1です。履歴上限は256件／16MiB、状態ログ上限256MiB。保存済みログは保持履歴より長くなるため、履歴件数だけから復元費用や保存容量を判断しません。
+
+比較には候補データのコピー・検証・JSON／hash・追記・sync_all・公開を含みます。原因別の時間配分を測っていないため、コピーとディスク同期のどちらが支配的かは断定しません。Engineのロック待ち・SceneIndex・Providerのguard／Receipt保存・相互確認・WebView・GPU／IPCは計時外です。PointerはUp時の編集だけを保存するため、連続ドラッグのFPSやユーザー入力遅延の認定ではありません。
+
+🟠 [Next] この基準と同じ正しさの検証を維持し、長い状態ログの復元と圧縮／チェックポイント方式を検討する。状態／Receiptの相互prefix・Undo／Redo・不明commitの再実行拒否を維持する必要があります。
+
+⭕️ [Pending] 総ヒープ／RSS、接続・Group・巨大プロパティを含む負荷、長期ログ、共有Engine競合を含む実UI遅延、cold recovery、他OS／filesystem・実電源断。圧縮や性能目標を達成したとは扱いません。
+
+English: Twelve release cases compare memory Editor with PersistentEditor for 100/1,000/10,000 isolated nodes, zero/128 priming history steps, and move/property operations. There are 2,160 operation timings, 60 warm-cache reopens and 12 initial creations, with independent statistics/counter checks and per-transition state/history/validation parity. At 10,000 nodes and 128 primed steps, durable edit medians are 12.890ms for moves and 23.527ms for properties; warm property-log recovery is 1,460.461ms across five samples. This measures cloning/validation/append/sync/publication, not Engine contention, SceneIndex, Provider receipts, WebView/GPU/IPC or UI FPS. No attribution to clone versus sync cost, total-memory measurement or compaction speedup is claimed.
+
+简体中文：12组release比较内存Editor与PersistentEditor：100／1,000／10,000个孤立节点、预置0／128步历史、移动／属性操作。保存2,160个操作计时、60个热缓存重开及12个初始创建值；独立核对统计／计数，每次转换对照状态／历史／验证。10,000节点及128步预置历史下，持久编辑中位数为移动12.890ms、属性23.527ms，属性日志热恢复5样本中位数1,460.461ms。计时包括复制／验证／追加／同步／公开，不含Engine竞争、SceneIndex、Provider Receipt、WebView／GPU／IPC或UI FPS。不判定复制与同步的单独占比，也不声称总内存计测或压缩加速。

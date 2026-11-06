@@ -3,6 +3,21 @@
 Reusable Rust libraries for a Tauri 2 node graph application using wgpu/WGSL.
 This v0.1 implements the foundation; consult [the roadmap](ROADMAP.md) before relying on advanced features.
 
+## Screenshots
+
+### Dark and light node rendering
+
+![Dark node graph](images/nodes-dark.png)
+![Light node graph](images/nodes-light.png)
+
+Rendered with Rust/wgpu. Image-processing nodes are visual fixtures. [Rendering details](NODE_APPEARANCE.md).
+
+### Property inspector
+
+<img src="images/compact-panel-dark.png" alt="Dark property inspector with compact icon controls" width="380">
+
+Browser verification of the WebView UI with mocked Tauri IPC. [Panel integration](COMPACT_PANEL.md).
+
 ## Quick start
 
 ```sh
@@ -94,3 +109,9 @@ Registry avoids redundant edit validation. [Integration contract and benchmark](
 [Cross-log prefix verification and backup mismatch detection](ACX_LOG_PAIRING.md)
 
 For offline persistent-host backup generations and restore, see [ACX_BACKUP.md](ACX_BACKUP.md).
+
+For opt-in durable shared Tauri editing, see [Engine persistence](TAURI_PERSISTENCE.md). The sample storage mode requires explicit startup options.
+
+For durable-log counters and reproducible edit/recovery measurements, see [Persistence profiling](PERSISTENCE_PROFILING.md).
+
+Stopped projects can use `backup.py create --compress`; see [backup formats and bounded restore](ACX_BACKUP.md).

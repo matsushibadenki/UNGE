@@ -2,7 +2,7 @@
 //! are separate: a trusted host supplies policy and an atomic document adapter.
 mod host;
 mod persistent_host;
-pub use persistent_host::{PersistentHost, PersistentHostOptions};
+pub use persistent_host::{PersistentEditor, PersistentHost, PersistentHostOptions, StateLogUsage};
 mod intent;
 mod journal;
 pub use journal::{JournalOptions, JournalUsage};

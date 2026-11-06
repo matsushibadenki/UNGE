@@ -156,3 +156,9 @@ PersistentHostとReceiptログの組合せは[相互prefix検証](ACX_LOG_PAIRIN
 停止した永続ホストのseed・両ログ・必要資産の退避には [ACX_BACKUP.md](ACX_BACKUP.md) の世代manifestを使う。復元副本の起動時にもログの相互検証を行い、保管世代そのものを稼働ログにしない。
 
 Schema featureを有効にするホストはschemars 1.2.3を使用する。Draft 7の生成と再帰参照の扱いは [CONTRACT_GENERATION.md](CONTRACT_GENERATION.md) に従い、既定macroへ置き換えない。
+
+Tauri共有編集を保存するときは [TAURI_PERSISTENCE.md](TAURI_PERSISTENCE.md) に従いEngine::open_persistentを起動時に使う。別のPersistentHostへDocumentを複製しない。Providerの両ログ相互検証後にViewを公開し、I/O失敗時のメモリー内フォールバックや自動再試行を追加しない。
+
+永続ホストの容量監視は [PERSISTENCE_PROFILING.md](PERSISTENCE_PROFILING.md) のstorage_usageを使う。EngineのNoneはメモリー内モードであり、保存障害はエラーとして扱う。history_bytesを総メモリー量や次の編集の容量予約と解釈しない。
+
+停止済みログの圧縮退避は [ACX_BACKUP.md](ACX_BACKUP.md) のmanifest v2を使う。圧縮前後のhashと展開サイズを検証し、restoreでv1の通常ファイルへ戻してからProvider／Engineを起動する。稼働ログの切り詰め・再ハッシュやReceipt再発行を圧縮と同時に行わない。

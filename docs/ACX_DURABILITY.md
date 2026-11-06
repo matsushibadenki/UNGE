@@ -103,3 +103,5 @@ PersistentHostを使う場合は[状態／Receiptログの相互prefix検証](AC
 English: PersistentHost uses [cross-log prefix checks](ACX_LOG_PAIRING.md); executed legacy logs without pairing require explicit migration.
 
 简体中文：PersistentHost使用[相互前缀验证](ACX_LOG_PAIRING.md)；无配对证据的旧执行日志需明确迁移。
+
+Tauri共有Engineの状態ログも使う場合は [TAURI_PERSISTENCE.md](TAURI_PERSISTENCE.md) を参照。For the durable Tauri adapter, see the shared Engine persistence guide. Tauri持久适配器见共享Engine持久化指南。

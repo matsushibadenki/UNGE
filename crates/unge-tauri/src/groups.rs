@@ -136,10 +136,7 @@ impl Engine {
                 "page limit must be 1..100",
             ));
         }
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         let v = state
             .views
             .get(view)

@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "python": "3.15.2",
+  "zlib": "1.2.12",
+  "nodes": 1000,
+  "edits": 16,
+  "edges": 0,
+  "resources": 0,
+  "compression_level": 6,
+  "cases": [
+    {
+      "compression": "none",
+      "manifest_version": 1,
+      "payload_bytes": 764580,
+      "generation_bytes_including_manifest": 765268,
+      "files": [
+        {
+          "role": "document",
+          "original_bytes": 326715,
+          "stored_bytes": 326715,
+          "sha256": "a1c02d07a66bf1824d1cc32391ecccb1251f16e432ee96525744303753fedfe4"
+        },
+        {
+          "role": "state",
+          "original_bytes": 400065,
+          "stored_bytes": 400065,
+          "sha256": "5abc4e0abfeccca42f16f0c803c0bec8d43dfc5025f48d85bae10cce4ad6bbe6"
+        },
+        {
+          "role": "replay",
+          "original_bytes": 37800,
+          "stored_bytes": 37800,
+          "sha256": "f8e7ca120fa1566e7c282b64a44337c10a64171a3b259e0c3295a09cad0e8f80"
+        }
+      ],
+      "restored_bytes_equal": true,
+      "provider_revision": 16,
+      "original_receipt_replayed": true
+    },
+    {
+      "compression": "gzip",
+      "manifest_version": 2,
+      "payload_bytes": 38028,
+      "generation_bytes_including_manifest": 39162,
+      "files": [
+        {
+          "role": "document",
+          "original_bytes": 326715,
+          "stored_bytes": 12513,
+          "sha256": "a1c02d07a66bf1824d1cc32391ecccb1251f16e432ee96525744303753fedfe4"
+        },
+        {
+          "role": "state",
+          "original_bytes": 400065,
+          "stored_bytes": 18146,
+          "sha256": "5abc4e0abfeccca42f16f0c803c0bec8d43dfc5025f48d85bae10cce4ad6bbe6"
+        },
+        {
+          "role": "replay",
+          "original_bytes": 37800,
+          "stored_bytes": 7369,
+          "sha256": "f8e7ca120fa1566e7c282b64a44337c10a64171a3b259e0c3295a09cad0e8f80"
+        }
+      ],
+      "restored_bytes_equal": true,
+      "provider_revision": 16,
+      "original_receipt_replayed": true
+    }
+  ],
+  "scope": "Synthetic local archive byte counts, including manifest separately; not latency, cold recovery, active-log compaction or typical-project compression guarantees.",
+  "date": "2026-11-06",
+  "generation_reduction_percent": 94.88257708410647,
+  "verification": "Source/restored bytes and hashes match; Provider summary unchanged before and after original commit/Receipt replay."
+}

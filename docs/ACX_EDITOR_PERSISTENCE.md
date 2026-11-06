@@ -45,10 +45,10 @@ Providerの開始guard → 状態ログの同期と編集公開 → Receipt完�
 ### 範囲・容量・検証
 
 - 状態ログ上限は既定256MiB、最小1KiB。CLIの`--state-max-bytes N`で設定できます。1フレーム上限16MiB。履歴は既定256ステップ／16MiB。上限超過時は`storage_full`で保存前に拒否します。ログは圧縮／切り詰めません。
-- 各編集はDocumentと保持履歴を一時コピーします。通常のMemoryHost／Tauri Engineの編集方式は変えず、この任意のホストだけが保存前の検証にコピーを使います。巨大Documentでの速度やメモリー改善は未達成です。起動時間は保存済みCommand数に比例します。
+- 各編集はDocumentと保持履歴を一時コピーします。通常のMemoryHost／メモリー内Tauri Engineの編集方式は変えません。PersistentHostと任意の永続Engineが保存前の検証にコピーを使います。巨大Documentでの速度やメモリー改善は未達成です。起動時間は保存済みCommand数に比例します。
 - 単一writerのファイルロック、Unix新規0600、ファイルと作成時の親ディレクトリ同期を使います。信頼済みローカルfilesystem向けで、署名・暗号化・ネットワークfilesystem・複数マシンwriterは提供しません。
 - 新しいRPCやwire型は追加していません。既存のストレージ／競合エラーcodeと3言語辞書を使います。redoはRustホスト専用です。
-- Tauri共有Engine、GPU資源、外部資産／API副作用、再生中のexecutor実行状態をこのホストへコピー／復元しません。TauriのDocumentをこれと二重所有しないでください。Tauriへのトランザクション保存接続は次の段階です。
+- Tauri共有Engine、GPU資源、外部資産／API副作用、再生中のexecutor実行状態をこのホストへコピー／復元しません。TauriのDocumentをこれと二重所有しないでください。Tauriでの保存は[Engine::open_persistent](TAURI_PERSISTENCE.md)で同じログ処理を埋め込みます。
 
 再起動後のDocument／revision／Undo／Redo／履歴上限、同時編集、破損・書込み失敗・容量不足・Document不一致をRustで検証します。実プロセスを「編集保存後・Receipt前」で終了し、状態が残りcommitは再実行されないことも確認します。実stdioでは再起動・Provider切り替え後の状態・元Receipt・hashを照合し、片側ログ欠損も拒否します。Windows/Linux、実電源断、最低Rust版、巨大Document性能は検証待ちです。
 
@@ -60,7 +60,7 @@ Under one lock, edits validate a private Editor/history clone, append and fsync 
 
 Provider start guards precede editor saves, which precede receipt completion. A crash after the editor save but before receipt completion restores the edit and returns `execution_uncertain` for that commit, never repeats it. Completed results/receipts replay unchanged. Trusted-host Undo works after restart; new ACX Recover attempts from archived epochs remain prohibited. These two files are not one atomic exactly-once transaction. Stop both writers and back up/restore seed, both logs and resources together. The CLI detects missing files. [Cross-log prefix verification](ACX_LOG_PAIRING.md) also rejects one-sided rollback behind witnessed boundaries and logs from another pair; freshness of an entire consistent older pair or unwitnessed direct edits is not proven.
 
-Defaults: 256MiB log (CLI `--state-max-bytes N`), 16MiB frame, 256 history steps/16MiB history. Each edit clones the live Document/history; startup replays all events. Compaction and large-document performance are unfinished. Single writer, fsync and Unix mode 0600 target trusted local storage. No new RPC/wire types; existing localized errors apply. This host does not own a copy of the Tauri Engine, GPU resources or external effects. Tauri persistence integration remains future work. Regression tests cover restart/history, contention, storage failures, corruption and a real-process crash between editor save and receipt, plus stdio restart/rotation and missing-log rejection. Windows/Linux, power loss, minimum toolchains and large-document performance remain unverified.
+Defaults: 256MiB log (CLI `--state-max-bytes N`), 16MiB frame, 256 history steps/16MiB history. Each edit clones the live Document/history; startup replays all events. Compaction and large-document performance are unfinished. Single writer, fsync and Unix mode 0600 target trusted local storage. No new RPC/wire types; existing localized errors apply. This host does not own a copy of the Tauri Engine, GPU resources or external effects. Tauri embeds the same durable editor through [Engine::open_persistent](TAURI_PERSISTENCE.md). Regression tests cover restart/history, contention, storage failures, corruption and a real-process crash between editor save and receipt, plus stdio restart/rotation and missing-log rejection. Windows/Linux, power loss, minimum toolchains and large-document performance remain unverified.
 
 ## 简体中文
 
@@ -70,7 +70,7 @@ Defaults: 256MiB log (CLI `--state-max-bytes N`), 16MiB frame, 256 history steps
 
 顺序为Provider开始guard→编辑日志保存→Receipt完成记录。若编辑保存后、Receipt确定前中断，重启保留编辑，同commit返回`execution_uncertain`且不会重做。已完成结果／Receipt原样重放。可信宿主可在重启后Undo，但旧epoch的新ACX Recover仍拒绝。两个文件不是单一exactly-once事务。停止两个writer，将seed、两个日志及资源一起备份／恢复。CLI检测文件缺失，[相互前缀验证](ACX_LOG_PAIRING.md)还拒绝单侧回退至已见证边界之前或换入其他配对日志；无法证明整组一致旧备份或未见证直接编辑的新鲜度。
 
-默认日志256MiB（CLI `--state-max-bytes N`）、单帧16MiB、历史256步／16MiB。每次编辑复制Document及历史，启动重放全部记录；压缩及大Document性能尚未完成。单writer、fsync和Unix新文件0600面向可信本地存储。没有新增RPC／wire类型，使用既有三语错误码。本宿主不持有Tauri Engine的副本，不恢复GPU资源或外部效果；Tauri持久化接入仍待实现。回归覆盖重启／历史、并发、存储失败、损坏、编辑保存与Receipt之间的真实进程中断，以及stdio重启／切换／缺失日志拒绝。Windows/Linux、断电、最低工具链及大Document性能尚未验证。
+默认日志256MiB（CLI `--state-max-bytes N`）、单帧16MiB、历史256步／16MiB。每次编辑复制Document及历史，启动重放全部记录；压缩及大Document性能尚未完成。单writer、fsync和Unix新文件0600面向可信本地存储。没有新增RPC／wire类型，使用既有三语错误码。本宿主不持有Tauri Engine的副本，不恢复GPU资源或外部效果；Tauri通过[Engine::open_persistent](TAURI_PERSISTENCE.md)嵌入同一持久化Editor。回归覆盖重启／历史、并发、存储失败、损坏、编辑保存与Receipt之间的真实进程中断，以及stdio重启／切换／缺失日志拒绝。Windows/Linux、断电、最低工具链及大Document性能尚未验证。
 
 ## 2026-11-02 verification
 
@@ -83,3 +83,7 @@ English: Both workspace configurations pass 176 tests and strict all-targets Cli
 简体中文：两种workspace配置各176项测试及严格all-targets Clippy、格式、17项契约无差异、6项Schema、7项实际stdio测试及headless输出42均通过。新增7项Rust回归包含真实进程中断。Tauri接入、状态／Receipt单一事务、完整备份世代manifest和压缩尚未完成；其他平台／断电／最低工具链／性能验证待完成。
 
 2026-11-04: 停止済みホスト用の [バックアップ世代manifestと復元ツール](ACX_BACKUP.md) を追加。Tauri接続・単一トランザクション・圧縮は引き続き未実装。 Offline backup generations are now available; Tauri, atomic state/receipt transactions and compaction remain unfinished. 已新增离线备份世代；Tauri接入、单一事务与压缩仍未实现。
+
+2026-11-06: [Tauri共有Engine保存接続](TAURI_PERSISTENCE.md)を実装。PersistentHostと埋め込みPersistentEditorが同じログ処理を共有します。単一トランザクション・圧縮は未実装です。 Durable Tauri integration is now available; atomic state/receipt transactions and compaction remain unfinished. Tauri持久化接入现已实现；状态／Receipt单一事务及压缩仍未实现。
+
+PersistentHost／PersistentEditorのstorage_usageと、編集／Undo／Redo／復元の再現計測を [PERSISTENCE_PROFILING.md](PERSISTENCE_PROFILING.md) に追加。Rust storage counters and profiling are documented there. Rust存储用量与计测见该指南。

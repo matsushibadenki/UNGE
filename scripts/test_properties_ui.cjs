@@ -88,6 +88,15 @@ const root = path.resolve(__dirname,'../examples/tauri-host/ui');
    await gain.fill('3'); await page.evaluate(()=>window.rejectSave='invalid_properties'); await page.locator('#saveProperties').click();
    await page.waitForFunction(()=>!document.querySelector('#propertyFields').disabled);
    assert.equal(await gain.inputValue(),'3'); assert.equal(await page.evaluate(()=>window.applied.length),1);
+   for (const code of ['storage_unavailable','storage_full','storage_locked','storage_corrupt','invalid_policy']) {
+    await page.evaluate(code=>window.rejectSave=code,code); await page.locator('#saveProperties').click();
+    await page.waitForFunction(()=>!document.querySelector('#propertyFields').disabled);
+    const message=await page.locator('#propertiesStatus').textContent();
+    assert.ok(message.length>10 && !message.includes(code));
+    assert.equal(await gain.inputValue(),'3'); assert.equal(await page.evaluate(()=>window.applied.length),1);
+    if(code.startsWith('storage_')) assert.equal(await page.locator('#propertiesStatus').getAttribute('data-warning'),'true');
+    if(locale==='ja' && code==='storage_unavailable' && process.env.UNGE_STORAGE_SCREENSHOT) { await page.locator('#propertiesStatus').scrollIntoViewIfNeeded(); await page.screenshot({path:process.env.UNGE_STORAGE_SCREENSHOT}); await page.evaluate(()=>window.scrollTo(0,0)); }
+   }
    await page.evaluate(()=>window.rejectSave=null); await page.locator('#saveProperties').click(); await page.waitForFunction(()=>window.applied.length===2);
    // Optional field removal is explicit; an untouched default never becomes a write.
    await page.locator('.property-field').nth(2).locator('.property-enable input').uncheck(); await page.locator('#saveProperties').click();

@@ -93,7 +93,7 @@
 - 🟢 [Done] 期限切れ未実行preflightの自動／明示的回収、Rustホストの保持件数照会。実行済み結果・Receipt・jobの再送を維持。[保持運用](ACX_RETENTION.md)。
 - 🟢 [Done] 任意の永続ジャーナルによる開始guard・結果/Receipt保存と再起動後の再送、単一writer排他、実行中を拒否するProvider epoch切り替え。[有効化と復元範囲](ACX_DURABILITY.md)。
 - 🟢 [Done] CLI／サーバー向けPersistentHostでDocument・revision・Undo/Redoを同期保存し、Receiptログと組み合わせて再起動後の状態と再送を維持。[取り込みと保証の境界](ACX_EDITOR_PERSISTENCE.md)。
-- 🟠 [Next] 別実装Providerとの相互運用、Tauri共有Engineの保存接続、状態／Receiptの単一トランザクション、長期ログの圧縮運用
+- 🟠 [Next] 別実装Providerとの相互運用、状態／Receiptの単一トランザクション、稼働ログの圧縮運用
 - 🔴 [Later] MCP/A2A binding、署名、多ユーザー認証、外部副作用や課金を伴う実行Profile
 
 ## 今回の優先順位（2026-10-05）
@@ -251,3 +251,27 @@
 - 🟢 [Done] 14 root Schemaと4 Port値Schemaの構造制約が、注釈／required順序／enumとconstの表現を正規化して一致。TypeScript入力／出力はバイト一致。[比較記録](dependencies/2026-11-04-schemars.json)。Schema8件（Port値3,068例のRust照合を含む）、実ACX7件、バックアップ6件、workspace/all-features Rust181件、Clippy、17契約、strict TypeScriptが成功。
 - 🟠 [Next] Tauri共有保存接続、長期ログ運用、Tauri／Wry・wgpuの個別移行を継続。
 - ⭕️ [Pending] 他OS／WASM／最低Rust版の依存更新検証。今回はGPU処理を変更せず、GPU／Surface実測は再実行していない。
+
+## 2026-11-06: Tauri共有Engineの編集状態保存
+
+- 🟢 [Done] 任意のEngine::open_persistentと埋め込みPersistentEditor。UI／Group／Pointer確定／Undo／Redo／ACXが唯一のEditorと状態ログを共有し、検証・同期後に公開してSceneIndexを更新。[取り込み](TAURI_PERSISTENCE.md)。
+- 🟢 [Done] サンプルの明示的なseed／state-log／journal起動オプション。両ログの検証後にViewを公開し、片側欠損・不完全な指定を拒否。保存エラーの3言語表示と下書き保持。
+- 🟢 [Done] 再起動／Redo保持、2 Viewの競合、保存失敗時の無変更、writer排他、破損保全、元Receipt再送と片側巻き戻し拒否。Rust両構成各186件とClippy、17契約、Schema8件、ACX7件、バックアップ6件が成功。macOS実Tauriでも2起動のDocument／revision／値／Receipt一致と復元画面を確認。
+- 🟠 [Next] 状態／Receiptの単一トランザクション、旧ログ移行、長期ログ圧縮・退避と大規模永続編集の計測。
+- ⭕️ [Pending] Windows／Linux、実電源断、最低Rust版、永続モードの実画面ドラッグ／ドッキングと長時間運用。GPU資源と外部副作用は復元対象外。
+
+## 2026-11-06: 永続ログの保持量と性能基準
+
+- 🟢 [Done] PersistentHost／PersistentEditor／EngineのRust専用storage_usage API。公開済みログのbytes／上限／records／revisionとUndo／Redoの件数・シリアライズ保持量を照会。保存障害はエラー、メモリー内EngineだけNone。[取り込み](PERSISTENCE_PROFILING.md)。
+- 🟢 [Done] 100／1,000／10,000ノード×事前履歴0／128×移動／プロパティのrelease比較12条件。2,160操作時間＋60ウォーム復元＋12初期作成、各遷移後のDocument／revision／履歴／検証一致と復元後のRedo／Undoを確認。[実測と限界](PERFORMANCE.md)。
+- 🟢 [Done] カウンターの編集／失敗／Undo／Redo／再起動、Engineモード区別と保存障害の拒否を検証。Rust標準／all-features各188件と厳格Clippyが成功。新規IPC・TypeScript wire型なし。
+- 🟠 [Next] 相互prefix・履歴・Receipt再送を保つ長期ログ復元／圧縮・チェックポイント設計と、状態／Receiptの単一トランザクション。
+- ⭕️ [Pending] 総ヒープ／RSS、接続・Group／巨大値を含む大規模永続編集、cold recovery、共有Engine競合・実UI遅延、他OS／filesystem・実電源断。
+
+## 2026-11-06: 圧縮バックアップと展開上限
+
+- 🟢 [Done] 任意の`backup.py create --compress`とmanifest v2。gzipで保存し、圧縮／展開双方のbytes・SHA-256とgzip終端を検証。従来v1の読み書きを維持し、restoreはProvider／Engine用の通常ファイルとv1 manifestを公開。[取り込み](ACX_BACKUP.md)。
+- 🟢 [Done] verify／restoreの任意展開総量上限、各ファイルの宣言サイズ上限、不正・途中切れ・CRC・hash・同期失敗時の非公開と元ファイル保全。バックアップ12件、実Rust Providerの通常／圧縮両形式の原バイト・Document・revision・元Receipt再送を確認。
+- 🟢 [Done] 1,000ノード／16編集の合成fixtureでmanifest込み765,268→39,162 bytes（約94.9%減）。復元前後の元ログSHAと再送後revisionを照合。[サイズ例の生JSON](benchmarks/2026-11-06-compressed-backup.json)。通常プロジェクト全般や時間性能を認定しない。
+- 🟠 [Next] 稼働ログの長期復元／レコード圧縮・チェックポイント、状態／Receipt単一トランザクション。今回の圧縮退避は元の稼働ログを置き換えない。
+- ⭕️ [Pending] Windows対応、Linux実機、実電源断、network filesystem、巨大資産集合の圧縮／展開メモリー・時間・容量の運用評価。

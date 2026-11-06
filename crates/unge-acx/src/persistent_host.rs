@@ -28,6 +28,19 @@ impl Default for PersistentHostOptions {
         }
     }
 }
+/// Constant-size storage counters for trusted Rust hosts; not an IPC/wire type.
+/// Bytes include the log header and all retained frames. History bytes are core's
+/// serialized command budget, not total process/GPU memory.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct StateLogUsage {
+    pub bytes: u64,
+    pub max_bytes: u64,
+    pub records: u64,
+    pub revision: u64,
+    pub undo_steps: usize,
+    pub redo_steps: usize,
+    pub history_bytes: usize,
+}
 #[derive(Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 enum Event {
@@ -126,7 +139,28 @@ fn edit(editor: &mut Editor, event: &Event) -> Result<()> {
     }
     Ok(())
 }
+/// Durable editor for embedding under a host-owned mutex (for example Engine).
+/// Read-only access is the last published state; call check before serving reads.
+/// Mutations validate a private candidate, sync the log, then publish it.
+pub struct PersistentEditor {
+    state: State,
+}
 impl PersistentHost {
+    pub fn storage_usage(&self) -> Result<StateLogUsage> {
+        self.state.lock().map_err(storage)?.storage_usage()
+    }
+    pub fn open(
+        path: impl AsRef<Path>,
+        initial: Document,
+        validator: Arc<dyn DocumentValidator>,
+        options: PersistentHostOptions,
+    ) -> Result<Self> {
+        Ok(Self {
+            state: Mutex::new(PersistentEditor::open(path, initial, validator, options)?.state),
+        })
+    }
+}
+impl PersistentEditor {
     /// `initial` seeds a new file. Existing files restore their own state and must
     /// have the same Document ID and history limits. Install a deterministic validator.
     pub fn open(
@@ -280,20 +314,61 @@ impl PersistentHost {
         }
         state.file.seek(SeekFrom::End(0)).map_err(storage)?;
         state.file.sync_all().map_err(storage)?;
-        Ok(Self {
-            state: Mutex::new(state),
-        })
+        Ok(Self { state })
     }
+    pub fn storage_usage(&self) -> Result<StateLogUsage> {
+        self.state.storage_usage()
+    }
+    pub fn check(&self) -> Result<()> {
+        self.state.check()
+    }
+    pub fn editor(&self) -> &Editor {
+        &self.state.editor
+    }
+    pub fn execute(&mut self, command: Command) -> Result<u64> {
+        let expected_revision = self.state.editor.revision();
+        self.state.transact(Event::Apply {
+            expected_revision,
+            command,
+        })?;
+        Ok(self.state.editor.revision())
+    }
+    pub fn undo(&mut self) -> Result<bool> {
+        self.check()?;
+        if self.editor().undo_command().is_none() {
+            return Ok(false);
+        }
+        self.state.transact(Event::Undo {
+            expected_revision: self.editor().revision(),
+        })?;
+        Ok(true)
+    }
+    pub fn redo(&mut self) -> Result<bool> {
+        self.check()?;
+        if self.editor().redo_command().is_none() {
+            return Ok(false);
+        }
+        self.state.transact(Event::Redo {
+            expected_revision: self.editor().revision(),
+        })?;
+        Ok(true)
+    }
+    pub fn persistence(&self) -> Result<HostPersistence> {
+        self.state.persistence()
+    }
+    pub fn verify_persistence(&self, checkpoint: &LogCheckpoint) -> Result<()> {
+        self.state.verify_persistence(checkpoint)
+    }
+    pub fn acknowledge_replay(&mut self, checkpoint: LogCheckpoint) -> Result<()> {
+        self.state.acknowledge_replay(checkpoint)
+    }
+}
+impl PersistentHost {
     fn transact(&self, document: Id, expected_revision: u64, event: Event) -> Result<Snapshot> {
         let mut state = self.state.lock().map_err(storage)?;
         state.check()?;
         check_snapshot(&snapshot(&state.editor), document, expected_revision)?;
-        // Validate a private candidate; neither an invalid command nor failed save
-        // can publish a new revision/history to readers of the authoritative editor.
-        let mut candidate = state.editor.clone();
-        edit(&mut candidate, &event)?;
-        state.append(&event)?;
-        state.editor = candidate;
+        state.transact(event)?;
         Ok(snapshot(&state.editor))
     }
     /// Trusted-host redo, subject to the same revision and durability checks.
@@ -306,6 +381,27 @@ impl PersistentHost {
     }
 }
 impl State {
+    fn storage_usage(&self) -> Result<StateLogUsage> {
+        self.check()?;
+        let history = self.editor.history_stats();
+        Ok(StateLogUsage {
+            bytes: self.bytes,
+            max_bytes: self.max_bytes,
+            records: self.sequence,
+            revision: self.editor.revision(),
+            undo_steps: history.undo_steps,
+            redo_steps: history.redo_steps,
+            history_bytes: history.bytes,
+        })
+    }
+    fn transact(&mut self, event: Event) -> Result<()> {
+        self.check()?;
+        let mut candidate = self.editor.clone();
+        edit(&mut candidate, &event)?;
+        self.append(&event)?;
+        self.editor = candidate;
+        Ok(())
+    }
     fn checkpoint(&self) -> LogCheckpoint {
         LogCheckpoint {
             identity: self.prefixes[0].clone(),
@@ -369,17 +465,17 @@ impl State {
         Ok(())
     }
 }
-impl GraphHost for PersistentHost {
-    fn persistence(&self) -> Result<Option<HostPersistence>> {
-        let state = self.state.lock().map_err(storage)?;
+impl State {
+    fn persistence(&self) -> Result<HostPersistence> {
+        let state = self;
         state.check()?;
-        Ok(Some(HostPersistence {
+        Ok(HostPersistence {
             checkpoint: state.checkpoint(),
             replay: state.replay.clone(),
-        }))
+        })
     }
     fn verify_persistence(&self, checkpoint: &LogCheckpoint) -> Result<()> {
-        let state = self.state.lock().map_err(storage)?;
+        let state = self;
         state.check()?;
         let index = checkpoint
             .sequence
@@ -394,8 +490,8 @@ impl GraphHost for PersistentHost {
         }
         Ok(())
     }
-    fn acknowledge_replay(&self, checkpoint: LogCheckpoint) -> Result<()> {
-        let mut state = self.state.lock().map_err(storage)?;
+    fn acknowledge_replay(&mut self, checkpoint: LogCheckpoint) -> Result<()> {
+        let state = self;
         state.check()?;
         state.validate_replay(&checkpoint)?;
         if state.replay.as_ref() == Some(&checkpoint) {
@@ -407,7 +503,23 @@ impl GraphHost for PersistentHost {
         state.replay = Some(checkpoint);
         Ok(())
     }
-
+}
+impl GraphHost for PersistentHost {
+    fn persistence(&self) -> Result<Option<HostPersistence>> {
+        self.state.lock().map_err(storage)?.persistence().map(Some)
+    }
+    fn verify_persistence(&self, checkpoint: &LogCheckpoint) -> Result<()> {
+        self.state
+            .lock()
+            .map_err(storage)?
+            .verify_persistence(checkpoint)
+    }
+    fn acknowledge_replay(&self, checkpoint: LogCheckpoint) -> Result<()> {
+        self.state
+            .lock()
+            .map_err(storage)?
+            .acknowledge_replay(checkpoint)
+    }
     fn snapshot(&self) -> Result<Snapshot> {
         let state = self.state.lock().map_err(storage)?;
         state.check()?;
@@ -466,6 +578,10 @@ mod tests {
         );
         assert_eq!(host.state.lock().unwrap().editor.revision(), 0);
         assert_eq!(host.snapshot().unwrap_err().code, "storage_unavailable");
+        assert_eq!(
+            host.storage_usage().unwrap_err().code,
+            "storage_unavailable"
+        );
         assert_eq!(std::fs::read(&path).unwrap(), before);
         drop(host);
         let host = PersistentHost::open(

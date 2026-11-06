@@ -145,3 +145,9 @@ PersistentHostとReceiptログは[hash-chain prefixの相互検証](ACX_LOG_PAIR
 オフラインの [バックアップ世代](ACX_BACKUP.md) はseed・状態／Receiptログ・明示資産をハッシュ付きmanifestにまとめる。Documentの所有権や保存トランザクションを変更せず、復元先起動時の意味上のログ検証を維持する。
 
 Schema生成の直接依存はschemars 1.2.3。生成器とPort値SchemaはDraft 7を明示し、再帰root参照を従来の名前付きdefinitionsへ正規化する。公開TypeScript形状は維持する。[移行契約](CONTRACT_GENERATION.md)。
+
+任意のEngine::open_persistentは、PersistentEditorを唯一のEditorStoreとして同じState mutex内に保持する。UI／Group／Pointer／ACXの編集が候補検証・ログ同期・公開を通り、成功後だけSceneIndexを更新する。取得用guardが保存障害を検出すると読み取り／新規編集を拒否する。メモリー内Editorは一度のBox化だけを追加し、変更ごとの複製やディスクI/Oは追加しない。[設定・費用・復元範囲](TAURI_PERSISTENCE.md)。
+
+StateLogUsageは状態ログと履歴の公開済みカウンターだけを返すRustホスト用API。PersistentHost／PersistentEditorとEngineの共有guardから取得し、Documentの複製・ログ追記・新しいIPCを追加しない。[型と計測範囲](PERSISTENCE_PROFILING.md)。
+
+バックアップmanifest v2はgzip保存bytes/hashと展開後bytes/hashを併記し、旧v1も読み込む。稼働Editorのログを変更せず、検証済みの通常ファイルとv1 manifestを新規復元先へ公開する。ACXのprefix・Receipt・Documentの契約は同じバイト列で維持する。[圧縮と展開上限](ACX_BACKUP.md)。

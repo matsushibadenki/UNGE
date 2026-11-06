@@ -539,3 +539,56 @@ fn persistent_provider_cannot_serve_without_replay_storage() {
         .unwrap();
     assert!(p.dispatch("discover", json!({})).is_ok());
 }
+
+#[test]
+fn storage_usage_tracks_only_published_frames_and_restored_history() {
+    let temp = Temp::new();
+    let doc = Document::default();
+    let host = open(&temp, &doc);
+    let initial = host.storage_usage().unwrap();
+    assert_eq!(initial.bytes, fs::metadata(temp.state()).unwrap().len());
+    assert_eq!(initial.records, 1);
+    assert_eq!(initial.revision, 0);
+    assert_eq!(initial.undo_steps, 0);
+    let node = math_registry()
+        .definition("math.number")
+        .unwrap()
+        .instantiate();
+    host.apply(
+        doc.graph().id,
+        0,
+        Command::AddNode {
+            node,
+            rect: Rect::default(),
+        },
+    )
+    .unwrap();
+    let edited = host.storage_usage().unwrap();
+    assert!(edited.bytes > initial.bytes);
+    assert_eq!(edited.records, 2);
+    assert_eq!(edited.revision, 1);
+    assert_eq!(edited.undo_steps, 1);
+    assert_eq!(edited.redo_steps, 0);
+    assert!(edited.history_bytes > 0);
+    assert_eq!(edited.max_bytes, initial.max_bytes);
+    assert!(
+        host.apply(doc.graph().id, 0, Command::Batch { commands: vec![] })
+            .is_err()
+    );
+    assert_eq!(host.storage_usage().unwrap(), edited);
+    host.undo(doc.graph().id, 1).unwrap();
+    let undone = host.storage_usage().unwrap();
+    assert_eq!(undone.records, 3);
+    assert_eq!(undone.undo_steps, 0);
+    assert_eq!(undone.redo_steps, 1);
+    assert!(undone.history_bytes > 0);
+    drop(host);
+    let host = open(&temp, &doc);
+    assert_eq!(host.storage_usage().unwrap(), undone);
+    host.redo(doc.graph().id, 2).unwrap();
+    let redone = host.storage_usage().unwrap();
+    assert_eq!(redone.records, 4);
+    assert_eq!(redone.undo_steps, 1);
+    assert_eq!(redone.redo_steps, 0);
+    assert_eq!(redone.bytes, fs::metadata(temp.state()).unwrap().len());
+}

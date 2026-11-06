@@ -488,3 +488,38 @@ workspace標準／all-features各181件成功（失敗0、ignored 7）、両構�
 - ⭕️ [Pending] Windows/Linux、WASM、最低Rust版。GPU4件は通常実行でignored、他3件は既存親テストから呼ぶ子プロセスfixture。既存block将来互換警告は残る。
 - English: The schemars migration passes 181 Rust tests, strict Clippy, formatting, 17 contracts, eight schema regressions, seven real-stdio ACX tests, six backup tests and strict TypeScript. Scoped normalization preserves 14 root/four port schema constraints and generated TypeScript is byte-identical. Other-platform/WASM/minimum-toolchain checks remain pending.
 - 简体中文：schemars迁移通过181项Rust测试、严格Clippy、格式、17项契约、8项Schema、7项实际stdio ACX、6项备份及strict TypeScript。14个root／4个Port Schema限定规范化后约束相同，TypeScript生成物字节一致。其他平台／WASM／最低工具链待验证。
+
+## 2026-11-06: Tauri共有Engineの永続化
+
+- 🟢 [Done] PersistentEditorの埋め込み、Engine::open_persistent、全UI／Group／Pointer確定／Undo／Redo／ACXの保存経路とGraphHostの相互prefix転送。既存PersistentHostと同じversion 1ログ処理を共有。サンプルは明示的な3保存パス＋stdio指定を検査し、相互検証後にViewを公開。
+- 🟢 [Done] Rustの新規5件（Engine4件＋起動引数1件）。2 ViewのUI／AI／Group／Pointer／Undo／Redo復元、Redo保持、同revision同時編集の1勝者、無変更拒否（不正値／競合／容量／未登録View）、writer排他、末尾破損保全、元Receipt再送と既知prefixへの片側巻き戻し拒否を確認。既存のI/O障害で非公開・poison後停止する回帰も成功。
+- 🟢 [Done] 最終のRust標準／all-features workspace各186件、両構成all-targets Clippy（-D warnings）、fmt、生成契約17件一致、Schema8件、ACX実stdio7件、バックアップ6件、TypeScript 7.0.2 strictが成功。両Rust構成のignored7件は実GPU4件と、親テストから別プロセス起動する既存fixture3件。GPU実装変更なし、明示GPUテスト再実行なし。依存block 0.1.6の将来互換警告は残る。
+- 🟢 [Done] macOS実TauriのJSON Lines接続で2回起動し、1ノード／revision 1／値42、元結果・元ReceiptとresultHashの一致、二重編集なしを確認。復元画面のCUAスクリーンショットでGPUノード・WebViewを確認。任意の再現スクリプトはscripts/test_tauri_persistence.py。一時seed／両ログ／パネル設定を使用し、正常終了。
+- 実アプリは初回sandbox内ではmacOS window serviceへ接続できず停止して再実行した。許可された実行環境で成功。一時QA .appでは既存同様のsandbox_extension警告が出たが、RPC・描画・再起動は成功。CUAの初回app取得は長時間を要し、AXではWindowのみだったため、今回は画面読取の結果を読み上げ検証とは扱わない。
+- 🟢 [Done] Browser plugin not available（browser skill未提供）のため、既存Playwright＋インストール済みChromeを使用。http://unge.test/、title UNGE、意味のあるフォーム、console／pageerrorなし、保存操作後の表示を確認。3言語×2テーマ×320／380／768pxの既存UI回帰にstorage_unavailable／full／locked／corrupt／invalid_policyの各表示と下書き保持を追加。日本語エラー全文のスクリーンショットも確認。Panel／Group／Accessible／Execution各3言語の回帰が成功。
+- 🟢 [Done] 読み込み手順・保存順序・コスト・3言語のメッセージとROADMAPを更新。新IPC／wire型は追加せず、3言語TypeScript辞書で既存storage codeを翻訳。
+- ⭕️ [Pending] Windows／Linux、実電源断、最低Rust版、大規模編集の時間／メモリー、永続モードでの実画面ドラッグ／ドッキング・長時間運用、実スクリーンリーダー。2ログ単一トランザクション・旧ログ移行・圧縮は未実装。
+- English: Both Rust configurations pass 186 tests and strict Clippy; formatting, 17 contracts, eight schema tests, seven ACX stdio tests, six backup tests, strict TypeScript and three-language UI checks pass. New Engine tests cover shared durable edits/history, contention, failure atomicity and paired receipt replay/rollback. Real macOS Tauri restart preserves node/revision/value/original receipt; screenshot confirms rendering. Other platforms, power loss, large-document performance, persistent-mode GUI gestures/docking and screen readers remain pending.
+- 简体中文：两种Rust配置各186项测试及严格Clippy通过，格式、17项契约、8项Schema、7项ACX stdio、6项备份、strict TypeScript与三语UI检查通过。新增Engine测试覆盖共享持久编辑／历史、竞争、失败原子性和配对Receipt重放／回退。macOS真实Tauri重启保留节点／revision／值／原Receipt，截图确认渲染。其他平台、断电、大Document性能、持久模式实GUI手势／停靠及屏幕阅读器待验证。
+
+## 2026-11-06: 永続ログの使用量と基準計測
+
+- 🟢 [Done] Rust専用StateLogUsageとPersistentHost／PersistentEditor／Engineのstorage_usage。新規2回帰でファイル長・records・revision・履歴の追従、失敗時の保持、再起動一致、メモリー内Noneを検証。既存の保存失敗テストに、poison後の使用量照会もstorage_unavailableとなることを追加。
+- 🟢 [Done] 最終Rust workspace標準／all-features各188件（0失敗、7 ignored）、両構成all-targets Clippy -D warnings、fmtが成功。新規Rust APIのみでIPC／Schema変更なし。生成契約17件を確認。GPU実装を変更せず、実GPU4件は今回明示実行なし。残るignored3件は親テストが別プロセスで呼ぶ既存fixture。block将来互換警告は残る。
+- 🟢 [Done] releaseベンチマーク12条件、各5予熱＋30サンプル。移動／プロパティの実行・Undo・Redoをメモリー内と永続化で比較。全遷移のDocument／revision／履歴とcore／Registry検証、復元したRedo／Undoの一致に成功。ログ使用量と実ファイル長も照合。
+- 🟢 [Done] 生JSONから2,160操作時間＋60復元時間＋12初期作成の有限非負値、最近順位法p95／上側中央値、12条件の一意性、レコード数・revision・Undo／Redo件数を独立に再集計。[生データ](benchmarks/2026-11-06-persistence.json)。初回探索実行はビルド／テストと重なったため採用せず、最終ソースを他のプロジェクト検証と同時に走らせず再計測。通常のデスクトップ活動は隔離していない。
+- 🟢 [Done] 再利用例・監視API・3言語の範囲説明とROADMAPを更新。history_bytesをヒープ／RSSと呼ばず、温まったログ復元をcold recoveryやUI FPSに読み替えない。大規模復元の基準を記録し、圧縮の改善率は未測定。
+- ⭕️ [Pending] 他OS、filesystem、実電源断、総メモリー、接続／Group／巨大プロパティ、長期ログ、共有Engine競合・実UI遅延。今回は画面構成やGPU処理を変更せず、実アプリ／ブラウザーの再検証は追加していない。
+- English: Both Rust configurations pass 188 tests and strict Clippy. New storage counters match published file/history state and preserve failure semantics. Twelve release cases retain 2,160 operation timings, 60 warm reopens and 12 initial creations, with independent statistical/count checks and per-transition state/history parity. Cold recovery, total memory, edge/group-heavy graphs, long logs, Engine contention and other platforms/filesystems remain pending.
+- 简体中文：两种Rust配置各188项测试及严格Clippy通过。新存储用量与公开文件／历史一致并保持故障语义。12组release保存2,160个操作计时、60个热重开及12个初始创建值，独立核对统计／计数和每次转换的状态／历史。冷恢复、总内存、连接／Group密集图、长期日志、Engine竞争及其他平台／filesystem待验证。
+
+## 2026-11-06: 圧縮バックアップ世代
+
+- 🟢 [Done] create --compress、manifest v2、v1互換読取と既定v1出力、展開時v1生成、両形態のSHA-256／サイズとgzip CRC／終端検証。1MiB単位で入出力し、各ファイルの宣言量を超えるバイトは書かない。任意max-output-bytesは公開先作成前に展開ペイロード合計を制限。
+- 🟢 [Done] `python3 scripts/test_backup.py -v`の12件成功（既存6件から拡張）。空・非圧縮性のバイナリー、1MiB超入力、同一環境のgzipペイロード一致、v1復元、権限／非上書き、CRC破損・途中切れ・両hash不正・不正encoding／path／型・展開超過、作成／復元同期失敗と未公開／アーカイブ保全を確認。実Rust writerのロック競合、通常／圧縮両形式のDocument／revision／元Receipt再送と再送後revision不変も成功。
+- 🟢 [Done] 再利用可能なscripts/measure_backup.pyで実Rust Providerの1,000ノード・16編集を作成、停止して通常／gzip世代を比較。全元ファイルと復元バイト／SHA-256が一致し、両復元先で同じcommit／Receiptを再送、revision 16を維持。[生JSON](benchmarks/2026-11-06-compressed-backup.json)。manifest込み765,268→39,162 bytes。合成入力の単一サイズ例で、圧縮率全般・時間・cold recoveryの認定ではない。
+- 🟢 [Done] fmt、workspace/all-features Rust188件（0失敗、7 ignored）、all-targets厳格Clippy、生成契約17件が成功。Rust／GPU／IPC実装は今回変更せず、実GPU／Tauri画面を再検証していない。GPU4件と既存子プロセスfixture3件がignored。block 0.1.6の将来互換警告は既存どおり残る。
+- 🟢 [Done] 3言語の形式互換性・圧縮／展開・サイズ上限と境界、取り込み文書・ROADMAPを更新。圧縮以外の稼働ログ形式／相互prefix／Receiptを変更しない。
+- ⭕️ [Pending] Windows、Linux、実電源断、ネットワークfilesystem、大規模資産のメモリー／時間。稼働ログのレコード圧縮・チェックポイント・単一トランザクションは未実装。
+- English: All 12 backup regressions pass, including compressed/legacy restore, bounded decoding, trailer/hash failures, sync cleanup and real Rust writer exclusion/replay. A synthetic 1,000-node/16-edit project drops from 765,268 to 39,162 archived bytes including manifests; original file bytes and receipts restore exactly with unchanged replay revision. Formatting, 188 Rust tests, strict Clippy and 17 contracts pass. Live-log compaction/checkpoints and other-platform/large-asset operational validation remain unfinished.
+- 简体中文：12项备份回归通过，包含压缩／旧版恢复、限量展开、终端／hash故障、同步清理及真实Rust writer排他／重放。合成1,000节点／16编辑项目含manifest归档字节从765,268降至39,162，原文件字节与Receipt完全恢复，重放后revision不变。格式、188项Rust测试、严格Clippy及17项契约通过。活动日志记录压缩／检查点及其他平台／大资产运行验证仍待完成。

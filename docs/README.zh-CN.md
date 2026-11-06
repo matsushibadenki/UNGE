@@ -3,6 +3,21 @@
 面向 Tauri 2、Rust 与 wgpu/WGSL 的可复用节点图基础库。
 v0.1 实现了核心基础功能，完整状态请参阅[路线图](ROADMAP.md)。
 
+## 截图
+
+### 深色／浅色节点渲染
+
+![深色节点图](images/nodes-dark.png)
+![浅色节点图](images/nodes-light.png)
+
+由Rust／wgpu渲染，图像处理节点仅为显示示例。[渲染说明](NODE_APPEARANCE.md)。
+
+### 属性面板
+
+<img src="images/compact-panel-dark.png" alt="使用紧凑图标操作的深色属性面板" width="380">
+
+WebView UI的浏览器验证画面，Tauri IPC使用mock。[面板接入](COMPACT_PANEL.md)。
+
 ## 快速开始
 
 ```sh
@@ -94,3 +109,9 @@ Registry减少编辑时的重复验证。[集成契约与基准](REGISTRY_VALIDA
 [状态与Receipt日志前缀相互验证及备份不匹配检测](ACX_LOG_PAIRING.md)
 
 已停止的持久化宿主的备份世代与恢复见 [ACX_BACKUP.md](ACX_BACKUP.md)。
+
+Tauri共享编辑的可选持久化见 [Engine持久化](TAURI_PERSISTENCE.md)。示例存储模式需要显式启动参数。
+
+持久日志用量与可复现编辑／恢复计测见 [持久化计测](PERSISTENCE_PROFILING.md)。
+
+已停止项目可用`backup.py create --compress`压缩归档，见[格式与限量恢复](ACX_BACKUP.md)。

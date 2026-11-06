@@ -33,10 +33,7 @@ impl Engine {
         id: Id,
         expected_revision: u64,
     ) -> ApiResult<NodeProperties> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         if !state.views.contains_key(view) {
             return Err(ApiError::new("unknown_view", view));
         }

@@ -5,6 +5,21 @@ Tauri 2・Rust・WebGPU向けの、ディレクトリごと再利用できるノ
 
 [English](docs/README.en.md) · [简体中文](docs/README.zh-CN.md) · [AIへの引き継ぎ](docs/AI_INTEGRATION.md) · [ロードマップ](docs/ROADMAP.md)
 
+## スクリーンショット
+
+### ダーク／ライトのノード描画
+
+![ダークテーマのノードグラフ](docs/images/nodes-dark.png)
+![ライトテーマのノードグラフ](docs/images/nodes-light.png)
+
+Rust/wgpuで生成した描画例です。画像処理ノードは表示用fixtureです。[描画の仕様](docs/NODE_APPEARANCE.md)。
+
+### プロパティ設定パネル
+
+<img src="docs/images/compact-panel-dark.png" alt="アイコン操作とプロパティ設定を備えたダークテーマのパネル" width="380">
+
+WebView UIのブラウザー検証画面です（Tauri IPCはmock）。[設定パネルの取り込み](docs/COMPACT_PANEL.md)。
+
 ## 構成
 
 | ディレクトリ | 責務 | 依存先 |
@@ -164,3 +179,9 @@ Registryの重複検証を削減しました。[取り込み契約と比較例](
 [状態ログとReceiptログの相互検証・バックアップ取り違えの検出](docs/ACX_LOG_PAIRING.md)
 
 停止済み永続ホストのバックアップ／復元は [ACX_BACKUP.md](docs/ACX_BACKUP.md) を参照してください。
+
+Tauriの共有編集も保存する場合は [共有Engineの永続化](docs/TAURI_PERSISTENCE.md) を参照してください。サンプルの保存モードは明示的に有効化します。
+
+永続ログの容量監視と再現可能な編集／復元計測は [保持量APIとベンチマーク](docs/PERSISTENCE_PROFILING.md) を参照してください。
+
+停止済みプロジェクトは `backup.py create --compress` で圧縮退避できます。[形式・展開上限・復元手順](docs/ACX_BACKUP.md#圧縮世代と展開上限)。

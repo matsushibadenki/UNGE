@@ -1,6 +1,7 @@
 mod animation_benchmark;
 mod input;
 mod panel_preferences;
+mod persistence;
 mod property_demo;
 mod render_benchmark;
 mod workspace;
@@ -204,6 +205,13 @@ fn main() {
         animation_benchmark::run(context);
         return;
     }
+    let storage = match persistence::Options::parse(std::env::args().skip(1)) {
+        Ok(options) => options,
+        Err(error) => {
+            eprintln!("{error}");
+            std::process::exit(1);
+        }
+    };
     context.config_mut().app.windows.clear();
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
@@ -221,15 +229,31 @@ fn main() {
             workspace::panel_layout,
             workspace::set_panel_floating,
         ])
-        .setup(|app| {
+        .setup(move |app| {
             let registry = Arc::new(property_demo::registry());
             let execution = unge_executor::RunService::new(
                 registry.clone(),
                 unge_executor::Scheduler::new(4, 128),
                 unge_executor::RunLimits::default(),
             );
-            let engine = Engine::from_registry(initial_document(&registry), 256, registry.clone())?
+            let engine = storage
+                .engine(initial_document(&registry), registry.clone())?
                 .with_execution(execution.clone());
+            // Validate pairing before views can edit; keep this writer for stdio.
+            let mut provider = if storage.stdio {
+                let provider = unge_acx::Provider::new(
+                    Arc::new(engine.clone()),
+                    registry.clone(),
+                    unge_acx::Policy::math_demo(),
+                );
+                Some(if let Some(path) = &storage.replay {
+                    provider.with_journal(path, Default::default())?
+                } else {
+                    provider
+                })
+            } else {
+                None
+            };
             engine
                 .set_labels(labels(&registry))
                 .map_err(|e| e.message)?;
@@ -320,20 +344,16 @@ fn main() {
                 let main = handle.clone();
                 let _ = handle.run_on_main_thread(move || redraw(&main));
             });
-            if std::env::args().any(|arg| arg == "--acx-stdio") {
+            if let Some(provider) = provider.take() {
                 let engine = app.state::<Engine>().inner().clone();
                 let handle = app.handle().clone();
                 let controls = app
                     .get_webview("controls")
                     .ok_or("controls window missing")?;
                 std::thread::spawn(move || {
-                    let mut provider = unge_acx::Provider::new(
-                        Arc::new(engine.clone()),
-                        registry,
-                        unge_acx::Policy::math_demo(),
-                    )
-                    .with_execution(execution, unge_tauri::execution_observer(controls))
-                    .expect("same host registry");
+                    let mut provider = provider
+                        .with_execution(execution, unge_tauri::execution_observer(controls))
+                        .expect("same host registry");
                     let result = unge_acx::serve(
                         &mut provider,
                         std::io::stdin().lock(),

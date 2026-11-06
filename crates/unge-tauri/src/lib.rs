@@ -9,6 +9,9 @@ use unge_executor::{PreparedRun, RunError, RunService, RunSummary};
 use unge_interaction::{Interaction, InteractionError, PointerEvent};
 use unge_render::{LabelCatalog, SceneIndex, SurfaceRenderer, Theme};
 
+mod editor;
+use editor::EditorStore;
+
 mod properties;
 pub use properties::NodeProperties;
 
@@ -24,7 +27,7 @@ struct ViewState {
 }
 struct State {
     labels: LabelCatalog,
-    editor: Editor,
+    editor: EditorStore,
     scene: SceneIndex,
     views: BTreeMap<String, ViewState>,
 }
@@ -207,6 +210,9 @@ impl Engine {
     }
     /// Reuse a host-configured validator and history budget for all UI/AI edits.
     pub fn from_editor(editor: Editor) -> Self {
+        Self::from_store(EditorStore::Memory(Box::new(editor)))
+    }
+    fn from_store(editor: EditorStore) -> Self {
         let scene = SceneIndex::new(editor.document());
         Self {
             execution: None,
@@ -226,10 +232,7 @@ impl Engine {
         self
     }
     pub fn prepare_run(&self, view: &str, expected_revision: u64) -> ApiResult<PreparedRun> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         if !state.views.contains_key(view) {
             return Err(ApiError::new("unknown_view", view));
         }
@@ -242,10 +245,7 @@ impl Engine {
         Ok(service.prepare(state.editor.document(), expected_revision)?)
     }
     pub fn current_execution(&self, view: &str) -> ApiResult<Option<RunSummary>> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         if !state.views.contains_key(view) {
             return Err(ApiError::new("unknown_view", view));
         }
@@ -265,10 +265,7 @@ impl Engine {
         Ok(current)
     }
     pub fn execution_status(&self, view: &str, id: Id) -> ApiResult<RunSummary> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         if !state.views.contains_key(view) {
             return Err(ApiError::new("unknown_view", view));
         }
@@ -294,19 +291,13 @@ impl Engine {
     }
     /// Host presentation metadata is shared; each view selects its own language.
     pub fn set_labels(&self, labels: LabelCatalog) -> ApiResult<()> {
-        self.state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?
-            .labels = labels;
+        self.lock_state()?.labels = labels;
         Ok(())
     }
     /// Called by trusted Rust host setup. WebViews cannot create arbitrary views.
     pub fn register_view(&self, label: impl Into<String>, viewport: Viewport) -> ApiResult<()> {
         viewport.validate()?;
-        let mut state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let mut state = self.lock_state()?;
         state.views.insert(
             label.into(),
             ViewState {
@@ -320,11 +311,7 @@ impl Engine {
         Ok(())
     }
     pub fn remove_view(&self, label: &str) -> ApiResult<()> {
-        self.state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?
-            .views
-            .remove(label);
+        self.lock_state()?.views.remove(label);
         self.renderers
             .lock()
             .map_err(|e| ApiError::new("state_unavailable", e))?
@@ -333,13 +320,7 @@ impl Engine {
     }
     /// Attach a native surface to a registered control view. Renderer ownership stays here.
     pub fn attach_renderer(&self, view: &str, renderer: SurfaceRenderer) -> ApiResult<()> {
-        if !self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?
-            .views
-            .contains_key(view)
-        {
+        if !self.lock_state()?.views.contains_key(view) {
             return Err(ApiError::new("unknown_view", view));
         }
         self.renderers
@@ -379,10 +360,7 @@ impl Engine {
         if !scale_factor.is_finite() || scale_factor <= 0.0 {
             return Err(ApiError::new("invalid_pointer", "invalid scale factor"));
         }
-        let mut state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let mut state = self.lock_state()?;
         let view_state = state
             .views
             .get_mut(view)
@@ -435,10 +413,7 @@ impl Engine {
         if let Request::Apply { command, .. } = &request {
             check_command(command, 0, &mut 4096)?;
         }
-        let mut state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let mut state = self.lock_state()?;
         if !state.views.contains_key(view) {
             return Err(ApiError::new("unknown_view", view));
         }
@@ -560,10 +535,7 @@ impl Engine {
     }
     /// Rust host metadata; contains no document clone or frame data.
     pub fn selection_summary(&self, view: &str) -> ApiResult<SelectionSummary> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         let v = state
             .views
             .get(view)
@@ -580,10 +552,7 @@ impl Engine {
     }
     /// Rust host metadata; contains no document clone or frame data.
     pub fn view_state(&self, view: &str) -> ApiResult<ViewSnapshot> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         let v = state
             .views
             .get(view)
@@ -598,10 +567,7 @@ impl Engine {
     }
     /// Read the authoritative view theme and its CSS palette, without a graph clone.
     pub fn appearance(&self, view: &str) -> ApiResult<Appearance> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         let v = state
             .views
             .get(view)
@@ -626,10 +592,7 @@ impl Engine {
                 "page limit must be 1..100",
             ));
         }
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         let v = state
             .views
             .get(view)
@@ -680,10 +643,7 @@ impl Engine {
         })
     }
     pub fn inspect(&self, view: &str, id: Id) -> ApiResult<Node> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?;
+        let state = self.lock_state()?;
         if !state.views.contains_key(view) {
             return Err(ApiError::new("unknown_view", view));
         }
@@ -708,13 +668,7 @@ impl Engine {
     }
     /// Rust-only persistence/execution snapshot; never send the full graph per frame.
     pub fn snapshot(&self) -> ApiResult<Document> {
-        Ok(self
-            .state
-            .lock()
-            .map_err(|e| ApiError::new("state_unavailable", e))?
-            .editor
-            .document()
-            .clone())
+        Ok(self.lock_state()?.editor.document().clone())
     }
 }
 mod commands {
@@ -885,11 +839,35 @@ pub fn handler<R: tauri::Runtime>() -> impl Fn(tauri::ipc::Invoke<R>) -> bool + 
 
 #[cfg(feature = "acx")]
 impl unge_acx::GraphHost for Engine {
+    fn persistence(&self) -> unge_acx::Result<Option<unge_acx::HostPersistence>> {
+        let state = self.lock_state().map_err(unge_acx::AcxError::from)?;
+        match &state.editor {
+            EditorStore::Memory(_) => Ok(None),
+            EditorStore::Persistent(editor) => editor.persistence().map(Some),
+        }
+    }
+    fn verify_persistence(&self, checkpoint: &unge_acx::LogCheckpoint) -> unge_acx::Result<()> {
+        let state = self.lock_state().map_err(unge_acx::AcxError::from)?;
+        match &state.editor {
+            EditorStore::Persistent(editor) => editor.verify_persistence(checkpoint),
+            _ => Err(unge_acx::AcxError::new(
+                "storage_corrupt",
+                "host is not persistent",
+            )),
+        }
+    }
+    fn acknowledge_replay(&self, checkpoint: unge_acx::LogCheckpoint) -> unge_acx::Result<()> {
+        let mut state = self.lock_state().map_err(unge_acx::AcxError::from)?;
+        match &mut state.editor {
+            EditorStore::Persistent(editor) => editor.acknowledge_replay(checkpoint),
+            _ => Err(unge_acx::AcxError::new(
+                "storage_corrupt",
+                "host is not persistent",
+            )),
+        }
+    }
     fn snapshot(&self) -> unge_acx::Result<unge_acx::Snapshot> {
-        let state = self
-            .state
-            .lock()
-            .map_err(|e| unge_acx::AcxError::new("host_unavailable", e))?;
+        let state = self.lock_state().map_err(unge_acx::AcxError::from)?;
         Ok(unge_acx::Snapshot {
             document: state.editor.document().clone(),
             revision: state.editor.revision(),
@@ -903,10 +881,7 @@ impl unge_acx::GraphHost for Engine {
     ) -> unge_acx::Result<unge_acx::Snapshot> {
         check_command(&command, 0, &mut 20_000)
             .map_err(|e| unge_acx::AcxError::new(&e.code, e.message))?;
-        let mut state = self
-            .state
-            .lock()
-            .map_err(|e| unge_acx::AcxError::new("host_unavailable", e))?;
+        let mut state = self.lock_state().map_err(unge_acx::AcxError::from)?;
         let before = unge_acx::Snapshot {
             document: state.editor.document().clone(),
             revision: state.editor.revision(),
@@ -921,10 +896,7 @@ impl unge_acx::GraphHost for Engine {
         })
     }
     fn undo(&self, document: Id, expected_revision: u64) -> unge_acx::Result<unge_acx::Snapshot> {
-        let mut state = self
-            .state
-            .lock()
-            .map_err(|e| unge_acx::AcxError::new("host_unavailable", e))?;
+        let mut state = self.lock_state().map_err(unge_acx::AcxError::from)?;
         let before = unge_acx::Snapshot {
             document: state.editor.document().clone(),
             revision: state.editor.revision(),
