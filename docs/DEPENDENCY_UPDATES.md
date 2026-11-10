@@ -171,3 +171,33 @@ English: Starting from a clean tree, this batch updates only cc 1.8→1.10, find
 English: Direct schemars dependencies are pinned to 1.2.3; Tauri retains its transitive 0.8.22. Explicit Draft 7 generation, named recursive definitions and const tags preserve the contract structure. Fourteen root and four port schemas match after scoped annotation/order/singleton-enum normalization; both TypeScript files remain byte-identical. All 181 all-feature Rust tests, strict Clippy, formatting, 17 contracts, eight schema tests, seven real-stdio ACX tests, six backup tests and strict TypeScript pass. No GPU implementation changes or new Surface measurements. Other platforms, WASM and minimum-toolchain validation remain pending.
 
 简体中文：直接schemars依赖固定为1.2.3，Tauri仍保留间接0.8.22。显式Draft 7、具名递归definition及const标签维持契约结构。14个root与4个Port Schema在限定注释／顺序／单值enum的规范化后相同；两份TypeScript字节一致。181项all-features Rust测试、严格Clippy、格式、17项契约、8项Schema、7项实际stdio ACX、6项备份及strict TypeScript通过。GPU实现未改变，未重新测量Surface。其他平台／WASM／最低工具链仍待验证。
+
+## 2026-11-09: UUID・圧縮・ビルド依存のstable更新
+
+開始時の作業ツリーはclean。公式crates.ioで直接・推移・開発・ビルド・OS別依存455種のstable候補とMSRVを再確認し、3解決版のみ更新した。[全候補と採用／保留判断](dependencies/2026-11-09-audit.json)。manifestのexact pin、Tauri 2＋Rustの所有権、Document／IPC／Receipt／保存形式は変更していない。Cargo.lockの差分も以下の3件だけである。
+
+| 依存 | 更新前 | 採用stable | 公式MSRV |
+|---|---|---|---|
+| uuid | 1.29.0 | 1.29.1 | 1.89.0 |
+| flate2（推移） | 1.1.10 | 1.1.11 | 1.67.0 |
+| cc（ビルド／推移） | 1.10.0 | 1.11.1 | 1.65.0 |
+
+- uuidの[公式release](https://github.com/uuid-rs/uuid/releases/tag/v1.29.1)はv7単調性の修正、borsh feature非推奨化、lint修正を含む。UNGEで使うv4生成とserde実装のソースは前版と一致し、1,000回の生成／文字列／JSON往復も成功。v7やborshの採用を追加したものではない。
+- flate2の公式配布CHANGELOG／差分はgzipのheader読取進捗・エラー処理、sync flushの境界処理、途中終了したwrite decoderの拒否等を含む。公開API移植は不要。不完全なstreamのfinishがUnexpectedEofとなる挙動は意図した修正として検証した。依存経路はTauriのPNG／icon／コード生成で、wgpu／文字描画依存を更新したものではない。
+- ccの公式配布CHANGELOGはCodeView／source path remap、cl.exeの.cc引数処理、Linux GCCのmarch指定、WASM target parsing修正を含む。macOSでCを実コンパイル／リンクしてRustから42を取得し、Objective-C helper等を含むworkspaceもビルド・検証した。Windows/MSVC／Linux／WASM固有修正の動作は未検証。
+
+公式配布ソース：[flate2 1.1.11](https://crates.io/api/v1/crates/flate2/1.1.11/download)、[cc 1.11.1](https://crates.io/api/v1/crates/cc/1.11.1/download)、[uuid 1.29.1](https://crates.io/api/v1/crates/uuid/1.29.1/download)。crate内のCHANGELOG／Cargo.tomlと前版ソースを確認した。MSRVは公開metadataであり、最小ツールチェーン実測によるworkspace最低版認定ではない。
+
+[独立検証の再現用ソース](dependencies/2026-11-09-probe.json)：gzip／zlib／raw deflate、長さ0〜65,537byteの境界11条件でPython→Rustの33件とRust→Pythonの33件が一致。Rust側は3byte出力バッファと7byte入力分割を含み、切れたwrite decoderの全prefixを拒否した。UUIDとccの確認も同じprobeに記録した。速度改善率の主張には用いない。
+
+Rust 1.99.1／macOSで標準・all-featuresのworkspace各188件成功（失敗0、ignored 7）。両構成all-targets Clippy（-D warnings）、fmt／fmt check、17生成契約一致、Schema8件、実stdio ACX7件、バックアップ12件、TypeScript 7.0.2 strict、headlessの42、diff checkが成功。ignoredのうち3件は親テストから実プロセスで起動する補助入口、4件は今回変更していないGPUテスト。新しいSurface／native入力の手動再検証は未実施。
+
+TypeScript 7.0.2とjsonschema 4.26.0は公式npm／PyPIで引き続き最新stable、CI指定を維持した。Tauri 2.12.5一式／Wry 0.57.1、wgpu 30.0.1、brotli 9.1.1／decompressor 6.3.0、tokio 1.54.1等の候補は別の小単位で一次資料と関連回帰を確認して移行する。Tauri exact pinはnative Surface・入力・dock/float・永続復元の組合せ検証まで維持する。直接schemars 1.2.3への移行は11月4日に完了済みで、Tauriが必要とする旧majorを無条件に除去しない。
+
+- 🟢 [Done] 上記3件の採用とmacOSでの互換性検証。
+- 🟠 [Next] Tauri／Wry一式、wgpuと他の推移候補の段階移行。既知のblock 0.1.6将来Rust互換性警告もwgpu移行時に確認する。
+- ⭕️ [Pending] Windows/Linux、他CPU、WASM、最低Rust版と正式配布の実機検証。
+
+English: From a clean tree, this batch updates only uuid 1.29.0→1.29.1, flate2 1.1.10→1.1.11 and cc 1.10.0→1.11.1 after checking official sources/changelogs and registry metadata for 455 crate names. UUID v4/serde sources remain identical; v7 fixes and borsh deprecation do not enable new UNGE features. flate2 fixes stream/header/flush handling and rejects truncated write streams. Independent Python/Rust gzip/zlib/deflate checks pass 33 cases in each direction, alongside 1,000 UUID roundtrips and a C compile/link/call. Both workspace configurations pass 188 tests; strict Clippy, formatting, 17 contracts, eight schema tests, seven ACX stdio tests, twelve backup tests, strict TypeScript and headless output 42 pass. Exact pins and wire/storage contracts remain unchanged. Tauri/Wry, wgpu and other candidates require separate validated batches; direct schemars 1.2.3 migration is already complete. GPU/Surface/input manual checks were not repeated; other platforms/CPUs, WASM and minimum toolchains remain unverified. No full latest-version or performance claim is made.
+
+简体中文：从clean工作区开始，核对455种crate的官方注册表metadata及采用版本的官方源码／变更记录后，仅更新uuid 1.29.0→1.29.1、flate2 1.1.10→1.1.11和cc 1.10.0→1.11.1。UUID v4／serde源码与前版相同；v7修正及borsh弃用未启用新功能。flate2修正stream／header／flush边界并拒绝截断write stream。Python／Rust的gzip／zlib／deflate双向各33项、1,000次UUID往返及C编译／链接／调用均通过。两种workspace配置各188项测试、严格Clippy、格式、17项契约、8项Schema、7项ACX stdio、12项备份、strict TypeScript及headless输出42通过。exact pin及wire／存储契约不变。Tauri/Wry、wgpu等候选需分批验证，直接schemars 1.2.3已完成迁移。此次未重复GPU／Surface／输入手动检查，其他平台／CPU、WASM及最低工具链仍未验证。不代表全部依赖最新版或性能认证。

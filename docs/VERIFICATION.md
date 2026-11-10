@@ -523,3 +523,7 @@ workspace標準／all-features各181件成功（失敗0、ignored 7）、両構�
 - ⭕️ [Pending] Windows、Linux、実電源断、ネットワークfilesystem、大規模資産のメモリー／時間。稼働ログのレコード圧縮・チェックポイント・単一トランザクションは未実装。
 - English: All 12 backup regressions pass, including compressed/legacy restore, bounded decoding, trailer/hash failures, sync cleanup and real Rust writer exclusion/replay. A synthetic 1,000-node/16-edit project drops from 765,268 to 39,162 archived bytes including manifests; original file bytes and receipts restore exactly with unchanged replay revision. Formatting, 188 Rust tests, strict Clippy and 17 contracts pass. Live-log compaction/checkpoints and other-platform/large-asset operational validation remain unfinished.
 - 简体中文：12项备份回归通过，包含压缩／旧版恢复、限量展开、终端／hash故障、同步清理及真实Rust writer排他／重放。合成1,000节点／16编辑项目含manifest归档字节从765,268降至39,162，原文件字节与Receipt完全恢复，重放后revision不变。格式、188项Rust测试、严格Clippy及17项契约通过。活动日志记录压缩／检查点及其他平台／大资产运行验证仍待完成。
+
+## 2026-11-09: UUID・圧縮・ビルド依存
+
+uuid 1.29.1、flate2 1.1.11、cc 1.11.1、Rust 1.99.1／macOSでworkspace標準／all-features各188件成功（失敗0、ignored 7）。両構成all-targets Clippy（-D warnings）、fmt／fmt check、17契約一致、Schema8件、ACX stdio7件、バックアップ12件、TypeScript 7.0.2 strict、headlessの42が成功。独立圧縮照合はPython→Rust／Rust→Python各33件、切れたwrite stream拒否、UUID 1,000往復、Cコンパイル／リンク／呼出し42を確認。[再現用ソース](dependencies/2026-11-09-probe.json)。実GPU4件、Surface／native入力は今回未実行。ignoredの補助入口3件は親テストから実プロセスで実行。既知のblock将来互換性警告と他OS／CPU／WASM／最低Rust版の未検証は残る。[版・一次資料](DEPENDENCY_UPDATES.md#2026-11-09-uuid圧縮ビルド依存のstable更新)。

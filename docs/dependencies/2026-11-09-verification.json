@@ -1,0 +1,43 @@
+{
+  "toolchain": "Rust 1.99.1, macOS",
+  "updates": {
+    "uuid": [
+      "1.29.0",
+      "1.29.1"
+    ],
+    "flate2": [
+      "1.1.10",
+      "1.1.11"
+    ],
+    "cc": [
+      "1.10.0",
+      "1.11.1"
+    ]
+  },
+  "tests": {
+    "tests": {
+      "passed": 188,
+      "failed": 0,
+      "ignored": 7
+    },
+    "features": {
+      "passed": 188,
+      "failed": 0,
+      "ignored": 7
+    }
+  },
+  "clippy": "workspace all-targets, standard/all-features, -D warnings: pass",
+  "fmt": "pass",
+  "contracts": 17,
+  "schema_tests": 8,
+  "acx_stdio_tests": 7,
+  "backup_tests": 12,
+  "typescript": "7.0.2 strict: pass",
+  "headless": 42,
+  "probe": "Python/Rust compression 33 cases each direction; 1000 UUID roundtrips; truncated write streams rejected; C build/link/call 42",
+  "pending": [
+    "GPU/Surface/input manual verification not repeated",
+    "Other OS/CPUs, WASM, minimum toolchains, signed distribution"
+  ],
+  "existing_warning": "block 0.1.6 future Rust incompatibility"
+}

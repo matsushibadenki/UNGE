@@ -275,3 +275,9 @@
 - 🟢 [Done] 1,000ノード／16編集の合成fixtureでmanifest込み765,268→39,162 bytes（約94.9%減）。復元前後の元ログSHAと再送後revisionを照合。[サイズ例の生JSON](benchmarks/2026-11-06-compressed-backup.json)。通常プロジェクト全般や時間性能を認定しない。
 - 🟠 [Next] 稼働ログの長期復元／レコード圧縮・チェックポイント、状態／Receipt単一トランザクション。今回の圧縮退避は元の稼働ログを置き換えない。
 - ⭕️ [Pending] Windows対応、Linux実機、実電源断、network filesystem、巨大資産集合の圧縮／展開メモリー・時間・容量の運用評価。
+
+## 2026-11-09: stable依存の定期更新
+
+- 🟢 [Done] uuid 1.29.1／flate2 1.1.11／cc 1.11.1へ互換更新。両Rust構成各188件、Clippy、17契約、Schema8件、ACX stdio7件、バックアップ12件、strict TypeScriptとPython／Rust圧縮双方向各33件を確認。[一次資料と保留候補](DEPENDENCY_UPDATES.md#2026-11-09-uuid圧縮ビルド依存のstable更新)。
+- 🟠 [Next] Tauri／Wry一式、wgpu 30と他の推移候補の個別移行を継続。直接schemars 1.2.3は移行済み。
+- ⭕️ [Pending] 他OS／CPU、WASM、最低Rust版、正式配布の実機検証。

@@ -1,0 +1,41 @@
+{
+  "python_to_rust_cases": 33,
+  "rust_to_python_cases": 33,
+  "formats": [
+    "gzip",
+    "zlib",
+    "raw deflate"
+  ],
+  "lengths": [
+    0,
+    1,
+    7,
+    511,
+    512,
+    513,
+    32767,
+    32768,
+    32769,
+    65536,
+    65537
+  ],
+  "decode_buffer_bytes": 3,
+  "encoder_chunk_bytes": 7,
+  "other_checks": [
+    "truncated write decoder streams rejected with UnexpectedEof",
+    "1000 UUID v4 generation/text/serde roundtrips",
+    "cc compiled/linked C function returns 42 from Rust"
+  ],
+  "result": "33 Python-to-Rust compression cases, truncation rejection, 1000 UUID v4/serde roundtrips, C compile/link/call -> 42: passed",
+  "sources": {
+    "Cargo.toml": "[package]\nname = \"unge-stable-probe\"\nversion = \"0.0.0\"\nedition = \"2024\"\n[dependencies]\nflate2 = \"=1.1.11\"\nuuid = { version = \"=1.29.1\", features = [\"v4\", \"serde\"] }\nserde_json = \"1\"\n[build-dependencies]\ncc = \"=1.11.1\"\n",
+    "build.rs": "fn main() { cc::Build::new().file(\"probe.c\").flag_if_supported(\"-Wall\").compile(\"probe\"); }\n",
+    "probe.c": "int unge_add(int a, int b) { return a + b; }\n",
+    "vectors.py": "import pathlib,zlib\np=pathlib.Path(__file__).parent\nfor n in [0,1,7,511,512,513,32767,32768,32769,65536,65537]:\n data=bytes((i*137^(i>>4))&255 for i in range(n));(p/str(n)).write_bytes(data)\n for mode,wbits in [('gzip',31),('zlib',15),('deflate',-15)]:\n  c=zlib.compressobj(wbits=wbits);(p/(str(n)+'.py.'+mode)).write_bytes(c.compress(data)+c.flush())\n",
+    "src/main.rs": "use std::{fs, io::{Read,Write},path::Path};\nunsafe extern \"C\" { fn unge_add(a:i32,b:i32)->i32; }\nfn main() {\n    assert_eq!(unsafe { unge_add(20,22) },42);\n    let folder=Path::new(env!(\"CARGO_MANIFEST_DIR\"));\n    let mut count=0;\n    for n in [0,1,7,511,512,513,32767,32768,32769,65536,65537] {\n        let expected=fs::read(folder.join(n.to_string())).unwrap();\n        for mode in [\"gzip\",\"zlib\",\"deflate\"] {\n            let input=fs::read(folder.join(format!(\"{n}.py.{mode}\"))).unwrap();\n            let mut reader:Box<dyn Read> = match mode { \"gzip\"=>Box::new(flate2::read::GzDecoder::new(&input[..])),\"zlib\"=>Box::new(flate2::read::ZlibDecoder::new(&input[..])),_=>Box::new(flate2::read::DeflateDecoder::new(&input[..])) };\n            let mut output=Vec::new();let mut buffer=[0;3];loop {let read=reader.read(&mut buffer).unwrap();if read==0{break;}output.extend_from_slice(&buffer[..read]);}assert_eq!(output,expected);\n            let bytes=match mode {\"gzip\"=>{let mut e=flate2::write::GzEncoder::new(Vec::new(),flate2::Compression::default());for chunk in expected.chunks(7){e.write_all(chunk).unwrap();}e.flush().unwrap();e.finish().unwrap()},\"zlib\"=>{let mut e=flate2::write::ZlibEncoder::new(Vec::new(),flate2::Compression::default());for chunk in expected.chunks(7){e.write_all(chunk).unwrap();}e.flush().unwrap();e.finish().unwrap()},_=>{let mut e=flate2::write::DeflateEncoder::new(Vec::new(),flate2::Compression::default());for chunk in expected.chunks(7){e.write_all(chunk).unwrap();}e.flush().unwrap();e.finish().unwrap()}};\n            fs::write(folder.join(format!(\"{n}.rust.{mode}\")),bytes).unwrap();count+=1;\n        }\n    }\n    let mut encoder=flate2::write::DeflateEncoder::new(Vec::new(),flate2::Compression::default());encoder.write_all(b\"test truncated stream\").unwrap();let bytes=encoder.finish().unwrap();\n    for end in 0..bytes.len(){let mut decoder=flate2::write::DeflateDecoder::new(Vec::new());decoder.write_all(&bytes[..end]).unwrap();assert_eq!(decoder.finish().unwrap_err().kind(),std::io::ErrorKind::UnexpectedEof);}\n    for _ in 0..1000 {let id=uuid::Uuid::new_v4();assert_eq!(id.get_version_num(),4);let text=serde_json::to_string(&id).unwrap();assert_eq!(serde_json::from_str::<uuid::Uuid>(&text).unwrap(),id);assert_eq!(id.to_string().parse::<uuid::Uuid>().unwrap(),id);}\n    println!(\"{count} Python-to-Rust compression cases, truncation rejection, 1000 UUID v4/serde roundtrips, C compile/link/call -> 42: passed\");\n}\n"
+  },
+  "limitations": [
+    "MSVC/Windows, Linux, WASM, other CPU architectures and minimum toolchains unverified",
+    "No throughput/performance claim"
+  ]
+}
