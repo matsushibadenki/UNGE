@@ -197,3 +197,128 @@ fn shared_members_themes_and_extreme_frames_are_safe() {
     assert_eq!(scene.visible_groups, 0);
     assert!(scene.quads.iter().flat_map(|q| q.rect).all(f32::is_finite));
 }
+
+#[test]
+fn collapsed_card_hides_members_and_internal_edges_but_keeps_external_edges() {
+    let mut editor = Editor::new(Document::default(), 64).unwrap();
+    let port = |name: &str| Port {
+        name: name.into(),
+        data_type: DataType::Float,
+        cardinality: Cardinality::Single,
+        required: false,
+    };
+    for i in 1..=3 {
+        editor
+            .execute(Command::AddNode {
+                node: Node {
+                    id: Id::from_u128(i),
+                    type_id: "test".into(),
+                    inputs: vec![port("in")],
+                    outputs: vec![port("out"), port("free")],
+                    properties: Default::default(),
+                },
+                rect: Rect {
+                    x: i as f32 * 200. - 150.,
+                    y: 100.,
+                    ..Rect::default()
+                },
+            })
+            .unwrap();
+    }
+    for i in 1..=2 {
+        editor
+            .execute(Command::Connect {
+                edge: Edge {
+                    id: Id::from_u128(i + 20),
+                    from: Endpoint {
+                        node: Id::from_u128(i),
+                        port: "out".into(),
+                    },
+                    to: Endpoint {
+                        node: Id::from_u128(i + 1),
+                        port: "in".into(),
+                    },
+                },
+            })
+            .unwrap();
+    }
+    editor.execute(group(10, "合成", &[1, 2])).unwrap();
+    let index = SceneIndex::new(editor.document());
+    let collapsed = [Id::from_u128(10)].into_iter().collect();
+    let viewport = Viewport {
+        size: [900., 600.],
+        ..view()
+    };
+    let mut catalog = LabelCatalog::new();
+    catalog.insert(
+        "test".into(),
+        NodeLabels {
+            outputs: [(
+                "free".into(),
+                LabelText {
+                    en: "Free".into(),
+                    ja: "予備".into(),
+                    zh_cn: "备用".into(),
+                },
+            )]
+            .into_iter()
+            .collect(),
+            ..NodeLabels::default()
+        },
+    );
+    let scene = index
+        .scene_with_groups(
+            viewport,
+            &BTreeSet::new(),
+            &Preview::default(),
+            &catalog,
+            (Locale::Ja, Theme::Dark),
+            &collapsed,
+        )
+        .unwrap();
+    assert_eq!(
+        (
+            scene.visible_nodes,
+            scene.visible_groups,
+            scene.visible_edges
+        ),
+        (1, 1, 1)
+    );
+    assert!(scene.labels.iter().any(|l| l.text == "+  合成"));
+    let geometry = index.group_input(Some([45., 80.]), &collapsed);
+    assert!(scene.labels.iter().any(|l| l.text == "1 · 予備"));
+    assert!(scene.labels.iter().any(|l| l.text == "2 · 予備"));
+    let exposed: BTreeSet<_> = geometry
+        .ports
+        .iter()
+        .map(|p| {
+            (
+                p.hit.endpoint.node,
+                p.hit.output,
+                p.hit.endpoint.port.as_str(),
+            )
+        })
+        .collect();
+    assert_eq!(
+        exposed,
+        [
+            (Id::from_u128(1), false, "in"),
+            (Id::from_u128(1), true, "free"),
+            (Id::from_u128(2), true, "out"),
+            (Id::from_u128(2), true, "free"),
+        ]
+        .into_iter()
+        .collect()
+    );
+    for port in geometry.ports {
+        assert!(scene.quads.iter().any(|q| q.rect[..2] == port.anchor));
+    }
+    let (hit, hidden) = (geometry.group, geometry.hidden);
+    assert_eq!(hit, Some(Id::from_u128(10)));
+    assert_eq!(
+        hidden,
+        [Id::from_u128(1), Id::from_u128(2)].into_iter().collect()
+    );
+    let restored = index.scene(viewport, &BTreeSet::new()).unwrap();
+    assert_eq!((restored.visible_nodes, restored.visible_edges), (3, 2));
+}

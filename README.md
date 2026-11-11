@@ -20,6 +20,8 @@ Rust/wgpuで生成した描画例です。画像処理ノードは表示用fixtu
 
 WebView UIのブラウザー検証画面です（Tauri IPCはmock）。[設定パネルの取り込み](docs/COMPACT_PANEL.md)。
 
+ノード・ポート・接続線・グループ・空白を右クリックすると、対象に応じた操作を表示します。[コンテキストメニュー](docs/CANVAS_CONTEXT_MENU.md)。
+
 ## 構成
 
 | ディレクトリ | 責務 | 依存先 |
@@ -63,7 +65,7 @@ cargo fmt --all -- --check
 cargo test --locked -p unge-render --test render -- --ignored
 ```
 
-デスクトップ例は機能確認用です。macOSでは同一ウインドウの左側にグラフ、右側に設定パネルを表示し、操作画面で数値/加算ノード追加・Undo/Redoを試せます。「ダーク」「ライト」で操作画面と描画画面を切り替え、設定を再起動後にも復元します。[テーマの取り込み](docs/THEMES.md)を参照してください。グラフ上ではノードDrag、範囲選択、Port接続、右ドラッグPan、ホイールZoomが使えます。
+デスクトップ例は機能確認用です。macOSでは同一ウインドウの左側にグラフ、右側に設定パネルを表示し、操作画面で数値/加算ノード追加・Undo/Redoを試せます。「ダーク」「ライト」で操作画面と描画画面を切り替え、設定を再起動後にも復元します。[テーマの取り込み](docs/THEMES.md)を参照してください。グラフ上ではノードのドラッグ、範囲選択、Port接続が使えます。2本指スクロールまたは右ドラッグで移動し、macOSのピンチまたはマウスホイールで拡大・縮小できます。
 この例のネイティブウインドウ生成にはTauriの `unstable` featureを使用します。
 ノード名・Port名をRust/GPU側で描画し、3言語の表示名をホストから登録できます。[GPU文字の取り込み](docs/GPU_TEXT.md)を参照してください。同一ウインドウへの取り込みと別ウインドウへの切り替えは [WINDOW_COMPOSITION.md](docs/WINDOW_COMPOSITION.md) を参照してください。Windows/Linuxは実機検証待ちのため別ウインドウが既定です。入力の取り込み方とOS別の検証範囲は [POINTER_INPUT.md](docs/POINTER_INPUT.md) を参照してください。
 

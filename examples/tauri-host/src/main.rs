@@ -1,4 +1,5 @@
 mod animation_benchmark;
+mod context_menu;
 mod input;
 mod panel_preferences;
 mod persistence;
@@ -214,6 +215,7 @@ fn main() {
     };
     context.config_mut().app.windows.clear();
     tauri::Builder::default()
+        .on_menu_event(context_menu::on_menu_event)
         .invoke_handler(tauri::generate_handler![
             unge_tauri::dispatch,
             unge_tauri::inspect,
@@ -227,6 +229,7 @@ fn main() {
             unge_tauri::execution_status,
             unge_tauri::cancel_execution,
             workspace::panel_layout,
+            workspace::canvas_editor,
             workspace::set_panel_floating,
         ])
         .setup(move |app| {
@@ -300,6 +303,7 @@ fn main() {
                 eprintln!("workspace restore: {error}");
             }
             app.manage(composition);
+            app.manage(context_menu::Actions::default());
             let size = canvas.inner_size()?;
             let renderer = pollster::block_on(SurfaceRenderer::new(
                 Arc::new(canvas.clone()),

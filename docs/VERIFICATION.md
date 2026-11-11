@@ -527,3 +527,30 @@ workspace標準／all-features各181件成功（失敗0、ignored 7）、両構�
 ## 2026-11-09: UUID・圧縮・ビルド依存
 
 uuid 1.29.1、flate2 1.1.11、cc 1.11.1、Rust 1.99.1／macOSでworkspace標準／all-features各188件成功（失敗0、ignored 7）。両構成all-targets Clippy（-D warnings）、fmt／fmt check、17契約一致、Schema8件、ACX stdio7件、バックアップ12件、TypeScript 7.0.2 strict、headlessの42が成功。独立圧縮照合はPython→Rust／Rust→Python各33件、切れたwrite stream拒否、UUID 1,000往復、Cコンパイル／リンク／呼出し42を確認。[再現用ソース](dependencies/2026-11-09-probe.json)。実GPU4件、Surface／native入力は今回未実行。ignoredの補助入口3件は親テストから実プロセスで実行。既知のblock将来互換性警告と他OS／CPU／WASM／最低Rust版の未検証は残る。[版・一次資料](DEPENDENCY_UPDATES.md#2026-11-09-uuid圧縮ビルド依存のstable更新)。
+
+## 2026-11-11: トラックパッドの移動とピンチ
+
+- 🟢 [Done] Rust workspace/all-features 191件、Clippy、fmt、17契約確認。追加3件で精密スクロールの両軸と倍率、ピンチ／ホイールの基準点、ズーム上下限と不正入力を検証。描画実装・IPCは変更なし。
+- 🟢 [Done] macOSで更新したテストアプリを起動。CUAの縦スクロールでノードの寸法を維持して表示位置が動き、逆方向のスクロールで戻ることを画面で確認。横方向のCUA操作では移動を確認できなかったため、両軸の確認はRustテスト範囲とする。
+- ⭕️ [Pending] 物理トラックパッドでの横・斜めスクロール、ピンチとWindows／Linuxの実入力。実GPUテストは描画実装が不変のため再実行していない。
+- English: Native macOS app startup and synthetic vertical pan/reversal verified. Both-axis conversion and anchored zoom pass Rust tests; physical horizontal/diagonal gestures and pinch are unverified.
+- 简体中文：已验证macOS实应用启动、合成纵向平移及反向复位。双轴换算和锚点缩放通过Rust测试；实体触控板横向／斜向滚动及捏合尚未验证。
+
+## グループ枠のドラッグ・改名・折りたたみ
+
+- 🟢 [Done] workspace/all-features 193件、実Metal GPUのignoredテスト4件、Clippy、fmt、17生成契約、strict TypeScript、3言語のグループUIテストが成功。サンドボックス内ではMetalアダプターを取得できなかったため、実GPUテストは許可された実行環境で再実行した。
+- 🟢 [Done] Rustで見出し／カードの一括移動、移動中のrevision維持、1回のUndo、View間の折りたたみ分離、内部線の非表示と外部線の維持を確認。
+- 🟢 [Done] macOS実アプリでカード化、ドラッグ、改名、展開を確認。ドラッグ後に一覧を手動更新する必要があったため、編集通知に基づく自動更新と名前の入力保持を追加し、3言語のUI回帰で確認。
+- ⭕️ [Pending] Windows／Linux、実スクリーンリーダー、非常に多くの折りたたみグループを表示した場合の性能。
+
+## 折りたたみグループの名前付き端子
+
+- 🟢 [Done] workspace/all-features 194件、Metal実GPUのignored 4件、Clippy、fmt、生成契約17件が成功。未接続／外部接続／内部専用の露出区分、同名の番号、描画とヒットテストの座標一致を確認。
+- 🟢 [Done] Rust Engineでカード上の出力／入力からのドラッグが、元の内部Endpointを使う接続を作り、Undoで戻ることを確認。
+- 🟢 [Done] gallery --foldedでMetalによるダーク／ライト×3言語を描画し、欠字・GPU検証エラーなし。日本語の両テーマで配置、名前、外部線を目視確認。
+- ⭕️ [Pending] Windows／Linux実機と、Tauri実画面での新しいカード端子の操作確認。Document／IPCの形式は不変。
+
+## キャンバスのコンテキストメニュー
+
+- macOSのTauriテストアプリで、ノード横のフォームから数値を変更して保存、ステージのクリック位置に加算ノードを追加、エッジの接続解除、グループの折りたたみ、折りたたんだカードの出力からポートメニューで接続を確認。
+- Rustワークスペース195件、Clippy、Metal実GPUのignoredテスト4件が成功。折りたたみ後の曲線・ポート・グループ・ノード・ステージの判定、HiDPIでのフォーム配置と入力除外も検証。

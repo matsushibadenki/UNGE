@@ -3,6 +3,9 @@
   "definitions": {
     "GroupSummary": {
       "properties": {
+        "collapsed": {
+          "type": "boolean"
+        },
         "id": {
           "format": "uuid",
           "type": "string"
@@ -19,7 +22,8 @@
       "required": [
         "id",
         "label",
-        "members"
+        "members",
+        "collapsed"
       ],
       "type": "object"
     }

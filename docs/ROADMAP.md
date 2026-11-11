@@ -57,7 +57,8 @@
 - 🔴 [Later] ネイティブノード内の入力コントロール、画像資産プレビュー、設定項目の表示ヒント
 - 🟢 [Done] 有界なノード概要API、3言語のHTML一覧、キーボードで選択/座標移動/削除、revision競合拒否
 - 🟢 [Done] Group概要のページ取得、選択から作成/改名/所属追加・除外/削除、所属Nodeの一括選択、3言語HTML操作とUndo/Redo・競合検証
-- 🔴 [Later] Group枠のHit Test・枠ドラッグ・折りたたみ
+- 🟢 [Done] Group見出し／カードのヒットテストと一括ドラッグ、名前変更、Viewごとの折りたたみ。[操作と契約](GROUP_EDITING.md)。
+- 🟢 [Done] 折りたたみカードの名前付き入出力、同名の番号表示、元端子への双方向接続とUndo。実GPUで2テーマ・3言語のギャラリーを確認。
 - 🔴 [Later] ネイティブSurfaceのアクセシビリティツリー、Port/Groupのキーボード操作、読み上げ実機検証とWCAG評価
 - 🔴 [Later] 任意のテーマ登録、OS配色/高コントラストへの自動追従
 - 🟢 [Done] 10000ノード/30000エッジの再現可能なCPU計測、BVH中央値分割による構築改善、総当たり検索との回帰検証
@@ -281,3 +282,14 @@
 - 🟢 [Done] uuid 1.29.1／flate2 1.1.11／cc 1.11.1へ互換更新。両Rust構成各188件、Clippy、17契約、Schema8件、ACX stdio7件、バックアップ12件、strict TypeScriptとPython／Rust圧縮双方向各33件を確認。[一次資料と保留候補](DEPENDENCY_UPDATES.md#2026-11-09-uuid圧縮ビルド依存のstable更新)。
 - 🟠 [Next] Tauri／Wry一式、wgpu 30と他の推移候補の個別移行を継続。直接schemars 1.2.3は移行済み。
 - ⭕️ [Pending] 他OS／CPU、WASM、最低Rust版、正式配布の実機検証。
+
+## 2026-11-11: トラックパッド操作
+
+- 🟢 [Done] 精密スクロールで上下左右に移動し、マウスホイールはカーソルを中心に拡大・縮小。macOSのAppKit Magnifyでピンチをグラフ領域だけに適用。[操作と取り込み](POINTER_INPUT.md)。
+- 🟢 [Done] macOSのテストアプリで合成縦スクロールと逆方向の復帰を確認。Rustで両軸・HiDPI換算、拡大／縮小の基準点、上下限と不正入力を検証。DocumentやUndo履歴は変更しない。
+- ⭕️ [Pending] 物理トラックパッドによる横・斜めスクロールとピンチ、Windows／Linuxの実入力。ピンチのネイティブ接続はmacOSのみ。
+
+## 2026-11-11: キャンバスのコンテキストメニュー
+
+- 🟢 [Done] ノード、ポート、エッジ、グループ、ステージに専用の右クリックメニューを追加。既存の編集Command・プロパティフォームを再利用し、右ドラッグのパンを維持。[操作と取り込み](CANVAS_CONTEXT_MENU.md)。
+- ⭕️ [Pending] Windows／Linuxでのネイティブメニューの表示と入力。

@@ -508,6 +508,27 @@
             "id"
           ],
           "type": "object"
+        },
+        {
+          "properties": {
+            "collapsed": {
+              "type": "boolean"
+            },
+            "id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "kind": {
+              "const": "set_collapsed",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "collapsed"
+          ],
+          "type": "object"
         }
       ]
     },

@@ -26,6 +26,7 @@ pub struct Composition {
     floating: AtomicBool,
     transitioning: AtomicBool,
     applied_size: Mutex<Option<([u32; 2], u64)>>,
+    canvas_editor: Mutex<Option<([f32; 2], u32)>>,
 }
 #[derive(Debug, PartialEq)]
 pub struct Layout {
@@ -39,6 +40,7 @@ impl Composition {
             floating: AtomicBool::new(false),
             transitioning: AtomicBool::new(false),
             applied_size: Mutex::new(None),
+            canvas_editor: Mutex::new(None),
         }
     }
     pub fn is_floating(&self) -> bool {
@@ -60,7 +62,10 @@ impl Composition {
         if self.unified { "workspace" } else { "canvas" }
     }
     pub fn layout(&self, size: [u32; 2], scale: f64) -> Layout {
-        let panel_width = if self.unified && !self.is_floating() {
+        let panel_width = if self.unified
+            && !self.is_floating()
+            && self.canvas_editor.lock().expect("canvas editor").is_none()
+        {
             ((380. * scale).round() as u32).min(size[0] / 2)
         } else {
             0
@@ -80,10 +85,36 @@ impl Composition {
             return None;
         }
         let graph = self.layout(size, scale).graph;
+        let overlay = self.editor_bounds(size, scale);
+        if overlay.is_some_and(|(origin, extent)| {
+            (0..2).all(|i| {
+                position[i] >= f64::from(origin[i])
+                    && position[i] < f64::from(origin[i] + extent[i])
+            })
+        }) {
+            return None;
+        }
         (position.iter().all(|v| v.is_finite() && *v >= 0.)
             && position[0] < f64::from(graph[0])
             && position[1] < f64::from(graph[1]))
         .then(|| position.map(|v| (v / scale) as f32))
+    }
+    fn editor_bounds(&self, size: [u32; 2], scale: f64) -> Option<([u32; 2], [u32; 2])> {
+        if !self.unified || self.is_floating() {
+            return None;
+        }
+        let (anchor, height) = (*self.canvas_editor.lock().ok()?)?;
+        let graph = self.layout(size, scale).graph;
+        let extent = [
+            graph[0].min((380. * scale) as u32),
+            graph[1].min((f64::from(height) * scale).round() as u32),
+        ];
+        let origin: [u32; 2] =
+            std::array::from_fn(|i| ((f64::from(anchor[i]) + 8.) * scale) as u32);
+        Some((
+            std::array::from_fn(|i| origin[i].min(graph[i] - extent[i])),
+            extent,
+        ))
     }
     pub fn resize_panel(
         &self,
@@ -119,9 +150,12 @@ impl Composition {
             self.layout(size, scale)
         };
         if let Some(panel) = app.get_webview("controls") {
+            let (origin, extent) = self
+                .editor_bounds(size, scale)
+                .unwrap_or(([layout.graph[0], 0], layout.panel));
             panel.set_bounds(tauri::Rect {
-                position: tauri::PhysicalPosition::new(layout.graph[0] as i32, 0).into(),
-                size: tauri::PhysicalSize::new(layout.panel[0], layout.panel[1]).into(),
+                position: tauri::PhysicalPosition::new(origin[0] as i32, origin[1] as i32).into(),
+                size: tauri::PhysicalSize::new(extent[0], extent[1]).into(),
             })?;
             *self.applied_size.lock().expect("panel layout") = Some(key);
         }
@@ -148,6 +182,55 @@ fn authorize(label: &str) -> PanelResult<()> {
     Ok(())
 }
 #[tauri::command]
+pub async fn canvas_editor(
+    webview: tauri::Webview,
+    position: Option<[f32; 2]>,
+    height: Option<u32>,
+) -> PanelResult<bool> {
+    authorize(webview.label())?;
+    if position.is_some_and(|p| p.iter().any(|v| !v.is_finite() || *v < 0.)) {
+        return Err(panel_error(
+            "invalid_pointer",
+            "invalid canvas editor anchor",
+        ));
+    }
+    let app = webview.app_handle().clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let c = app.state::<Composition>();
+        if !c.unified || c.is_floating() {
+            return Ok(false);
+        }
+        let transition = c.begin_transition()?;
+        let window = app
+            .get_window(c.canvas_label())
+            .ok_or_else(|| panel_error("panel_error", "workspace missing"))?;
+        let size = window
+            .inner_size()
+            .map_err(|e| panel_error("panel_error", e))?;
+        let scale = window
+            .scale_factor()
+            .map_err(|e| panel_error("panel_error", e))?;
+        *c.canvas_editor.lock().expect("canvas editor") =
+            position.map(|p| (p, height.unwrap_or(440).clamp(160, 520)));
+        *c.applied_size.lock().expect("panel layout") = None;
+        let result = c.resize_panel(&app, [size.width, size.height], scale);
+        if result.is_err() {
+            *c.canvas_editor.lock().expect("canvas editor") = None;
+            let _ = c.resize_panel(&app, [size.width, size.height], scale);
+        }
+        // Keep the Surface and input boundaries in sync after the WebView moves.
+        drop(transition);
+        let main = app.clone();
+        app.run_on_main_thread(move || super::redraw(&main))
+            .map_err(|e| panel_error("panel_error", e))?;
+        result.map_err(|e| panel_error("panel_error", e))?;
+        Ok(position.is_some())
+    })
+    .await
+    .map_err(|e| panel_error("panel_error", e))?
+}
+
+#[tauri::command]
 pub async fn set_panel_floating(
     webview: tauri::Webview,
     floating: bool,
@@ -164,6 +247,12 @@ pub fn move_panel(app: &tauri::AppHandle, floating: bool) -> PanelResult<serde_j
         return Err(panel_error("panel_unavailable", "composition unavailable"));
     }
     let _transition = c.begin_transition()?;
+    if c.canvas_editor.lock().expect("canvas editor").is_some() {
+        return Err(panel_error(
+            "panel_busy",
+            "close the canvas editor before moving the panel",
+        ));
+    }
     if floating == c.is_floating() {
         return Ok(c.status());
     }
@@ -246,6 +335,34 @@ pub fn move_panel(app: &tauri::AppHandle, floating: bool) -> PanelResult<serde_j
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn canvas_editor_clamps_to_the_graph_and_excludes_its_input_region() {
+        let composition = Composition::new(true);
+        let size = [2400, 1600];
+        let scale = 2.;
+        let anchor = [800., 700.];
+        *composition.canvas_editor.lock().unwrap() = Some((anchor, 520));
+        let (origin, extent) = composition.editor_bounds(size, scale).unwrap();
+        assert_eq!(origin, [1616, 560]);
+        assert_eq!(composition.layout(size, scale).graph, size);
+        assert_eq!(
+            composition.graph_position(size, scale, [2350., 200.]),
+            Some([1175., 100.])
+        );
+        assert_eq!(extent, [760, 1040]);
+        assert_eq!(
+            composition.graph_position(size, scale, [1615., 560.]),
+            Some([807.5, 280.])
+        );
+        assert_eq!(composition.graph_position(size, scale, [1616., 560.]), None);
+        *composition.canvas_editor.lock().unwrap() = None;
+        assert_eq!(composition.layout(size, scale).graph, [1640, 1600]);
+        assert_eq!(
+            composition.graph_position(size, scale, [880., 560.]),
+            Some([440., 280.])
+        );
+    }
+
     #[test]
     fn floating_expands_graph_and_transition_guard_serializes_requests() {
         let c = Composition::new(true);

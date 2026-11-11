@@ -70,6 +70,8 @@ Rust契约可生成TypeScript类型和JSON Schema。重新生成及属性值约�
 
 三次曲线按形状及zoom自适应细分，减少直线和远景连线的几何生成量。误差目标及上限见 [曲线细分](CURVE_TESSELLATION.md)。
 
+右键单击节点、端口、连线、组或画布空白处可打开对应的操作菜单。[画布上下文菜单](CANVAS_CONTEXT_MENU.md)。
+
 GPU Group框和标题可跟随成员几何与拖动预览更新。见 [Group绘制](GROUP_RENDERING.md)。
 
 新增基于Rust分页节点概要的HTML控件，支持键盘选择、移动和删除节点。 [ACCESSIBILITY.md](ACCESSIBILITY.md)。
@@ -115,3 +117,5 @@ Tauri共享编辑的可选持久化见 [Engine持久化](TAURI_PERSISTENCE.md)�
 持久日志用量与可复现编辑／恢复计测见 [持久化计测](PERSISTENCE_PROFILING.md)。
 
 已停止项目可用`backup.py create --compress`压缩归档，见[格式与限量恢复](ACX_BACKUP.md)。
+
+在图区域内双指滚动可横向或纵向平移。macOS双指捏合可缩放，鼠标滚轮也可缩放。[输入说明](POINTER_INPUT.md)。

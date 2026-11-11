@@ -124,6 +124,29 @@ impl Interaction {
         selection: &mut BTreeSet<Id>,
         event: PointerEvent,
     ) -> InteractionResult<Option<Command>> {
+        self.handle_with_groups(
+            document,
+            revision,
+            PointerGeometry {
+                index,
+                group: None,
+                hidden: &BTreeSet::new(),
+                ports: &[],
+            },
+            viewport,
+            selection,
+            event,
+        )
+    }
+    pub fn handle_with_groups(
+        &mut self,
+        document: &Document,
+        revision: u64,
+        geometry: PointerGeometry<'_>,
+        viewport: &mut Viewport,
+        selection: &mut BTreeSet<Id>,
+        event: PointerEvent,
+    ) -> InteractionResult<Option<Command>> {
         if matches!(event, PointerEvent::Cancel) {
             self.cancel(viewport, selection);
             return Ok(None);
@@ -174,8 +197,34 @@ impl Interaction {
             let point = viewport.to_world(position);
             let action = if button == PointerButton::Pan {
                 Action::Pan
+            } else if let Some(source) = proxy_hit(document, geometry.ports, *viewport, point) {
+                Action::Connect {
+                    source,
+                    target: None,
+                    valid: false,
+                }
+            } else if let Some(group) = geometry.group {
+                if group.len() > MAX_SELECTION
+                    || group
+                        .iter()
+                        .any(|id| !document.graph().nodes().contains_key(id))
+                {
+                    return Err(InteractionError::Invalid);
+                }
+                *selection = group.clone();
+                Action::Drag {
+                    original: group
+                        .iter()
+                        .map(|id| {
+                            (
+                                *id,
+                                document.placement().get(id).copied().unwrap_or_default(),
+                            )
+                        })
+                        .collect(),
+                }
             } else {
-                match hit_test(document, index, *viewport, point) {
+                match hit_test(document, &geometry, *viewport, point) {
                     Hit::Port(source) => Action::Connect {
                         source,
                         target: None,
@@ -233,7 +282,7 @@ impl Interaction {
             return Ok(None);
         }
         if self
-            .update(document, index, viewport, selection, position)
+            .update(document, geometry, viewport, selection, position)
             .is_err()
         {
             self.cancel(viewport, selection);
@@ -283,7 +332,7 @@ impl Interaction {
     fn update(
         &mut self,
         document: &Document,
-        index: &SpatialIndex,
+        geometry: PointerGeometry<'_>,
         viewport: &mut Viewport,
         selection: &mut BTreeSet<Id>,
         position: [f32; 2],
@@ -324,7 +373,13 @@ impl Interaction {
                     } else {
                         BTreeSet::new()
                     };
-                    selection.extend(index.query(rect));
+                    selection.extend(
+                        geometry
+                            .index
+                            .query(rect)
+                            .into_iter()
+                            .filter(|id| !geometry.hidden.contains(id)),
+                    );
                     if selection.len() > MAX_SELECTION {
                         return Err(InteractionError::Invalid);
                     }
@@ -342,7 +397,7 @@ impl Interaction {
                 target,
                 valid,
             } => {
-                let next = match hit_test(document, index, g.viewport, point) {
+                let next = match hit_test(document, &geometry, g.viewport, point) {
                     Hit::Port(port) if port != *source => Some(port),
                     _ => None,
                 };
@@ -352,10 +407,10 @@ impl Interaction {
                         .is_some_and(|next| connectable(document.graph(), source, next));
                     *target = next;
                 }
-                let start = port_position(document, source);
-                let end = target
-                    .as_ref()
-                    .map_or(point, |p| port_position(document, p));
+                let start = visible_port_position(document, geometry.ports, source);
+                let end = target.as_ref().map_or(point, |p| {
+                    visible_port_position(document, geometry.ports, p)
+                });
                 let (from, to) = if source.output {
                     (start, end)
                 } else {
@@ -378,13 +433,70 @@ impl Interaction {
         Ok(())
     }
 }
+/// Host presentation filters; the Document remains the source of member placements.
+pub struct PointerGeometry<'a> {
+    pub index: &'a SpatialIndex,
+    pub group: Option<&'a BTreeSet<Id>>,
+    pub hidden: &'a BTreeSet<Id>,
+    pub ports: &'a [ProxyPort],
+}
+/// A visible alias for an existing endpoint. Connection commands use the endpoint, not the alias.
+#[derive(Debug, Clone)]
+pub struct ProxyPort {
+    pub hit: PortHit,
+    pub anchor: [f32; 2],
+}
+pub fn proxy_hit(
+    doc: &Document,
+    ports: &[ProxyPort],
+    viewport: Viewport,
+    point: [f32; 2],
+) -> Option<PortHit> {
+    if viewport.zoom < PORT_LOD_ZOOM {
+        return None;
+    }
+    let radius = (8. / viewport.zoom).min(10.);
+    ports
+        .iter()
+        .rev()
+        .find(|port| {
+            (point[0] - port.anchor[0]).hypot(point[1] - port.anchor[1]) <= radius
+                && doc
+                    .graph()
+                    .nodes()
+                    .get(&port.hit.endpoint.node)
+                    .is_some_and(|node| {
+                        let actual = if port.hit.output {
+                            &node.outputs
+                        } else {
+                            &node.inputs
+                        };
+                        actual.iter().any(|p| p.name == port.hit.endpoint.port)
+                    })
+        })
+        .map(|port| port.hit.clone())
+}
+fn visible_port_position(doc: &Document, ports: &[ProxyPort], hit: &PortHit) -> [f32; 2] {
+    ports
+        .iter()
+        .find(|p| &p.hit == hit)
+        .map_or_else(|| port_position(doc, hit), |p| p.anchor)
+}
 #[derive(Debug)]
-enum Hit {
+pub enum Hit {
     Node(Id),
     Port(PortHit),
     Empty,
 }
-fn hit_test(doc: &Document, index: &SpatialIndex, viewport: Viewport, point: [f32; 2]) -> Hit {
+pub fn hit_test(
+    doc: &Document,
+    geometry: &PointerGeometry<'_>,
+    viewport: Viewport,
+    point: [f32; 2],
+) -> Hit {
+    if let Some(port) = proxy_hit(doc, geometry.ports, viewport, point) {
+        return Hit::Port(port);
+    }
     let radius = 8.0 / viewport.zoom;
     let area = Rect {
         x: point[0] - radius,
@@ -392,7 +504,10 @@ fn hit_test(doc: &Document, index: &SpatialIndex, viewport: Viewport, point: [f3
         width: radius * 2.,
         height: radius * 2.,
     };
-    for id in index.query(area).into_iter().rev() {
+    for id in geometry.index.query(area).into_iter().rev() {
+        if geometry.hidden.contains(&id) {
+            continue;
+        }
         let rect = doc.placement().get(&id).copied().unwrap_or_default();
         let node = &doc.graph().nodes()[&id];
         if viewport.zoom >= PORT_LOD_ZOOM {

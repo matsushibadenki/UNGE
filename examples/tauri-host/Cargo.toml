@@ -17,3 +17,8 @@ tauri = { version = "=2.12.4", features = ["unstable"] }
 pollster = "1.0.1"
 [build-dependencies]
 tauri-build = { version = "=2.7.3", features = [] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+block2 = "0.6.2"
+objc2 = "0.6.5"
+objc2-app-kit = { version = "0.3.2", default-features = false, features = ["std", "NSEvent", "NSWindow", "NSView", "block2"] }

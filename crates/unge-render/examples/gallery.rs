@@ -1,5 +1,5 @@
 //! Real wgpu snapshots for visual review; PPM avoids extra runtime dependencies.
-//! cargo run -p unge-render --example gallery -- /tmp/unge-gallery
+//! cargo run -p unge-render --example gallery -- /tmp/unge-gallery [--folded]
 use std::{collections::BTreeSet, io::Write, path::Path};
 use unge_core::*;
 use unge_render::*;
@@ -137,6 +137,7 @@ fn main() {
     let directory = std::env::args()
         .nth(1)
         .unwrap_or_else(|| "/tmp/unge-gallery".into());
+    let folded = std::env::args().skip(2).any(|arg| arg == "--folded");
     std::fs::create_dir_all(&directory).unwrap();
     pollster::block_on(async {
         let adapter = wgpu::Instance::default()
@@ -146,7 +147,23 @@ fn main() {
         let (device, queue) = adapter.request_device(&Default::default()).await.unwrap();
         device.push_error_scope(wgpu::ErrorFilter::Validation);
         let (document, catalog) = fixture();
-        let index = SceneIndex::new(&document);
+        let mut editor = Editor::new(document, 0).unwrap();
+        let mut collapsed = BTreeSet::new();
+        if folded {
+            let id = Id::from_u128(1000);
+            editor
+                .execute(Command::SetGroup {
+                    id,
+                    group: Some(Group {
+                        id,
+                        label: "Group A".into(),
+                        nodes: BTreeSet::from([Id::from_u128(2), Id::from_u128(3)]),
+                    }),
+                })
+                .unwrap();
+            collapsed.insert(id);
+        }
+        let index = SceneIndex::new(editor.document());
         let mut renderer = GpuRenderer::new(&device, wgpu::TextureFormat::Rgba8UnormSrgb);
         for (theme, name) in [(Theme::Dark, "dark"), (Theme::Light, "light")] {
             for (locale, language) in [(Locale::En, "en"), (Locale::Ja, "ja"), (Locale::ZhCn, "zh")]
@@ -157,13 +174,13 @@ fn main() {
                     size: [1280., 640.],
                 };
                 let scene = index
-                    .scene_with_theme(
+                    .scene_with_groups(
                         view,
                         &BTreeSet::from([Id::from_u128(2)]),
                         &Default::default(),
                         &catalog,
-                        locale,
-                        theme,
+                        (locale, theme),
+                        &collapsed,
                     )
                     .unwrap();
                 let pixels = render(&device, &queue, &mut renderer, &scene, view);
@@ -172,7 +189,8 @@ fn main() {
                     0,
                     "CJK fonts required"
                 );
-                let path = Path::new(&directory).join(format!("nodes-{name}-{language}.ppm"));
+                let prefix = if folded { "folded" } else { "nodes" };
+                let path = Path::new(&directory).join(format!("{prefix}-{name}-{language}.ppm"));
                 let mut file = std::fs::File::create(&path).unwrap();
                 write!(file, "P6\n1280 640\n255\n").unwrap();
                 for p in pixels.as_chunks::<4>().0 {

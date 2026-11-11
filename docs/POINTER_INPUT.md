@@ -14,7 +14,9 @@
 | 余白をドラッグ | 矩形と交差するノードを選択。Shiftで既存選択へ追加 |
 | Portをドラッグ | 出力と入力を接続。入力側から開始してもよい |
 | 右/中ボタンのドラッグ | 表示範囲を移動 |
-| ホイール | カーソル位置を中心に拡大縮小 |
+| トラックパッドの2本指スクロール | グラフを上下左右に移動 |
+| ピンチ（macOS） | グラフ上のジェスチャー位置を中心に拡大・縮小 |
+| マウスホイール | カーソル位置を中心に拡大・縮小 |
 | Esc | 操作開始前の選択・表示状態に戻して中止 |
 
 移動開始の閾値は論理ピクセルで3px、Portの判定半径は8pxです。zoomが0.3未満なら描画と入力の両方でPortを省略します。同一画面では1つのpointer IDが操作を所有します。選択数は最大10000です。
@@ -90,3 +92,12 @@ Tauri Engine为每个视图持有Interaction。Down/Move/Up按顺序发送，并
 输入使用绘图区域内的逻辑像素。物理坐标除以scale factor，绘图使用 `Engine::draw_scaled`。Tao适配器合并连续移动后绘图，帧保留在Rust/GPU端。示例使用固定版本的Tauri unstable Wry API，core/interaction/render不依赖该API。已在macOS验证实际拖动、框选、连接和撤销；macOS单窗口的输入边界也已验证；Windows/Linux仍待验证。
 
 渲染复用已提交状态的BVH，仅调整移动节点及关联连线的预览几何。TypeScript提供pointer调用与三语错误文案。WebView宿主需自行保证事件顺序、合并移动、捕获指针并在丢失捕获时取消。GPU文字见[集成说明](GPU_TEXT.md#简体中文)。仅键盘编辑、多点触控、重新接线及自动滚动尚未实现。
+
+
+## macOS trackpad / トラックパッド / 触控板
+
+Taoの精密スクロール（PixelDelta）を画面倍率で割り、グラフの論理ピクセルで上下左右へ移動します。LineDeltaはマウスホイールのズームを維持します。Tao 0.37のイベントにピンチがないため、サンプルのmacOSホストに限り[AppKitのアプリ内イベントモニター](https://developer.apple.com/documentation/appkit/nsevent/addlocalmonitorforevents(matching:handler:))でMagnifyを受け取ります。同じウインドウのグラフ領域内だけ、ジェスチャー位置を基準にRustのViewportを更新します。設定パネルの通常イベントはそのまま通し、ドラッグやパネル移動中は適用しません。Document・revision・Undo履歴・IPC型は変わりません。
+
+English: Precise pixel scroll pans both axes at the current scale; line wheel events keep pointer-centered zoom. The macOS example reads app-local AppKit Magnify events and applies anchored zoom only over the graph. Panel events pass through, and active pointer edits and panel transitions are excluded. No Document or history change is made.
+
+简体中文：精确像素滚动按当前缩放比例换算为逻辑像素，支持横向和纵向平移。普通鼠标滚轮仍以指针为中心缩放。macOS示例在应用内接收AppKit Magnify，仅在图区域内以手势位置为中心缩放。设置面板继续正常接收事件，拖动编辑或切换面板期间不应用手势。文档和撤销历史不变。

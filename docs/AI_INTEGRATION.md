@@ -162,3 +162,7 @@ Tauri共有編集を保存するときは [TAURI_PERSISTENCE.md](TAURI_PERSISTEN
 永続ホストの容量監視は [PERSISTENCE_PROFILING.md](PERSISTENCE_PROFILING.md) のstorage_usageを使う。EngineのNoneはメモリー内モードであり、保存障害はエラーとして扱う。history_bytesを総メモリー量や次の編集の容量予約と解釈しない。
 
 停止済みログの圧縮退避は [ACX_BACKUP.md](ACX_BACKUP.md) のmanifest v2を使う。圧縮前後のhashと展開サイズを検証し、restoreでv1の通常ファイルへ戻してからProvider／Engineを起動する。稼働ログの切り詰め・再ハッシュやReceipt再発行を圧縮と同時に行わない。
+
+折りたたんだGroupのポートは、内部Endpointの表示上の別名です。SceneIndex::group_inputとPointerGeometryを使い、カードの名前や番号から独自のEndpointを生成しないでください。[取り込み](GROUP_EDITING.md)。
+
+キャンバスの右クリックを移植する場合は `Engine::canvas_context` で対象とrevisionを読み取り、ホスト側でメニューを構成してください。[キャンバスのコンテキストメニュー](CANVAS_CONTEXT_MENU.md)。

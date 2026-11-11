@@ -75,12 +75,84 @@ impl GroupIndex {
             spatial: SpatialIndex::from_rects(rectangles),
         }
     }
+    pub(crate) fn collapsed(
+        &self,
+        ids: &BTreeSet<Id>,
+        preview: &Preview,
+        rect: impl Fn(Id) -> Option<Rect>,
+    ) -> (BTreeMap<Id, Rect>, BTreeMap<Id, Id>) {
+        let mut cards = BTreeMap::new();
+        let mut hidden = BTreeMap::new();
+        for id in ids {
+            let Some(group) = self.groups.get(id) else {
+                continue;
+            };
+            let frame = if group
+                .nodes
+                .iter()
+                .any(|node| preview.placement.contains_key(node))
+            {
+                bounds(&group.nodes, |node| {
+                    preview.placement.get(&node).copied().or_else(|| rect(node))
+                })
+            } else {
+                group.bounds
+            };
+            if let Some(frame) = frame {
+                let card = Rect {
+                    width: 184.,
+                    height: 44.,
+                    ..frame
+                };
+                if card.valid() {
+                    cards.insert(*id, card);
+                    for node in &group.nodes {
+                        hidden.entry(*node).or_insert(*id);
+                    }
+                }
+            }
+        }
+        (cards, hidden)
+    }
+    pub(crate) fn hit_header(&self, point: [f32; 2], cards: &BTreeMap<Id, Rect>) -> Option<Id> {
+        let contains = |r: Rect| {
+            point[0] >= r.x
+                && point[0] < r.x + r.width
+                && point[1] >= r.y
+                && point[1] < r.y + r.height
+        };
+        cards
+            .iter()
+            .rev()
+            .find(|(_, r)| contains(**r))
+            .map(|(id, _)| *id)
+            .or_else(|| {
+                let area = Rect {
+                    x: point[0],
+                    y: point[1],
+                    width: 0.001,
+                    height: 0.001,
+                };
+                self.spatial.query(area).into_iter().rev().find(|id| {
+                    !cards.contains_key(id)
+                        && self.groups[id].bounds.is_some_and(|r| {
+                            contains(Rect {
+                                height: HEADER,
+                                ..r
+                            })
+                        })
+                })
+            })
+    }
+    pub(crate) fn label(&self, id: Id) -> &str {
+        &self.groups[&id].label
+    }
     pub(crate) fn visible(
         &self,
         area: Rect,
         preview: &Preview,
         rect: impl Fn(Id) -> Option<Rect>,
-    ) -> Vec<(Rect, &str)> {
+    ) -> Vec<(Id, Rect, &str)> {
         let affected: BTreeSet<_> = preview
             .placement
             .keys()
@@ -102,7 +174,7 @@ impl GroupIndex {
                 }?;
                 bounds
                     .intersects(area)
-                    .then_some((bounds, group.label.as_str()))
+                    .then_some((id, bounds, group.label.as_str()))
             })
             .collect()
     }

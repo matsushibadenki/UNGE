@@ -55,16 +55,17 @@ function createExecutionUI({ invoke, listen, locale, revision }) {
     } catch (e) { console.error(e); error = e.code === 'unknown_run' ? e.code : 'unavailable'; if (e.code === 'unknown_run') current = null; render(); }
     finally { refreshing = false; }
   }
-  el('run').onclick = async () => {
+  async function run(expectedRevision = revision()) {
     if (starting || active()) return;
     starting = true; error = null; render();
     try {
-      const queued = await invoke('start_execution', { expectedRevision: revision() });
+      const queued = await invoke('start_execution', { expectedRevision });
       accept(queued);
       accept(await invoke('execution_status', { id: queued.id }));
     } catch (e) { console.error(e); error = e.code ?? 'failed'; }
     finally { starting = false; render(); await refresh(); }
-  };
+  }
+  el('run').onclick = () => run();
   el('cancelRun').onclick = async () => {
     if (!active() || cancelling) return;
     cancelling = true; render();
@@ -79,5 +80,5 @@ function createExecutionUI({ invoke, listen, locale, revision }) {
   window.addEventListener('focus', refresh);
   window.addEventListener('pagehide', () => clearInterval(timer), {once:true});
   refresh(); render();
-  return { translate: render };
+  return { translate: render, run };
 }

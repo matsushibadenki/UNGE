@@ -11,6 +11,7 @@ pub enum GroupAction {
     RemoveSelection { id: Id },
     Delete { id: Id },
     SelectMembers { id: Id },
+    SetCollapsed { id: Id, collapsed: bool },
 }
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -18,6 +19,7 @@ pub struct GroupSummary {
     pub id: Id,
     pub label: String,
     pub members: usize,
+    pub collapsed: bool,
 }
 #[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -48,7 +50,8 @@ pub(super) fn apply_group(
         | GroupAction::AddSelection { id }
         | GroupAction::RemoveSelection { id }
         | GroupAction::Delete { id }
-        | GroupAction::SelectMembers { id } => *id,
+        | GroupAction::SelectMembers { id }
+        | GroupAction::SetCollapsed { id, .. } => *id,
     };
     let old = state.editor.document().graph().groups().get(&id);
     if matches!(action, GroupAction::Create { .. }) {
@@ -57,6 +60,18 @@ pub(super) fn apply_group(
         }
     } else if old.is_none() {
         return Err(ApiError::new("missing_group", id));
+    }
+    if let GroupAction::SetCollapsed { collapsed, .. } = action {
+        let members = &old.unwrap().nodes;
+        let v = state.views.get_mut(view).unwrap();
+        v.interaction.cancel(&mut v.viewport, &mut v.selection);
+        if collapsed && !members.is_empty() {
+            v.collapsed_groups.insert(id);
+            v.selection.retain(|node| !members.contains(node));
+        } else {
+            v.collapsed_groups.remove(&id);
+        }
+        return Ok(None);
     }
     if matches!(action, GroupAction::SelectMembers { .. }) {
         let members = &old.unwrap().nodes;
@@ -111,7 +126,7 @@ pub(super) fn apply_group(
             Some(group)
         }
         GroupAction::Delete { .. } => None,
-        GroupAction::SelectMembers { .. } => unreachable!(),
+        GroupAction::SelectMembers { .. } | GroupAction::SetCollapsed { .. } => unreachable!(),
     };
     if old == group.as_ref() {
         return Ok(None);
@@ -161,6 +176,7 @@ impl Engine {
                     .map(|c| if c.is_control() { ' ' } else { c })
                     .collect(),
                 members: g.nodes.len(),
+                collapsed: v.collapsed_groups.contains(id),
             })
             .collect();
         let next = if iter.next().is_some() {

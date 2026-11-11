@@ -74,6 +74,8 @@ GPU group frames and titles follow member geometry and drag previews. See [group
 
 Added keyboard node selection, coordinate movement and deletion through HTML controls backed by bounded Rust semantic pages. [ACCESSIBILITY.md](ACCESSIBILITY.md)。
 
+Right-click a node, port, edge, group, or empty canvas for its available actions. [Canvas context menus](CANVAS_CONTEXT_MENU.md).
+
 Group creation, rename, membership edits, deletion and member selection are available from the three-language UI. [GROUP_EDITING.md](GROUP_EDITING.md)。
 
 Per-definition input/output value schemas and Rust validation APIs are available. [PORT_VALUE_SCHEMAS.md](PORT_VALUE_SCHEMAS.md)。
@@ -115,3 +117,5 @@ For opt-in durable shared Tauri editing, see [Engine persistence](TAURI_PERSISTE
 For durable-log counters and reproducible edit/recovery measurements, see [Persistence profiling](PERSISTENCE_PROFILING.md).
 
 Stopped projects can use `backup.py create --compress`; see [backup formats and bounded restore](ACX_BACKUP.md).
+
+On the graph, two-finger scroll pans horizontally and vertically. Pinch to zoom on macOS; the mouse wheel also zooms. [Input details](POINTER_INPUT.md).

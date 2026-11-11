@@ -2,9 +2,9 @@ const { invoke } = window.__TAURI__.core;
 const { listen } = window.__TAURI__.event;
 const $ = id => document.getElementById(id);
 const text = {
-  en: { title:'Graph', description:'Select a node in the graph to edit its properties.', add:'Add number', addSum:'Add sum', help:'Drag nodes to move. Shift adds to the selection. Drag empty space to select; drag ports to connect. Right-drag pans, the wheel zooms, and Esc cancels.', undo:'Undo', redo:'Redo', zoomLabel:'Zoom', nodes:'nodes', revision:'revision', failed:'Operation failed', themeLabel:'Appearance', themeDark:'Dark', themeLight:'Light', language:'Language' },
-  ja: { title:'グラフ', description:'ノードを選択すると設定できます。', add:'数値追加', addSum:'加算追加', help:'ドラッグで移動／Shiftで追加選択\n余白のドラッグで範囲選択\nポート間をドラッグして接続\n右ドラッグで画面移動\nホイールで拡大縮小／Escで中止', undo:'元に戻す', redo:'やり直す', zoomLabel:'ズーム', nodes:'ノード', revision:'リビジョン', failed:'操作に失敗しました', themeLabel:'表示モード', themeDark:'ダーク', themeLight:'ライト', language:'言語' },
-  'zh-CN': { title:'节点图', description:'选择节点以编辑属性。', add:'添加数值', addSum:'添加加法', help:'拖动节点移动，Shift追加选择。拖动空白处框选，拖动端口连接。右键拖动平移，滚轮缩放，Esc取消。', undo:'撤销', redo:'重做', zoomLabel:'缩放', nodes:'节点', revision:'版本', failed:'操作失败', themeLabel:'外观', themeDark:'深色', themeLight:'浅色', language:'语言' }
+  en: { title:'Graph', description:'Select a node in the graph to edit its properties.', add:'Add number', addSum:'Add sum', help:'Drag nodes to move. Shift adds to the selection. Drag empty space to select; drag ports to connect. Two-finger scroll or right-drag to pan. Pinch on macOS or use the mouse wheel to zoom. Esc cancels a drag.', undo:'Undo', redo:'Redo', zoomLabel:'Zoom', nodes:'nodes', revision:'revision', failed:'Operation failed', themeLabel:'Appearance', themeDark:'Dark', themeLight:'Light', language:'Language' },
+  ja: { title:'グラフ', description:'ノードを選択すると設定できます。', add:'数値追加', addSum:'加算追加', help:'ドラッグで移動／Shiftで追加選択\n余白のドラッグで範囲選択\nポート間をドラッグして接続\n2本指スクロール／右ドラッグで画面移動\nピンチ（macOS）／ホイールで拡大・縮小\nEscでドラッグを中止', undo:'元に戻す', redo:'やり直す', zoomLabel:'ズーム', nodes:'ノード', revision:'リビジョン', failed:'操作に失敗しました', themeLabel:'表示モード', themeDark:'ダーク', themeLight:'ライト', language:'言語' },
+  'zh-CN': { title:'节点图', description:'选择节点以编辑属性。', add:'添加数值', addSum:'添加加法', help:'拖动节点移动，Shift追加选择。拖动空白处框选，拖动端口连接。双指滚动或右键拖动可平移。macOS捏合或鼠标滚轮可缩放。Esc取消拖动。', undo:'撤销', redo:'重做', zoomLabel:'缩放', nodes:'节点', revision:'版本', failed:'操作失败', themeLabel:'外观', themeDark:'深色', themeLight:'浅色', language:'语言' }
 };
 let locale = navigator.language.startsWith('ja') ? 'ja' : navigator.language.startsWith('zh') ? 'zh-CN' : 'en';
 let summary = { revision:0,nodes:0,edges:0 };
@@ -27,16 +27,16 @@ async function chooseTheme(theme, remember = true) {
 function enqueue(action) { pending=pending.then(action).catch(async error => { await send({kind:'summary'}).catch(()=>{}); console.error(error); $('status').textContent=inputErrors[locale][error.code] ?? text[locale].failed; }); }
 for (const [id, theme] of [['themeDark','dark'],['themeLight','light']]) $(id).onclick=()=>enqueue(()=>chooseTheme(theme));
 $('locale').value=locale; $('locale').onchange=()=>{locale=$('locale').value;translate();enqueue(async ()=>{ await send({kind:'set_locale',locale:locale.toLowerCase()}); await window.accessibleGraph.refresh(); });};
-function addNode(sum) {
+function addNode(sum, point = [40+(summary.nodes%3)*240,40+Math.floor(summary.nodes/3)*140], revision = summary.revision) {
   const port = name => ({name,data_type:{kind:'float'},cardinality:'single',required:true});
-  return send({kind:'apply',expected_revision:summary.revision,command:{kind:'add_node',node:{id:crypto.randomUUID(),type_id:sum?'math.add':'math.number',inputs:sum?[port('a'),port('b')]:[],outputs:[port('value')],properties:sum?{}:{value:42}},rect:{x:40+(summary.nodes%3)*240,y:40+Math.floor(summary.nodes/3)*140,width:180,height:90}}});
+  return send({kind:'apply',expected_revision:revision,command:{kind:'add_node',node:{id:crypto.randomUUID(),type_id:sum?'math.add':'math.number',inputs:sum?[port('a'),port('b')]:[],outputs:[port('value')],properties:sum?{}:{value:42}},rect:{x:point[0],y:point[1],width:180,height:90}}});
 }
 $('add').onclick=()=>enqueue(()=>addNode(false));
 $('addSum').onclick=()=>enqueue(()=>addNode(true));
 for (const kind of ['undo','redo']) $(kind).onclick=()=>enqueue(()=>send({kind,expected_revision:summary.revision}));
 $('zoom').oninput=()=>{ const zoom=Number($('zoom').value); enqueue(()=>send({kind:'set_viewport',viewport:{origin:[0,0],zoom,size:[1280,640]}})); };
 translate();
-listen('unge://changed',({payload})=>{if(payload.revision>=summary.revision){summary=payload;status(); if (window.propertyInspector) window.propertyInspector.observe(payload.revision);}}).catch(error=>{console.error(error); $('status').textContent=text[locale].failed;});
+listen('unge://changed',({payload})=>{if(payload.revision>=summary.revision){summary=payload;status(); window.groupControls?.observe(payload.revision); if (window.propertyInspector) window.propertyInspector.observe(payload.revision);}}).catch(error=>{console.error(error); $('status').textContent=text[locale].failed;});
 enqueue(async ()=> {
   await send({kind:'set_locale',locale:locale.toLowerCase()});
   let saved;
@@ -73,3 +73,8 @@ window.addEventListener('focus', () => window.propertyInspector.refreshSelection
 document.addEventListener('visibilitychange', () => { if (!document.hidden) window.propertyInspector.refreshSelection(); });
 setInterval(() => { if (!document.hidden) window.propertyInspector.refreshSelection({invalidate:false}); }, 2000);
 window.propertyInspector.refreshSelection();
+
+createCanvasActions({
+  invoke, listen, send, enqueue, addNode, locale: () => locale,
+  errors: () => inputErrors[locale], fallback: () => text[locale].failed,
+});

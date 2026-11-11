@@ -3,8 +3,10 @@ use std::{
     collections::{BTreeMap, BTreeSet},
     time::Instant,
 };
-use unge_core::{Command, Document, Id, Locale, Rect, SpatialIndex, Viewport, port_anchor};
-use unge_interaction::{MAX_SELECTION, PORT_LOD_ZOOM, Preview};
+use unge_core::{
+    Command, Document, Endpoint, Id, Locale, Rect, SpatialIndex, Viewport, port_anchor,
+};
+use unge_interaction::{MAX_SELECTION, PORT_LOD_ZOOM, PortHit, Preview, ProxyPort};
 
 const MAX_MOVED_NODES: usize = 1024;
 const MAX_REFIT_EDGES: usize = 4096;
@@ -113,6 +115,24 @@ impl RenderEdge {
             to: (to.id, j),
         })
     }
+}
+#[derive(Clone, Copy)]
+struct CardPort {
+    node: Id,
+    index: usize,
+    output: bool,
+    anchor: [f32; 2],
+}
+struct CollapsedLayout {
+    cards: BTreeMap<Id, Rect>,
+    hidden: BTreeMap<Id, Id>,
+    ports: BTreeMap<Id, Vec<CardPort>>,
+}
+pub struct GroupInput {
+    pub group: Option<Id>,
+    pub hidden: BTreeSet<Id>,
+    pub hidden_groups: BTreeMap<Id, Id>,
+    pub ports: Vec<ProxyPort>,
 }
 /// Retained geometry. Small committed edits update bounded BVH overlays.
 pub struct SceneIndex {
@@ -447,8 +467,15 @@ impl SceneIndex {
         locale: Locale,
         theme: Theme,
     ) -> unge_core::Result<Scene> {
-        self.generate::<false>(viewport, selection, preview, catalog, locale, theme)
-            .map(|(scene, _)| scene)
+        self.generate::<false>(
+            viewport,
+            selection,
+            preview,
+            catalog,
+            (locale, theme),
+            &BTreeSet::new(),
+        )
+        .map(|(scene, _)| scene)
     }
     /// Same scene as scene_with_theme; normal calls do not read the clock.
     pub fn scene_with_theme_timed(
@@ -460,7 +487,243 @@ impl SceneIndex {
         locale: Locale,
         theme: Theme,
     ) -> unge_core::Result<(Scene, SceneTimings)> {
-        self.generate::<true>(viewport, selection, preview, catalog, locale, theme)
+        self.generate::<true>(
+            viewport,
+            selection,
+            preview,
+            catalog,
+            (locale, theme),
+            &BTreeSet::new(),
+        )
+    }
+    /// Resolve view-local collapsed cards without changing the Document or BVHs.
+    pub fn scene_with_groups(
+        &self,
+        viewport: Viewport,
+        selection: &BTreeSet<Id>,
+        preview: &Preview,
+        catalog: &LabelCatalog,
+        appearance: (Locale, Theme),
+        collapsed: &BTreeSet<Id>,
+    ) -> unge_core::Result<Scene> {
+        self.generate::<false>(viewport, selection, preview, catalog, appearance, collapsed)
+            .map(|(scene, _)| scene)
+    }
+    fn collapsed_layout(&self, collapsed: &BTreeSet<Id>, preview: &Preview) -> CollapsedLayout {
+        let (mut cards, hidden) = self
+            .groups
+            .collapsed(collapsed, preview, |id| self.nodes.get(&id).map(|n| n.rect));
+        let mut ports: BTreeMap<Id, Vec<CardPort>> = BTreeMap::new();
+        for (&node, &group) in &hidden {
+            let render = &self.nodes[&node];
+            // A port with no edges or at least one edge crossing the card boundary is exposed.
+            let mut internal = BTreeSet::new();
+            let mut external = BTreeSet::new();
+            for edge in self
+                .incident
+                .get(&node)
+                .into_iter()
+                .flatten()
+                .map(|id| &self.edges[id])
+            {
+                let (output, index, other) = if edge.from.0 == node {
+                    (true, edge.from.1, edge.to.0)
+                } else {
+                    (false, edge.to.1, edge.from.0)
+                };
+                if hidden.get(&other) == Some(&group) {
+                    internal.insert((output, index));
+                } else {
+                    external.insert((output, index));
+                }
+            }
+            for (count, output) in [(render.inputs, false), (render.outputs, true)] {
+                for index in 0..count {
+                    if !internal.contains(&(output, index)) || external.contains(&(output, index)) {
+                        ports.entry(group).or_default().push(CardPort {
+                            node,
+                            index,
+                            output,
+                            anchor: [0., 0.],
+                        });
+                    }
+                }
+            }
+        }
+        for (id, entries) in &mut ports {
+            let rect = cards.get_mut(id).expect("ports belong to a card");
+            let outputs = entries.iter().filter(|p| p.output).count();
+            let rows = outputs.max(entries.len() - outputs);
+            rect.width = 280.;
+            rect.height = 40. + rows as f32 * 22.;
+            rect.x = rect.x.min(1.0e9 - rect.width);
+            rect.y = rect.y.min(1.0e9 - rect.height);
+            let mut row = [0, 0];
+            for port in entries {
+                let side = usize::from(port.output);
+                port.anchor = [
+                    if port.output {
+                        rect.x + rect.width
+                    } else {
+                        rect.x
+                    },
+                    rect.y + 34. + 22. * row[side] as f32,
+                ];
+                row[side] += 1;
+            }
+        }
+        CollapsedLayout {
+            cards,
+            hidden,
+            ports,
+        }
+    }
+    fn port_name(&self, port: CardPort) -> &str {
+        let node = &self.nodes[&port.node];
+        let names = if port.output {
+            &node.output_names
+        } else {
+            &node.input_names
+        };
+        &names[port.index]
+    }
+    pub fn group_input(&self, point: Option<[f32; 2]>, collapsed: &BTreeSet<Id>) -> GroupInput {
+        let CollapsedLayout {
+            cards,
+            hidden,
+            ports,
+        } = self.collapsed_layout(collapsed, &Preview::default());
+        GroupInput {
+            group: point.and_then(|p| self.groups.hit_header(p, &cards)),
+            hidden: hidden.keys().copied().collect(),
+            hidden_groups: hidden,
+            ports: ports
+                .into_values()
+                .flatten()
+                .map(|port| ProxyPort {
+                    hit: PortHit {
+                        endpoint: Endpoint {
+                            node: port.node,
+                            port: self.port_name(port).into(),
+                        },
+                        output: port.output,
+                    },
+                    anchor: port.anchor,
+                })
+                .collect(),
+        }
+    }
+    fn edge_points(
+        &self,
+        edge: &RenderEdge,
+        preview: &Preview,
+        hidden: &BTreeMap<Id, Id>,
+        cards: &BTreeMap<Id, Rect>,
+        anchors: &BTreeMap<(Id, bool, usize), [f32; 2]>,
+        moved: bool,
+    ) -> [[f32; 2]; 4] {
+        let from_card = hidden.get(&edge.from.0);
+        let to_card = hidden.get(&edge.to.0);
+        if moved {
+            let from = &self.nodes[&edge.from.0];
+            let to = &self.nodes[&edge.to.0];
+            let anchor = |card: Option<&Id>, node: Id, index, count, output| {
+                if let Some(card) = card {
+                    anchors
+                        .get(&(node, output, index))
+                        .copied()
+                        .unwrap_or_else(|| {
+                            let rect = cards[card];
+                            [
+                                if output { rect.x + rect.width } else { rect.x },
+                                rect.y + rect.height * 0.5,
+                            ]
+                        })
+                } else {
+                    port_anchor(
+                        preview
+                            .placement
+                            .get(&node)
+                            .copied()
+                            .unwrap_or(self.nodes[&node].rect),
+                        index,
+                        count,
+                        output,
+                    )
+                }
+            };
+            curve(
+                anchor(from_card, edge.from.0, edge.from.1, from.outputs, true),
+                anchor(to_card, edge.to.0, edge.to.1, to.inputs, false),
+            )
+        } else {
+            edge.points
+        }
+    }
+    pub fn incident_edges(&self, node: Id) -> impl Iterator<Item = Id> + '_ {
+        self.incident.get(&node).into_iter().flatten().copied()
+    }
+    /// Hit the same tessellated curve that the renderer displays, including folded anchors.
+    pub fn edge_at(&self, point: [f32; 2], zoom: f32, collapsed: &BTreeSet<Id>) -> Option<Id> {
+        let preview = Preview::default();
+        let CollapsedLayout {
+            cards,
+            hidden,
+            ports,
+        } = self.collapsed_layout(collapsed, &preview);
+        let anchors = ports
+            .values()
+            .flatten()
+            .map(|p| ((p.node, p.output, p.index), p.anchor))
+            .collect();
+        let radius = 6. / zoom;
+        let area = Rect {
+            x: point[0] - radius,
+            y: point[1] - radius,
+            width: 2. * radius,
+            height: 2. * radius,
+        };
+        let candidates = visible_ids(
+            self.edge_index.query(area),
+            hidden
+                .keys()
+                .flat_map(|id| self.incident.get(id).into_iter().flatten().copied()),
+        );
+        let mut best = (radius, None);
+        for id in candidates {
+            let edge = &self.edges[&id];
+            let from = hidden.get(&edge.from.0);
+            let to = hidden.get(&edge.to.0);
+            if from.is_some() && from == to {
+                continue;
+            }
+            let points = self.edge_points(
+                edge,
+                &preview,
+                &hidden,
+                &cards,
+                &anchors,
+                from.is_some() || to.is_some(),
+            );
+            if !curve_bounds(points).intersects(area) {
+                continue;
+            }
+            crate::curves::for_each_segment(points, zoom, |a, b| {
+                let d = [b[0] - a[0], b[1] - a[1]];
+                let v = [point[0] - a[0], point[1] - a[1]];
+                let length = d[0] * d[0] + d[1] * d[1];
+                let t = if length > 0. {
+                    ((v[0] * d[0] + v[1] * d[1]) / length).clamp(0., 1.)
+                } else {
+                    0.
+                };
+                let distance = (v[0] - d[0] * t).hypot(v[1] - d[1] * t);
+                if distance <= best.0 {
+                    best = (distance, Some(id));
+                }
+            });
+        }
+        best.1
     }
     fn generate<const TIMED: bool>(
         &self,
@@ -468,8 +731,8 @@ impl SceneIndex {
         selection: &BTreeSet<Id>,
         preview: &Preview,
         catalog: &LabelCatalog,
-        locale: Locale,
-        theme: Theme,
+        (locale, theme): (Locale, Theme),
+        collapsed: &BTreeSet<Id>,
     ) -> unge_core::Result<(Scene, SceneTimings)> {
         let total = TIMED.then(Instant::now);
         let mut timings = SceneTimings::default();
@@ -502,9 +765,22 @@ impl SceneIndex {
         grid.params[2] = 1.0;
         scene.quads.push(grid);
         let start = TIMED.then(Instant::now);
-        for (rect, label) in self.groups.visible(area, preview, |id| {
+        let CollapsedLayout {
+            cards,
+            hidden,
+            ports,
+        } = self.collapsed_layout(collapsed, preview);
+        let anchors: BTreeMap<_, _> = ports
+            .values()
+            .flatten()
+            .map(|p| ((p.node, p.output, p.index), p.anchor))
+            .collect();
+        for (id, rect, label) in self.groups.visible(area, preview, |id| {
             self.nodes.get(&id).map(|node| node.rect)
         }) {
+            if cards.contains_key(&id) {
+                continue;
+            }
             scene
                 .quads
                 .push(Quad::rectangle(rect, palette.border.linear(), 10.0));
@@ -544,42 +820,23 @@ impl SceneIndex {
             preview
                 .placement
                 .keys()
+                .chain(hidden.keys())
                 .flat_map(|id| self.incident.get(id).into_iter().flatten().copied()),
         );
         timings.edge_query_ms = elapsed_ms(start);
         let start = TIMED.then(Instant::now);
         for id in edges {
             let edge = &self.edges[&id];
-            let moved = preview.placement.contains_key(&edge.from.0)
+            let from_card = hidden.get(&edge.from.0);
+            let to_card = hidden.get(&edge.to.0);
+            if from_card.is_some() && from_card == to_card {
+                continue;
+            }
+            let moved = from_card.is_some()
+                || to_card.is_some()
+                || preview.placement.contains_key(&edge.from.0)
                 || preview.placement.contains_key(&edge.to.0);
-            let points = if moved {
-                let from = &self.nodes[&edge.from.0];
-                let to = &self.nodes[&edge.to.0];
-                curve(
-                    port_anchor(
-                        preview
-                            .placement
-                            .get(&edge.from.0)
-                            .copied()
-                            .unwrap_or(from.rect),
-                        edge.from.1,
-                        from.outputs,
-                        true,
-                    ),
-                    port_anchor(
-                        preview
-                            .placement
-                            .get(&edge.to.0)
-                            .copied()
-                            .unwrap_or(to.rect),
-                        edge.to.1,
-                        to.inputs,
-                        false,
-                    ),
-                )
-            } else {
-                edge.points
-            };
+            let points = self.edge_points(edge, preview, &hidden, &cards, &anchors, moved);
             let bounds = if moved {
                 curve_bounds(points)
             } else {
@@ -611,6 +868,9 @@ impl SceneIndex {
         timings.node_query_ms = elapsed_ms(start);
         let start = TIMED.then(Instant::now);
         for id in nodes {
+            if hidden.contains_key(&id) {
+                continue;
+            }
             let node = &self.nodes[&id];
             let rect = preview.placement.get(&id).copied().unwrap_or(node.rect);
             if !rect.intersects(padded) {
@@ -868,6 +1128,107 @@ impl SceneIndex {
                     palette.cable_invalid.linear()
                 },
             );
+        }
+        for (id, rect) in cards {
+            if !rect.intersects(area) {
+                continue;
+            }
+            scene
+                .quads
+                .push(Quad::rectangle(rect, palette.accent.linear(), 9.));
+            let inside = Rect {
+                x: rect.x + 1.5,
+                y: rect.y + 1.5,
+                width: rect.width - 3.,
+                height: rect.height - 3.,
+            };
+            scene
+                .quads
+                .push(Quad::rectangle(inside, palette.node.linear(), 8.));
+            if viewport.zoom >= 0.4 {
+                scene.labels.push(TextLabel {
+                    text: format!("+  {}", self.groups.label(id)),
+                    rect: Rect {
+                        x: rect.x + 12.,
+                        y: rect.y + 6.,
+                        width: rect.width - 24.,
+                        height: 20.,
+                    },
+                    font_size: 15.,
+                    right_aligned: false,
+                    color: palette.text.linear(),
+                    after_quad: scene.quads.len(),
+                });
+            }
+            if viewport.zoom >= PORT_LOD_ZOOM
+                && let Some(entries) = ports.get(&id)
+            {
+                let mut labels = Vec::with_capacity(entries.len());
+                let mut counts = BTreeMap::new();
+                for &port in entries {
+                    let node = &self.nodes[&port.node];
+                    let name = self.port_name(port);
+                    let localized = catalog.get(&node.type_id).and_then(|l| {
+                        if port.output {
+                            l.outputs.get(name)
+                        } else {
+                            l.inputs.get(name)
+                        }
+                    });
+                    let text = label_text(localized, name, locale);
+                    *counts.entry((port.output, text.clone())).or_insert(0usize) += 1;
+                    labels.push(text);
+                }
+                let mut ordinals = BTreeMap::new();
+                for (port, name) in entries.iter().zip(labels) {
+                    let color = if port.output {
+                        palette.accent.linear()
+                    } else {
+                        palette.edge.linear()
+                    };
+                    for (radius, fill) in [(5., color), (2.5, palette.node.linear())] {
+                        scene.quads.push(Quad::rectangle(
+                            Rect {
+                                x: port.anchor[0] - radius,
+                                y: port.anchor[1] - radius,
+                                width: radius * 2.,
+                                height: radius * 2.,
+                            },
+                            fill,
+                            radius,
+                        ));
+                    }
+                    if viewport.zoom >= 0.6 {
+                        let key = (port.output, name.clone());
+                        let text = if counts[&key] > 1 {
+                            let ordinal = ordinals.entry(key).or_insert(0usize);
+                            *ordinal += 1;
+                            format!("{ordinal} · {name}")
+                        } else {
+                            name
+                        };
+                        scene.labels.push(TextLabel {
+                            text,
+                            rect: Rect {
+                                x: rect.x
+                                    + if port.output {
+                                        rect.width / 2. + 4.
+                                    } else {
+                                        12.
+                                    },
+                                y: port.anchor[1] - 7.,
+                                width: rect.width / 2. - 16.,
+                                height: 16.,
+                            },
+                            font_size: 12.,
+                            right_aligned: port.output,
+                            color: palette.text.linear(),
+                            after_quad: scene.quads.len(),
+                        });
+                    }
+                }
+            }
+            scene.visible_groups += 1;
         }
         if let Some(rect) = preview.marquee {
             let mut fill = palette.accent.linear();

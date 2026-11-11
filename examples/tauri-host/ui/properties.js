@@ -6,7 +6,7 @@ function createPropertyInspector({ invoke, send, locale, selectedId }) {
     ja: { storage_unavailable: "保存に失敗しました。編集を停止し、再試行前に保存先を確認してください。", storage_full: "保存先の容量が不足しています。履歴を保全し、ホストで上限を変更してください。", storage_locked: "別のプロセスがこの保存先を使用しています。", storage_corrupt: "保存履歴を検証できません。ファイルを保全し、バックアップの組を確認してください。", invalid_policy: "保存設定がこのドキュメントと一致しません。", title:'プロパティ', load:'選択候補のノードを編集', discard:'変更を破棄して選択に追従', empty:'ノードを選択', save:'変更を適用', reset:'初期値に戻す', enabled:'値を設定', none:'このノードに編集可能な設定はありません。', saved:'保存済み', dirty:'未保存の変更があります', ready:'共有ドキュメントの設定値', stale:'グラフが更新されました。入力内容は保持しています。再読込してから適用してください。', invalid:'強調された値を確認してください。', failed:'設定の読込・保存に失敗しました。', missing_node:'ノードは削除されています。別のノードを選んでください。', properties_unavailable:'ホストにプロパティ定義が設定されていません。', limit_exceeded:'設定がインスペクターの上限を超えています。', revision_conflict:'グラフが更新されました。入力内容は保持しています。再読込してから適用してください。', invalid_properties:'ノードの定義に適合しない値です。', required:'必須', optional:'任意', loading:'処理中…', range:'設定範囲', number:'設定範囲内の有限の数値を入力してください。', integer:'設定範囲内の安全な整数を入力してください。', string:'文字数と選択肢を確認してください。', json:'有効なJSONを入力してください。nullは削除を意味するため値として保存できません。', unsafe:'JavaScriptの安全な整数範囲を超える値は、この画面では編集できません。', revision:'リビジョン', multiple:'複数のノードを選択中です。設定するノードを1つ選択してください。', held:'選択が変わりました。\n下書きは保持しています。\n保存先は表示中のノードです。', selectionFailed:'選択状態を取得できませんでした。入力内容は保持しています。' },
     'zh-CN': { storage_unavailable: "保存失败。请停止编辑并在重试前检查存储。", storage_full: "存储容量不足。请保留历史并由宿主增加容量。", storage_locked: "另一个进程正在使用此存储。", storage_corrupt: "无法验证保存的历史。请保留文件并检查成对备份。", invalid_policy: "存储配置与此文档不一致。", title:'属性', load:'编辑列表中的节点', discard:'放弃更改并跟随选择', empty:'选择节点', save:'应用更改', reset:'恢复默认值', enabled:'设置值', none:'此节点没有可编辑的属性。', saved:'已保存', dirty:'有未保存的更改', ready:'共享文档中的属性值', stale:'节点图已更新，输入已保留。请重新加载后再应用。', invalid:'请检查标记的值。', failed:'无法加载或保存属性。', missing_node:'此节点已删除，请选择其他节点。', properties_unavailable:'此应用未配置属性定义。', limit_exceeded:'属性超出检查器限制。', revision_conflict:'节点图已更新，输入已保留。请重新加载后再应用。', invalid_properties:'这些值不符合节点定义。', required:'必填', optional:'可选', loading:'处理中…', range:'允许范围', number:'请输入允许范围内的有限数值。', integer:'请输入允许范围内的安全整数。', string:'请检查文字长度和允许的选项。', json:'请输入有效的JSON。null表示删除，不能作为值保存。', unsafe:'无法编辑超出JavaScript安全整数范围的值。', revision:'版本', multiple:'已选中多个节点，请选择一个节点以编辑属性。', held:'选择已更改，草稿已保留。请应用到当前显示的节点，或放弃草稿并跟随选择。', selectionFailed:'无法读取选择状态，当前草稿已保留。' }
   };
-  let latestRevision = 0;
+  let latestRevision = 0, contextTarget = null;
   let snapshot = null, fields = [], captions = [], busy = false, dirty = false, stale = false, message = 'empty';
   let selection = null, selectionFailed = false, epoch = 0, syncing = false, again = false, discardRequested = false;
   const t = key => words[locale()][key] || words[locale()].failed;
@@ -25,6 +25,7 @@ function createPropertyInspector({ invoke, send, locale, selectedId }) {
     $('propertiesStatus').dataset.state = locked ? 'loading' : message;
     $('propertiesStatus').dataset.warning = String(stale || message.startsWith('storage_') || ['invalid','invalid_properties','failed','revision_conflict'].includes(message));
     $('loadProperties').disabled = locked;
+    $('loadProperties').dataset.recovery = String(stale || (dirty && !contextTarget));
     $('saveProperties').disabled = locked || stale || !dirty;
     $('propertyFields').disabled = locked;
     if (snapshot) {
@@ -32,7 +33,7 @@ function createPropertyInspector({ invoke, send, locale, selectedId }) {
       $('propertyNodeDescription').textContent = local(snapshot.description);
       $('propertyNodeType').textContent = `${snapshot.type_id} · v${snapshot.version} · ${t('revision')} ${snapshot.revision} · #${snapshot.id.slice(0,8)}`;
     }
-    $('propertySelectionStatus').textContent = selectionFailed ? t('selectionFailed') : dirty && selection && selection.single !== snapshot?.id ? t('held') : '';
+    $('propertySelectionStatus').textContent = !contextTarget && selectionFailed ? t('selectionFailed') : !contextTarget && dirty && selection && selection.single !== snapshot?.id ? t('held') : '';
     captions.forEach(update => update());
   }
   function markDirty() { dirty = true; message = stale ? 'stale' : 'dirty'; translate(); }
@@ -109,6 +110,7 @@ function createPropertyInspector({ invoke, send, locale, selectedId }) {
   // Serialize reads and invalidate in-flight responses on each observed change. A pointer
   // selection does not increment the document revision, so revision alone is insufficient.
   async function refreshSelection({ discardDraft = false, invalidate = true } = {}) {
+    if (!discardDraft && $('canvasDialog')?.open && $('canvasDialogBody')?.contains($('propertyForm'))) { translate(); return; }
     if (!invalidate && (syncing || busy)) return;
     epoch++; again = true; discardRequested ||= discardDraft; translate();
     if (syncing || busy) return;
@@ -148,6 +150,17 @@ function createPropertyInspector({ invoke, send, locale, selectedId }) {
   }
   async function load() {
     if (busy || discardRequested) return;
+    if (contextTarget) {
+      const id = contextTarget;
+      busy = true; epoch++; translate();
+      try {
+        const { revision } = await send({kind:'summary'});
+        const data = await invoke('node_properties', { id, expectedRevision:revision });
+        if (contextTarget === id) build(data);
+      } catch (error) { message = error.code || 'failed'; }
+      finally { busy = false; translate(); }
+      return;
+    }
     if (dirty || stale) { await refreshSelection({discardDraft:true}); return; }
     const id = selectedId(); if (!id) return;
     busy = true; epoch++; translate();
@@ -183,5 +196,16 @@ function createPropertyInspector({ invoke, send, locale, selectedId }) {
   $('loadProperties').onclick = load;
   $('propertyForm').onsubmit = save;
   translate();
-  return { translate, refreshSelection, observe(revision) { latestRevision = Math.max(latestRevision, revision); if (snapshot && revision > snapshot.revision) { stale = true; message = 'stale'; translate(); } return refreshSelection(); } };
+  async function open(id, revision) {
+    // Do not overwrite an unrelated draft when invoked from the canvas.
+    if (busy || discardRequested || (dirty && snapshot?.id !== id)) return false;
+    contextTarget = id;
+    if (dirty) { translate(); return true; }
+    busy = true; epoch++; translate();
+    try { build(await invoke('node_properties', { id, expectedRevision:revision })); }
+    catch (error) { contextTarget = null; message = error.code || 'failed'; throw error; }
+    finally { busy = false; translate(); }
+    return true;
+  }
+  return { translate, refreshSelection, open, close() { contextTarget = null; translate(); }, observe(revision) { latestRevision = Math.max(latestRevision, revision); if (snapshot && revision > snapshot.revision) { stale = true; message = 'stale'; translate(); } return refreshSelection(); } };
 }

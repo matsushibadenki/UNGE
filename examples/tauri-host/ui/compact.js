@@ -1,5 +1,5 @@
 /* Presentation only: commands, drafts and revisions remain in existing controllers. */
-function createCompactControls(root=document.querySelector('main')) {
+function createCompactControls(root=document.body) {
   const ns='http://www.w3.org/2000/svg';
   const paths={
     number:'M4 3h10v12H4z M7 6v6 M11 6v6 M6 8h6 M6 10h6',
@@ -14,12 +14,13 @@ function createCompactControls(root=document.querySelector('main')) {
     move:'M9 2v14 M2 9h14 M6 5l3-3 3 3 M6 13l3 3 3-3 M5 6 2 9l3 3 M13 6l3 3-3 3',
     first:'M3 4v10 M12 4 6 9l6 5', next:'M6 4l6 5-6 5',
     refresh:'M14 5a6 6 0 1 0 1 6 M14 2v4h-4',
+    fold:'M3 4h12v10H3z M6 8l3 3 3-3',
     group:'M2 4h10v10H2z M6 1h10v10', pencil:'M3 12l9-9 3 3-9 9-4 1z M10 5l3 3',
     membersPlus:'M2 4h9v10H2z M14 6v6 M11 9h6',
     membersMinus:'M2 4h9v10H2z M12 9h5', check:'M3 9l4 4 8-9',
     info:'M9 2a7 7 0 1 0 0 14 7 7 0 0 0 0-14 M9 8v4 M9 5v.2',
   };
-  const controls={panelToggle:'panel',themeDark:'moon',themeLight:'sun',add:'number',addSum:'plus',undo:'undo',redo:'redo',run:'play',cancelRun:'stop',selectNode:'select',deleteNode:'trash',moveNode:'move',previousNodes:'first',nextNodes:'next',refreshNodes:'refresh',loadProperties:'refresh',saveProperties:'check',createGroup:'group',renameGroup:'pencil',selectGroup:'select',deleteGroup:'trash',addGroupMembers:'membersPlus',removeGroupMembers:'membersMinus',firstGroups:'first',nextGroups:'next',refreshGroups:'refresh'};
+  const controls={panelToggle:'panel',themeDark:'moon',themeLight:'sun',add:'number',addSum:'plus',undo:'undo',redo:'redo',run:'play',cancelRun:'stop',selectNode:'select',deleteNode:'trash',moveNode:'move',previousNodes:'first',nextNodes:'next',refreshNodes:'refresh',loadProperties:'refresh',saveProperties:'check',createGroup:'group',renameGroup:'pencil',toggleGroup:'fold',selectGroup:'select',deleteGroup:'trash',addGroupMembers:'membersPlus',removeGroupMembers:'membersMinus',firstGroups:'first',nextGroups:'next',refreshGroups:'refresh'};
   function icon(name) {
     const svg=document.createElementNS(ns,'svg');
     for(const [key,value] of Object.entries({viewBox:'0 0 18 18',fill:'none',stroke:'currentColor','stroke-width':'1.5','stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true',focusable:'false'}))svg.setAttribute(key,value);

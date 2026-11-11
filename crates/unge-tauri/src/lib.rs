@@ -9,6 +9,9 @@ use unge_executor::{PreparedRun, RunError, RunService, RunSummary};
 use unge_interaction::{Interaction, InteractionError, PointerEvent};
 use unge_render::{LabelCatalog, SceneIndex, SurfaceRenderer, Theme};
 
+mod context;
+pub use context::{CanvasContext, ContextTarget, MAX_CONTEXT_PORT_EDGES};
+
 mod editor;
 use editor::EditorStore;
 
@@ -24,6 +27,7 @@ struct ViewState {
     viewport: Viewport,
     selection: BTreeSet<Id>,
     interaction: Interaction,
+    collapsed_groups: BTreeSet<Id>,
 }
 struct State {
     labels: LabelCatalog,
@@ -186,6 +190,15 @@ fn refresh_scene(state: &mut State, changes: Option<&unge_render::SceneChanges>)
         .collect();
     for view in state.views.values_mut() {
         view.interaction.invalidate_preview();
+        view.collapsed_groups.retain(|id| {
+            state
+                .editor
+                .document()
+                .graph()
+                .groups()
+                .get(id)
+                .is_some_and(|g| !g.nodes.is_empty())
+        });
         view.selection.retain(|id| existing.contains(id));
     }
 }
@@ -306,6 +319,7 @@ impl Engine {
                 viewport,
                 selection: BTreeSet::new(),
                 interaction: Interaction::default(),
+                collapsed_groups: BTreeSet::new(),
             },
         );
         Ok(())
@@ -378,13 +392,13 @@ impl Engine {
             view_state.viewport = viewport;
         }
         let view_state = &state.views[view];
-        let scene = state.scene.scene_with_theme(
+        let scene = state.scene.scene_with_groups(
             viewport,
             &view_state.selection,
             view_state.interaction.preview(),
             &state.labels,
-            view_state.locale,
-            view_state.theme,
+            (view_state.locale, view_state.theme),
+            &view_state.collapsed_groups,
         )?;
         drop(state);
         let mut renderers = self
@@ -472,10 +486,27 @@ impl Engine {
                     ..
                 } = &mut *state;
                 let v = views.get_mut(view).unwrap();
-                let result = v.interaction.handle(
+                let point = match event {
+                    PointerEvent::Down {
+                        position,
+                        button: unge_interaction::PointerButton::Primary,
+                        ..
+                    } => Some(v.viewport.to_world(position)),
+                    _ => None,
+                };
+                let geometry = scene.group_input(point, &v.collapsed_groups);
+                let result = v.interaction.handle_with_groups(
                     editor.document(),
                     editor.revision(),
-                    scene.spatial_index(),
+                    unge_interaction::PointerGeometry {
+                        index: scene.spatial_index(),
+                        group: geometry
+                            .group
+                            .and_then(|id| editor.document().graph().groups().get(&id))
+                            .map(|g| &g.nodes),
+                        hidden: &geometry.hidden,
+                        ports: &geometry.ports,
+                    },
                     &mut v.viewport,
                     &mut v.selection,
                     event,
